@@ -86,5 +86,6 @@ function setExtentTo2dMap(){
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/scan.js"></script>
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/analysis.js"></script>
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/config.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/fly.js"></script>
 </body>
 </html>

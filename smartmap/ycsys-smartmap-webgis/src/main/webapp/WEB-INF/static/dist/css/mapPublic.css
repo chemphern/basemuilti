@@ -146,7 +146,7 @@ a:hover{ text-decoration:none !important;}
 .search-form .btn_list button.active span{color:#fff;}
 .search-form .searchBtn button.btn-sm{padding:5px 10px;}
 .search-form input.text-min{max-width:60px;}
-.search-form input.text-mid{max-width:80px;}
+.search-form input.text-mid{max-width:150px;}
 .search-form input.input-in{display:inline-block;vertical-align: middle;}
 .search-form-table {font-size: 12px;color:#999;}
 .search-form-table th{font-weight: bold;}
@@ -198,6 +198,13 @@ a:hover{ text-decoration:none !important;}
 .bootstrap-table .fixed-table-pagination .dropup .dropdown-menu{min-width: 60px;}
 .bootstrap-table .dropdown-menu > .active > a,.bootstrap-table .dropdown-menu > .active > a:hover,.bootstrap-table .dropdown-menu > .active > a:focus{background-color: #55cc85;}
 .bootstrap-table .fixed-table-pagination .pagination-detail, .fixed-table-pagination div.pagination{margin-bottom: 0px;}
+
+/* combotree */
+.search-form .sel-combotree{width: 148px;height:30px;line-height: 30px;}
+.search-form .sel-combotree span.combo{width:148px !important;height:30px !important;border:1px solid #e8e8e8;border-radius: 3px;-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);}
+.search-form .sel-combotree input{width: 129px;height:30px;line-height: 30px;padding:6px;}
+.search-form .sel-combotree a.combo-arrow{height:30px !important;line-height: 30px;border:1px solid #e8e8e8;background-color:#fff;}
+
 /* ztree */
 .subTabs .ztree li a{color:#999;font:14px;font-family:  \5FAE\8F6F\96C5\9ED1, \5b8b\4f53,Arial,sans-serif !important; }
 .subTabs .ztree *{color:#999;font:14px;font-family:  \5FAE\8F6F\96C5\9ED1, \5b8b\4f53,Arial,sans-serif !important;

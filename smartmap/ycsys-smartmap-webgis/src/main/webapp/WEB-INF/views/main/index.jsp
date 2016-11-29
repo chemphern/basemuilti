@@ -13,6 +13,9 @@
   <link rel="stylesheet" href="${res}/dist/css/mapPublic.css">
   <link rel="stylesheet" href="${res}/dist/css/mapIndex.css">
   <link href="${res}/plugins/mCustomScrollbar/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css">
+    <!-- jQuery Easyui css-->
+  <link rel="stylesheet" href="${res}/plugins/jeasyui/themes/default/easyui.css">
+  <link rel="stylesheet"  href="${res}/plugins/jeasyui/themes/icon.css">
   <!-- 表格 -->
   <link href="${res}/plugins/table/bootstrap-table.min.css" rel="stylesheet">
   <!-- 弹出框 -->
@@ -29,6 +32,8 @@
   <script src="${res}dist/js/html5shiv.min.js"></script>
    <script src="${res}dist/js/respond.min.js"></script>
   <![endif]-->
+    <!-- jQuery Easyui js-->
+  <script src="${res}/plugins/jeasyui/jquery.easyui.min.js"></script>
     <!-- jQuery 修改浏览器默认滚动条 -->
   <script src="${res}/plugins/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
 
@@ -51,8 +56,10 @@
   <script  src="${res}/dist/js/map/treeMaptcgl.js"></script>
   <script  src="${res}/dist/js/map/treeMapzt.js"></script>
   
-  <!-- 二三维地图公用函数 -->
+  <!-- 二三维地图工具栏基础功能 -->
   <script  src="${res}/js/common/common.js"></script>
+  <!-- 三维地图飞行漫游功能模块 -->
+  <script  src="${res}/js/common/flightRoaming.js"></script>
   <!-- 表格 -->
 <script src="${res}/plugins/table/bootstrap-table.min.js"></script>
 <script src="${res}/plugins/table/bootstrap-table-zh-CN.min.js"></script>
@@ -98,7 +105,7 @@
               <li><a href="javaScript:;"><i class="icon iconfont">&#xe622;</i><h1>地图编辑</h1></a></li>
               <li><a href="javaScript:;"><i class="icon iconfont">&#xe6e0;</i><h1>图层管理</h1></a></li>
               <li><a href="javaScript:;"><i class="icon iconfont">&#xe8b4;</i><h1>空间分析</h1></a></li>
-              <li><a href="javaScript:;" id="3dmy"><i class="icon iconfont">&#xe7f6;</i><h1>三维漫游</h1></a></li>      
+              <li onclick="to3dMap()"><a href="javaScript:;" id="3dmy"><i class="icon iconfont">&#xe7f6;</i><h1>三维漫游</h1></a></li>
             </ul>
           </div>
           
@@ -149,14 +156,8 @@
                 <form class="form-horizontal search-form" role="form">
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">查询图层：</label>
-                    <div class="col-sm-8">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </select>
+                    <div class="col-sm-8 sel-combotree">
+                      <select class="form-control input-sm easyui-combotree " url="dist/js/map/data/mapLayerData.json" name="mapLayer"></select>
                     </div>
                   </div>
                   <div class="form-group form-group-sm">                    
@@ -223,11 +224,8 @@
                 <form class="form-horizontal search-form" role="form">
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">查询图层：</label>
-                    <div class="col-sm-8">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                      </select>
+                    <div class="col-sm-8 sel-combotree">
+                      <select class="form-control input-sm easyui-combotree " url="dist/js/map/data/mapLayerData.json" name="mapLayer2"></select>
                     </div>
                   </div>
                   <div class="form-group form-group-sm">                    
@@ -746,12 +744,10 @@
                 <h3 class="panelBox-title">专题图展示</h3><span class="arrow arrowUp"></span>
               </div>
               <div  class="panelBox-body">
-                <!---ztree start-->
-                <ul id="treeMapzt" class="ztree">
-
+                <!---tree start-->
+                <ul id="treeMapzt"  class="easyui-tree" data-options="url:'dist/js/map/data/mapLayerData.json',method:'get',animate:true,lines:true,checkbox:true">
                 </ul>
-
-                 <!---ztree end-->
+                 <!---tree end-->
               </div>
             </div>
 
@@ -928,12 +924,10 @@
                 <h3 class="panelBox-title">图层管理</h3><span class="arrow arrowUp"></span>
               </div>
               <div  class="panelBox-body">
-                <!---ztree start-->
-                <ul id="treeMaptcgl" class="ztree">
-
+                <!---tree start-->
+                <ul id="treeMaptcgl"  class="easyui-tree" data-options="url:'dist/js/map/data/mapLayerData.json',method:'get',animate:true,lines:true,checkbox:true">
                 </ul>
-
-                 <!---ztree end-->
+                <!---tree end-->
               </div>
             </div>
 
@@ -1082,7 +1076,7 @@
             <div class="panelBox-heading" ><i class="icon iconfont icon_map">&#xe7f6;</i><h3 class="panelBox-title">三维漫游</h3><span class="arrow iconfont"></span></div>
             <div  class="panelBox-body">
               <div class="row menu">
-                <a href="#fore-2d3d-menu-my-fxmy" class="col-sm-6 active" data-toggle="tab">
+                <a href="#fore-2d3d-menu-my-fxmy" class="col-sm-6 active" data-toggle="tab" onclick="getFlys()">
                   <i class="icon iconfont mapSearch">&#xe630;</i>
                   <h2>飞行漫游</h2>
                 </a>
@@ -1108,13 +1102,13 @@
                     </span>
                   </div>
                     <div class="form-group form-group-sm btn_list" id="pathtoolbar">
-                      <button type="button" class="btn btn-default btn-sm active">
+                      <button type="button" class="btn btn-default btn-sm active" onclick="beginFly()">
                         <span class="glyphicon glyphicon-play"></span> 飞行
                       </button>
-                       <button type="button" class="btn btn-default btn-sm">
+                       <button type="button" class="btn btn-default btn-sm" onclick="pauseFly()">
                         <span class="glyphicon glyphicon-pause"></span> 暂停
                       </button>
-                       <button type="button" class="btn btn-default btn-sm">
+                       <button type="button" class="btn btn-default btn-sm" onclick="stopFly()">
                         <span class="glyphicon glyphicon-stop"></span> 停止
                       </button>                                      
                     </div>
@@ -1122,7 +1116,6 @@
                     <table class="table  table-hover table-responsive search-form-table" id="tableFxmy"  
                      data-toolbar="#pathtoolbar"
                      data-toggle="table"
-                     data-url="dist/js/map/data/tableFxmyData.json"
                      data-click-to-select="true"
                      data-row-style="rowStyle"
                      data-query-params="queryParams"

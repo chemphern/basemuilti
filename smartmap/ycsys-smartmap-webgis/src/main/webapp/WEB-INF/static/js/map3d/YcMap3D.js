@@ -164,7 +164,7 @@ function get3DMapExtent(type) {
         }         
         var extent={"xmin":xmin,"xmax":xmax,"ymin":ymin,"ymax":ymax};
         return extent;
-}   
+}
 
 //设置三维地图范围
 function set3DMapExtent(extent, type) {
@@ -324,13 +324,13 @@ function clearMap3D(){
 	if(ZoomInOutToolGlobe.ZoomInOutType!=""){
 		zoomInOutRBUpHandler();
 	}else if(YcMap3D.ProjectTree.FindItem(DrawToolGlobe.DrawToolFolder)!=""){
-		deleteItemsByName(DrawToolGlobe.DrawToolFolder);
 		if(DrawToolGlobe.DrawOperation!="")
 			endDrawShape();
+		deleteItemsByName(DrawToolGlobe.DrawToolFolder);
 	}else if(YcMap3D.ProjectTree.FindItem(MeasureToolGlobe.MeasureFolder)!=""){
-		deleteItemsByName(MeasureToolGlobe.MeasureFolder);
 		if(MeasureToolGlobe.MeasureOperation!="")
 			endMeasureOperation();
+		deleteItemsByName(MeasureToolGlobe.MeasureFolder);
 	}
 }
 

@@ -41,7 +41,7 @@ function zoomOutMapExtent(){
 	YcMap3D.AttachEvent("OnRButtonUp", zoomInOutRBUpHandler);
 	YcMap3D.AttachEvent("OnFrame", zoomInOutFrameHandler);
 	YcMap3D.Window.SetInputMode(1);
-	YcMap3D.Window.ShowMessageBarText("请按住左键，拖拉出需要缩小的中心矩形区域。可重复操作，右键结束放大操作。",1,-1);
+	YcMap3D.Window.ShowMessageBarText("请按住左键，拖拉出需要缩小的中心矩形区域。可重复操作，右键结束缩小操作。",1,-1);
 }
 
 //拉框缩放左键事件
@@ -50,19 +50,36 @@ function zoomInOutLBUpHandler(flags, x, y){
 	if (typeof rectangle == 'object') {
 		//结束绘制矩形
 		ZoomInOutToolGlobe.DrawOperation = ""
-		//过滤微小操作
-		if(rectangle.Width>=15 || rectangle.Depth>=15)
+		//过滤微小操作和高度过高、过低
+		var cameraHeight = YcMap3D.Navigate.GetPosition(0).Altitude;
+		var rectScreenScale = getMinScale(rectangle);
+		if(rectScreenScale < 100)
 		{
 			//缩放操作
-			if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomIn"){
+			if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomIn"&&cameraHeight>=50){
 				ZoomInWithRectangle(rectangle);
-			}else if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomOut"){
+			}else if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomOut"&&cameraHeight<=20850000){
 				ZoomOutWithRectangle(rectangle);
+			}else if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomIn"&&cameraHeight<50){
+				YcMap3D.Window.ShowMessageBarText("已经放大到最大程度。右键结束放大操作或点击缩小功能进行缩小操作！",1,-1);
+			}else if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomOut"&&cameraHeight>20850000){
+				YcMap3D.Window.ShowMessageBarText("已经缩小到最大程度。右键结束缩小操作或点击放大功能进行放大操作！",1,-1);
 			}
 		}
 		//删除绘制图形
 		deleteItemsByName(ZoomInOutToolGlobe.DrawToolFolder);
 	}
+}
+
+//获取屏幕范围与矩形范围的最小比值
+function getMinScale(rectangle){
+	var rectPositionLT = YcMap3D.Creator.CreatePosition(rectangle.Left,rectangle.Top,0);
+	var rectPositionRB = YcMap3D.Creator.CreatePosition(rectangle.Right,rectangle.Bottom,0);
+	var rectScreenLT = YcMap3D.Window.PixelFromWorld(rectPositionLT,0);
+	var rectScreenRB = YcMap3D.Window.PixelFromWorld(rectPositionRB,0);
+	var rectScreenW = Math.abs((rectScreenLT.X-rectScreenRB.X));
+	var rectScreenH = Math.abs((rectScreenLT.Y-rectScreenRB.Y));
+	return Math.min(YcMap3D.Window.Rect.Width/rectScreenW,YcMap3D.Window.Rect.Height/rectScreenH);
 }
 
 //拉框缩放左键事件
@@ -123,7 +140,13 @@ function ZoomOutWithRectangle(Rectabgle){
 	var centery = (Rectabgle.Top + Rectabgle.Bottom) * 0.5;
 	var centerPosition = YcMap3D.Creator.CreatePosition(centerx, centery, 0, 0, 0, -90, 0, 0);
 	//计算缩小后相机位置的高度
-	centerPosition.Altitude = getZoomOutHeight(Rectabgle);
+	var heightScale = getZoomOutHeight(Rectabgle);
+	if(heightScale>20850000)
+		centerPosition.Altitude = 20850001;
+	else if(heightScale<YcMap3D.Navigate.GetPosition(0).Altitude)
+		centerPosition.Altitude = YcMap3D.Navigate.GetPosition(0).Altitude + 10000;
+	else
+		centerPosition.Altitude = heightScale
 	YcMap3D.Navigate.FlyTo(centerPosition,14);
 }
 

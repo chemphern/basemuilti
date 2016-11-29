@@ -1,3 +1,9 @@
+/**
+ * Created by ChenLong.
+ * Description:实现三维场景各种模式线、面的量测
+ * version: 1.0.0
+ */
+
 var MeasureTool={
     activate:function(type){
         measureStart(type);
