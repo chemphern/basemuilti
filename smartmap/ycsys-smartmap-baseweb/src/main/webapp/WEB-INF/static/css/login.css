@@ -1,0 +1,87 @@
+/*CSS全局变量设置*/
+body,div,input,img,table,tr,td{margin:0px;padding:0px;}
+body{font-size:12px;font-family:Arial,宋体;background-color:#0066A8;}
+
+/*设置div居中显示*/
+.login{width:0px;height:0px;position:fixed;top:50%;left:50%;}
+.login .login_model{width:500px;height:300px;margin-left:-250px;margin-top:-150px;}
+
+/*header层样式*/
+.login .login_model .login_header{
+	height:50px;
+	line-height:50px;
+	background-color:#0066A8;
+	color:#FFF;
+	font-size:20px;
+	font-weight:bold;
+}
+.login .login_model .login_middle{
+	width:500px;
+	height:200px;
+	margin-left:10px;
+
+}
+
+/*middle层样式*/
+.login .login_model .login_middle table{
+	width:400px;
+	height:180px;
+	margin:10px auto;
+	border:1px solid #444;
+	border-collapse:collapse;
+	background-color:#d0ddfd;
+	box-shadow:-10px -10px 5px white;
+}
+.login .login_model .login_middle .middle1{
+	width:100px;
+	height:20px;
+	font-size:14px;
+	text-align:right;
+}
+.login .login_model .login_middle .middle2{
+	width:300px;
+	height:25px;
+	font-size:12px;
+}
+.login .login_model .login_middle .class1{
+	width:182px;
+	height:25px;
+	border:1px solid #444;
+	margin-left:10px;
+	background:url(../images/user.png) no-repeat left center;
+	background-color:#FFF;
+	padding-left:18px;
+}
+.login .login_model .login_middle .class2{
+	width:182px;
+	height:25px;
+	border:1px solid #444;
+	background:url(../images/lock.png) no-repeat left center;
+	background-color:#FFF;
+	margin-left:10px;
+	padding-left:18px;
+}
+.login .login_model .login_middle .class3{
+	width:120px;
+	height:25px;
+	border:1px solid #444;
+	margin-left:10px;
+}
+.login .login_model .login_middle .class4{
+	width:80px;
+	height:25px;
+	border:1px solid #444;
+	margin-left:10px;
+}
+.login .login_model .login_middle img{
+	margin-left:10px;
+}
+
+/*bottom层样式*/
+.login .login_model .login_bottom{
+	height:50px;
+	line-height:50px;
+	font-size:12px;
+	color:#FFF;
+	background-color:#0066A8;
+}

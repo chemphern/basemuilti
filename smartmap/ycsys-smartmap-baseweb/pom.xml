@@ -1,0 +1,38 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>smartmap</artifactId>
+        <groupId>ycsys</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>ycsys-smartmap-baseweb</artifactId>
+    <packaging>war</packaging>
+    <name>ycsys-smartmap-baseweb Maven Webapp</name>
+    <url>http://maven.apache.org</url>
+    <dependencies>
+        <dependency>
+            <groupId>ycsys</groupId>
+            <artifactId>ycsys-smartmap-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ycsys</groupId>
+            <artifactId>ycsys-smartmap-service</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ycsys</groupId>
+            <artifactId>ycsys-smartmap-gisserver</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ycsys</groupId>
+            <artifactId>ycsys-smartmap-config</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <build>
+        <finalName>ycsys-smartmap-baseweb</finalName>
+    </build>
+</project>

@@ -1,0 +1,1316 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@include file="/WEB-INF/views/common/taglib.jsp" %>
+<%@include file="/WEB-INF/views/common/mapCommon.jsp" %>
+<%@include file="/WEB-INF/views/common/map3dCommon.jsp" %>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>羽辰智慧林业二三维一体化应用系统</title>
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="${res}/dist/css/mapPublic.css">
+  <link rel="stylesheet" href="${res}/dist/css/mapIndex.css">
+  <link href="${res}/plugins/mCustomScrollbar/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css">
+  <!-- 表格 -->
+  <link href="${res}/plugins/table/bootstrap-table.min.css" rel="stylesheet">
+  <!-- 弹出框 -->
+  <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
+  <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
+  <script src="${res}/plugins/jQueryUI/jquery-ui.min.js"></script>
+  <script src="${res}/plugins/mCustomScrollbar/jquery.mousewheel.js"></script>
+  
+  <link rel="stylesheet" href="${res}/bootstrap/css/bootstrap.css">
+  <script src="${res}/bootstrap/js/bootstrap.min.js"></script>
+ 
+   <!-- HTML5 IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="${res}dist/js/html5shiv.min.js"></script>
+   <script src="${res}dist/js/respond.min.js"></script>
+  <![endif]-->
+    <!-- jQuery 修改浏览器默认滚动条 -->
+  <script src="${res}/plugins/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+
+  <!-- 颜色选择 -->
+  <script src="${res}/plugins/jqColorPicker/colors.js"></script>
+  <script src="${res}/plugins/jqColorPicker/jqColorPicker.js"></script>
+  <script type="text/javascript">
+    $('.color').colorPicker(); // that's it
+  </script>
+  <script src="${res}/dist/js/map/map_index.js"></script>
+  <script src="${res}/dist/js/map/map_index_dialog.js"></script>
+  <!-- jQuery 地图鱼骨控件滑动效果 -->
+  <script  src="${res}/dist/js/map/scrollBar.js"></script>
+
+   <!--ztree-->
+  <link rel="stylesheet" href="${res}/plugins/ztree/style/zTreeStyle.css" >
+  <script  src="${res}/plugins/ztree/js/jquery.ztree.core.js"></script>
+  <script  src="${res}/plugins/ztree/js/jquery.ztree.excheck.js"></script>
+
+  <script  src="${res}/dist/js/map/treeMaptcgl.js"></script>
+  <script  src="${res}/dist/js/map/treeMapzt.js"></script>
+  
+  <!-- 二三维地图公用函数 -->
+  <script  src="${res}/js/common/common.js"></script>
+  <!-- 表格 -->
+<script src="${res}/plugins/table/bootstrap-table.min.js"></script>
+<script src="${res}/plugins/table/bootstrap-table-zh-CN.min.js"></script>
+<!-- 封装弹出框dialog -->
+<script src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>
+<script src="${res}/plugins/dialog/iframeTools.source.js"></script>
+<script src="${res}/plugins/dialog/unit.js"></script>
+</head>
+<body role="document" cz-shortcut-listen="true">
+<!-- wrapper start -->
+<div class="wrapper" > 
+  <!-- header start -->
+  <nav class="header navbar navbar-fixed-top" role="navigation">
+        <div class="navbar-inner clearfix">
+          <a class="navbar-brand logo" href="#"><img src="${res}/dist/img/map/logo.png" alt="logo" /></a>
+        
+          <a href="javascript:;" class="menu-toggler collapsed" ><i class="icon iconfont">&#xe65a;</i></a>  
+          <!-- user -->
+          <div id="navbar" class="float_r">
+            <ul class="navbar-user">
+              <li class="user dropdown">             
+                <a href="#" class="user_box dropdown-toggle" data-toggle="dropdown" id="dLabel"><img src="${res}/dist/img/map/photo1.png" alt="头像" /><span class="user_name">admin</span> <span class="caret"></span></a>
+                <ul class="dropdown-menu memu-list"  role="menu" aria-labelledby="dLabel">
+                  <li><a href="#"><i class="icon iconfont">&#xe60e;</i><span>个人信息</span></a></li>
+                  <li><a href="#"><i class="icon iconfont">&#xe614;</i><span>修改资料</span></a></li>
+                  <li><a href="#"><i class="icon iconfont">&#xe615;</i><span>修改密码</span></a></li>
+                  <li><a href="#"><i class="icon iconfont">&#xe650;</i><span>退出系统</span></a></li>               
+                </ul>              
+            
+              </li>
+            </ul>
+          </div>
+          <!-- bigmenu -->
+          <div id="navbar-collapse" class="navbar-collapse collapse" >
+            <ul class="nav navbar-nav homemenu" onclick="to2dMap()">
+                <li class="home"><a href="javaScript:;"><i class="icon iconfont">&#xe640;</i><h1>主页</h1></a></li>
+            </ul>
+            <ul class="nav navbar-nav bigmenu" id="idTabs">
+              <li class="active"><a href="javaScript:;"><i class="icon iconfont">&#xe893;</i><h1>地图查询</h1></a></li>
+              <li><a href="javaScript:;"><i class="icon iconfont">&#xe600;</i><h1>地图定位</h1></a></li>
+              <li><a href="javaScript:;"><i class="icon iconfont">&#xe601;</i><h1>地图标注</h1></a></li>
+              <li><a href="javaScript:;"><i class="icon iconfont">&#xe60a;</i><h1>专题地图</h1></a></li>
+              <li><a href="javaScript:;"><i class="icon iconfont">&#xe622;</i><h1>地图编辑</h1></a></li>
+              <li><a href="javaScript:;"><i class="icon iconfont">&#xe6e0;</i><h1>图层管理</h1></a></li>
+              <li><a href="javaScript:;"><i class="icon iconfont">&#xe8b4;</i><h1>空间分析</h1></a></li>
+              <li><a href="javaScript:;" id="3dmy"><i class="icon iconfont">&#xe7f6;</i><h1>三维漫游</h1></a></li>      
+            </ul>
+          </div>
+          
+        </div>
+  </nav>
+  <!-- header end -->
+  <!-- main start -->
+  <div class="container theme-showcase" role="main" >
+  <div class="main">
+    <!-- left start -->
+    <div class="leftBox">
+      <!-- fore-core-side  start-->  
+      <div class="fore-core-side">
+        <div id="fore-2d3d-menu-cx" class="current">
+          <!-- 当前位置 -->
+          <ol class="breadcrumb">
+            <li><i class="icon iconfont home">&#xe640;</i></li>
+            <li><a href="#">首页</a></li>
+            <li><a href="#">-地图查询</a></li>
+          </ol>
+          <!-- 二级菜单 -->
+          <div class="panelBox">
+            <div class="panelBox-heading" d><i class="icon iconfont icon_map">&#xe893;</i><h3 class="panelBox-title">地图查询</h3><span class="arrow iconfont"></span></div>
+            <div  class="panelBox-body">
+              <div class="row menu">
+                <a href="#fore-2d3d-side-cx-sxcx" class="col-sm-4 active" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe6c8;</i>
+                  <h2>属性查询</h2>
+                </a>
+                <a href="#fore-2d3d-side-cx-kjcx" class="col-sm-4" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe845;</i>
+                  <h2>空间查询</h2>
+                </a>
+                <a href="#fore-2d3d-side-cx-ljcx" class="col-sm-4" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe666;</i>
+                  <h2>逻辑查询</h2>
+                </a>
+              </div>
+            </div>
+          </div>
+          <!-- 当前操作 -->
+          <div class="subTabs">
+            <div class="panelBox active" id="fore-2d3d-side-cx-sxcx">
+              <div class="panelBox-heading">
+                <h3 class="panelBox-title">属性查询</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div class="panelBox-body">
+                <form class="form-horizontal search-form" role="form">
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">查询图层：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">                    
+                    <label for="name" class="col-sm-4">查询属性：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="name" class="col-sm-4">查询值：</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control input-sm" placeholder="查询值">
+                    </div>
+                  </div>
+                  <div class="searchBtn">
+                    <button type="submit" class="btn btn-success">查 询</button>
+                    <button type="reset" class="btn btn-warning">重 置</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="panelBox" id="fore-2d3d-side-cx-kjcx" >
+              <div class="panelBox-heading" >
+                <h3 class="panelBox-title">空间查询</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div class="panelBox-body">
+                <form class="search-form" role="form">
+                  <div class="form-group">
+                    <label for="name">请选择查询方式</label>
+                    <div class="icon-searchway">
+                      <a href="javascript:;" class="col-sm-4 active">
+                        <i class="icon iconfont">&#xe64d;</i>
+                        <h5>点击选择点</h5>
+                      </a>
+                      <a href="javascript:;" class="col-sm-4 ">
+                        <i class="icon iconfont">&#xe64f;</i>
+                        <h5>点击选择线</h5>
+                      </a>
+                      <a href="javascript:;" class="col-sm-4 ">
+                        <i class="icon iconfont">&#xe638;</i>
+                        <h5>点击选择多边形</h5>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="name">操作提示</label>
+                    <p class="help-block">1.鼠标单击选择一种查询方式</p>
+                    <p class="help-block">2.在地图上点击选择需要查询区域</p>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="panelBox" id="fore-2d3d-side-cx-ljcx">
+              <div class="panelBox-heading" >
+                <h3 class="panelBox-title">逻辑查询</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div  class="panelBox-body">
+                <form class="form-horizontal search-form" role="form">
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">查询图层：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">                    
+                    <label for="name" class="col-sm-4">查询字段：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="name" class="col-sm-4">操作符：</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control input-sm" >
+                    </div>
+                  </div>                  
+                  <div class="form-group">
+                    <label for="name" class="col-sm-4">查询值</label>
+                    <div class="col-sm-8">
+                      <input type="text" class="form-control input-sm" >
+                    </div>
+                  </div>
+                  <div class="searchBtn btn_list">
+                    <button type="button" class="btn btn_add active">添 加</button>
+                    <button type="button" class="btn">并 且</button>
+                    <button type="button" class="btn">或 者</button>
+                  </div>
+                  <div class="form-group mg0">                    
+                    <label for="name">组合逻辑：</label>
+                    <select  multiple class="form-control">
+                      <option>1</option>
+                      <option>2</option>
+                    </select>
+                  </div>
+                  <div class="searchBtn">
+                    <button type="submit" class="btn btn-success">查询</button>
+                    <button type="reset" class="btn btn-warning">重置</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="fore-2d3d-menu-dw" >
+          <!-- 当前位置 -->
+          <ol class="breadcrumb">
+            <li><i class="icon iconfont home">&#xe640;</i></li>
+            <li><a href="#">首页</a></li>
+            <li><a href="#">-地图定位</a></li>
+          </ol>
+          <!-- 二级菜单 -->
+          <div class="panelBox">
+            <div class="panelBox-heading"><i class="icon iconfont icon_map">&#xe600;</i><h3 class="panelBox-title">定位方式</h3><span class="arrow iconfont"></span></div>
+            <div  class="panelBox-body">
+              <div class="row menu">
+                <a href="#fore-2d3d-menu-dw-dmdw" class="col-sm-4 active" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe63e;</i>
+                  <h2>地名定位</h2>
+                </a>
+                <a href="#fore-2d3d-menu-dw-zbdw" class="col-sm-4" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe637;</i>
+                  <h2>坐标定位</h2>
+                </a>
+                <a href="#fore-2d3d-menu-dw-sqdw" class="col-sm-4" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe63c;</i>
+                  <h2>书签定位</h2>
+                </a>
+              </div>
+            </div>
+          </div>
+          <!-- 当前操作 -->
+          <div class="subTabs">
+            <div class="panelBox active" id="fore-2d3d-menu-dw-dmdw">
+              <div class="panelBox-heading">
+                <h3 class="panelBox-title">地名定位</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div id="collapse-dtdw-dmdw" class="panelBox-body">
+                <form class="form-horizontal search-form" role="form">
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">地名：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="searchBtn">
+                    <button type="submit" class="btn btn-success">查询</button>
+                    <button type="reset" class="btn btn-warning">重置</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="panelBox" id="fore-2d3d-menu-dw-zbdw" >
+              <div class="panelBox-heading" >
+                <h3 class="panelBox-title">坐标定位</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div id="collapse-dtdw-zbdw" class="panelBox-body">
+                <ul id="myTab" class="nav nav-tabs">
+                  <li class="active"><a href="#Latitude"  data-toggle="tab">经纬度</a></li>
+                  <li><a href="#Longitude"  data-toggle="tab">平面坐标</a></li>
+                </ul>
+                <form class="form-inline search-form" role="form">
+                <div id="myTabContent" class="tab-content">
+                
+                  <div class="tab-pane  active" id="Latitude">
+                    <div class="form-group">
+                      <label for="name">经度：</label>
+                      <div class="col-ms-12">
+                        <input type="text" class="form-control input-sm text-min" placeholder=""><span>度</span>
+                        <input type="text" class="form-control input-sm text-min" placeholder=""><span>分</span>
+                        <input type="text" class="form-control input-sm text-min" placeholder=""><span>秒</span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="name">纬度：</label>
+                      <div class="col-ms-12">
+                        <input type="text" class="form-control input-sm text-min" placeholder=""><span>度</span>
+                        <input type="text" class="form-control input-sm text-min" placeholder=""><span>分</span>
+                        <input type="text" class="form-control input-sm text-min" placeholder=""><span>秒</span>
+                      </div>
+                    </div>
+                    <div class="searchBtn">
+                      <button type="submit" class="btn btn-success">定 位</button>
+                      <button type="reset" class="btn btn-warning">重 置</button>
+                    </div>  
+                  </div>
+                  <div class="tab-pane " id="Longitude">
+                    <div class="form-group">
+                      <label for="name" class="col-sm-4">X轴坐标：</label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control input-sm" >
+                      </div>
+                    </div>                  
+                    <div class="form-group">
+                      <label for="name" class="col-sm-4">Y轴坐标：</label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control input-sm">
+                      </div>
+                    </div>
+                    <div class="searchBtn">
+                      <button type="submit" class="btn btn-success">定 位</button>
+                      <button type="reset" class="btn btn-warning">重 置</button>
+                    </div>
+                  </div>
+                
+                </div>  
+                </form>
+              </div>
+            </div>
+            <div class="panelBox" id="fore-2d3d-menu-dw-sqdw">
+              <div class="panelBox-heading">
+                <h3 class="panelBox-title">书签定位</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div id="collapse-dtdw-sqdw" class="panelBox-body">
+                <form class="form-inline search-form" role="form">
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">书签名称：</label>
+                    <div class="col-sm-8">
+                      <div class="input-group search-btn">
+                        <input type="text" class="form-control">
+                        <span class="input-group-btn btn-group-sm">
+                          <button class="btn btn-default icon iconfont" type="submit" >&#xe644;</button>
+                        </span>
+                      </div>
+                    </div>
+                  </div>                   
+                    <div class="searchBtn btn_list" id="Sqdwtoolbar">
+                      <button type="button" class="btn btn_add active">新 增</button>
+                      <button type="button" class="btn btn_edit">编 辑</button>
+                      <button type="button" class="btn btn_del">删 除</button>
+                    </div>
+                    <table class="table  table-hover table-responsive search-form-table" id="tableSqdw"  
+                     data-toolbar="#Sqdwtoolbar"
+                     data-toggle="table"
+                     data-url="dist/js/map/data/tableFxmyData.json"
+                     data-click-to-select="true"
+                     data-row-style="rowStyle"
+                     data-query-params="queryParams"
+                     data-pagination="true"
+                     data-page-size="5"
+                     data-striped="true">
+                        <thead>
+                          <tr>
+                            <th data-field="state" data-radio="true"></th>
+                            <th data-field="id">序号</th>
+                            <th data-field="pathName">书签名称</th>
+                            <th data-field="pathDataSource">描述</th>
+                          </tr>
+                        </thead>
+                    </table>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="fore-2d3d-menu-bz" >
+          <!-- 当前位置 -->
+          <ol class="breadcrumb">
+            <li><i class="icon iconfont home">&#xe640;</i></li>
+            <li><a href="#">首页</a></li>
+            <li><a href="#">-地图标注</a></li>
+          </ol>
+          <!-- 二级菜单 -->
+          <div class="panelBox">
+            <div class="panelBox-heading"><i class="icon iconfont icon_map">&#xe601;</i><h3 class="panelBox-title">标绘类型</h3><span class="arrow iconfont"></span></div>
+            <div  class="panelBox-body">
+              <div class="row menu">
+                <a href="#fore-2d3d-menu-bz-dbh" class="col-sm-3 active" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe659;</i>
+                  <h2>点标绘</h2>
+                </a>
+                <a href="#fore-2d3d-menu-bz-xbh" class="col-sm-3" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe629;</i>
+                  <h2>线标绘</h2>
+                </a>
+                <a href="#fore-2d3d-menu-bz-mbh" class="col-sm-3" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe660;</i>
+                  <h2>面标绘</h2>
+                </a>
+                <a href="#fore-2d3d-menu-bz-tsbh" class="col-sm-3" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe618;</i>
+                  <h2>特殊标绘</h2>
+                </a>
+              </div>
+            </div>
+          </div>
+          <!-- 当前操作 -->
+          <div class="subTabs">
+            <div class="panelBox active" id="fore-2d3d-menu-bz-dbh">
+              <div class="panelBox-heading">
+                <h3 class="panelBox-title">点标绘</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div  class="panelBox-body">
+                <form class="form-horizontal search-form" role="form">
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">字体：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">字体尺寸：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">字体颜色：</label>
+                    <div class="col-sm-8">
+                      <div class="input-group-btn">
+                        <input type="text" class="form-control text-mid input-in color">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">图形颜色：</label>
+                    <div class="col-sm-8">
+                      <div class="input-group-btn">
+                        <input type="text" class="form-control text-mid input-in color">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">填充颜色：</label>
+                    <div class="col-sm-8">
+                      <div class="input-group-btn">
+                        <input type="text" class="form-control text-mid input-in color">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">透明度：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">线宽：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>                                   
+                  <div class="searchBtn">
+                    <button type="submit" class="btn btn-success">应用</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="panelBox" id="fore-2d3d-menu-bz-xbh">
+              <div class="panelBox-heading">
+                <h3 class="panelBox-title">线标绘</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div  class="panelBox-body">
+                <form class="form-horizontal search-form" role="form">
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">字体：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">字体尺寸：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">字体颜色：</label>
+                    <div class="col-sm-8">
+                      <div class="input-group-btn">
+                        <input type="text" class="form-control text-mid input-in color">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">图形颜色：</label>
+                    <div class="col-sm-8">
+                      <div class="input-group-btn">
+                        <input type="text" class="form-control text-mid input-in color">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">填充颜色：</label>
+                    <div class="col-sm-8">
+                      <div class="input-group-btn">
+                        <input type="text" class="form-control text-mid input-in color">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">透明度：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">线宽：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>                                   
+                  <div class="searchBtn">
+                    <button type="submit" class="btn btn-success">应用</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+            <div class="panelBox" id="fore-2d3d-menu-bz-mbh">
+              <div class="panelBox-heading">
+                <h3 class="panelBox-title">面标绘</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div  class="panelBox-body">
+                <form class="form-horizontal search-form" role="form">
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">字体：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">字体尺寸：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">字体颜色：</label>
+                    <div class="col-sm-8">
+                      <div class="input-group-btn">
+                        <input type="text" class="form-control text-mid input-in color">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">图形颜色：</label>
+                    <div class="col-sm-8">
+                      <div class="input-group-btn">
+                        <input type="text" class="form-control text-mid input-in color">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">填充颜色：</label>
+                    <div class="col-sm-8">
+                      <div class="input-group-btn">
+                        <input type="text" class="form-control text-mid input-in color">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">透明度：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-4">线宽：</label>
+                    <div class="col-sm-8">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>                                   
+                  <div class="searchBtn">
+                    <button type="submit" class="btn btn-success">应用</button>
+                  </div>
+                </form>
+              </div>
+            </div>                         
+            <div class="panelBox" id="fore-2d3d-menu-bz-tsbh">
+              <div class="panelBox-heading">
+                <h3 class="panelBox-title">特殊标绘</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div  class="panelBox-body">
+                <ul id="myTabPlot" class="nav nav-tabs">
+                  <li class="active"><a href="#planePlot" data-toggle="tab" >平面标绘</a></li>
+                  <li><a href="#3dPlot" data-toggle="tab" >三维标绘</a></li>
+                </ul>
+                <div id="myTabContentPlot" class="tab-content">                
+                  <div class="tab-pane side-plot active" id="planePlot">
+                     <a href="javascript:;" class="active"><span class="icon iconfont">&#xe639;</span></a>
+                     <a href="javascript:;" ><span class="icon iconfont">&#xe63a;</span></a>
+                     <a href="javascript:;" ><span class="icon iconfont">&#xe652;</span></a>
+                     <a href="javascript:;" ><span class="icon iconfont">&#xe653;</span></a>
+                     <a href="javascript:;" ><span class="icon iconfont">&#xe654;</span></a>
+                     <a href="javascript:;" ><span class="icon iconfont">&#xe655;</span></a>       
+                  </div>
+                  <div class="tab-pane side-plot" id="3dPlot">
+                     <a href="javascript:;" class="active"><span class="icon iconfont">&#xe661;</span></a>
+                     <a href="javascript:;" ><span class="icon iconfont">&#xe65c;</span></a>
+                     <a href="javascript:;" ><span class="icon iconfont">&#xe657;</span></a>
+                     <a href="javascript:;" ><span class="icon iconfont">&#xe65e;</span></a>
+                     <a href="javascript:;" ><span class="icon iconfont">&#xe662;</span></a>
+                     <a href="javascript:;" ><span class="icon iconfont">&#xe665;</span></a>
+                  </div>               
+                </div>                
+              </div>
+              
+            </div>
+          </div>
+        </div>
+        <div id="fore-2d3d-menu-zt" >
+          <!-- 当前位置 -->
+          <ol class="breadcrumb">
+            <li><i class="icon iconfont home">&#xe640;</i></li>
+            <li><a href="#">首页</a></li>
+            <li><a href="#">-专题地图</a></li>
+          </ol>
+          <!-- 二级菜单 -->
+          <div class="panelBox">
+            <div class="panelBox-heading" ><i class="icon iconfont icon_map">&#xe60a;</i><h3 class="panelBox-title">专题地图</h3><span class="arrow iconfont"></span></div>
+            <div class="panelBox-body">
+              <div class="row menu">
+                <a href="#fore-2d3d-menu-zt-zttzs" class="col-sm-12 active" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe6c8;</i>
+                  <h2>专题地图</h2>
+                </a>
+              </div>
+            </div>
+          </div>
+          <!-- 当前操作 -->
+          <div class="subTabs">
+            <div class="panelBox active" id="fore-2d3d-menu-zt-zttzs">
+              <div class="panelBox-heading">
+                <h3 class="panelBox-title">专题图展示</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div  class="panelBox-body">
+                <!---ztree start-->
+                <ul id="treeMapzt" class="ztree">
+
+                </ul>
+
+                 <!---ztree end-->
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div id="fore-2d3d-menu-bj" >
+          <!-- 当前位置 -->
+          <ol class="breadcrumb">
+            <li><i class="icon iconfont home">&#xe640;</i></li>
+            <li><a href="#">首页</a></li>
+            <li><a href="#">-地图编辑</a></li>
+          </ol>
+
+          <!-- 当前操作 -->
+          <div class="subTabs">
+            <div class="panelBox active" id="fore-2d3d-menu-bj-dtbj">
+              <div class="panelBox-heading"><i class="icon iconfont icon_map">&#xe622;</i>
+                <h3 class="panelBox-title">地图编辑</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div  class="panelBox-body">
+              <form class="form-horizontal search-form" role="form">
+                <div class="form-group form-group-sm">
+                  <label for="name" class="col-sm-4">选择图层：</label>
+                  <div class="col-sm-8">
+                    <select class="form-control input-sm">
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                    </select>
+                  </div>
+                </div>                                   
+                <div class="searchBtn btn_list">
+                  <button type="submit" class="btn btn-sm active">开始编辑</button>
+                  <button type="submit" class="btn btn-sm">保存编辑</button>
+                  <button type="submit" class="btn btn-sm">取消编辑</button>
+                </div>
+                <ul id="myTab" class="nav nav-tabs">
+                  <li class="active"><a href="#pointSymbol"  data-toggle="tab">点符号</a></li>
+                  <li><a href="#lineSymbol"  data-toggle="tab">线符号</a></li>
+                  <li><a href="#planeSymbol"  data-toggle="tab">面符号</a></li>
+                </ul>
+                <div id="myTabContent" class="tab-content">                
+                  <div class="tab-pane  active" id="pointSymbol">
+                    <ul class="bs-glyphicons-list clearfix">
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点1</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="tab-pane " id="lineSymbol">
+                    <ul class="bs-glyphicons-list clearfix">
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点2</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                    </ul> 
+                  </div>
+                  <div class="tab-pane " id="planeSymbol">
+                    <ul class="bs-glyphicons-list clearfix">
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点3</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                      <li>
+                        <span class="glyphicon glyphicon-asterisk"></span>
+                        <span class="glyphicon-class">锚点</span>
+                      </li>
+                    </ul> 
+                  </div>
+
+                    <div class="form-group form-group-sm">
+                      <label for="name" class="col-sm-4">颜色：</label>
+                      <div class="col-sm-8">
+                        <select class="form-control input-sm">
+                          <option>1</option>
+                          <option>2</option>
+                          <option>3</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="name" class="col-sm-4">大小：</label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control input-sm" >
+                      </div>
+                    </div>                  
+                    <div class="form-group">
+                      <label for="name" class="col-sm-4">角度：</label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control input-sm">
+                      </div>
+                    </div>
+                    <div class="searchBtn">
+                      <button type="submit" class="btn btn-success">新增</button>
+                      <button type="reset" class="btn btn-warning">删除</button>
+                    </div> 
+
+                </div> 
+              </form>
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+        <div id="fore-2d3d-menu-tc" >
+          <!-- 当前位置 -->
+          <ol class="breadcrumb">
+            <li><i class="icon iconfont home">&#xe640;</i></li>
+            <li><a href="#">首页</a></li>
+            <li><a href="#">-图层管理</a></li>
+          </ol>
+          <!-- 当前操作 -->
+          <div class="subTabs">
+            <div class="panelBox active" id="fore-2d3d-menu-tc-tcgl">
+              <div class="panelBox-heading"><i class="icon iconfont icon_map">&#xe6e0;</i>
+                <h3 class="panelBox-title">图层管理</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div  class="panelBox-body">
+                <!---ztree start-->
+                <ul id="treeMaptcgl" class="ztree">
+
+                </ul>
+
+                 <!---ztree end-->
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div id="fore-2d3d-menu-fx" >
+          <!-- 当前位置 -->
+          <ol class="breadcrumb">
+            <li><i class="icon iconfont home">&#xe640;</i></li>
+            <li><a href="#">首页</a></li>
+            <li><a href="#">-空间分析</a></li>
+          </ol>
+          <!-- 二级菜单 -->
+          <div class="panelBox">
+            <div class="panelBox-heading" ><i class="icon iconfont icon_map">&#xe8b4;</i><h3 class="panelBox-title">空间分析</h3><span class="arrow iconfont"></span></div>
+            <div  class="panelBox-body">
+              <div class="row menu">
+                <a href="#fore-2d3d-menu-fx-djfx" class="col-sm-4 active" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe668;</i>
+                  <h2>叠加分析</h2>
+                </a>
+                <a href="#fore-2d3d-menu-fx-hcqfx" class="col-sm-4" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe66c;</i>
+                  <h2>缓冲区分析</h2>
+                </a>
+                <a href="#fore-2d3d-menu-fx-3dfx" class="col-sm-4" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe664;</i>
+                  <h2>三维分析</h2>
+                </a>
+              </div>
+            </div>
+          </div>          
+          <!-- 当前操作 -->
+          <div class="subTabs">
+            <div class="panelBox active" id="fore-2d3d-menu-fx-djfx">
+              <div class="panelBox-heading">
+                <h3 class="panelBox-title">叠加分析</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div  class="panelBox-body">
+                <ul id="myTabPaintOption" class="nav nav-tabs">
+                  <li class="active"><a href="#PaintOption" data-toggle="tab" aria-expanded="true">请选择绘制方式</a></li>
+                </ul>
+                <div id="myTabContentPlot" class="tab-content">                
+                  <div class="tab-pane side-plot active" id="PaintOption">
+                     <a href="javascript:;" class="active"><span class="icon iconfont">&#xe64d;</span></a>
+                     <a href="javascript:;"><span class="icon iconfont">&#xe64f;</span></a>
+                     <a href="javascript:;"><span class="icon iconfont">&#xe632;</span></a>      
+                  </div>               
+                </div>
+                <form class="form-inline search-form" role="form">
+                <div class="form-group form-group-sm">
+                    <label for="name">导入GPS</label>
+                    <div class="filebox"><input type="file" name="file_0_ture" size="20" onchange="document.getElementById('file_0').value=this.value" class="filetext opacity "><input name="file_0" id="file_0" value="" class="form-control"> <button type="button"  class="btn">导 入</button></div>
+                </div>
+                </form>              
+              </div>
+            </div>
+            <div class="panelBox" id="fore-2d3d-menu-fx-hcqfx">
+              <div class="panelBox-heading">
+                <h3 class="panelBox-title">缓冲区分析</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div  class="panelBox-body">
+                <ul id="myTabPaintOption" class="nav nav-tabs">
+                  <li class="active"><a href="#PaintOption" data-toggle="tab" aria-expanded="true">请选择绘制方式</a></li>
+                </ul>
+                <div id="myTabContentPlot" class="tab-content">                
+                  <div class="tab-pane side-plot active" id="PaintOption">
+                     <a href="javascript:;" class="active"><span class="icon iconfont">&#xe64d;</span></a>
+                     <a href="javascript:;"><span class="icon iconfont">&#xe64f;</span></a>
+                     <a href="javascript:;"><span class="icon iconfont">&#xe632;</span></a>      
+                  </div>               
+                </div>
+                <form class="form-horizontal search-form" role="form">
+                <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-5">导入GPS</label>
+                    <div class="filebox col-sm-7"><input type="file" name="file_1_ture" size="20" onchange="document.getElementById('file_1').value=this.value" class="filetext opacity "><input name="file_1" id="file_1" value="" class="form-control"> <button type="button"  class="btn file_btn">导 入</button></div>
+                </div>
+                <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-5">分析图层：</label>
+                    <div class="col-sm-7">
+                      <select class="form-control input-sm">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label for="name" class="col-sm-5">缓冲距离(米)：</label>
+                    <div class="col-sm-7">
+                      <input type="text" class="form-control input-sm" >
+                    </div>
+                  </div>
+                  <div class="form-group form-group-sm">
+                    <label for="name" class="col-sm-5">统计类似：</label>
+                    <div class="col-sm-7">
+                      <select class="form-control input-sm">
+                        <option>村</option>
+                        <option>2</option>
+                        <option>3</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="searchBtn">
+                    <button type="submit" class="btn btn-success">分析</button>
+                  </div>
+                </form>              
+              </div>
+            </div>
+            <div class="panelBox" id="fore-2d3d-menu-fx-3dfx">
+              <div class="panelBox-heading">
+                <h3 class="panelBox-title">三维分析</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div  class="panelBox-body">
+                <div class="row side-menu">
+                  <a href="#" class="col-sm-6 active">
+                    <i class="icon iconfont side-menu-icon">&#xe64b;</i>
+                    <h2>光照分析</h2>
+                  </a>
+                  <a href="#" class="col-sm-6" >
+                    <i class="icon iconfont side-menu-icon">&#xe60b;</i>
+                    <h2>水淹分析</h2>
+                  </a>
+                  <a href="#" class="col-sm-6" >
+                    <i class="icon iconfont side-menu-icon">&#xe65d;</i>
+                    <h2>视线分析</h2>
+                  </a>
+                  <a href="#" class="col-sm-6" >
+                    <i class="icon iconfont side-menu-icon">&#xe658;</i>
+                    <h2>视域分析</h2>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="fore-2d3d-menu-my" >
+          <!-- 当前位置 -->
+          <ol class="breadcrumb">
+            <li><i class="icon iconfont home">&#xe640;</i></li>
+            <li><a href="#">首页</a></li>
+            <li><a href="#">-三维漫游</a></li>
+          </ol>
+          <!-- 二级菜单 -->
+          <div class="panelBox">
+            <div class="panelBox-heading" ><i class="icon iconfont icon_map">&#xe7f6;</i><h3 class="panelBox-title">三维漫游</h3><span class="arrow iconfont"></span></div>
+            <div  class="panelBox-body">
+              <div class="row menu">
+                <a href="#fore-2d3d-menu-my-fxmy" class="col-sm-6 active" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe630;</i>
+                  <h2>飞行漫游</h2>
+                </a>
+                <a href="#fore-2d3d-menu-my-ljgl" class="col-sm-6" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe647;</i>
+                  <h2>路径管理</h2>
+                </a>
+              </div>
+            </div>
+          </div>          
+          <!-- 当前操作 -->
+          <div class="subTabs">
+            <div class="panelBox active" id="fore-2d3d-menu-my-fxmy">
+              <div class="panelBox-heading">
+                <h3 class="panelBox-title">飞行漫游</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div  class="panelBox-body">
+                <form class="form-inline search-form" role="form">
+                  <div class="input-group search-btn wd200">
+                    <input type="text" class="form-control input-sm" placeholder="飞行漫游信息">
+                    <span class="input-group-btn btn-group-sm">
+                      <button class="btn btn-default icon iconfont" type="submit">&#xe644;</button>
+                    </span>
+                  </div>
+                    <div class="form-group form-group-sm btn_list" id="pathtoolbar">
+                      <button type="button" class="btn btn-default btn-sm active">
+                        <span class="glyphicon glyphicon-play"></span> 飞行
+                      </button>
+                       <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-pause"></span> 暂停
+                      </button>
+                       <button type="button" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-stop"></span> 停止
+                      </button>                                      
+                    </div>
+
+                    <table class="table  table-hover table-responsive search-form-table" id="tableFxmy"  
+                     data-toolbar="#pathtoolbar"
+                     data-toggle="table"
+                     data-url="dist/js/map/data/tableFxmyData.json"
+                     data-click-to-select="true"
+                     data-row-style="rowStyle"
+                     data-query-params="queryParams"
+                     data-pagination="true"
+                     data-page-size="5"
+                     data-striped="true">
+                        <thead>
+                          <tr>
+                            <th data-field="state" data-radio="true"></th>
+                            <th data-field="id">编号</th>
+                            <th data-field="pathName">路径名称</th>
+                            <th data-field="pathDataSource">路径数据源</th>
+                          </tr>
+                        </thead>
+                    </table>               
+                </form>              
+              </div>
+            </div>
+            <div class="panelBox" id="fore-2d3d-menu-my-ljgl">
+              <div class="panelBox-heading">
+                <h3 class="panelBox-title">路径管理</h3><span class="arrow arrowUp"></span>
+              </div>
+              <div  class="panelBox-body">
+                <form class="form-inline search-form" role="form">
+                  <div class="input-group search-btn wd200">
+                    <input type="text" class="form-control input-sm " placeholder="飞行漫游信息">
+                    <span class="input-group-btn btn-group-sm">
+                      <button class="btn btn-default icon iconfont" type="submit">&#xe644;</button>
+                    </span>
+                  </div>
+                    <div class="form-group form-group-sm btn_list" id="pathtoolbar2">
+                      <button type="button" class="btn btn-default btn-sm btn_add active">
+                        <span class="glyphicon glyphicon-plus"></span> 新增
+                      </button>
+                       <button type="button" class="btn btn-default btn-sm btn_edit">
+                        <span class="glyphicon glyphicon-pencil"></span> 修改
+                      </button>
+                       <button type="button" class="btn btn-default btn-sm btn_del">
+                        <span class="glyphicon glyphicon-minus"></span> 删除
+                      </button>                                      
+                    </div>
+                  
+                    <table class="table  table-hover table-responsive search-form-table" id="tableLjgl"  
+                     data-toolbar="#pathtoolbar2"
+                     data-toggle="table"
+                     data-url="dist/js/map/data/tableFxmyData.json"
+                     data-click-to-select="true"
+                     data-row-style="rowStyle"
+                     data-query-params="queryParams"
+                     data-pagination="true"
+                     data-page-size="5"
+                     data-striped="true">
+                        <thead>
+                          <tr>
+                            <th data-field="state" data-radio="true"></th>
+                            <th data-field="id">编号</th>
+                            <th data-field="pathName">路径名称</th>
+                            <th data-field="pathDataSource">路径数据源</th>
+                          </tr>
+                        </thead>
+                    </table>              
+                </form>               
+              </div>
+
+            </div>
+          </div>
+        </div>                                                                    
+      </div>
+      <!-- fore-core-side  end-->
+    </div>
+    <!-- left end -->
+    <!--left hidden-->
+    <div class="left_h">
+      <div class="l_icon"></div>
+    </div>
+    <!-- content start -->
+    <div class="content" id="mapContent">
+      <!-- 地图工具条 start-->
+      <div class="toolbar" id="measureDiv">
+      	  <a href="javascript:;" id="printDiv" onclick="print()"><i class="icon iconfont">&#xe63f;</i><h3>打印</h3></a>
+          <a href="javascript:;" id="fullScreenBtn"><i class="icon iconfont">&#xe643;</i><h3>全屏</h3></a>
+          <a href="javascript:;" onclick="clearMap()"><i class="icon iconfont">&#xe646;</i><h3>清除</h3></a>
+          <a href="javascript:;" onclick="pan();"><i class="icon iconfont">&#xe76d;</i><h3>平移</h3></a>
+          <a href="javascript:;" onclick="zoomIn();"><i class="icon iconfont">&#xe624;</i><h3>放大</h3></a>
+          <a href="javascript:;" onclick="zoomOut();"><i class="icon iconfont">&#xe625;</i><h3>缩小</h3></a>
+          <a href="javascript:;" onclick="preView();"><i class="icon iconfont">&#xe62d;</i><h3>前一视图</h3></a>
+          <a href="javascript:;" onclick="nextView();"><i class="icon iconfont">&#xe62c;</i><h3>后一视图</h3></a>
+          <a href="javascript:;" onclick="measureDistance()" class="measure-distance"><i class="icon iconfont">&#xe641;</i><h3>距离</h3></a>
+          <a href="javascript:;" onclick="measureArea()" class="measure-area"><i class="icon iconfont">&#xe642;</i><h3>面积</h3></a>
+      </div>
+      <!-- 地图图例 start-->
+      <div id="js_legend" class="legendWrap">
+        <div class="legendBox">
+          <div class="legend_hd"><h2>图例</h2></div>
+          	<div id="legendDiv" class="legendBody"></div>
+<!--           <ul class="legend_list"> -->
+<!--             <li><i class="legend_icon i_glj"></i><a href="#">管理局</a></li> -->
+<!--             <li><i class="legend_icon i_glz"></i><a href="#">管护站</a></li> -->
+<!--             <li><i class="legend_icon i_exsyd"></i><a href="#">鳄蜥饲养点</a></li> -->
+<!--             <li><i class="legend_icon i_bjjzd"></i><a href="#">界碑界桩点</a></li> -->
+<!--             <li><i class="legend_icon i_qxz"></i><a href="#">气象站</a></li> -->
+<!--             <li><i class="legend_icon i_hwxj"></i><a href="#">红外相机</a></li> -->
+<!--             <li><i class="legend_icon i_jd"></i><a href="#">景点</a></li> -->
+<!--             <li><i class="legend_icon i_db"></i><a href="#">大坝</a></li> -->
+<!--             <li><i class="legend_icon i_sf"></i><a href="#">山峰</a></li> -->
+<!--             <li><i class="legend_icon i_cun"></i><a href="#">村</a></li> -->
+<!--             <li><i class="legend_icon i_sdz"></i><a href="#">水电站</a></li> -->
+<!--             <li><i class="legend_icon i_zwdcyd"></i><a href="#">植物调查样点</a></li> -->
+<!--           </ul> -->
+        </div>
+        <button type="button" class="btn btn-default legendIcon"  data-placement="top" data-toggle="tooltip" title="图例"></button>
+      <!-- 地图图例 end-->
+      <!-- 地图鹰眼 start-->
+      <div class="esriOverviewMap" id="overviewDiv"></div>
+<!--       <div  id="overviewDiv"></div> -->
+      <!-- 地图鹰眼 end-->
+      </div>
+      <!-- 地图比例尺 start-->
+      <div class="scalebar_bottom-left esriScalebar" id="scaleBar">        
+      </div>
+      <!-- 地图比例尺 end-->  
+      <!-- 地图控制按钮 start-->
+      <div class="map-operate">
+        <div class="BMap_stdMpPan">
+          <div class="BMap_button BMap_panN" title="向上平移" onclick="panUp();"></div>
+          <div class="BMap_button BMap_panW" title="向左平移" onclick="panLeft();"></div>
+          <div class="BMap_button BMap_panE" title="向右平移" onclick="panRight();"></div>
+          <div class="BMap_button BMap_panS" title="向下平移" onclick="panDown();"></div>
+          <div class="BMap_button BMap_panM" title="居中显示" onclick="panCenter();"></div>
+        </div>
+        <div class="BMap_stdMpZoom" >
+            <div class="BMap_button BMap_stdMpPos" title="定位当前位置" onclick="locateCurPos();" ><input type="hidden" id="curPos"> </div>
+            <div class="BMap_button BMap_stdMpZoomIn" title="放大一级" onclick="zoomInAuto();"></div>
+            <div class="BMap_button BMap_stdMpZoomOut" title="缩小一级" onclick="zoomOutAuto();"></div>
+          <div class="BMap_stdMpSlider"> 
+            <div class="BMap_stdMpSliderBgTop"></div>         
+            <div class="BMap_stdMpSliderBgBot" ></div>           
+            <div class="BMap_stdMpSliderBar" title="拖动缩放" style="cursor: url(&quot;http://webmap0.map.bdimg.com/image/api/openhand.cur&quot;) 0 0, default; "></div>
+          </div>
+
+        </div>
+      </div>
+      <!-- 地图控制按钮 end-->    
+      <!-- 地图切换按钮 start-->
+      <div class="tab-mapBtn">
+          <div class="mapBtn" id="myTab">
+           <div class="btn-group mapView">
+              <button type="button" class="btn btn-default mapView-btn active" onclick="to2dMap();">地图</button>
+              <button type="button" class="btn btn-default " onclick="to2dImgMap();">卫星</button>
+              <button type="button" class="btn btn-default mapView-btn" id="mapView-btn-3dmy" onclick="to3dMap()">三维</button>
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                <span class="caret"></span>
+                <span class="sr-only">切换下拉菜单</span>
+              </button>
+              <ul class="dropdown-menu mapBtn-sel" role="menu">
+                <li><a href="#"><label> <input type="checkbox" name="2d3dcheckbox" id="2d3dcheckbox">二三维联动</label></a></li>
+              </ul>
+            </div>
+          <div class="btn-group">
+            <button type="button" class="btn btn-default  maplayer-btn dropdown-toggle" ata-toggle="dropdown">图层<span class="caret"></span></button>
+            <ul class="dropdown-menu maplayer" role="menu" >
+              <li><a href="#">森林资源分布图</a></li>
+              <li><a href="#">基础数据</a></li>
+              <li><a href="#">功能分析</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- 地图切换按钮 end-->
+
+      <!-- tab-content start-->
+      <div class="tab-mapCon tab-content" id="resizable">
+        <div class="tab-mapCon-pane mapCon-resizable resizable-left active" id="map2d" style="width:100%;"></div>
+        <div class="handler" ></div>
+        <div class="tab-mapCon-pane mapCon-resizable resizable-right" id="map3d"   style="width:100%;">
+        	<!--定义一个TerraExplorer 3D窗口对象-->
+			<object ID="YcMap3DWindow" classid="CLSID:3a4f9192-65a8-11d5-85c1-0001023952c1" style="width:100%;height:100%"></object>
+			<!--定义TerraExplorer对象-->
+			<object ID="YcMap3D" classid="CLSID:3A4F9199-65A8-11D5-85C1-0001023952C1" style="display: none;"></object>
+        </div>        
+      </div>
+      <!-- tab-content end-->
+    </div>
+    <!-- content end -->
+  </div>
+  </div>
+  <!-- main end -->
+</div>
+<!-- wrapper end -->
+</body>
+</html>

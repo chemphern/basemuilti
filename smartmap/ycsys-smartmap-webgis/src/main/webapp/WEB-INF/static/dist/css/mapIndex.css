@@ -1,0 +1,125 @@
+﻿@media  (min-width:1301px){
+    .header .navbar-collapse{display:block !important;}
+}
+@media  (min-width:1024px) and (max-width:1300px) {
+    .header .navbar-collapse{margin-top:0px;float:right;}
+    .header .logo{width:69px;height:80px;overflow:hidden;}
+    .content .toolbar a{margin-right:8px !important;}
+    .header .navbar-collapse{display:block !important;;}
+}
+@media (min-width: 320px) and  (max-width:1023px){
+    .header .menu-toggler{display:block;}
+    .navbar-inner {position:relative;}
+    .main{top:68px;}
+    .wrapper .header{height:68px;margin-bottom: 0;}
+    .wrapper .header .logo img{width:auto;height:36px;}
+    .navbar-user li .user_box{line-height: 68px;}
+    .navbar-user li.user_exit a{margin-top:24px;}
+    .navbar-user li.user img{width:30px;height:30px;}
+    .header .navbar-collapse{width:140px;position:absolute;top:68px;right:0;display:none;overflow: hidden ;}
+    .header .bigmenu {width:100%;background-color:#26bf8c;padding-bottom:10px;}
+    .header .bigmenu li{width:100%;display:block;line-height: 35px;height:35px;}
+    .header .bigmenu>li>a{display:inline-block;width:100%;height:35px;padding:10px;}
+    .header .bigmenu .icon{left:0;float:left;margin-left:10px;font-size: 24px;margin-top:0px;margin-right:10px;}
+    .header .bigmenu h1{float:left;display:inline-block;}
+    .header .bigmenu>li a:hover{background: #57cc84;}
+    .header .bigmenu li.active{background:#57cc84;}
+    .content .toolbar a{margin-right:8px !important;min-width: 44px;}
+    .content .toolbar h3{display:none !important;}
+/*     .main .leftBox{display:none; left: -298px;}
+.main .left_h{left: 0px;}
+.main .left_h .l_icon{background-position:0px -59px;}
+.main .content{left: 0px !important;} */
+}
+
+.fore-core-side>div{display:none;}
+.fore-core-side div.current{display:block;}
+.leftBox .subTabs>div{display:none;}
+.subTabs div.active{display:block;}
+
+/**content 右内容页**/
+.content{height:100%;position:absolute;top:0px;left:298px; right:0px;bottom:0px;overflow:hidden;z-index: 2;}
+.content .toolbar{height:36px;background:rgba(244,251,244,.9);text-align: right;-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);box-shadow: 0 6px 12px rgba(0,0,0,.175);}
+.content .toolbar a{line-height:36px;display:inline-block;margin-right:15px;}
+.content .toolbar .icon{font-size: 16px;color:#26bf8c;}
+.content .toolbar h3{font-size: 14px;color:#666;display:inline-block;padding-left:10px;margin:0;}
+
+/**legendBox 图例**/
+.legendBox{width:200px;height:340px;border:1px solid rgba(175,175,175,.23);background:#fff;position:absolute;right:0px;bottom:10px;padding:10px 20px 30px;overflow:auto;-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);box-shadow: 0 6px 12px rgba(0,0,0,.175);z-index:4;}
+.legend_hd{border-bottom:1px solid #e5e5e5;padding-top:10px;height:22px;margin-bottom: 20px;}
+.legend_hd h2{font-size: 20px;color:#26bf8c;text-align: center;height:35px;background-color: #fff; width:65px;display:inline-block;margin:0 0 0 32%;}
+.legend_list li{line-height: 25px;position:relative;}
+.legend_list li a{font-size: 14px;color:#808080;display:inline-block;line-height: 25px;padding-left:50px;}
+.legend_icon{width:50px;height:30px;display:inline-block;background:url(../../dist/img/map/icon_legend.jpg) no-repeat 0 0;position:absolute;left:0px;top:0px;}
+.legend_list i.i_glj{background-position:0 0;}
+.legend_list i.i_glz{background-position:0 -26px;}
+.legend_list i.i_exsyd{background-position:0 -52px;}
+.legend_list i.i_bjjzd{background-position:0 -82px;}
+.legend_list i.i_qxz{background-position:0 -112px;}
+.legend_list i.i_hwxj{background-position:0 -136px;}
+.legend_list i.i_jd{background-position:0 -164px;}
+.legend_list i.i_db{background-position:0 -192px;}
+.legend_list i.i_sf{background-position:0 -220px;}
+.legend_list i.i_cun{background-position:0 -244px;}
+.legend_list i.i_sdz{background-position:0 -272px;}
+.legend_list i.i_zwdcyd{background-position:0 -300px;}
+.legendWrap .legendIcon{width:32px;height:32px;border:1px solid #efefef;border-radius:3px;background-image:url(../../dist/img/map/icon_arrow.png);background-position:0 0;background-color:#fff;position:absolute;bottom:10px;right:0;z-index:5;}
+.legendWrap button.unfold{background-position:0 -32px;}
+/**esriOverviewMap **/
+.esriOverviewMap{position:absolute;right:40px;bottom:10px;z-index:99;}
+.ovwTR{width:249px;height:100px;background:#000;}
+/**esriScalebar **/
+.scalebar_bottom-left{position:absolute;left:25px;bottom:20px;z-index: 30;}
+.esriScalebar{height:20px;width:108px;background-color:#fff;}
+
+/**map-operate **/
+.map-operate-wrap{position:absolute;z-index:99999;left:70px;top:35px;width:50px;height:268px;}
+.map-operate{position:absolute;top:0px;left:0px;z-index: 99999;width:50px;height:268px;}
+.map-operate div{position:absolute;}
+.BMap_stdMpPan{width:50px;height:50px;background:url(../../dist/img/map/earth-control-bg.png) 0 0 no-repeat;}
+.BMap_button{width:14px;height:14px;background:url(../../dist/img/map/earth-control-bg.png) 0 0 no-repeat;}
+.BMap_panN{left:18px;top:2px;background-position:0px -56px;}
+.BMap_panW{left:2px;top:18px;background-position:0px -68px;}
+.BMap_panE{left:34px;top:18px;background-position:0px -82px;}
+.BMap_panS{left:18px;top:34px;background-position:0px -97px;}
+.BMap_panM{left:17px;top:18px;background-position:0px -112px;}
+.BMap_stdMpPan .BMap_panN:hover{background-position:-15px -56px;}
+.BMap_stdMpPan .BMap_panW:hover{background-position:-15px -68px;}
+.BMap_stdMpPan .BMap_panE:hover{background-position:-15px -82px;}
+.BMap_stdMpPan .BMap_panS:hover{background-position:-15px -97px;}
+.BMap_stdMpPan .BMap_panM:hover{background-position:-15px -112px;}
+.BMap_stdMpZoom{width:27px;height:180px;top:58px;left:12px;}
+.BMap_stdMpZoom .BMap_button{width:18px;height:18px;left:4px;background:url(../../dist/img/map/earth-control-bg.png) 0 0 no-repeat;overflow:hidden;z-index: 10;cursor:pointer;}
+.BMap_stdMpZoom div.BMap_stdMpPos{background-position:-1px -134px;}
+.BMap_stdMpZoom div.BMap_stdMpZoomIn{background-position:-1px -156px;top:22px;}
+.BMap_stdMpZoom div.BMap_stdMpZoomOut{background-position:-1px -180px;top:190px;}
+.BMap_stdMpZoom div.BMap_stdMpZoomIn:hover{background-position:-31px -156px;}
+.BMap_stdMpZoom div.BMap_stdMpZoomOut:hover{background-position:-31px -180px;}
+.BMap_stdMpSlider{width:6px;height:150px;left:10px;top:40px;}
+.BMap_stdMpSliderBgTop{width:6px;top:0;height:150px;background:url(../../dist/img/map/earth-control-bg.png) -53px -156px no-repeat;overflow:hidden;}
+.BMap_stdMpSliderBar{width:18px;height:18px;left:-5px;background:url(../../dist/img/map/earth-control-bg.png) -32px -135px no-repeat;overflow:hidden;cursor:pointer;}
+.BMap_stdMpSliderBgBot{width:6px;background:url(../../dist/img/map/earth-control-bg.png) -53px 0px no-repeat;bottom:0;overflow:hidden;}
+/**content tab**/
+.tab-mapBtn{position:absolute;top:55px;right:30px;z-index: 99999;}
+.tab-mapBtn>.mapBtn>button.active, .dropdown-menu>li.active>a:focus, .nav-tabs>li.active>a:hover{background-color: #26bf8c; color:#fff;border:none;border-radius: 0;}
+.tab-mapBtn .mapBtn{-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);box-shadow: 0 6px 12px rgba(0,0,0,.175);}
+.tab-mapBtn .mapBtn .mapBtn-sel{left:104px;min-width:148px;}
+.tab-mapBtn .mapBtn .maplayer-btn{min-width:60px;border-radius: 4px;border-top-right-radius: 1px !important;
+    border-bottom-right-radius: 1px !important;}
+.tab-mapBtn .mapBtn .maplayer{min-width:120px;left:-80px;} 
+.tab-mapBtn .mapBtn .maplayer>li>a {line-height: 40px;padding-left:25px;}
+.tab-mapBtn .mapBtn .maplayer>li>a:hover{background:none;color:#26bf8c;}
+.tab-mapBtn .mapBtn button.active{background-color: #26bf8c;border:1px solid #26bf8c;color:#fff;}
+.tab-mapBtn .mapBtn .maplayer>li>a.select{background:url(../../dist/img/map/icon-action.png) 4px 13px no-repeat;}
+
+.tab-mapCon{max-width: 100%;height:100%;position:relative;z-index: 3;overflow:hidden;padding-bottom: 30px;margin-bottom: -30px;}
+.tab-mapCon-pane{width:100%;height:100%; float:left;overflow:hidden; }
+#mapOrdinary{background-color: #333;}
+#mapsatellite{background-color: #666;}
+#map2d{background-color: #a2c159;}
+#map3d{background-color: #a3a9c7;}
+.mapCon-resizable{max-width:100%;height:100%;display:none;float:left;}
+.mapCon-resizable div.active{visibility: visible;}
+.resizable-left{width:570px;}
+.resizable-right{width:570px;}
+.tab-mapCon div.handler{right:0px;background: #27bf8c;width: 5px;height: 100%;position: absolute;cursor: e-resize;float:left;z-index:2;}
