@@ -78,28 +78,28 @@ body {
 						<div class="box-header with-border">
 							<h4 class="box-title">服务列表</h4>
 							<div class="btn_box">
-								<button class="current">
+								<button class="current" id="serviceStart">
 									<i class="glyphicon glyphicon-play"></i> 启动
 								</button>
-								<button>
+								<button id="serviceStop">
 									<i class="glyphicon glyphicon-stop"></i> 停止
 								</button>
-								<button>
+								<button id="serviceDelete">
 									<i class="iconfont icon-trash"></i> 删除
 								</button>
-								<button>
+								<button id="refreshVersion">
 									<i class="glyphicon glyphicon-refresh"></i> 版本刷新
 								</button>
-								<button>
+								<button id="serviceRegister">
 									<i class="glyphicon glyphicon-plus-sign"></i> 注册
 								</button>
-								<button>
+								<button id="serviceImport">
 									<i class="glyphicon glyphicon-import"></i> 导入
 								</button>
-								<button>
+								<button id="serviceExport">
 									<i class="glyphicon glyphicon-export"></i> 导出
 								</button>
-								<button>
+								<button id="seriveQuery">
 									<i class="glyphicon glyphicon-search"></i> 查询
 								</button>
 							</div>
@@ -130,8 +130,6 @@ body {
 		type="text/javascript"></script>
 	<script src="${res}/plugins/ligerUI/js/plugins/ligerTree.js"
 		type="text/javascript"></script>
-	<script src="${res}/plugins/ligerUI/js/plugins/CustomersData.js"
-		type="text/javascript"></script>
 	<!-- Bootstrap 3.3.6 -->
 	<script src="${res}/bootstrap/js/bootstrap.min.js"></script>
 	<!-- AdminLTE App -->
@@ -144,65 +142,98 @@ body {
 		;(function($) { //避免全局依赖,避免第三方破坏
 			$(document).ready(function() {
 				//树节点
-				var menu;
-				var actionNodeID;
-				function itemclick(item, i) {
-					alert(actionNodeID + " | " + item.text);
-				}
 				$(function() {
-					menu = $.ligerMenu({
-						top : 100,
-						left : 100,
-						width : 120,
-						items : [ {
-							text : '增加',
-							click : aa,
-							icon : 'add'
-						}, {
-							text : '修改',
-							click : aa
-						}, {
-							line : true
-						}, {
-							text : '查看',
-							click : itemclick
-						} ]
-					});
-
 					treeManager = $("#tree1").ligerTree({
 						url: "${ctx}/service/listServiceType",  
 	                    nodeWidth : 90,
 	                    idFieldName :'id',
 	                    parentIDFieldName :'pid',
-	                    onSelect : onSelectServiceType,
-						onContextmenu : function(node, e) {
-							actionNodeID = node.data.text;
-							menu.show({
-								top : e.pageY,
-								left : e.pageX
-							});
-							return false;
-						}
+	                    onSelect : onSelectServiceType
 					});
 				});
-				function aa() {
-					var dialog = $.Layer.iframe({
-						title : '用户注册审批',
-						url : 'add_yhzc.html',
-						width : 400,
-						height : 400
-					});
-				}
+				
+				//选择了树结点事件
 				function onSelectServiceType(obj) {
 					var serverEngineId = "";
 					if(obj.data.text != '服务分类') {
-						//alert(obj.data.id);
 						serverEngineId = obj.data.id
 					}
 					gridManager.setParm("registerServerType",serverEngineId);
 		        	window.gridManager.reload();
 		        }
-
+				
+				//服务启动
+				$("#serviceStart").on("click",function(e) {
+					e.preventDefault();
+					var selectedRows = gridManager.getSelecteds();
+			    	if(selectedRows.length != 1) {
+			    		alert("请选择一条记录进行操作！");
+			    		return false;
+			    	}
+			    	else {
+			    		$.ajax({
+	                    	url: "${ctx}/service/start",
+	                        data:{'id':selectedRows[0].id},
+	                        type:"post",
+	                        dataType:"json",
+	                        success:function(res){
+	                        	gridManager.reload();
+	                            alert(res.msg);
+	                        },error:function(){
+	                            alert("启动失败！");
+	                        }
+	                    });
+			    	}
+				});
+				
+				//服务停止
+				$("#serviceStop").on("click",function(e) {
+					e.preventDefault();
+					var selectedRows = gridManager.getSelecteds();
+			    	if(selectedRows.length != 1) {
+			    		alert("请选择一条记录进行操作！");
+			    		return false;
+			    	}
+			    	else {
+			    		$.ajax({
+	                    	url: "${ctx}/service/stop",
+	                        data:{'id':selectedRows[0].id},
+	                        type:"post",
+	                        dataType:"json",
+	                        success:function(res){
+	                        	gridManager.reload();
+	                            alert(res.msg);
+	                        },error:function(){
+	                            alert("停止失败！");
+	                        }
+	                    });
+			    	}
+				});
+				
+				//服务停止
+				$("#serviceDelete").on("click",function(e) {
+					e.preventDefault();
+					var selectedRows = gridManager.getSelecteds();
+			    	if(selectedRows.length != 1) {
+			    		alert("请选择一条记录进行操作！");
+			    		return false;
+			    	}
+			    	else {
+			    		$.ajax({
+	                    	url: "${ctx}/service/delete",
+	                        data:{'id':selectedRows[0].id},
+	                        type:"post",
+	                        dataType:"json",
+	                        success:function(res){
+	                        	gridManager.reload();
+	                            alert(res.msg);
+	                        },error:function(){
+	                            alert("删除失败！");
+	                        }
+	                    });
+			    	}
+				});
+				
 				//表格列表
 				$(function() {
 					gridManager = $("#maingrid4").ligerGrid({
@@ -234,7 +265,7 @@ body {
 							name : 'serviceStatus',
 							minWidth : 100,
 							render: function (item) {
- 	                    	     var obj = parseInt(item.registerType);
+ 	                    	     var obj = parseInt(item.serviceStatus);
      	                    	  <c:forEach var="map" items="${serviceStatus }">
      	                    	  		if(obj == "${map.key }") {
      	                    	  			return "${map.value.name }";
@@ -246,7 +277,7 @@ body {
 							name : 'permissionStatus',
 							minWidth : 60,
 							render: function (item) {
-	                    	     var obj = parseInt(item.registerType);
+	                    	     var obj = parseInt(item.permissionStatus);
     	                    	  <c:forEach var="map" items="${permissionStatus }">
     	                    	  		if(obj == "${map.key }") {
     	                    	  			return "${map.value.name }";
@@ -272,7 +303,6 @@ body {
 	                        }
 						} ],
 						pageSize : 30,
-						//data : CustomersData,
 						url:"${ctx}/service/listService",
 						width : '100%',
 						height : '97%'

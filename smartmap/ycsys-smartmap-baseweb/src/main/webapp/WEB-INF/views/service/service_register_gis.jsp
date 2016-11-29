@@ -121,22 +121,18 @@ body {
 				<tr>
 					<td class="t_r">拓展功能类型：</td>
 					<td>
-						<input type="checkbox" name="serviceExtend" value="KmlServer" readonly="readonly"/><span>Kml</span>
-						<input type="checkbox" name="serviceExtend" value="FeatureServer" readonly="readonly"/><span>Feature</span> 
-						<input type="checkbox" name="serviceExtend" value="NAServer" readonly="readonly"/><span>NA</span>
-						<input type="checkbox" name="serviceExtend" value="WCSServer" readonly="readonly"/><span>WCS</span>
-						<input type="checkbox" name="serviceExtend" value="WFSServer" readonly="readonly"/><span>WFS</span>
-						<input type="checkbox" name="serviceExtend" value="WMSServer" readonly="readonly"/><span>WMS</span>
-						<input type="checkbox" name="serviceExtend" value="MobileServer" readonly="readonly"/><span>Mobile</span>
-						<input type="checkbox" name="serviceExtend" value="JPIPServer" readonly="readonly"/><span>JPIP</span>
+						<c:forEach var="map" items="${serviceExtendType }">
+                			<input type="checkbox" name="serviceExtend" value="${map.key }"/><span>${map.value.name }</span>
+                		</c:forEach>
 					<br /></td>
 				</tr>
 				<tr>
 					<td class="t_r">服务缓存：</td>
 					<td><select type="text" name="cacheType" id="cacheType"
 						class="text" >
-							<option value="0">Dynamic</option>
-							<option value="1">Tiled</option>
+							<c:forEach var="map" items="${serviceCacheType }">
+								<option value="${map.key }">${map.value.name }</option>	
+							</c:forEach>
 							
 					</select></td>
 				</tr>
@@ -144,8 +140,9 @@ body {
 					<td class="t_r">服务权限类型：</td>
 					<td><select type="text" name="permissionStatus" id="permissionStatus"
 						class="text">
-							<option value="0">自由服务</option>
-							<option value="1">安全服务</option>
+							<c:forEach var="map" items="${permissionStatus }">
+								<option value="${map.key }">${map.value.name }</option>	
+							</c:forEach>
 					</select></td>
 				</tr>
 				<tr>
@@ -179,7 +176,7 @@ body {
 					<td>AGIS SERVER服务</td>
 				</tr>
 				<tr>
-					<td class="t_r">服务注册名；</td>
+					<td class="t_r">服务注册名：</td>
 					<td id="g_registerName"></td>
 				</tr>
 				<tr>
@@ -203,7 +200,7 @@ body {
 					<td id="g_remarks"></td>
 				</tr>
 				<tr>
-					<td class="t_r">服元数据访问地址：</td>
+					<td class="t_r">元数据访问地址：</td>
 					<td id="g_metadataVisitAddress"></td>
 				</tr>
 				<tr>
@@ -351,7 +348,7 @@ body {
 						$("input[name='serviceExtend']:checked").each(function() {
     							tempArr += $(this).next().text() + ","
     					});
-						console.log("tempArr="+tempArr);
+						//console.log("tempArr="+tempArr);
 						$("#g_serviceExtend").html(tempArr.substring(0, tempArr.length - 1));
 						return true;
 						break;

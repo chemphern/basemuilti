@@ -49,8 +49,7 @@ body {
 </style>
 </head>
 <body>
-
-
+<form method="post" action="${ctx }/service/registerOther" id="form_id" enctype="multipart/form-data">
 	<body class="hold-transition skin-blue sidebar-mini">
 	<div id="wizard" class="swMain">
             <ul>
@@ -116,9 +115,9 @@ body {
               <tr>
                 <td class="t_r">远程服务类型：</td>
                 <td>
-                <select type="text" name="textfield3" id="textfield3"
+                <select type="text" name="remoteServicesType" id="remoteServicesType"
 						class="text">
-                  <c:forEach var="map" items="${remoteServicesType }">
+                	<c:forEach var="map" items="${remoteServicesType }">
 						<option value="${map.key }">${map.value.name }</option>	
 					</c:forEach>
                 </select>
@@ -126,22 +125,36 @@ body {
               </tr>
               <tr>
                 <td class="t_r">服务功能类型：</td>
-                <td><input type="text" name="textfield2"
-						id="textfield2" class="text validate[required]" /></td>
+                <td>
+	                <select type="text" name="functionType" id="functionType"
+							class="text">
+	                  <c:forEach var="map" items="${serviceFunctionType }">
+							<option value="${map.key }">${map.value.name }</option>
+						</c:forEach>
+	                </select>
+               </td>
+						
               </tr>
               <tr>
                 <td class="t_r">拓展功能类型：</td>
-                <td><input type="checkbox" name="category"
-						value="信息" />SampleWordcities <input type="checkbox"
-						name="category" value="信息" />WFS <input type="checkbox"
-						name="category" value="信息" />WPS <input type="checkbox"
-						name="category" value="信息" />Webmap <input type="checkbox"
-						name="category" value="信息" />DZDTGF<br /></td>
+                <td>
+                	<c:forEach var="map" items="${serviceExtendType }">
+                		<input type="checkbox" name="serviceExtend" value="${map.key }"/><span>${map.value.name }</span>
+                	</c:forEach>
+                	<!-- <input type="checkbox" name="serviceExtend" value="KmlServer" readonly="readonly"/><span>Kml</span>
+					<input type="checkbox" name="serviceExtend" value="FeatureServer" readonly="readonly"/><span>Feature</span> 
+					<input type="checkbox" name="serviceExtend" value="NAServer" readonly="readonly"/><span>NA</span>
+					<input type="checkbox" name="serviceExtend" value="WCSServer" readonly="readonly"/><span>WCS</span>
+					<input type="checkbox" name="serviceExtend" value="WFSServer" readonly="readonly"/><span>WFS</span>
+					<input type="checkbox" name="serviceExtend" value="WMSServer" readonly="readonly"/><span>WMS</span>
+					<input type="checkbox" name="serviceExtend" value="MobileServer" readonly="readonly"/><span>Mobile</span>
+					<input type="checkbox" name="serviceExtend" value="JPIPServer" readonly="readonly"/><span>JPIP</span> -->
+                <br /></td>
               </tr>
               <tr>
                 <td class="t_r">服务缓存：</td>
                 <td>
-                <select type="text" name="textfield3" id="textfield3"
+                <select type="text" name="cacheType" id="cacheType"
 						class="text">
                 	<c:forEach var="map" items="${serviceCacheType }">
 						<option value="${map.key }">${map.value.name }</option>	
@@ -152,9 +165,9 @@ body {
               <tr>
                 <td class="t_r">服务权限类型：</td>
                 <td>
-                <select type="text" name="textfield3" id="textfield3"
+                <select type="text" name="permissionStatus" id="permissionStatus"
 						class="text">
-                	<c:forEach var="map" items="${serviceCacheType }">
+                	<c:forEach var="map" items="${permissionStatus }">
 						<option value="${map.key }">${map.value.name }</option>	
 					</c:forEach>
                 </select>
@@ -162,22 +175,22 @@ body {
               </tr>
               <tr>
                 <td class="t_r">服务访问地址：</td>
-                <td><input type="text" name="textfield2"
-						id="textfield2" class="text validate[required]" /></td>
+                <td><input type="text" name="serviceVisitAddress"
+						id="serviceVisitAddress" class="text validate[required]" /></td>
               </tr>
               <tr>
                 <td class="t_r">服务浓缩图：</td>
-                <td><input type="file" id="exampleInputFile"></td>
+                <td><input type="file" id="imagePath" name="imageFile"></td>
               </tr> 
               <tr>
                 <td class="t_r">元数据访问地址：</td>
-                <td><input type="text" name="textfield2"
-						id="textfield2" class="text validate[required]" /></td>
+                <td><input type="text" name="metadataVisitAddress" id="metadataVisitAddress"
+						 class="text validate[required]" /></td>
               </tr>
               <tr>
                 <td class="t_r">服务分类：</td>
-                <td><input type="text" name="textfield2"
-						id="textfield2" class="text validate[required]" /></td>
+                <td><input type="text" name="registerType" value="第三方服务" disabled="disabled"
+						id="registerType" class="text validate[required]" /></td>
               </tr>
             </table>                                     
         </div>
@@ -188,44 +201,44 @@ body {
 				cellspacing="0" class="date_add_table">
               <tr>
                 <td class="t_r">注册服务类型：</td>
-                <td>AGIS SERVER服务</td>
+                <td>第三方服务注册</td>
               </tr>
               <tr>
-                <td class="t_r">服务注册名；</td>
-                <td>WEBMAP</td>
+                <td class="t_r">服务注册名：</td>
+                <td id="g_registerName"></td>
               </tr>
               <tr>
                 <td class="t_r">服务显示名：</td>
-                <td>WEBMAP</td>
+                <td id="g_showName"></td>
               </tr>
               <tr>
                 <td class="t_r">服务注册功能类型：</td>
-                <td>MAP SERVER</td>
+                <td id="g_functionType"></td>
               </tr>
               <tr>
                 <td class="t_r">服务注册地址：</td>
-                <td>HTTPS://173.15.552.56</td>
+                <td id="g_serviceVisitAddress"></td>
               </tr>
               <tr>
                 <td class="t_r">服务缓存类型：</td>
-                <td>dynake</td>
+                <td id="g_cacheType"></td>
               </tr>
               <tr>
                 <td class="t_r">服务描述：</td>
-                <td></td>
+                <td id="g_remarks"></td>
               </tr>
               <tr>
-                <td class="t_r">服元数据访问地址：</td>
-                <td></td>
+                <td class="t_r">元数据访问地址：</td>
+                <td id="g_metadataVisitAddress"></td>
               </tr>
               <tr>
                 <td class="t_r">服务拓展功能：</td>
-                <td>mapping</td>
+                <td id="g_serviceExtend"></td>
               </tr>
             </table>                         
         </div>
     </div>
-
+   </form>
   <!-- /.content-wrapper --><!-- jQuery 2.2.3 -->
 	<script src="${res }/plugins/jQuery/jquery-2.2.3.min.js"></script>
 	<script
@@ -252,13 +265,74 @@ body {
 		src="${res }/plugins/wizard-master/jquery.smartWizard.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
+			var parentWin = window.parent;
+			var dialog = parentWin.art.dialog.list["registerOtherDialog"];
+			
+			$('#form_id').on('submit', function(e) {
+	            e.preventDefault(); // <-- important
+	            $(this).ajaxSubmit({
+	            	dataType:"json",
+	            	success:function(result){
+	            		alert(result.msg);
+	            		if(result.flag == "0") {
+	            			dialog.close();
+	            		}
+	            		
+	                 }
+	            });
+	        });
 			// Smart Wizard     
-			$('#wizard').smartWizard();
+			$('#wizard').smartWizard({
+				onLeaveStep:onLeaveStepCallback,
+				onFinish: onFinishCallback
+			});
 
 			function onFinishCallback() {
-				$('#wizard').smartWizard('showMessage', 'Finish Clicked');
+				$('#form_id').submit();
+				//$('#wizard').smartWizard('showMessage', 'Finish Clicked');
 				//alert('Finish Clicked');
 			}
+			
+			//上一步和下一步触发的方法
+			function onLeaveStepCallback(stepObj) {
+				//console.log(stepObj);
+				var stepNum= stepObj.attr('rel');
+				//console.log("stepNum="+stepNum);
+				switch(stepNum) {
+				case '1':
+					if($("#registerName").val() == '') {
+						alert("服务注册名称不能为空");
+						return false;
+					}
+					if($("#showName").val() == '') {
+						alert("服务显示名称不能为空！");
+						return false;
+					}
+					return true;
+				  	break;
+				case '2':
+					//设置概要的信息
+					$("#g_registerName").html($("#registerName").val());
+					$("#g_showName").html($("#showName").val());
+					$("#g_functionType").html($("#functionType option:selected").text());
+					$("#g_serviceVisitAddress").html($("#serviceVisitAddress").val());
+					$("#g_cacheType").html($("#cacheType option:selected").text());
+					$("#g_remarks").html($("#remarks").val());
+					$("#g_metadataVisitAddress").html($("#metadataVisitAddress").val());
+					var tempArr = "";
+					$("input[name='serviceExtend']:checked").each(function() {
+							tempArr += $(this).next().text() + ","
+					});
+					//console.log("tempArr="+tempArr);
+					$("#g_serviceExtend").html(tempArr.substring(0, tempArr.length - 1));
+					return true;
+				  	break;
+				default:
+					return true;
+			}
+			
+		}
+			
 		});
 	</script>
 </body>

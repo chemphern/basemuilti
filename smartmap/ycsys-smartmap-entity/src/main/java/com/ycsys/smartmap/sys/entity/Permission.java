@@ -67,6 +67,10 @@ public class Permission implements java.io.Serializable {
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "permission")
 	private Set<RolePermission> rolePermissions = new HashSet<RolePermission>(0);
 
+	@JsonIgnore
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "permission")
+	private Set<OrganizationPermission> organizationPermissions = new HashSet<OrganizationPermission>(0);
+
 	@Transient
 	@JsonProperty("children")
 	private List<Permission> childPermission;
@@ -222,5 +226,13 @@ public class Permission implements java.io.Serializable {
 		this.level = level;
 		this.code = code;
 		this.systemCode = systemCode;
+	}
+
+	public Set<OrganizationPermission> getOrganizationPermissions() {
+		return organizationPermissions;
+	}
+
+	public void setOrganizationPermissions(Set<OrganizationPermission> organizationPermissions) {
+		this.organizationPermissions = organizationPermissions;
 	}
 }

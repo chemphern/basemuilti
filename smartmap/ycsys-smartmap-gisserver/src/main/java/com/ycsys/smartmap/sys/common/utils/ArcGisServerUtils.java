@@ -1,17 +1,13 @@
 package com.ycsys.smartmap.sys.common.utils;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.ycsys.smartmap.service.utils.ServiceUtils;
 
 /**
  * 
@@ -34,14 +30,11 @@ public class ArcGisServerUtils {
 				Map<String,String> map = JsonMapper.getInstance().readValue(result, Map.class);
 				return map;
 			} catch (JsonParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warn("JsonParseException="+e);
 			} catch (JsonMappingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warn("JsonMappingException="+e);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				log.warn("IOException="+e);
 			}
 		}
 		return null;
@@ -61,6 +54,25 @@ public class ArcGisServerUtils {
 	}
 	
 	public static String getTken(String url,String userName,String password) {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("f", P);
+		params.put("Username", userName);
+		params.put("Password", password);
+		params.put("Client", CLIENT);
+		params.put("expiration", "10");
+		Map<String,String> result = ArcGisServerUtils.generateToken(url, params);
+		String token = result.get("token");
+		return token;
+	}
+	
+	public static String getTken(String ip,String port,String userName,String password) {
+		String url = "";
+		if(StringUtils.isNotBlank(port)) {
+			url = "http://" + ip + ":" + port +"/arcgis/admin/generateToken";
+		}
+		else {
+			url = "http://" + ip +"/arcgis/admin/generateToken";
+		}
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("f", P);
 		params.put("Username", userName);
@@ -125,10 +137,10 @@ public class ArcGisServerUtils {
 	
 	//测试
 	public static void main(String[] args) {
-		//getToken();
-		//System.out.println(getToken());
-		boolean b = checkServer("http://172.16.10.52:6080/arcgis/admin/login", "siteadmin1", "ld@yc2016");
-		System.out.println(b);
+		System.out.println(getToken());
+		String t = getTken("172.16.10.52", "6080", "siteadmin", "ld@yc2016");
+		System.out.println(t);
+		
 	}
 
 }

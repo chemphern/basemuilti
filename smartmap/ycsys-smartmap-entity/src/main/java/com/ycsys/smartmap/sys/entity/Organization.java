@@ -1,6 +1,7 @@
 package com.ycsys.smartmap.sys.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
@@ -9,6 +10,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * 机构实体
@@ -60,6 +63,10 @@ public class Organization implements Serializable{
 
     @Column(name="code")
     private String code;
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "organization")
+    private Set<OrganizationPermission> organizationPermissions = new HashSet<OrganizationPermission>(0);
 
     public Integer getId() {
         return id;
@@ -139,5 +146,13 @@ public class Organization implements Serializable{
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public Set<OrganizationPermission> getOrganizationPermissions() {
+        return organizationPermissions;
+    }
+
+    public void setOrganizationPermissions(Set<OrganizationPermission> organizationPermissions) {
+        this.organizationPermissions = organizationPermissions;
     }
 }

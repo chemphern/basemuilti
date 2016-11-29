@@ -252,6 +252,9 @@ public class ServiceUtils {
 		String tokenUrl = "http://" + ip + ":" + port +"/arcgis/admin/generateToken";
 		String token = ArcGisServerUtils.getTken(tokenUrl, userName, password);
 		//http://172.16.10.52:6080/arcgis/admin/services/
+		if(StringUtils.isBlank(token)) {
+			return "not token";
+		}
 		if (StringUtils.isNotBlank(serviceInfo)) {
 			String url = "";
 			if (StringUtils.isBlank(folderName)) {
@@ -356,6 +359,46 @@ public class ServiceUtils {
 		}
 
 		return null;
+	}
+	
+	public static boolean startService(String ip,String port,String userName,String password,String visitUrl) {
+		String token = ArcGisServerUtils.getTken(ip,port, userName, password);
+		if(StringUtils.isBlank(token)) {
+			return false;
+		}
+		visitUrl = visitUrl + "/start";
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("Token", token);
+		Map map = excute(visitUrl, params);
+		if (map != null && map.size() > 0) {
+			if ("success".equals(map.get("status"))) {
+				return true;
+			} 
+			else {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public static boolean stopService(String ip,String port,String userName,String password,String visitUrl) {
+		String token = ArcGisServerUtils.getTken(ip,port, userName, password);
+		if(StringUtils.isBlank(token)) {
+			return false;
+		}
+		visitUrl = visitUrl + "/stop";
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("Token", token);
+		Map map = excute(visitUrl, params);
+		if (map != null && map.size() > 0) {
+			if ("success".equals(map.get("status"))) {
+				return true;
+			} 
+			else {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 	/**

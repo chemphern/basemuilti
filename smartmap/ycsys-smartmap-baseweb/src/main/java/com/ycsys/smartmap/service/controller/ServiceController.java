@@ -373,6 +373,16 @@ public class ServiceController {
 	public String toRegisterGis(Model model) {
 		//查找所有服务引擎
 		List<ConfigServerEngine> serverEngineList = configServerEngineService.find("from ConfigServerEngine");
+		//远程服务类型
+		model.addAttribute("remoteServicesType", DataDictionary.getObject("remote_services_type"));
+		//服务功能类型 service_function_type
+		model.addAttribute("serviceFunctionType", DataDictionary.getObject("service_function_type"));
+		//服务缓存类型 service_cache_Type
+		model.addAttribute("serviceCacheType", DataDictionary.getObject("service_cache_Type"));
+		//权限状态 
+		model.addAttribute("permissionStatus", DataDictionary.getObject("service_permission_status"));
+		//服务扩展功能类型service_extend_type
+		model.addAttribute("serviceExtendType", DataDictionary.getObject("service_extend_type"));
 		model.addAttribute("serverEngineList", serverEngineList);
 		return "/service/service_register_gis";
 	}
@@ -380,7 +390,7 @@ public class ServiceController {
 	@RequestMapping("registerGis")
 	@ResponseBody
 	public Map<String,String> registerGis(@RequestParam("serverEngine1")String serverEngineId,@RequestParam(value="imageFile",required=false) MultipartFile file,HttpServletRequest request,Model model) {
-		Map<String, String> map = new HashMap<String, String>();;
+		Map<String, String> map = new HashMap<String, String>();
 		try {
 			User user = (User) request.getSession().getAttribute(
 					Global.SESSION_USER);
@@ -431,7 +441,7 @@ public class ServiceController {
 				}
 				s.setCreateDate(new Date());
 				s.setCreator(user);
-				System.out.println("s="+s);
+				s.setServiceStatus("0");
 				serviceService.save(s);
 				map.put("flag", "0");
 				map.put("msg", "注册成功！");
@@ -518,75 +528,181 @@ public class ServiceController {
 		List<ConfigServerEngine> serverEngineList = configServerEngineService.find("from ConfigServerEngine");
 		//远程服务类型
 		model.addAttribute("remoteServicesType", DataDictionary.getObject("remote_services_type"));
+		//服务功能类型 service_function_type
+		model.addAttribute("serviceFunctionType", DataDictionary.getObject("service_function_type"));
 		//服务缓存类型 service_cache_Type
 		model.addAttribute("serviceCacheType", DataDictionary.getObject("service_cache_Type"));
+		//权限状态 
+		model.addAttribute("permissionStatus", DataDictionary.getObject("service_permission_status"));
+		//服务扩展功能类型service_extend_type
+		model.addAttribute("serviceExtendType", DataDictionary.getObject("service_extend_type"));
 		model.addAttribute("serverEngineList", serverEngineList);
 		return "/service/service_register_other";
 	}
 	
-	/**
-	 * 增加引擎配置
-	 * @return
-	 */
-	@RequestMapping("toAddXqpz")
-	public String toAddXqpz() {
-		return "/service/service_add_xqpz";
+	
+	@RequestMapping("registerOther")
+	@ResponseBody
+	public Map<String,String> registerOther(@RequestParam("serverEngine1")String serverEngineId,@RequestParam(value="imageFile",required=false) MultipartFile file,HttpServletRequest request,Model model) {
+		Map<String, String> map = new HashMap<String, String>();
+		try {
+			User user = (User) request.getSession().getAttribute(
+					Global.SESSION_USER);
+			String path = request.getSession().getServletContext()
+					.getRealPath("upload");
+			
+			Map<String,String[]>  params = request.getParameterMap();
+			Map datas = new HashMap();
+			Iterator its = params.entrySet().iterator();
+			while (its.hasNext()) {
+				Map.Entry<String, String[]> entry = (Entry<String, String[]>) its.next();
+				datas.put(entry.getKey(), entry.getValue()[0]);
+			}
+			Service s = BeanExtUtils.assignFromMap(datas, Service.class);
+			if (serverEngineId != null && StringUtils.isNotBlank(s.getShowName())) {
+				if (file != null && file.getSize() > 0) {
+					String fileName = file.getOriginalFilename();
+					//得到数字字典的图片类型, 再判断上传的文件是否是图片
+					//Map<String, Object> mFileType = DataDictionary.getObject("image_type");
+					path = path + File.separator + "service" + File.separator + "image";
+					File targetFile = new File(path, fileName);
+					if (!targetFile.exists()) {
+						targetFile.mkdirs();
+					}
+					try {
+						file.transferTo(targetFile);
+						s.setImagePath(path + File.separator + fileName);
+					} catch (IllegalStateException | IOException e) {
+						// TODO Auto-generated catch block
+						map.put("msg", "上传文件失败！");
+						return map;
+					}
+				}
+				ConfigServerEngine se = configServerEngineService.get(ConfigServerEngine.class, Integer.parseInt(serverEngineId));
+				s.setServerEngine(se);
+				//String functionType = request.getParameter("functionType");
+				//String serviceVisitAddress = request.getParameter("serviceVisitAddress");
+				String[] serviceExtend = request.getParameterValues("serviceExtend");
+				//System.out.println("functionType="+functionType + "extensionName= "+serviceExtend +" serviceVisitAddress="+serviceVisitAddress);
+				s.setRegisterType("1");
+				//s.setFunctionType(functionType);
+				String tempExtend = "";
+				for(String e : serviceExtend) {
+					tempExtend = tempExtend + e + ",";
+				}
+				if(tempExtend.length() > 0) {
+					s.setServiceExtend(tempExtend.substring(0, tempExtend.length()-1));
+				}
+				s.setCreateDate(new Date());
+				s.setCreator(user);
+				s.setServiceStatus("0");
+				serviceService.save(s);
+				map.put("flag", "0");
+				map.put("msg", "注册成功！");
+			}
+		} catch (Exception e) {
+			map.put("flag", "1");
+			map.put("msg", "注册失败！");
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
+		return map;
+	}
+	
+	@RequestMapping("list")
+	public String list(Model model) {
+		model.addAttribute("serviceStatus", DataDictionary.getObject("service_status"));
+		model.addAttribute("permissionStatus", DataDictionary.getObject("service_permission_status"));
+		model.addAttribute("serviceRegisterType", DataDictionary.getObject("service_register_type"));
+		
+		return "/service/service_list";
 	}
 	
 	/**
-	 * 增加基本信息
+	 * 服务启动
+	 * 
+	 * @param id
 	 * @return
 	 */
-	@RequestMapping("toAddJbxx")
-	public String toAddJbxx() {
-		return "/service/service_add_jbxx";
+	@RequestMapping("start")
+	@ResponseBody
+	public Map<String,String> start(Integer id) {
+		Map<String,String> map = new HashMap<String,String>();
+		boolean result = false;
+		Service service = null;
+		if(id != null) {
+			service =  serviceService.get(Service.class, id);
+			String url = service.getServiceVisitAddress();
+			ConfigServerEngine engine = service.getServerEngine();
+			if(engine != null) {
+				result = ServiceUtils.startService(engine.getIntranetIp(), engine.getIntranetPort()+"", engine.getEngineManager(), engine.getManagerPassword(),url);
+			}
+		}
+		if(result) {
+			map.put("flag", "0");
+			map.put("msg", "启动成功！");
+			service.setServiceStatus("1");
+			serviceService.update(service);
+			return map;
+		}
+		map.put("flag", "1");
+		map.put("msg", "启动失败！");
+		return map;
 	}
 	
 	/**
-	 * 增加扩展信息
+	 * 服务停止
+	 * 
+	 * @param id
 	 * @return
 	 */
-	@RequestMapping("toAddTzxx")
-	public String toAddTzxx() {
-		return "/service/service_add_tzxx";
-	}
-	
-	/**
-	 * 服务概要
-	 * @return
-	 */
-	@RequestMapping("toGy")
-	public String toGy() {
-		return "/service/service_gy";
-	}
-	
-	
-	
-	@RequestMapping("add")
-	public String add(Service service,Model model,HttpServletRequest request) {
-		serviceService.save(service);
-		return "";
+	@RequestMapping("stop")
+	@ResponseBody
+	public Map<String,String> stop(Integer id) {
+		Map<String,String> map = new HashMap<String,String>();
+		boolean result = false;
+		Service service = null;
+		if(id != null) {
+			service =  serviceService.get(Service.class, id);
+			String url = service.getServiceVisitAddress();
+			ConfigServerEngine engine = service.getServerEngine();
+			if(engine != null) {
+				result = ServiceUtils.stopService(engine.getIntranetIp(), engine.getIntranetPort()+"", engine.getEngineManager(), engine.getManagerPassword(),url);
+			}
+		}
+		if(result) {
+			map.put("flag", "0");
+			map.put("msg", "停止成功！");
+			service.setServiceStatus("0");
+			serviceService.update(service);
+			return map;
+		}
+		map.put("flag", "1");
+		map.put("msg", "停止失败！");
+		return map;
 	}
 	
 	@RequestMapping("delete")
-	public String delete(Service service) {
-		serviceService.delete(service);
-		return "";
+	@ResponseBody
+	public Map<String,String> delete(Service service) {
+		Map<String,String> map = new HashMap<String,String>();
+		if(service.getId() != null) {
+			try {
+				serviceService.delete(service);
+				map.put("msg", "删除成功！");
+			} catch (Exception e) {
+				map.put("msg", "删除失败！");
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
+		}
+		return map;
 	}
 	
 	@RequestMapping("update")
 	public String update(Service service,Model model) {
 		serviceService.update(service);
 		return "";
-	}
-	
-	@RequestMapping("list")
-	public String list(Model model) {
-		model.addAttribute("serviceStatus", DataDictionary.getObject("service_status"));
-		model.addAttribute("permissionStatus", DataDictionary.getObject("permission_status"));
-		model.addAttribute("serviceRegisterType", DataDictionary.getObject("service_register_type"));
-		
-		return "/service/service_list";
 	}
 	
 	/**
