@@ -1,11 +1,14 @@
 package com.ycsys.smartmap.sys.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.ycsys.smartmap.sys.common.result.Grid;
 import com.ycsys.smartmap.sys.common.result.ResponseEx;
 import com.ycsys.smartmap.sys.common.utils.DateUtils;
 import com.ycsys.smartmap.sys.common.utils.Exceptions;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.Organization;
+import com.ycsys.smartmap.sys.entity.Permission;
+import com.ycsys.smartmap.sys.service.OrganizationPermissionService;
 import com.ycsys.smartmap.sys.service.OrganizationService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +30,9 @@ public class OrganizationController {
 
     @Resource
     private OrganizationService organizationService;
+
+    @Resource
+    private OrganizationPermissionService organizationPermissionService;
 
     @RequiresPermissions(value = "sys-org-list")
     @RequestMapping("/list")
@@ -96,5 +103,33 @@ public class OrganizationController {
     public String updateOrgv(String id,Model model){
         model.addAttribute("org",organizationService.getOrg(id));
         return "/organization/updateOrg";
+    }
+
+    @RequiresPermissions(value="sys-org-permGivev")
+    @RequestMapping("/permGivev")
+    public String permGivev(String id,Model model){
+        List<Permission> rps = organizationService.getPermissionByOrgId(id);
+        List<String> rpids = new ArrayList<>();
+        for(Permission p : rps){
+            rpids.add(p.getId().toString());
+        }
+        String ids = JSONArray.toJSONString(rpids);
+        model.addAttribute("orgId",id);
+        model.addAttribute("permissionList",ids);
+        return "/organization/permGive";
+    }
+
+    @RequiresPermissions(value = "sys-org-updatePermission")
+    @RequestMapping("/updatePermission")
+    @ResponseBody
+    public ResponseEx updatePermission(String authorities,String id){
+        ResponseEx ex = new ResponseEx();
+        try{
+            organizationPermissionService.updateOrgPermission(id,authorities);
+            ex.setSuccess("保存成功");
+        }catch (Exception e){
+            ex.setFail(e.getMessage());
+        }
+        return ex;
     }
 }

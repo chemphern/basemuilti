@@ -87,9 +87,10 @@
                   <li><a href="#"><i class="icon iconfont">&#xe614;</i><span>修改资料</span></a></li>
                   <li><a href="#"><i class="icon iconfont">&#xe615;</i><span>修改密码</span></a></li>
                   <li><a href="#"><i class="icon iconfont">&#xe650;</i><span>退出系统</span></a></li>               
-                </ul>              
-            
+                </ul>                         
               </li>
+              <li class="user_info" ><a href="javascript:;" title="消息" class="icon-msg"><i class="icon iconfont">&#xe651;</i><span class="icon-msg-count">2</span></a></li>
+              <li class="user_info" ><a href="javascript:;" title="换肤"><i class="icon iconfont">&#xe64c;</i></a></li> 
             </ul>
           </div>
           <!-- bigmenu -->

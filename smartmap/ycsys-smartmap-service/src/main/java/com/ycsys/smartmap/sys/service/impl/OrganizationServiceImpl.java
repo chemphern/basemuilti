@@ -1,8 +1,10 @@
 package com.ycsys.smartmap.sys.service.impl;
 
 import com.ycsys.smartmap.sys.dao.OrganizationDao;
+import com.ycsys.smartmap.sys.dao.PermissionDao;
 import com.ycsys.smartmap.sys.entity.Organization;
 import com.ycsys.smartmap.sys.entity.PageHelper;
+import com.ycsys.smartmap.sys.entity.Permission;
 import com.ycsys.smartmap.sys.service.OrganizationService;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,9 @@ public class OrganizationServiceImpl implements OrganizationService{
 
     @Resource
     private OrganizationDao organizationDao;
+
+    @Resource
+    private PermissionDao permissionDao;
 
     /**分页查找所有机构**/
     public List<Organization> findAll(PageHelper page) {
@@ -86,5 +91,10 @@ public class OrganizationServiceImpl implements OrganizationService{
     @Override
     public List<Organization> findAll() {
         return organizationDao.find("from Organization");
+    }
+
+    @Override
+    public List<Permission> getPermissionByOrgId(String id) {
+        return permissionDao.find("select p from Permission p join p.organizationPermissions op where op.organization.id = ?",new Object[]{Integer.parseInt(id)});
     }
 }

@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,14 +24,17 @@ import com.ycsys.smartmap.sys.common.result.Grid;
 import com.ycsys.smartmap.sys.common.result.ResponseEx;
 import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
 import com.ycsys.smartmap.sys.common.utils.JsonMapper;
+import com.ycsys.smartmap.sys.common.utils.StringUtils;
 import com.ycsys.smartmap.sys.entity.ConfigExceptionAlarm;
 import com.ycsys.smartmap.sys.entity.ConfigServerEngine;
+import com.ycsys.smartmap.sys.entity.DictionaryItem;
 import com.ycsys.smartmap.sys.entity.Organization;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.User;
 import com.ycsys.smartmap.sys.service.ConfigExceptionAlarmService;
 import com.ycsys.smartmap.sys.service.OrganizationService;
 import com.ycsys.smartmap.sys.service.UserService;
+import com.ycsys.smartmap.sys.util.DataDictionary;
 
 /**
  * 异常报警配置 controller
@@ -69,6 +73,7 @@ public class ConfigExceptionAlarmController {
 		
 		model.addAttribute("lists", lists);
 		model.addAttribute("orgLists", orgLists);
+		model.addAttribute("ruleType", DataDictionary.getObject("configException_type"));
 		return "/configExceptionAlarm/configExceptionAlarm_add";
 	}
 	
@@ -153,6 +158,7 @@ public class ConfigExceptionAlarmController {
 	public String list(Model model){
 		List<ConfigExceptionAlarm> list = configExceptionAlarmService.find("from ConfigExceptionAlarm c where 1=1 ");
 		model.addAttribute("list", list);
+		model.addAttribute("ruleType", DataDictionary.getObject("configException_type"));
 		return "configExceptionAlarm/configExceptionAlarm_list";
 	}
 	
@@ -167,21 +173,21 @@ public class ConfigExceptionAlarmController {
 	//查询出页面表格需要的数据
 	@ResponseBody
 	@RequestMapping("/listData")
-	public Grid<ConfigExceptionAlarm> listData(String ruleTypeName, PageHelper page) {
+	public Grid<ConfigExceptionAlarm> listData(String ruleType, PageHelper page) {
 
 		List<ConfigExceptionAlarm> list = null;
-		if (ruleTypeName==null) {
+		if (StringUtils.isNotBlank(ruleType)) {
+			list = configExceptionAlarmService.find("from ConfigExceptionAlarm c where c.ruleType = ?",
+					new Object[] { ruleType }, page);
+		} else {
 			list = configExceptionAlarmService.find("from ConfigExceptionAlarm c where 1 = 1",
 					null, page);
-		} else {
-			list = configExceptionAlarmService.find("from ConfigExceptionAlarm c where c.ruleType = ?",
-					new Object[] { ruleTypeName }, page);
 		}
 
 		return new Grid<ConfigExceptionAlarm>(list);
 	}
 	
-	//列出所有异常报警类型
+	/*//列出所有异常报警类型
 	@ResponseBody
 	@RequestMapping(value = "listAllRuleType",produces="application/json;charset=UTF-8")
 	public String listAll(HttpServletResponse response) {
@@ -192,6 +198,34 @@ public class ConfigExceptionAlarmController {
 			map.put("id", e.getId());
 			map.put("ruleType", e.getRuleType());
 			mapList.add(map);			
+		}
+		String jsonStr = JsonMapper.toJsonString(mapList);
+		return jsonStr;
+	}*/
+	
+	/**
+	 * 把所有异常报警类型转成json字符串
+	 */
+	@ResponseBody
+	@RequestMapping(value = "listRuleType", produces = "application/json;charset=UTF-8")
+	public String listServiceType(HttpServletResponse response) {
+		List<Map<String, Object>> mapList = Lists.newArrayList();
+		Map<String,Object> ruleTypeMap = DataDictionary.getObject("configException_type");
+		ruleTypeMap.entrySet();
+		Map<String, Object> map = Maps.newHashMap();
+		String rootId = UUID.randomUUID().toString();
+		map.put("id", rootId);
+		map.put("pid", "");
+		map.put("text", "异常报警规则");
+		mapList.add(map);
+		for(Map.Entry<String,Object> entry: ruleTypeMap.entrySet()) {
+			map = Maps.newHashMap();
+			//String key = entry.getKey();
+			DictionaryItem value = (DictionaryItem) entry.getValue();
+			map.put("id", value.getValue());
+			map.put("pid", rootId);
+			map.put("text", value.getName());
+			mapList.add(map);
 		}
 		String jsonStr = JsonMapper.toJsonString(mapList);
 		return jsonStr;

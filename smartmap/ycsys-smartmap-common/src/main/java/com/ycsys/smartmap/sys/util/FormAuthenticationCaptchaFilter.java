@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
@@ -42,6 +43,14 @@ public class FormAuthenticationCaptchaFilter extends FormAuthenticationFilter {
 
 	protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
 		Subject subject = getSubject(request, response);
+		HttpServletRequest httpRequest = (HttpServletRequest)request;
+		String uri = httpRequest.getRequestURI();
+		String ctx = httpRequest.getContextPath();
+		if(uri.equals(ctx + "/login")){
+			return super.isAccessAllowed(request, response, mappedValue);
+		}else if(uri.equals(ctx + "/logout")){
+			return true;
+		}
 		//当使用记住密码功能时，查询用户并存入session的处理
 		if(!subject.isAuthenticated() && subject.isRemembered()){
 			Session session = subject.getSession(true);

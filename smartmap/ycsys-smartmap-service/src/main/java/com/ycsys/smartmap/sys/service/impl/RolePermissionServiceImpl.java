@@ -25,9 +25,6 @@ public class RolePermissionServiceImpl implements RolePermissionService {
 	
 	@Resource
 	private RolePermissionDao rolePermissionDao;
-
-	@Resource(name="config")
-	private Properties config;
 	
 	/**
 	 * 获取角色权限id集合
@@ -62,9 +59,8 @@ public class RolePermissionServiceImpl implements RolePermissionService {
 
 	@Override
 	public void updateRolePermission(String id, String authorities) {
-		String sys_code = config.getProperty("system.code");
-		Object [] delp = {sys_code,Integer.parseInt(id)};
-		rolePermissionDao.executeHql("delete from RolePermission rp  where rp.permission.id in (select id from Permission where systemCode = ? ) and rp.role.id = ?",delp);
+		Object [] delp = {Integer.parseInt(id)};
+		rolePermissionDao.executeHql("delete from RolePermission rp  where rp.role.id = ?",delp);
 		String [] pids = authorities.split(",");
 		Role r = new Role();
 		r.setId(Integer.parseInt(id));

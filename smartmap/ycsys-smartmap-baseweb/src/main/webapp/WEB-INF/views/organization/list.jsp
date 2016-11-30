@@ -143,6 +143,7 @@
                             h += "<input type='button' class='list-btn bt_edit' onclick='yc_update(" + rowdata.id + ")'/>";
                             h += "<input type='button' class='list-btn bt_del' onclick='yc_delete(" + rowdata.id + ")'/>";
                             h += "<input type='button' class='list-btn bt_view' onclick='yc_addChild(" + rowdata.id + ",\"" + rowdata.name + "\")'/>";
+                            h += "<input type='button' class='list-btn bt_view' onclick='yc_editPermission(" + rowdata.id + ")'/>";
                         }
                         return h;
                     }}
@@ -210,6 +211,15 @@
                     width: 400,
                     height: 400
                 });
-    }
+    };
+    function yc_editPermission(id){
+        art.dialog.open('${ctx}/org/permGivev?id=' + id,{
+            id:"editPermissionDialog",
+            title: '修改权限',
+            width: 600,
+            height: 500,
+            lock: true
+        });
+    };
 </script>
 </html>

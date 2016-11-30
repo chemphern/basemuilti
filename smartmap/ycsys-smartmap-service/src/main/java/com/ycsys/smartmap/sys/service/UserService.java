@@ -19,7 +19,7 @@ public interface UserService {
 
     public List<User> findAllUsers(PageHelper page);
 
-    void initAdminuser();
+    void initAdminuser(String adminLoginName,String admin_password,String admin_role);
     
     public User get(Class<User> c, Serializable id);
 

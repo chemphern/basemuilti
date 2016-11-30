@@ -110,8 +110,10 @@ $(function() {
 	if("${configServerEngine.id}"){
 		var integrationModel = "${configServerEngine.integrationModel}";
 		var runningStatus = "${configServerEngine.runningStatus}";
+		var engineType = "${configServerEngine.engineType}";
 		$("#integrationModel option[value="+integrationModel+"]").attr("selected",true);
 		$("#runningStatus option[value="+runningStatus+"]").attr("selected",true);
+		$("#engineType option[value="+engineType+"]").attr("selected",true);
 	}
 	
 	/* if("${engineType}") {

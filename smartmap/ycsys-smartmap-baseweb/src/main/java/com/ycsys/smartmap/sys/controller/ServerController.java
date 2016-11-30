@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,6 +25,7 @@ import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
 import com.ycsys.smartmap.sys.common.utils.JsonMapper;
 import com.ycsys.smartmap.sys.entity.ConfigExceptionAlarm;
 import com.ycsys.smartmap.sys.entity.ConfigServerEngine;
+import com.ycsys.smartmap.sys.entity.DictionaryItem;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.Server;
 import com.ycsys.smartmap.sys.entity.ServerType;
@@ -31,6 +33,7 @@ import com.ycsys.smartmap.sys.entity.User;
 import com.ycsys.smartmap.sys.service.ConfigServerEngineService;
 import com.ycsys.smartmap.sys.service.ServerService;
 import com.ycsys.smartmap.sys.service.ServerTypeService;
+import com.ycsys.smartmap.sys.util.DataDictionary;
 
 /**
  * 服务器 controller
@@ -189,24 +192,50 @@ public class ServerController {
 	public String listAll(HttpServletResponse response) {
 		List<Map<String, Object>> mapList = Lists.newArrayList();
 		List<Server> lists = serverService.find("from Server ");
+		Map<String, Object> map = Maps.newHashMap();
+		String rootId = UUID.randomUUID().toString();
+		map.put("id", rootId);
+		map.put("pid", "");
+		map.put("text", "平台监控配置");
+		mapList.add(map);
 		for (Server e : lists) {
-			Map<String, Object> map = Maps.newHashMap();
+			map = Maps.newHashMap();
 			map.put("id", e.getId());
-			map.put("name", e.getName());
+			map.put("pid", rootId);
+			map.put("text", e.getName());
 			mapList.add(map);			
 		}
 		String jsonStr = JsonMapper.toJsonString(mapList);
 		return jsonStr;
 	}
 	
-	/*@ResponseBody
-	@RequestMapping("/listData")
-	public Grid<Server> listData(PageHelper page) {
-		Grid g = new Grid(serverService.find("from Server s where 1 = 1",
-				null, page));
-		return g;
-		
-	}*/
+	/**
+	 * 把所有引擎类型转成json字符串
+	 */
+	@ResponseBody
+	@RequestMapping(value = "listEngineType", produces = "application/json;charset=UTF-8")
+	public String listServiceType(HttpServletResponse response) {
+		List<Map<String, Object>> mapList = Lists.newArrayList();
+		Map<String,Object> engineTypeMap = DataDictionary.getObject("engineType_type");
+		engineTypeMap.entrySet();
+		Map<String, Object> map = Maps.newHashMap();
+		String rootId = UUID.randomUUID().toString();
+		map.put("id", rootId);
+		map.put("pid", "");
+		map.put("text", "平台监控配置");
+		mapList.add(map);
+		for(Map.Entry<String,Object> entry: engineTypeMap.entrySet()) {
+			map = Maps.newHashMap();
+			//String key = entry.getKey();
+			DictionaryItem value = (DictionaryItem) entry.getValue();
+			map.put("id", value.getValue());
+			map.put("pid", rootId);
+			map.put("text", value.getName());
+			mapList.add(map);
+		}
+		String jsonStr = JsonMapper.toJsonString(mapList);
+		return jsonStr;
+	}
 	//查询出页面表格需要的数据
 	@ResponseBody
 	@RequestMapping("/listData")

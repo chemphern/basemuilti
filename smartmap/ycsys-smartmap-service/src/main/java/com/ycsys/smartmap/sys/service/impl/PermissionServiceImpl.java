@@ -13,10 +13,8 @@ import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * 权限service
@@ -32,28 +30,8 @@ public class PermissionServiceImpl implements PermissionService {
 	@Autowired
 	private SystemDao systemDao;
 
-	@Resource(name="config")
-	private Properties config;
-
 	private static final Logger logger = Logger.getLogger(PermissionServiceImpl.class);
 
-	/**
-	 * 获取角色拥有的权限集合
-	 * @param userId
-	 * @return 结果集合
-	 */
-	public List<Permission> getPermissions(Integer userId){
-		return permissionDao.findPermissions(userId);
-	}
-
-	/**
-	 * 获取角色拥有的权限集合
-	 * @return 结果集合
-	 */
-	public List<Permission> getPermissions(){
-		return permissionDao.findPermissions();
-	}
-	
 	/**
 	 * 获取角色拥有的菜单
 	 * @param userId
@@ -81,16 +59,6 @@ public class PermissionServiceImpl implements PermissionService {
 		return permissionDao.getAllPermissions(sys_code);
 	}
 
-	/**
-	 * 获取菜单下的操作
-	 * @param pid
-	 * @return 操作集合
-	 */
-	public List<Permission> getMenuOperation(Integer pid){
-		return permissionDao.findMenuOperation(pid);
-	}
-
-
 	/**导入权限**/
 	@Override
 	public void importPermission(InputStream is, String encoding){
@@ -111,9 +79,8 @@ public class PermissionServiceImpl implements PermissionService {
 	/**
 	 *初始化权限表（当权限表没有数据的时候，会从permission.xml中导入基础数据）
 	 * **/
-	public void initPermission() {
-		String sys_code = config.getProperty("system.code");
-		long i = permissionDao.count("select count(*) from Permission p where p.systemCode = ?",new Object[]{sys_code});
+	public void initPermission(String system_code) {
+		long i = permissionDao.count("select count(*) from Permission p where p.systemCode = ?",new Object[]{system_code});
 		//当本系统没有数据时，方才执行初始化导入
 		if(i == 0){
 			String ab_path = PermissionServiceImpl.class.getClassLoader().getResource("").getPath();

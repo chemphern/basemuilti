@@ -1,12 +1,6 @@
 package com.ycsys.smartmap.sys.service.impl;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.Charset;
-
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
 
 import com.ycsys.smartmap.sys.service.MessageService;
 
@@ -15,19 +9,19 @@ public class MessageServiceImpl implements MessageService {
 
 
 	//VALUE标签可以用来注入简单值
-	@Value("${sms.username}")
+	/*@Value("${sms.username}")
 	private String username;
 	@Value("${sms.password}")
 	private String password;
 	@Value("${sms.apikey}")
 	private String apikey;
 	@Value("${sms.url}")
-	private String url;
+	private String url;*/
 	
 	@Override
 	public void sendMessage(String phoneNumber) {
 		// 发送短信,短信发送成功了
-		try{
+		/*try{
 			//创建一个URL对象
 			URL targetUrl = new URL(this.url);
 			//从URL对象中获得一个连接对象
@@ -52,7 +46,7 @@ public class MessageServiceImpl implements MessageService {
 			System.out.println("33333333333333");
 		}catch(Exception e){
 			throw new RuntimeException("发送短信失败");
-		}
+		}*/
 		
 	}
 }

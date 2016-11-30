@@ -109,34 +109,68 @@ body {
 var treeManager = null;
 var gridManager = null;
     ;(function($){  //避免全局依赖,避免第三方破坏
-    	//树 start
-    	$("#tree1").ligerTree(
+    	$(document).ready(function() {
+			//树 start
+			//树节点
+			var menu;
+			var actionNodeID;
+			$("#tree1").ligerTree(
 	            {
 	                url: "${ctx}/server/listAllName",
-	                checkbox: false,
-                    nodeWidth : 120,
+                    nodeWidth : 140,
                     idFieldName :'id',
-                    textFieldName :'name',
-                    onSelect : onSelectServerName
-                    //parentIDFieldName :'pid',
-	               // onBeforeExpand: onBeforeExpand,
-	                //onExpand: onExpand
+                    parentIDFieldName :'pid',
+                    //textFieldName :'name',
+                    onSelect : onSelectServerName,
+                    onContextmenu : function(node, e) {
+						actionNodeID = node.data.text;
+						/* menu.show({
+							top : e.pageY,
+							left : e.pageX
+						}); */
+						return false;
+					}
 	             });
-    	function onSelectServerName(obj) {
-    		name = obj.data.name;
-        	gridManager.setParm("name",name);
-        	window.gridManager.reload();
-        }
-    	//树 end
-            
-    	//表格列表 start
+			
+			
+	    	function onSelectServerName(obj) {
+	    		name = obj.data.name;
+	        	gridManager.setParm("name",name);
+	        	window.gridManager.reload();
+	        }
+	    	//树 end
+	            
+		
+	    	/* function onSelectRuleType(obj) {
+				var ruleType = "";
+				if(obj.data.text != '异常报警规则') {
+					//alert(obj.data.id);
+					ruleType = obj.data.id
+				}
+				gridManager.setParm("ruleType",ruleType);
+	        	window.gridManager.reload();
+	        } */
+	    	//树 end
+	    	
+	    	//表格列表 start
        gridManager = $("#maingrid4").ligerGrid({
             checkbox: true,
             rownumbers : true,
             columns: [
                       { display: '服务器名称', name: 'name', align: 'center', width: 100 },
                       { display: '服务器类型', name: 'serverType.name', Width: 60 },
-                      { display: '是否取自服务引擎配置', name: 'fromServerEngineFlag', minWidth: 100,align:'center' },
+                      { display: '是否取自服务引擎配置', name: 'fromServerEngineFlag', minWidth: 100,
+                    	  fromServerEngineFlag:'int',
+	   	                    render: function (item) {
+	   	                    	     var obj = parseInt(item.fromServerEngineFlag);
+	   	                             if (obj == 0) {
+	   	                            	 return '是';
+	   	                             }
+	   	                             else if(obj == 1) {
+	   	                            	 return '否';
+	   	                             }
+		    	                 }  
+                      },
                       { display: '服务器IP地址/机器名', name: 'ipAddress', minWidth: 100 },
                       { display: 'SNMP协议端口', name: 'snmpPort', minWidth: 60 },
                       { display: '服务引擎', name: 'serverEngine.configName', minWidth: 80 },
@@ -159,7 +193,7 @@ var gridManager = null;
             width: '100%',height:'96%'
         });
     	//表格列表 end
-           
+		});
     })(jQuery);
   //增加或修改平台监控配置
 	function editServer(flag,rowId) {

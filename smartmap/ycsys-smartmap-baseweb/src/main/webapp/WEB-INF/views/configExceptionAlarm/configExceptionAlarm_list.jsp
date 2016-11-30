@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>服务引擎</title>
+  <title>羽辰智慧林业综合管理平台-系统配置</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -60,10 +60,10 @@
                 <h4 class="box-title">异常报警规则列表</h4>
                 <div class="btn_box">
                     <button class="current" onclick="addConfigExceptionAlarm('1');"><i class="iconfont icon-plus"></i>增加</button>
-                    <button class="cog" onclick="addEmailServerConfig();"><i class="glyphicon glyphicon-cog"></i>邮件服务器参数设置</button>
-                    <button class="cog" onclick="addSMSConfig();"><i class="glyphicon glyphicon-cog"></i>SMS发送设置</button>
                 	<button onclick="addConfigExceptionAlarm('2');"><i class="iconfont icon-edit"></i>编辑</button>
                 	<button onclick="deleteConfigExceptionAlarm();"><i class="iconfont icon-trash"></i>删除</button>
+                	<button class="cog" onclick="addEmailServerConfig();"><i class="glyphicon glyphicon-cog"></i>邮件服务器参数设置</button>
+                    <button class="cog" onclick="addSMSConfig();"><i class="glyphicon glyphicon-cog"></i>SMS发送设置</button>
                 </div>
             </div>
             <div class="box_l">
@@ -103,50 +103,54 @@
 	var treeManager = null;
 	var gridManager = null;
 	var ruleTypeName = null;
-    $(function(){
-    	//树 start
-    	$("#tree1").ligerTree(
+	;(function($){//避免全局依赖,避免第三方破坏
+		$(document).ready(function() {
+			//树 start
+			//树节点
+			var menu;
+			var actionNodeID;
+			$("#tree1").ligerTree(
 	            {
-	                url: "${ctx}/configExceptionAlarm/listAllRuleType",
-	                checkbox: false, 
+	                url: "${ctx}/configExceptionAlarm/listRuleType",
                     nodeWidth : 140,
                     idFieldName :'id',
-                    textFieldName :'ruleType',
-                    onSelect : onSelectRuleType
-                    //textFieldName : fieldFormatter('ruleType')
+                    parentIDFieldName :'pid',
+                    //textFieldName :'name',
+                    onSelect : onSelectRuleType,
+                    onContextmenu : function(node, e) {
+						actionNodeID = node.data.text;
+						/* menu.show({
+							top : e.pageY,
+							left : e.pageX
+						}); */
+						return false;
+					}
 	             });
-    	function onSelectRuleType(obj) {
-    		
-    		ruleTypeName = obj.data.ruleType;
-        	gridManager.setParm("ruleTypeName",ruleTypeName);
-        	window.gridManager.reload();
-        }
-    	//树 end
-    	
-    	//表格列表 start
+		
+	    	function onSelectRuleType(obj) {
+				var ruleType = "";
+				if(obj.data.text != '异常报警规则') {
+					//alert(obj.data.id);
+					ruleType = obj.data.id
+				}
+				gridManager.setParm("ruleType",ruleType);
+	        	window.gridManager.reload();
+	        }
+	    	//树 end
+	    	
+	    	//表格列表 start
        gridManager = $("#maingrid4").ligerGrid({
             checkbox: true,
             columns: [
 	          	        { display: '异常分类',  name: 'ruleType', align: 'left', width: 100,
-	          	        	/* ruleType:'int',
-       	                    render: function (item) {
-       	                    	     var obj = parseInt(item.ruleType);
-       	                             if (obj == 0) {
-       	                            	 return '服务异常';
-       	                             }
-       	                             else if(obj == 1) {
-       	                            	 return '网络异常';
-       	                             }
-       	                             else if(obj == 2) {
-	        	                        return '数据库异常';
-       	                             }
-       	                          	 else if(obj == 3) {
-	        	                        return '应用服务器异常';
-     	                             }
-       	                          	 else if(obj == 4) {
-	        	                        return 'GIS服务器异常';
-   	                             }
-        	                 } */
+	          	        	render: function (item) {
+ 	                    	     var obj = parseInt(item.ruleType);
+     	                    	  <c:forEach var="map" items="${ruleType }">
+     	                    	  		if(obj == "${map.key }") {
+     	                    	  			return "${map.value.name }";
+     	                    	  		}
+ 	       						  </c:forEach>
+  	                     }      
 	          	        },
 	          	        { display: '用户名称', name: 'user.name', align: 'left', width: 100 },
 	          	        { display: '用户等级', name: 'userGrade', minWidth: 60,
@@ -197,10 +201,11 @@
             width: '100%',height:'96%'
         });
     	//表格列表 end
+		});
     	
-    });
-    
-  //邮件服务器参数配置窗口
+    })(jQuery);	
+
+	//邮件服务器参数配置窗口
 	function addEmailServerConfig() {
 		var dialog = $.Layer.iframe(
                 { 

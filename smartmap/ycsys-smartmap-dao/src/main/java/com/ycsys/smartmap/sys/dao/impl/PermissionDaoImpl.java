@@ -35,22 +35,38 @@ public class PermissionDaoImpl extends BaseDaoImpl<Permission,Integer> implement
 		sb.append("inner join rp.role r ");
 		sb.append("inner join r.userRoles ur ");
 		sb.append("inner join ur.user u ");
-		sb.append("where u.id= ? order by p.sort");
-		Query query = createQuery(sb.toString());
-		query.setParameter(0,userId);
-		return query.list();
+		sb.append("where u.id= ? order by p.sort ");
+		StringBuffer sp = new StringBuffer();
+		sp.append("select p from User u ");
+		sp.append("inner join u.organization o ");
+		sp.append("inner join o.organizationPermissions op ");
+		sp.append("inner join op.permission p ");
+		sp.append("where u.id= ? order by p.sort");
+		List<Permission> rp = find(sb.toString(),new Object[]{userId});
+		List<Permission> op = find(sp.toString(),new Object[]{userId});
+		return unionPermission(rp,op);
 	}
-	
+
 	/**
-	 * 查询所有权限
-	 * @return 权限集合
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Permission> findPermissions(){
-		StringBuffer sb=new StringBuffer();
-		sb.append("select p.id ,p.pid ,p.name ,p.url ,p.icon ,p.sort ,p.description  from Permission p ");
-		sb.append("where order by p.sort");
-		return createQuery(sb.toString()).list();
+	 * 将多个permision合并
+	 * **/
+	public List<Permission> unionPermission(List<Permission> ... permissions){
+		List<Permission> resList = new ArrayList<>();
+		for(int x = 0;x<permissions.length;x++){
+			for(Permission permission:permissions[x]){
+				boolean flag = true;
+				for(Permission p:resList){
+					if(permission.getId() == p.getId()){
+						flag = false;
+						break;
+					}
+				}
+				if(flag){
+					resList.add(permission);
+				}
+			}
+		}
+		return resList;
 	}
 
 	/**
@@ -137,7 +153,16 @@ public class PermissionDaoImpl extends BaseDaoImpl<Permission,Integer> implement
 		query.setParameter(0,userId);
 		query.setParameter(1,system_code);
 		List<Permission> ps = query.list();
-		return mapping(ps);
+
+		StringBuffer sp = new StringBuffer();
+		sp.append("select p from User u ");
+		sp.append("inner join u.organization o ");
+		sp.append("inner join o.organizationPermissions op ");
+		sp.append("inner join op.permission p ");
+		sp.append("where u.id= ? and p.systemCode = ? order by p.sort");
+		List<Permission> op = find(sp.toString(),new Object[]{userId,system_code});
+		List<Permission> res = unionPermission(ps,op);
+		return mapping(res);
 	}
 
 	/**
@@ -200,20 +225,5 @@ public class PermissionDaoImpl extends BaseDaoImpl<Permission,Integer> implement
 
         }
     }
-	
-	/**
-	 * 查询菜单下的操作权限
-	 * @param pid
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Permission> findMenuOperation(Integer pid){
-		StringBuffer sb=new StringBuffer();
-		sb.append("select p.id,p.name ,p.url ,p.permCode ,p.description from Permission p ");
-		sb.append("where p.type ='func' and p.pid= ? order by p.sort");
-		Query query = createQuery(sb.toString());
-		query.setParameter(0,pid);
-		return query.list();
-	}
 
 }

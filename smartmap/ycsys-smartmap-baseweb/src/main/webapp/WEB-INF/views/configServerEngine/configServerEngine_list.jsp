@@ -101,93 +101,121 @@
 <script>
 	var treeManager = null;
 	var gridManager = null;
-	var configName = null;
+	//var configName = null;
 	;(function($){//避免全局依赖,避免第三方破坏
-    	//树 start
-    	$("#tree1").ligerTree(
-	            {
-	                url: "${ctx}/configServerEngine/listAllName",
-	                checkbox: false, 
-                    nodeWidth : 140,
-                    idFieldName :'id',
-                    textFieldName :'name',
-                    onSelect : onSelectConfigName
-	               // onBeforeExpand: onBeforeExpand,
-	                //onExpand: onExpand
-	             });
-    	function onSelectConfigName(obj) {
-        	configName = obj.data.name;
-        	gridManager.setParm("configName",configName);
-        	window.gridManager.reload();
-        }
-	
-    	//树 end
+		$(document).ready(function() {
+			//树 start
+			//树节点
+			var menu;
+			var actionNodeID;
+			/* function itemclick(item, i) {
+				alert(actionNodeID + " | " + item.text);
+			} */
+				
+	    	$("#tree1").ligerTree(
+		            {
+		                url: "${ctx}/configServerEngine/listEngineType",
+	                    nodeWidth : 140,
+	                    idFieldName :'id',
+	                    parentIDFieldName :'pid',
+	                    //textFieldName :'name',
+	                    onSelect : onSelectEngineType,
+	                    onContextmenu : function(node, e) {
+							actionNodeID = node.data.text;
+							/* menu.show({
+								top : e.pageY,
+								left : e.pageX
+							}); */
+							return false;
+						}
+	                    //onSelect : onSelectConfigName
+		               // onBeforeExpand: onBeforeExpand,
+		                //onExpand: onExpand
+		             });
+	    	/* function onSelectConfigName(obj) {
+	        	configName = obj.data.name;
+	        	gridManager.setParm("configName",configName);
+	        	window.gridManager.reload();
+	        } */
+		
+	    	function onSelectEngineType(obj) {
+				var engineType = "";
+				if(obj.data.text != '服务引擎组织') {
+					//alert(obj.data.id);
+					engineType = obj.data.id
+				}
+				gridManager.setParm("engineType",engineType);
+	        	window.gridManager.reload();
+	        }
+	    	//树 end
+	    	
+	    	//表格列表 start
+	       gridManager = $("#maingrid4").ligerGrid({
+	            checkbox: true,
+	            columns: [
+		          	        { display: '配置名称',  name: 'configName', align: 'left', width: 100 },
+		          	        { display: '引擎类型', name: 'engineType', align: 'left', width: 100,
+		          	        	render: function (item) {
+	  	                    	     var obj = parseInt(item.engineType);
+	      	                    	  <c:forEach var="map" items="${engineType }">
+	      	                    	  		//console.log("${map.value.name }");
+	      	                    	  		//console.log("obj="+obj);
+	      	                    	  		if(obj == "${map.key }") {
+	      	                    	  			return "${map.value.name }";
+	      	                    	  		}
+	  	       						  </c:forEach>
+	   	                     }      
+		          	        },
+		          	        { display: '集成模式', name: 'integrationModel', minWidth: 60,
+		          	        	integrationModel:'int',
+		          	        	render: function (item) {
+	  	                    	     var obj = parseInt(item.integrationModel);
+	  	                             if (obj == 0) {
+	  	                            	 return '单机';
+	  	                             }
+	  	                             else if(obj == 1) {
+	  	                            	 return '集群';
+	  	                             }
+	   	                    	}    
+		          	        },
+		          	      	{ display: '机器名', name: 'machineName', minWidth: 60 },
+		          	      	{ display: '内网IP', name: 'intranetIp', minWidth: 60 },
+		          	      	{ display: '内网端口', name: 'intranetPort', minWidth: 60 },
+		          	    	{ display: '运行状态', name: 'runningStatus', minWidth: 60,
+		          	      		 runningStatus:'int',
+	        	        		 render: function (item) {
+	                    	     var obj = parseInt(item.runningStatus);
+	                             if (obj == 0) {
+	                            	 return '启用';
+	                             }
+	                             else if(obj == 1) {
+	                            	 return '禁用';
+	                             }
+		                    	}    
+		          	    	},
+		          	  		{ display: '数据上传服务地址', name: 'dataUploadPath', width: 100 },
+		          			{ display: '数据上传绝对路径', name: 'dataUploadRealPath', width: 100 },
+		          			{ display: '更新者', name: 'updator.name', minWidth: 60 },
+		          			{ display: '操作', 
+		          	        	isSort: false, render: function (rowdata, rowindex, value)
+		                        {
+		                          var h = "";
+		                          if (!rowdata._editing)
+		                          {
+		                        	  h += "<input type='button' class='list-btn bt_edit' onclick='editConfigServerEngine(2,"+ rowdata.id+ ")'/>";
+			                          h += "<input type='button' class='list-btn bt_del' onclick='deleteConfigServerEngine(" + rowdata.id + ")'/>"; 
+		                          }
+		                          return h;
+		                        }
+		          			}
+	          	        ], 
+	          	pageSize:30,
+	            url:"${ctx}/configServerEngine/listData",
+	            width: '100%',height:'96%'
+	        });
+	    	//表格列表 end
+		});
     	
-    	//表格列表 start
-       gridManager = $("#maingrid4").ligerGrid({
-            checkbox: true,
-            columns: [
-	          	        { display: '配置名称',  name: 'configName', align: 'left', width: 100 },
-	          	        { display: '引擎类型', name: 'engineType', align: 'left', width: 100,
-	          	        	render: function (item) {
-  	                    	     var obj = parseInt(item.engineType);
-      	                    	  <c:forEach var="map" items="${engineType }">
-      	                    	  		//console.log("${map.value.name }");
-      	                    	  		//console.log("obj="+obj);
-      	                    	  		if(obj == "${map.key }") {
-      	                    	  			return "${map.value.name }";
-      	                    	  		}
-  	       						  </c:forEach>
-   	                     }      
-	          	        },
-	          	        { display: '集成模式', name: 'integrationModel', minWidth: 60,
-	          	        	integrationModel:'int',
-	          	        	render: function (item) {
-  	                    	     var obj = parseInt(item.integrationModel);
-  	                             if (obj == 0) {
-  	                            	 return '单机';
-  	                             }
-  	                             else if(obj == 1) {
-  	                            	 return '集群';
-  	                             }
-   	                    	}    
-	          	        },
-	          	      	{ display: '机器名', name: 'machineName', minWidth: 60 },
-	          	      	{ display: '内网IP', name: 'intranetIp', minWidth: 60 },
-	          	      	{ display: '内网端口', name: 'intranetPort', minWidth: 60 },
-	          	    	{ display: '运行状态', name: 'runningStatus', minWidth: 60,
-	          	      		 runningStatus:'int',
-        	        		 render: function (item) {
-                    	     var obj = parseInt(item.runningStatus);
-                             if (obj == 0) {
-                            	 return '启用';
-                             }
-                             else if(obj == 1) {
-                            	 return '禁用';
-                             }
-	                    	}    
-	          	    	},
-	          	  		{ display: '数据上传服务地址', name: 'dataUploadPath', width: 100 },
-	          			{ display: '数据上传绝对路径', name: 'dataUploadRealPath', width: 100 },
-	          			{ display: '更新者', name: 'updator.name', minWidth: 60 },
-	          			{ display: '操作', 
-	          	        	isSort: false, render: function (rowdata, rowindex, value)
-	                        {
-	                          var h = "";
-	                          if (!rowdata._editing)
-	                          {
-	                        	  h += "<input type='button' class='list-btn bt_edit' onclick='editConfigServerEngine(2,"+ rowdata.id+ ")'/>";
-		                          h += "<input type='button' class='list-btn bt_del' onclick='deleteConfigServerEngine(" + rowdata.id + ")'/>"; 
-	                          }
-	                          return h;
-	                        }
-	          			}
-          	        ], 
-          	pageSize:30,
-            url:"${ctx}/configServerEngine/listData",
-            width: '100%',height:'96%'
-        });
-    	//表格列表 end
     })(jQuery);	
   /* //增加服务引擎配置
 	function addConfigServerEngine() {

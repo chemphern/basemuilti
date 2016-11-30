@@ -56,13 +56,13 @@ function zoomInOutLBUpHandler(flags, x, y){
 		if(rectScreenScale < 100)
 		{
 			//缩放操作
-			if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomIn"&&cameraHeight>=50){
+			if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomIn"&&cameraHeight>50){
 				ZoomInWithRectangle(rectangle);
-			}else if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomOut"&&cameraHeight<=20850000){
+			}else if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomOut"&&cameraHeight<20850000){
 				ZoomOutWithRectangle(rectangle);
-			}else if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomIn"&&cameraHeight<50){
+			}else if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomIn"&&cameraHeight<=50){
 				YcMap3D.Window.ShowMessageBarText("已经放大到最大程度。右键结束放大操作或点击缩小功能进行缩小操作！",1,-1);
-			}else if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomOut"&&cameraHeight>20850000){
+			}else if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomOut"&&cameraHeight>=20850000){
 				YcMap3D.Window.ShowMessageBarText("已经缩小到最大程度。右键结束缩小操作或点击放大功能进行放大操作！",1,-1);
 			}
 		}
@@ -142,9 +142,9 @@ function ZoomOutWithRectangle(Rectabgle){
 	//计算缩小后相机位置的高度
 	var heightScale = getZoomOutHeight(Rectabgle);
 	if(heightScale>20850000)
-		centerPosition.Altitude = 20850001;
+		centerPosition.Altitude = 20850000;
 	else if(heightScale<YcMap3D.Navigate.GetPosition(0).Altitude)
-		centerPosition.Altitude = YcMap3D.Navigate.GetPosition(0).Altitude + 10000;
+		centerPosition.Altitude = YcMap3D.Navigate.GetPosition(0).Altitude;
 	else
 		centerPosition.Altitude = heightScale
 	YcMap3D.Navigate.FlyTo(centerPosition,14);

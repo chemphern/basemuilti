@@ -2,6 +2,7 @@ package com.ycsys.smartmap.sys.service;
 
 import com.ycsys.smartmap.sys.entity.Organization;
 import com.ycsys.smartmap.sys.entity.PageHelper;
+import com.ycsys.smartmap.sys.entity.Permission;
 
 import java.util.List;
 
@@ -27,4 +28,7 @@ public interface OrganizationService {
 
     /**查找所有机构**/
     List<Organization> findAll();
+
+    /**根据机构id获取权限列表**/
+    List<Permission> getPermissionByOrgId(String id);
 }

@@ -1,6 +1,7 @@
 package com.ycsys.smartmap.sys;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 
 import com.ycsys.smartmap.sys.service.*;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * 
@@ -36,6 +38,9 @@ public class Initialization implements ServletContextAware {
 
 	@Autowired
 	DictService dictService;
+
+	@Resource(name="config")
+	private Properties config;
 
 	private static final Logger logger = Logger.getLogger(Initialization.class);
 
@@ -68,11 +73,11 @@ public class Initialization implements ServletContextAware {
 			return;
 		}
 		//初始化系统配置
-		systemService.initSystem();
+		systemService.initSystem(config.getProperty("system.code"),config.getProperty("system.name"),config.getProperty("system.url"));
 		//初始管理员
-		userService.initAdminuser();
+		userService.initAdminuser(config.getProperty("admin_login_name"),config.getProperty("admin_password"),config.getProperty("admin_role"));
 		//初始化权限配置（只有当权限表为空时才会进行）
-		permissionService.initPermission();
+		permissionService.initPermission(config.getProperty("system.code"));
 		//初始化数据字典
 		try {
 			dictService.initDictionary();

@@ -96,22 +96,15 @@
 		    value="${configExceptionAlarm.phone}" class="text validate[required]" /></td>
 		  </tr>
 		  <tr>
-		    <td class="t_r">异常类型：</td>
-		    <td><input type="text" name="ruleType" id="ruleType" 
-		    value="${configExceptionAlarm.ruleType}" class="text validate[required]" /></td>
-		  </tr>
-		  <!-- <tr>
 			<td class="t_r">异常类型：</td>
 			<td>
 				<select type="text" name="ruleType" id="ruleType" class="text">
-					<option value="0" >服务异常</option>
-					<option value="1" >网络异常</option>
-					<option value="2" >数据库异常</option>
-					<option value="3" >应用服务器异常</option>
-					<option value="4" >GIS服务器异常</option>
+					<c:forEach var="map" items="${ruleType}">
+						<option value="${map.key }">${map.value.name }</option>
+					</c:forEach>
 				</select>
 			</td>
-		  </tr> -->
+		  </tr>
 		  <tr>
 			<td class="t_r">用户等级：</td>
 			<td>

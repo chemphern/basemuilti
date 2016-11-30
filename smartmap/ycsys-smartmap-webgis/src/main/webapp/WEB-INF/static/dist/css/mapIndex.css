@@ -5,7 +5,7 @@
     .header .navbar-collapse{margin-top:0px;float:right;}
     .header .logo{width:69px;height:80px;overflow:hidden;}
     .content .toolbar a{margin-right:8px !important;}
-    .header .navbar-collapse{display:block !important;;}
+    .header .navbar-collapse{display:block !important;}
 }
 @media (min-width: 320px) and  (max-width:1023px){
     .header .menu-toggler{display:block;}
@@ -14,22 +14,25 @@
     .wrapper .header{height:68px;margin-bottom: 0;}
     .wrapper .header .logo img{width:auto;height:36px;}
     .navbar-user li .user_box{line-height: 68px;}
-    .navbar-user li.user_exit a{margin-top:24px;}
+    .navbar-user li.user_info a{margin-top:20px;}
     .navbar-user li.user img{width:30px;height:30px;}
-    .header .navbar-collapse{width:140px;position:absolute;top:68px;right:0;display:none;overflow: hidden ;}
+    .header .navbar-collapse{width:140px;position:absolute;top:68px;right:0;display:none;overflow: hidden;}
     .header .bigmenu {width:100%;background-color:#26bf8c;padding-bottom:10px;}
     .header .bigmenu li{width:100%;display:block;line-height: 35px;height:35px;}
     .header .bigmenu>li>a{display:inline-block;width:100%;height:35px;padding:10px;}
-    .header .bigmenu .icon{left:0;float:left;margin-left:10px;font-size: 24px;margin-top:0px;margin-right:10px;}
+    .header .bigmenu .icon{left:0;float:left;margin-left:10px;font-size: 24px;margin-right:10px;margin-top:0px;}
     .header .bigmenu h1{float:left;display:inline-block;}
     .header .bigmenu>li a:hover{background: #57cc84;}
     .header .bigmenu li.active{background:#57cc84;}
     .content .toolbar a{margin-right:8px !important;min-width: 44px;}
     .content .toolbar h3{display:none !important;}
-/*     .main .leftBox{display:none; left: -298px;}
-.main .left_h{left: 0px;}
-.main .left_h .l_icon{background-position:0px -59px;}
-.main .content{left: 0px !important;} */
+    .header .homemenu {width:100%;background-color:#26bf8c;padding-bottom:10px;}
+    .header .homemenu li{width:100%;display:block;line-height: 35px;height:35px;}
+    .header .homemenu>li>a{display:inline-block;width:100%;height:35px;padding:10px;}
+    .header .homemenu .icon{left:0;float:left;margin-left:10px;font-size: 24px;margin-right:10px;}
+    .header .homemenu h1{float:left;display:inline-block;}
+    .header .homemenu>li a:hover{background: #57cc84;}
+    .header .homemenu li.active{background:#57cc84;}
 }
 
 .fore-core-side>div{display:none;}
@@ -113,13 +116,13 @@
 .tab-mapBtn .mapBtn .maplayer>li>a.select{background:url(../../dist/img/map/icon-action.png) 4px 13px no-repeat;}
 
 .tab-mapCon{max-width: 100%;height:100%;position:relative;z-index: 3;overflow:hidden;padding-bottom: 30px;margin-bottom: -30px;}
-.tab-mapCon-pane{width:100%;height:100%; float:left;overflow:hidden; }
+.tab-mapCon-pane{width:100%;height:100%; float:left;overflow:hidden; display:none;}
 #mapOrdinary{background-color: #333;}
 #mapsatellite{background-color: #666;}
 #map2d{background-color: #a2c159;}
 #map3d{background-color: #a3a9c7;}
-.mapCon-resizable{max-width:100%;height:100%;display:none;float:left;}
 .mapCon-resizable div.active{visibility: visible;}
-.resizable-left{width:570px;}
-.resizable-right{width:570px;}
-.tab-mapCon div.handler{right:0px;background: #27bf8c;width: 5px;height: 100%;position: absolute;cursor: e-resize;float:left;z-index:2;}
+.resizable-left{width:50%;float:left;}
+.resizable-right{width:40%;float:right;}
+.tab-mapCon div.handler{right:0px;background: #27bf8c;width: 5px;height: 100%;position: absolute;cursor: e-resize;float:left;z-index:2;display:none;}
+#LayoutContainer .container{padding:0px;}

@@ -17,6 +17,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -49,6 +50,7 @@ import com.ycsys.smartmap.sys.common.utils.FileUtils;
 import com.ycsys.smartmap.sys.common.utils.JsonMapper;
 import com.ycsys.smartmap.sys.common.utils.StringUtils;
 import com.ycsys.smartmap.sys.entity.ConfigServerEngine;
+import com.ycsys.smartmap.sys.entity.DictionaryItem;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.User;
 import com.ycsys.smartmap.sys.service.ConfigServerEngineService;
@@ -79,9 +81,7 @@ public class ConfigServerEngineController extends BaseController{
 				.find("from EngineType e where 1 = 1");
 		model.addAttribute("lists", lists);*/
 		model.addAttribute("engineType", DataDictionary.getObject("engineType_type"));
-		System.out.println("1111111111");
 		System.out.println(DataDictionary.getObject("engineType_type"));
-		System.out.println("222222222222222222222");
 		return "/configServerEngine/configServerEngine_add";
 	}
 	
@@ -97,7 +97,7 @@ public class ConfigServerEngineController extends BaseController{
 		return "/configServerEngine/configServerEngine_add";
 	}
 	//列出所有服务引擎的名称
-	@ResponseBody
+	/*@ResponseBody
 	@RequestMapping(value = "listAllName",produces="application/json;charset=UTF-8")
 	public String listAll(HttpServletResponse response) {
 		List<Map<String, Object>> mapList = Lists.newArrayList();
@@ -110,8 +110,36 @@ public class ConfigServerEngineController extends BaseController{
 		}
 		String jsonStr = JsonMapper.toJsonString(mapList);
 		return jsonStr;
-	}
+	}*/
 
+	/**
+	 * 把所有引擎类型转成json字符串
+	 */
+	@ResponseBody
+	@RequestMapping(value = "listEngineType", produces = "application/json;charset=UTF-8")
+	public String listServiceType(HttpServletResponse response) {
+		List<Map<String, Object>> mapList = Lists.newArrayList();
+		Map<String,Object> engineTypeMap = DataDictionary.getObject("engineType_type");
+		engineTypeMap.entrySet();
+		Map<String, Object> map = Maps.newHashMap();
+		String rootId = UUID.randomUUID().toString();
+		map.put("id", rootId);
+		map.put("pid", "");
+		map.put("text", "服务引擎组织");
+		mapList.add(map);
+		for(Map.Entry<String,Object> entry: engineTypeMap.entrySet()) {
+			map = Maps.newHashMap();
+			//String key = entry.getKey();
+			DictionaryItem value = (DictionaryItem) entry.getValue();
+			map.put("id", value.getValue());
+			map.put("pid", rootId);
+			map.put("text", value.getName());
+			mapList.add(map);
+		}
+		String jsonStr = JsonMapper.toJsonString(mapList);
+		return jsonStr;
+	}
+	
 	//列表列出所有数据
 	@RequestMapping("list")
 	public String list(Model model){
@@ -121,16 +149,8 @@ public class ConfigServerEngineController extends BaseController{
 		return "configServerEngine/configServerEngine_list";
 	}
 	
+	//根据配置名称查询出页面表格需要的数据
 	/*@ResponseBody
-	@RequestMapping("/listData")
-	public Grid<ConfigServerEngine> listData(PageHelper page) {
-		Grid g = new Grid(configServerEngineService.find("from ConfigServerEngine c where 1 = 1",
-				null, page));
-		return g;
-	}*/
-	
-	//查询出页面表格需要的数据
-	@ResponseBody
 	@RequestMapping("/listData")
 	public Grid<ConfigServerEngine> listData(String configName, PageHelper page) {
 
@@ -141,6 +161,22 @@ public class ConfigServerEngineController extends BaseController{
 		} else {
 			list = configServerEngineService.find("from ConfigServerEngine c where c.configName = ?",
 					new Object[] { configName }, page);
+		}
+
+		return new Grid<ConfigServerEngine>(list);
+	}*/
+	//根据引擎类型查询出页面表格需要的数据
+	@ResponseBody
+	@RequestMapping("/listData")
+	public Grid<ConfigServerEngine> listData(String engineType, PageHelper page) {
+
+		List<ConfigServerEngine> list = null;
+		if (StringUtils.isNotBlank(engineType)) {
+			list = configServerEngineService.find("from ConfigServerEngine c where c.engineType = ?",
+					new Object[] { engineType }, page);
+		} else {
+			list = configServerEngineService.find("from ConfigServerEngine c where 1 = 1",
+					null, page);
 		}
 
 		return new Grid<ConfigServerEngine>(list);

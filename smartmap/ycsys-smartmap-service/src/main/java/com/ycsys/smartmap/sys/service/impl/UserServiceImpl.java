@@ -48,16 +48,6 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private OrganizationDao organizationDao;
 
-	@Value("#{config.admin_login_name}")
-	private String adminLoginName;
-
-	@Value("#{config.admin_password}")
-	private String admin_password;
-
-	@Value("#{config.admin_role}")
-	private String admin_role;
-
-
 	/**
 	 * 保存用户
 	 * @param user
@@ -142,7 +132,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**初始化管理员**/
-	public void initAdminuser() {
+	public void initAdminuser(String adminLoginName,String admin_password,String admin_role) {
 		if(adminLoginName != null && admin_password != null && admin_role != null){
 			if(getUser(adminLoginName) == null) {
 				User user = new User(adminLoginName, "超级管理员", admin_password);

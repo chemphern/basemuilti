@@ -1,4 +1,4 @@
-package com.ycsys.smartmap.controller.admin;
+package com.ycsys.smartmap.webgis.controller;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;

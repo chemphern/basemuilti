@@ -35,19 +35,20 @@
     <form method="post" id="form_id" enctype="multipart/form-data">
 		<input type="hidden" name="id" value="${server.id}">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="date_add_table">
-		  <tr>
+		  <%-- <tr>
 		    <td class="t_r">是否取自服务器引擎配置：</td>
 		    <td><input type="text" placeholder="只能填是或否" name="fromServerEngineFlag" 
 		    value="${server.fromServerEngineFlag}" id="fromServerEngineFlag" /></td>
-		  </tr>
-		  <!-- <tr>
+		  </tr> --%>
+		  <tr>
 		  	<td class="t_r">是否取自服务器引擎配置：</td>
-				<td><select type="text" name="fromServerEngineFlag" id="fromServerEngineFlag"
-					class="text">
-						<option value="0" >是</option>
-						<option value="1" >否</option>
-				</select></td>
-		  </tr> -->
+			<td>
+			  <select type="text" name="fromServerEngineFlag" id="fromServerEngineFlag" class="text">
+				<option value="0" >是</option>
+				<option value="1" >否</option>
+			  </select>
+			</td>
+		  </tr>
 		  <tr>
 		    <td class="t_r">服务器引擎：</td>
 		    <td>
@@ -103,6 +104,14 @@
 </body>
 <script >
 $(function() {
+	//设置下拉的值
+	if("${server.id}"){
+		var fromServerEngineFlag = "${server.fromServerEngineFlag}";
+		var name = "${server.name}";
+		$("#name option[value="+name+"]").attr("selected",true);
+	}
+	
+	
 	var form = $("#form_id");
 	var val_obj = exec_validate(form); //方法在 ${res}/js/common/form.js
 	form.validate(val_obj);

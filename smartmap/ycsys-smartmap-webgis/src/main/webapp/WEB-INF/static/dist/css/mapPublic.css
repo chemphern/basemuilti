@@ -76,9 +76,13 @@ a:hover{ text-decoration:none !important;}
 .navbar-user li .user_box{width:130px;line-height:80px;padding:0;border-left:1px solid #68d2af;}
 .navbar-user li.user a:hover{background-image:none;}
 .navbar-user li.user img{width:36px;height:36px;border-radius:100%;background:#ccc;}
-.navbar-user li.user_exit a{width:82px; height:20px;padding:0px;margin-top:32px;display:inline-block;border-left:1px solid #68d2af;}
-.navbar-user li.user_exit a:hover{background-image:none;}
-.user_exit .icon{font-size: 15px;margin-top:0px;}
+.navbar-user li.user_info a{width:30px; height:20px;padding:0px;margin-top:26px;display:inline-block;}
+.navbar-user li.user_info a:hover{background-image:none;}
+.user_info .icon{font-size: 20px;margin-top:0px;}
+.user_info .icon:hover{color:rgba(255,255,255,.7);}
+.icon-msg {color: rgba(255,255,255,.5); cursor: pointer; position: relative; } 
+.icon-msg-count {min-width: 14px; text-align: center; line-height: 14px; display: inline-block; position: absolute; right: -3px; top: -7px; background:#f7ba4a; color: #fff; border-radius: 17px; padding: 6px; font-size: 16px; transform: scale(.7); font-family: Tahoma!important; }
+
 .navbar-user .memu-list{min-width:120px;top:62px;padding:0px;}
 .navbar-user .memu-list>li{display:block;line-height: 40px;text-align: center;border-bottom: 1px solid #f4f4f4;}
 .navbar-user .memu-list>li>a{width:100%;line-height: 40px;padding:0;display:inline-block;color:#7f7e7e;}

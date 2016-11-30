@@ -30,10 +30,10 @@ public class EmailServiceImpl implements EmailService{
 	private EmailDao emailDao;
 	
 
-	@Value("${mail.applicationUrl}")
+	/*@Value("${mail.applicationUrl}")
 	private String applicationUrl;
 	
-	/*@Value("${mail.host}")
+	@Value("${mail.host}")
 	private String host;
 	@Value("${mail.username}")
 	private String userName;
@@ -44,7 +44,7 @@ public class EmailServiceImpl implements EmailService{
 	public void sendEmail(String email) {
 			//构建邮件内容,并发送
 			StringBuilder content = new StringBuilder(100)
-			.append("羽辰智慧林业综合管理平台温馨提示：这是异常报警邮件,点击<a href='").append(this.applicationUrl)
+			.append("羽辰智慧林业综合管理平台温馨提示：这是异常报警邮件,点击<a href='").append("this.applicationUrl")
 			.append("index").append("'>这里</a>,登陆本平台查看具体信息！");
 			try{
 				//发送邮件

@@ -20,18 +20,12 @@ public class SystemServiceImpl implements SystemService{
     @Resource
     private SystemDao systemDao;
 
-    @Resource(name="config")
-    private Properties config;
     private static final Logger logger = Logger.getLogger(SystemServiceImpl.class);
 
 
-    public void initSystem() {
-        String system_code = config.getProperty("system.code");
-        String remp = config.getProperty("system.name");
+    public void initSystem(String system_code,String system_name,String system_url) {
         if(system_code != null && !system_code.equals("")) {
             com.ycsys.smartmap.sys.entity.System system = systemDao.getSystemByAttr("code", system_code);
-            String system_name = config.getProperty("system.name");
-            String system_url = config.getProperty("system.url");
             if (system_name != null && !system_name.equals("") && system_url != null && !system_url.equals("")) {
 
                 if (system == null) {

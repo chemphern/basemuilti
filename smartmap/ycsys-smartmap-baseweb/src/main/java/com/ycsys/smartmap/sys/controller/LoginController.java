@@ -1,6 +1,7 @@
 package com.ycsys.smartmap.sys.controller;
 
 import com.ycsys.smartmap.sys.common.config.Global;
+import com.ycsys.smartmap.sys.entity.ShiroUser;
 import com.ycsys.smartmap.sys.entity.User;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -23,7 +24,7 @@ public class LoginController {
     public String login() {
         Subject subject = SecurityUtils.getSubject();
         if(subject.isAuthenticated()||subject.isRemembered()){
-            return "redirect:/index";
+            return "redirect:/logout";
         }
         return "/login";
     }
@@ -35,11 +36,7 @@ public class LoginController {
      */
     @RequestMapping(value="login",method = RequestMethod.POST)
     public String fail(@RequestParam(FormAuthenticationFilter.DEFAULT_USERNAME_PARAM) String userName, Model model) {
-        Subject subject = SecurityUtils.getSubject();
-        Principal principal = (Principal)subject.getPrincipal();
-        if(principal != null){
-            return "redirect:/index";
-        }
+        System.out.println("登录失败！");
         return "/login";
     }
 
