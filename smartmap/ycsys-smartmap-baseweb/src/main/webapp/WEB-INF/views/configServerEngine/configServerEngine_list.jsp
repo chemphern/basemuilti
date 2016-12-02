@@ -83,7 +83,7 @@
 <script src="${res}/plugins/ligerUI/js/plugins/ligerDrag.js" type="text/javascript"></script>  
 <script src="${res}/plugins/ligerUI/js/plugins/ligerMenu.js" type="text/javascript"></script>  
 <script src="${res}/plugins/ligerUI/js/plugins/ligerTree.js" type="text/javascript"></script>  
-<script src="${res}/plugins/ligerUI/js/plugins/CustomersData.js" type="text/javascript"></script>  
+<script src="${res}/plugins/ligerUI/js/plugins/CustomersData.js" type="text/javascript"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="${res}/bootstrap/js/bootstrap.min.js"></script>
 <!-- jQuery Knob Chart -->
@@ -122,10 +122,6 @@
 	                    onSelect : onSelectEngineType,
 	                    onContextmenu : function(node, e) {
 							actionNodeID = node.data.text;
-							/* menu.show({
-								top : e.pageY,
-								left : e.pageX
-							}); */
 							return false;
 						}
 	                    //onSelect : onSelectConfigName
@@ -248,7 +244,10 @@
 	    	else {
 		    	var selectedRows = gridManager.getSelecteds();
 		    	if(selectedRows.length > 1 || selectedRows.length < 1) {
-		    		alert("请选择一条记录进行修改！");
+		    		//alert("请选择一条记录进行修改！");
+		    		$.Layer.confirm({
+		                msg:"请选择一条记录进行修改！",
+		            });
 		    		return false;
 		    	}
 		    	else {
@@ -263,7 +262,6 @@
                   url:'${ctx}/configServerEngine/toEdit?flag='+flag+"&id="+id,
                   width: 400,
                   height: 500
-                  
                });
 		
 	}
@@ -279,18 +277,34 @@
                         type:"post",
                         dataType:"json",
                         success:function(res){
-                            alert(res.retMsg);
-                            gridManager.reload();
-                        },error:function(){
-                            alert("删除记录失败！");
+                        	if(res.retMsg=='删除成功'){
+                        		$.Layer.confirm({
+                	                msg:"删除成功",
+                	                cancel:false,
+                	                fn:function(){
+                	                 gridManager.reload();
+                	                }
+                	            });
+                        	}else if(res.retMsg=='服务引擎被引用不能删除'){
+                        		$.Layer.confirm({
+                	                msg:"服务引擎被引用不能删除",
+                	                cancel:false,
+                	                fn:function(){
+                	                 gridManager.reload();
+                	                }
+                	            });
+                        	}
+                        },
+                        error:function(){
+                            //alert("删除记录失败！");
+                        	$.Layer.confirm({
+        		                msg:"删除记录失败！",
+        		            });
                         }
                     });
                 },
-                fn2:function(){
-                	gridManager.reload();
-                }
-                
             });
+    		gridManager.reload();
     	}else{
     		var selectedRows = gridManager.getSelecteds();
         	if(selectedRows.length > 0) {
@@ -308,19 +322,37 @@
                             type:"post",
                             dataType:"json",
                             success:function(res){
-                                alert(res.retMsg);
-                                gridManager.reload();
+                            	if(res.retMsg=='删除成功'){
+                            		$.Layer.confirm({
+                    	                msg:"删除成功",
+                    	                fn:function(){
+                    	                 gridManager.reload();
+                    	                }
+                    	            });
+                            	}else if(res.retMsg=='服务引擎被引用不能删除'){
+                            		$.Layer.confirm({
+                    	                msg:"服务引擎被引用不能删除",
+                    	                cancel:null,
+                    	                fn:function(){
+                    	                 gridManager.reload();
+                    	                }
+                    	            });
+                            	}
                             }
                         });
                     },
                     fn2:function(){
                     	gridManager.reload();
-                    }
+                    } 
                     
                 });
         	} 
         	else{
-        		alert("请选择需要删除的数据！");
+        		//alert("请选择需要删除的数据！");
+        		$.Layer.confirm({
+	                msg:"请选择需要删除的数据！",
+	                cancel:null
+	            });
         	}
     	}
     };
@@ -345,6 +377,13 @@
 	   $(document.body).append(fm);
 	   fm.submit();
 	   fm.remove();
+	   console.log(fm.remove());
+	   /* $.Layer.confirm({
+           msg:"导出成功",
+           fn:function(){
+           	 p.getLigerManager().loadData();
+           }
+       }); */
     };
     function getLigerManager(){
         return $("#maingrid4").ligerGetGridManager();

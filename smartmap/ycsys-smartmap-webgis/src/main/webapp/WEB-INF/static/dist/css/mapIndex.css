@@ -13,9 +13,9 @@
     .main{top:68px;}
     .wrapper .header{height:68px;margin-bottom: 0;}
     .wrapper .header .logo img{width:auto;height:36px;}
-    .navbar-user li .user_box{line-height: 68px;}
-    .navbar-user li.user_info a{margin-top:20px;}
-    .navbar-user li.user img{width:30px;height:30px;}
+    .navbar-user>li .user_box{line-height: 68px;}
+    .navbar-user>li.user_info>a{margin-top:20px;}
+    .navbar-user>li.user img{width:30px;height:30px;}
     .header .navbar-collapse{width:140px;position:absolute;top:68px;right:0;display:none;overflow: hidden;}
     .header .bigmenu {width:100%;background-color:#26bf8c;padding-bottom:10px;}
     .header .bigmenu li{width:100%;display:block;line-height: 35px;height:35px;}
@@ -24,7 +24,7 @@
     .header .bigmenu h1{float:left;display:inline-block;}
     .header .bigmenu>li a:hover{background: #57cc84;}
     .header .bigmenu li.active{background:#57cc84;}
-    .content .toolbar a{margin-right:8px !important;min-width: 44px;}
+    .content .toolbar a{margin-right:8px !important;min-width: 36px;}
     .content .toolbar h3{display:none !important;}
     .header .homemenu {width:100%;background-color:#26bf8c;padding-bottom:10px;}
     .header .homemenu li{width:100%;display:block;line-height: 35px;height:35px;}
@@ -41,7 +41,7 @@
 .subTabs div.active{display:block;}
 
 /**content 右内容页**/
-.content{height:100%;position:absolute;top:0px;left:298px; right:0px;bottom:0px;overflow:hidden;z-index: 2;}
+.content{height:100%;position:absolute;top:0px;left:298px; right:0px;bottom:0px;overflow:hidden;z-index: 2;margin:0 !important;padding:0 !important;}
 .content .toolbar{height:36px;background:rgba(244,251,244,.9);text-align: right;-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);box-shadow: 0 6px 12px rgba(0,0,0,.175);}
 .content .toolbar a{line-height:36px;display:inline-block;margin-right:15px;}
 .content .toolbar .icon{font-size: 16px;color:#26bf8c;}
@@ -77,7 +77,7 @@
 
 /**map-operate **/
 .map-operate-wrap{position:absolute;z-index:99999;left:70px;top:35px;width:50px;height:268px;}
-.map-operate{position:absolute;top:0px;left:0px;z-index: 99999;width:50px;height:268px;}
+.map-operate{position:absolute;top:55px;left:40px;z-index: 99999;width:50px;height:268px;}
 .map-operate div{position:absolute;}
 .BMap_stdMpPan{width:50px;height:50px;background:url(../../dist/img/map/earth-control-bg.png) 0 0 no-repeat;}
 .BMap_button{width:14px;height:14px;background:url(../../dist/img/map/earth-control-bg.png) 0 0 no-repeat;}
@@ -115,12 +115,11 @@
 .tab-mapBtn .mapBtn button.active{background-color: #26bf8c;border:1px solid #26bf8c;color:#fff;}
 .tab-mapBtn .mapBtn .maplayer>li>a.select{background:url(../../dist/img/map/icon-action.png) 4px 13px no-repeat;}
 
-.tab-mapCon{max-width: 100%;height:100%;position:relative;z-index: 3;overflow:hidden;padding-bottom: 30px;margin-bottom: -30px;}
+.tab-mapCon{max-width: 100%;height:100%;position:relative;z-index: 3;overflow:hidden;padding-bottom: 30px;margin-bottom: -30px;background:url(../../dist/img/map/bg_map.jpg);}
 .tab-mapCon-pane{width:100%;height:100%; float:left;overflow:hidden; display:none;}
 #mapOrdinary{background-color: #333;}
 #mapsatellite{background-color: #666;}
-#map2d{background-color: #a2c159;}
-#map3d{background-color: #a3a9c7;}
+
 .mapCon-resizable div.active{visibility: visible;}
 .resizable-left{width:50%;float:left;}
 .resizable-right{width:40%;float:right;}

@@ -1,4 +1,4 @@
- var setting = {
+var setting = {
     view: {
       selectedMulti: false
     },
@@ -10,6 +10,12 @@
         enable: true
       }
     },
+    async: {
+		enable: true,
+		contentType: "application/json",
+		url: path+"/layerService/layerList.do",
+		autoParam: ["id", "name"]
+	},
     callback: {
       beforeCheck: beforeCheck,
       onCheck: onCheck
@@ -49,9 +55,70 @@
     showLog("[ "+getTime()+" beforeCheck ]&nbsp;&nbsp;&nbsp;&nbsp;" + treeNode.name );
     return (treeNode.doCheck !== false);
   }
+  
   function onCheck(e, treeId, treeNode) {
-    showLog("[ "+getTime()+" onCheck ]&nbsp;&nbsp;&nbsp;&nbsp;" + treeNode.name );
-  }   
+	  var url=treeNode.address;
+	  if(url){//子节点
+		  toggleLayerInMgr(treeNode);
+	  }else{//根节点
+		  var nodes=treeNode.children;
+		  for(var i=0;i<nodes.length;i++){
+			  var node=nodes[i];
+			  toggleLayerInMgr(node);
+		  }
+	  }
+	  //初始化查询图层列表
+	  var lyrData=initQueryLayerList();
+	  console.log(lyrData);
+	  $('#queryLyrLst').combobox("clear");
+	  $('#queryLyrLst').combobox('loadData', lyrData); 
+  }  
+  
+  function toggleLayerInMgr(treeNode){
+	  if(treeNode.checked){
+	        var layer;
+	        var url=treeNode.address;
+	    	if(!treeNode.geometryType || treeNode.geometryType=="" || treeNode.geometryType=="null"){
+	    		if(url.indexOf("MapServer")>-1){
+	    			url=url.substring(0,url.lastIndexOf("MapServer")+9);
+		        	layer=new esri.layers.ArcGISDynamicMapServiceLayer(url,{id:String(treeNode.id)});
+	    		}else if(url.indexOf("ImageServer")>-1){
+		        	layer=new esri.layers.ArcGISImageServiceLayer(url,{id:String(treeNode.id)});
+	    		}
+	    		map.addLayer(layer);
+	    		map.reorderLayer(layer,1);
+	        }else{
+	        	var type=treeNode.geometryType.toLowerCase();
+	        	layer=new esri.layers.FeatureLayer(url,{id:String(treeNode.id)});
+	            map.addLayer(layer);
+	        	if(type.indexOf("polygon")>-1){
+	        		map.reorderLayer(layer,1);
+	        	}else if(type.indexOf("polyline")>-1){
+	        		map.reorderLayer(layer,2);
+	        	}
+	        }
+	    }else{
+	    	var lyr=map.getLayer(treeNode.id);
+	    	if(lyr){
+	    		map.removeLayer(lyr);
+	    	}
+	    }
+  }
+  
+  function initQueryLayerList(){
+		var ids=map.graphicsLayerIds;
+		var opts=[];
+		for(var i=0;i<ids.length;i++){
+			if(ids[i]=="graphicsLayer1") continue;
+			var opt={};
+			var featureLyr=map.getLayer(ids[i]);
+			opt.name=featureLyr.name;
+			opt.value=featureLyr.id;
+			opts.push(opt);
+		}
+		return opts;
+	}
+  
   function showLog(str) {
     if (!log) log = $("#log");
     log.append("<li class='"+className+"'>"+str+"</li>");
@@ -107,6 +174,6 @@
   }
 
   $(document).ready(function(){
-    $.fn.zTree.init($("#treeMaptcgl"), setting, zNodes);
+    $.fn.zTree.init($("#treeMaptcgl"), setting);
     $("#autoCallbackTrigger").bind("change", {}, setAutoTrigger);
   });

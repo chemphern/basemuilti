@@ -32,6 +32,8 @@ function to3dMap() {
 	        YcMap3D.AttachEvent("OnRButtonDown", function () { YcMap3D.Navigate.Stop(); return true; });
 	        //打开工程
 	        YcMap3D.Project.Open(flyPath,true);
+	        //关闭自带漫游控件
+	        YcMap3D.Window.DisablePresentationControl = true;
 	        //添加onloadFinished事件
 	        YcMap3D.AttachEvent("OnLoadFinished", OnProjectLoadFinished);
 	    }

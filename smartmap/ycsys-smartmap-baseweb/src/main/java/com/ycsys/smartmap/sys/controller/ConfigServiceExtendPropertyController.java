@@ -49,36 +49,36 @@ public class ConfigServiceExtendPropertyController {
 	}
 	
 	//保存服务引擎配置方法
-		@RequestMapping("save")
-		@ResponseBody
-		public String save(ConfigServiceExtendProperty configServiceExtendProperty,Model model,HttpServletRequest request) {
-			User user = (User) request.getSession().getAttribute(Global.SESSION_USER);
-			//新增
-			if(configServiceExtendProperty.getId()==null){
-				configServiceExtendProperty.setCreateDate(new Date());
-				configServiceExtendProperty.setCreator(user);
-				configServiceExtendPropertyService.save(configServiceExtendProperty);
-			}
-			//更新
-			else{
-				ConfigServiceExtendProperty dbConfigServerExtendProperty = configServiceExtendPropertyService.get(ConfigServiceExtendProperty.class,
-						configServiceExtendProperty.getId());
-				try {
-					// 得到修改过的属性
-					BeanExtUtils.copyProperties(dbConfigServerExtendProperty, configServiceExtendProperty, true, true,
-							null);
-				} catch (IllegalAccessException e) {
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				}
-				configServiceExtendProperty.setUpdateDate(new Date());
-				configServiceExtendProperty.setUpdator(user);
-				configServiceExtendPropertyService.update(dbConfigServerExtendProperty);
-			}
-			
-			return "success";
+	@RequestMapping("save")
+	@ResponseBody
+	public String save(ConfigServiceExtendProperty configServiceExtendProperty,Model model,HttpServletRequest request) {
+		User user = (User) request.getSession().getAttribute(Global.SESSION_USER);
+		//新增
+		if(configServiceExtendProperty.getId()==null){
+			configServiceExtendProperty.setCreateDate(new Date());
+			configServiceExtendProperty.setCreator(user);
+			configServiceExtendPropertyService.save(configServiceExtendProperty);
 		}
+		//更新
+		else{
+			ConfigServiceExtendProperty dbConfigServerExtendProperty = configServiceExtendPropertyService.get(ConfigServiceExtendProperty.class,
+					configServiceExtendProperty.getId());
+			try {
+				// 得到修改过的属性
+				BeanExtUtils.copyProperties(dbConfigServerExtendProperty, configServiceExtendProperty, true, true,
+						null);
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				e.printStackTrace();
+			}
+			configServiceExtendProperty.setUpdateDate(new Date());
+			configServiceExtendProperty.setUpdator(user);
+			configServiceExtendPropertyService.update(dbConfigServerExtendProperty);
+		}
+		
+		return "success";
+	}
 		
 	//删除多条服务引擎扩展属性
 	/*@RequestMapping("deletes")

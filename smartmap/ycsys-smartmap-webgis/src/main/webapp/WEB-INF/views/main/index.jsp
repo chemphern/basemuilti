@@ -12,6 +12,10 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" href="${res}/dist/css/mapPublic.css">
   <link rel="stylesheet" href="${res}/dist/css/mapIndex.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="${res}/dist/css/mapAdminLTE.css">
+  <!-- 换肤 -->
+  <link rel="stylesheet" href="${res}/dist/css/mapSkins/_all-skins.css">
   <link href="${res}/plugins/mCustomScrollbar/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css">
     <!-- jQuery Easyui css-->
   <link rel="stylesheet" href="${res}/plugins/jeasyui/themes/default/easyui.css">
@@ -38,11 +42,10 @@
   <script src="${res}/plugins/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
 
   <!-- 颜色选择 -->
-  <script src="${res}/plugins/jqColorPicker/colors.js"></script>
-  <script src="${res}/plugins/jqColorPicker/jqColorPicker.js"></script>
+ <script src="${res}/plugins/jqColorPicker/colors.js"></script>
+ <script src="${res}/plugins/jqColorPicker/jqColorPicker.js"></script>
   <script type="text/javascript">
-    $('.color').colorPicker(); // that's it
-  </script>
+      $('.color').colorPicker(); 
   <script src="${res}/dist/js/map/map_index.js"></script>
   <script src="${res}/dist/js/map/map_index_dialog.js"></script>
   <!-- jQuery 地图鱼骨控件滑动效果 -->
@@ -54,7 +57,7 @@
   <script  src="${res}/plugins/ztree/js/jquery.ztree.excheck.js"></script>
 
   <script  src="${res}/dist/js/map/treeMaptcgl.js"></script>
-  <script  src="${res}/dist/js/map/treeMapzt.js"></script>
+<%--   <script  src="${res}/dist/js/map/treeMapzt.js"></script> --%>
   
   <!-- 二三维地图工具栏基础功能 -->
   <script  src="${res}/js/common/common.js"></script>
@@ -68,11 +71,11 @@
 <script src="${res}/plugins/dialog/iframeTools.source.js"></script>
 <script src="${res}/plugins/dialog/unit.js"></script>
 </head>
-<body role="document" cz-shortcut-listen="true">
+<body role="document" cz-shortcut-listen="true" class="hold-transition  sidebar-mini skin-cyan">
 <!-- wrapper start -->
 <div class="wrapper" > 
   <!-- header start -->
-  <nav class="header navbar navbar-fixed-top" role="navigation">
+  <nav class="header navbar navbar-static-top" role="navigation">
         <div class="navbar-inner clearfix">
           <a class="navbar-brand logo" href="#"><img src="${res}/dist/img/map/logo.png" alt="logo" /></a>
         
@@ -84,13 +87,79 @@
                 <a href="#" class="user_box dropdown-toggle" data-toggle="dropdown" id="dLabel"><img src="${res}/dist/img/map/photo1.png" alt="头像" /><span class="user_name">admin</span> <span class="caret"></span></a>
                 <ul class="dropdown-menu memu-list"  role="menu" aria-labelledby="dLabel">
                   <li><a href="#"><i class="icon iconfont">&#xe60e;</i><span>个人信息</span></a></li>
-                  <li><a href="#"><i class="icon iconfont">&#xe614;</i><span>修改资料</span></a></li>
+<!--                   <li><a href="#"><i class="icon iconfont">&#xe614;</i><span>修改资料</span></a></li> -->
                   <li><a href="#"><i class="icon iconfont">&#xe615;</i><span>修改密码</span></a></li>
                   <li><a href="#"><i class="icon iconfont">&#xe650;</i><span>退出系统</span></a></li>               
                 </ul>                         
               </li>
-              <li class="user_info" ><a href="javascript:;" title="消息" class="icon-msg"><i class="icon iconfont">&#xe651;</i><span class="icon-msg-count">2</span></a></li>
-              <li class="user_info" ><a href="javascript:;" title="换肤"><i class="icon iconfont">&#xe64c;</i></a></li> 
+              <li class="user_info dropdown" ><a href="javascript:;" title="消息" class="icon-msg dropdown-toggle"  data-toggle="dropdown"><i class="icon iconfont">&#xe651;</i><span class="icon-msg-count">2</span></a>
+                <!-- messages start-->
+                <ul class="dropdown-menu msg-box">
+                  <li class="msg-box-hd">你有<span class="orange">4个</span>消息待查看<a href="#">全部+</a></li>
+                  <li>
+                    <ul class="msg-box-bd">
+                      <li>
+                        <a href="javascript:;">
+                          <div class="pull-left">
+                            <i class="iconfont icon">&#xe6a4;</i>
+                          </div>
+                          <h4>
+                            支持团队
+                          </h4>
+                          <p>Why not buy a new awesome theme?</p>
+                        </a>
+                      </li>
+
+                      <li>
+                        <a href="#">
+                          <div class="pull-left">
+                            <i class="iconfont icon">&#xe6a4;</i>
+                          </div>
+                          <h4>
+                            AdminLTE 设计团队
+                          </h4>
+                          <p>Why not buy a new awesome theme?</p>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <div class="pull-left">
+                            <i class="iconfont icon">&#xe6a4;</i>
+                          </div>
+                          <h4>
+                            开发商
+                          </h4>
+                          <p>Why not buy a new awesome theme?</p>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <div class="pull-left">
+                            <i class="iconfont icon">&#xe6a4;</i>
+                          </div>
+                          <h4>
+                           市场部
+                          </h4>
+                          <p>Why not buy a new awesome theme?</p>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <div class="pull-left">
+                            <i class="iconfont icon">&#xe6a4;</i>
+                          </div>
+                          <h4>
+                          审稿人
+                          </h4>
+                          <p>Why not buy a new awesome theme?</p>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>                
+                </ul>
+                <!-- messages end-->
+              </li>
+              <li class="user_info pr10 "><a href="javascript:;" title="换肤"  data-toggle="control-sidebar"><i class="icon iconfont">&#xe64c;</i></a></li> 
             </ul>
           </div>
           <!-- bigmenu -->
@@ -131,7 +200,7 @@
           <div class="panelBox">
             <div class="panelBox-heading" d><i class="icon iconfont icon_map">&#xe893;</i><h3 class="panelBox-title">地图查询</h3><span class="arrow iconfont"></span></div>
             <div  class="panelBox-body">
-              <div class="row menu">
+              <div class="row submenu">
                 <a href="#fore-2d3d-side-cx-sxcx" class="col-sm-4 active" data-toggle="tab">
                   <i class="icon iconfont mapSearch">&#xe6c8;</i>
                   <h2>属性查询</h2>
@@ -157,8 +226,9 @@
                 <form class="form-horizontal search-form" role="form">
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">查询图层：</label>
-                    <div class="col-sm-8 sel-combotree">
-                      <select class="form-control input-sm easyui-combotree " url="dist/js/map/data/mapLayerData.json" name="mapLayer"></select>
+                    <div class="col-sm-8">
+<%--                       <select class="form-control input-sm easyui-combotree " data-options="url:'${res }/dist/js/map/data/mapLayerData.json',method:'get'" name="mapLayer"></select> --%>
+                      <select class="easyui-combobox" data-options="valueField:'value',textField:'name'" name="" id="queryLyrLst" style="width:160px;"></select>
                     </div>
                   </div>
                   <div class="form-group form-group-sm">                    
@@ -180,7 +250,7 @@
                     </div>
                   </div>
                   <div class="searchBtn">
-                    <button type="submit" class="btn btn-success">查 询</button>
+                    <button type="button" class="btn btn-success" onclick="queryAttr();">查 询</button>
                     <button type="reset" class="btn btn-warning">重 置</button>
                   </div>
                 </form>
@@ -226,7 +296,7 @@
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">查询图层：</label>
                     <div class="col-sm-8 sel-combotree">
-                      <select class="form-control input-sm easyui-combotree " url="dist/js/map/data/mapLayerData.json" name="mapLayer2"></select>
+                      <select class="form-control input-sm easyui-combotree " data-options="url:'${res }/dist/js/map/data/mapLayerData.json',method:'get'" name="mapLayer2"></select>
                     </div>
                   </div>
                   <div class="form-group form-group-sm">                    
@@ -263,7 +333,7 @@
                     </select>
                   </div>
                   <div class="searchBtn">
-                    <button type="submit" class="btn btn-success">查询</button>
+                    <button type="button" class="btn btn-success" onclick="queryAttrLogic();">查询</button>
                     <button type="reset" class="btn btn-warning">重置</button>
                   </div>
                 </form>
@@ -282,7 +352,7 @@
           <div class="panelBox">
             <div class="panelBox-heading"><i class="icon iconfont icon_map">&#xe600;</i><h3 class="panelBox-title">定位方式</h3><span class="arrow iconfont"></span></div>
             <div  class="panelBox-body">
-              <div class="row menu">
+              <div class="row submenu">
                 <a href="#fore-2d3d-menu-dw-dmdw" class="col-sm-4 active" data-toggle="tab">
                   <i class="icon iconfont mapSearch">&#xe63e;</i>
                   <h2>地名定位</h2>
@@ -317,7 +387,7 @@
                     </div>
                   </div>
                   <div class="searchBtn">
-                    <button type="submit" class="btn btn-success">查询</button>
+                    <button class="btn btn-success" onclick="">查询</button>
                     <button type="reset" class="btn btn-warning">重置</button>
                   </div>
                 </form>
@@ -437,7 +507,7 @@
           <div class="panelBox">
             <div class="panelBox-heading"><i class="icon iconfont icon_map">&#xe601;</i><h3 class="panelBox-title">标绘类型</h3><span class="arrow iconfont"></span></div>
             <div  class="panelBox-body">
-              <div class="row menu">
+              <div class="row submenu">
                 <a href="#fore-2d3d-menu-bz-dbh" class="col-sm-3 active" data-toggle="tab">
                   <i class="icon iconfont mapSearch">&#xe659;</i>
                   <h2>点标绘</h2>
@@ -730,7 +800,7 @@
           <div class="panelBox">
             <div class="panelBox-heading" ><i class="icon iconfont icon_map">&#xe60a;</i><h3 class="panelBox-title">专题地图</h3><span class="arrow iconfont"></span></div>
             <div class="panelBox-body">
-              <div class="row menu">
+              <div class="row submenu">
                 <a href="#fore-2d3d-menu-zt-zttzs" class="col-sm-12 active" data-toggle="tab">
                   <i class="icon iconfont mapSearch">&#xe6c8;</i>
                   <h2>专题地图</h2>
@@ -746,7 +816,7 @@
               </div>
               <div  class="panelBox-body">
                 <!---tree start-->
-                <ul id="treeMapzt"  class="easyui-tree" data-options="url:'dist/js/map/data/mapLayerData.json',method:'get',animate:true,lines:true,checkbox:true">
+                <ul id="treeMapzt"  class="easyui-tree" data-options="url:'${res }/dist/js/map/data/mapLayerData.json',method:'get',animate:true,lines:true,checkbox:true">
                 </ul>
                  <!---tree end-->
               </div>
@@ -926,7 +996,9 @@
               </div>
               <div  class="panelBox-body">
                 <!---tree start-->
-                <ul id="treeMaptcgl"  class="easyui-tree" data-options="url:'dist/js/map/data/mapLayerData.json',method:'get',animate:true,lines:true,checkbox:true">
+<!--                 <ul id="treeMaptcgl"  class="easyui-tree" data-options="url:'dist/js/map/data/mapLayerData.json',method:'get',animate:true,lines:true,checkbox:true"> -->
+<!--                 <ul id="treeMaptcgl"  class="easyui-tree" data-options="animate:true,lines:true,checkbox:true"> -->
+					<ul id="treeMaptcgl" class="ztree">
                 </ul>
                 <!---tree end-->
               </div>
@@ -945,13 +1017,13 @@
           <div class="panelBox">
             <div class="panelBox-heading" ><i class="icon iconfont icon_map">&#xe8b4;</i><h3 class="panelBox-title">空间分析</h3><span class="arrow iconfont"></span></div>
             <div  class="panelBox-body">
-              <div class="row menu">
+              <div class="row submenu">
                 <a href="#fore-2d3d-menu-fx-djfx" class="col-sm-4 active" data-toggle="tab">
-                  <i class="icon iconfont mapSearch">&#xe668;</i>
+                  <i class="icon iconfont mapSearch">&#xe669;</i>
                   <h2>叠加分析</h2>
                 </a>
                 <a href="#fore-2d3d-menu-fx-hcqfx" class="col-sm-4" data-toggle="tab">
-                  <i class="icon iconfont mapSearch">&#xe66c;</i>
+                  <i class="icon iconfont mapSearch">&#xe667;</i>
                   <h2>缓冲区分析</h2>
                 </a>
                 <a href="#fore-2d3d-menu-fx-3dfx" class="col-sm-4" data-toggle="tab">
@@ -1076,7 +1148,7 @@
           <div class="panelBox">
             <div class="panelBox-heading" ><i class="icon iconfont icon_map">&#xe7f6;</i><h3 class="panelBox-title">三维漫游</h3><span class="arrow iconfont"></span></div>
             <div  class="panelBox-body">
-              <div class="row menu">
+              <div class="row submenu">
                 <a href="#fore-2d3d-menu-my-fxmy" class="col-sm-6 active" data-toggle="tab" onclick="getFlys()">
                   <i class="icon iconfont mapSearch">&#xe630;</i>
                   <h2>飞行漫游</h2>
@@ -1140,45 +1212,80 @@
                 <h3 class="panelBox-title">路径管理</h3><span class="arrow arrowUp"></span>
               </div>
               <div  class="panelBox-body">
-                <form class="form-inline search-form" role="form">
-                  <div class="input-group search-btn wd200">
-                    <input type="text" class="form-control input-sm " placeholder="飞行漫游信息">
-                    <span class="input-group-btn btn-group-sm">
-                      <button class="btn btn-default icon iconfont" type="submit">&#xe644;</button>
-                    </span>
-                  </div>
-                    <div class="form-group form-group-sm btn_list" id="pathtoolbar2">
-                      <button type="button" class="btn btn-default btn-sm btn_add active">
-                        <span class="glyphicon glyphicon-plus"></span> 新增
-                      </button>
-                       <button type="button" class="btn btn-default btn-sm btn_edit">
-                        <span class="glyphicon glyphicon-pencil"></span> 修改
-                      </button>
-                       <button type="button" class="btn btn-default btn-sm btn_del">
-                        <span class="glyphicon glyphicon-minus"></span> 删除
-                      </button>                                      
+                <div class="pathbox">
+                  <form class="form-inline search-form" role="form">
+                    <div class="input-group search-btn wd200">
+                      <input type="text" class="form-control input-sm " placeholder="飞行漫游信息">
+                      <span class="input-group-btn btn-group-sm">
+                        <button class="btn btn-default icon iconfont" type="submit">&#xe644;</button>
+                      </span>
                     </div>
-                  
-                    <table class="table  table-hover table-responsive search-form-table" id="tableLjgl"  
-                     data-toolbar="#pathtoolbar2"
-                     data-toggle="table"
-                     data-url="dist/js/map/data/tableFxmyData.json"
-                     data-click-to-select="true"
-                     data-row-style="rowStyle"
-                     data-query-params="queryParams"
-                     data-pagination="true"
-                     data-page-size="5"
-                     data-striped="true">
-                        <thead>
-                          <tr>
-                            <th data-field="state" data-radio="true"></th>
-                            <th data-field="id">编号</th>
-                            <th data-field="pathName">路径名称</th>
-                            <th data-field="pathDataSource">路径数据源</th>
-                          </tr>
-                        </thead>
-                    </table>              
-                </form>               
+                      <div class="form-group form-group-sm btn_list" id="pathtoolbar2">
+                        <button type="button" class="btn btn-default btn-sm btn_add active">
+                          <span class="glyphicon glyphicon-plus"></span> 新增
+                        </button>
+                         <button type="button" class="btn btn-default btn-sm btn_edit">
+                          <span class="glyphicon glyphicon-pencil"></span> 修改
+                        </button>
+                         <button type="button" class="btn btn-default btn-sm btn_del">
+                          <span class="glyphicon glyphicon-minus"></span> 删除
+                        </button>                                      
+                      </div>
+                    
+                      <table class="table  table-hover table-responsive search-form-table" id="tableLjgl"  
+                       data-toolbar="#pathtoolbar2"
+                       data-toggle="table"
+                       data-url="dist/js/map/data/tableFxmyData.json"
+                       data-click-to-select="true"
+                       data-row-style="rowStyle"
+                       data-query-params="queryParams"
+                       data-pagination="true"
+                       data-page-size="5"
+                       data-striped="true">
+                          <thead>
+                            <tr>
+                              <th data-field="state" data-radio="true"></th>
+                              <th data-field="id">编号</th>
+                              <th data-field="pathName">路径名称</th>
+                              <th data-field="pathDataSource">路径数据源</th>
+                            </tr>
+                          </thead>
+                      </table>              
+                  </form>
+                </div>
+                <!-- 新增路径 start-->
+                <div class="pathbox-add" style="display:none">                  
+                  <form action="" method="get" class="form-inline search-form" role="form">
+                    <div class="form-group form-group-sm btn_list" id="pathtoolbar2">
+                        <button type="button" class="btn btn-default btn-sm btn_save active">
+                          <span class="glyphicon glyphicon-saved"></span> 保存
+                        </button>
+                         <button type="button" class="btn btn-default btn-sm btn_cancel">
+                          <span class="glyphicon glyphicon-remove"></span> 取消
+                        </button>                                     
+                    </div>
+                    <div class="form-group">
+                      <label for="name" class="col-sm-4">位置名称：</label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control input-sm" >
+                      </div>
+                    </div>                  
+                    <div class="form-group">
+                      <label for="name" class="col-sm-4">停留时间：</label>
+                      <input type="text" class="form-control input-sm col-sm-7 wd140">               
+                      <div class="col-sm-1 input-sm">秒</div>
+                    </div>
+                    <div class="form-group form-group-sm">
+                      <div class="col-sm-6">
+                          <input type="text" class="form-control input-sm ">
+                      </div>
+                      <div class="col-sm-6">
+                          <button type="button" class="btn btn-sm">拾取当前位置</button> 
+                      </div>
+                    </div>                     
+                  </form>
+                </div>
+                <!-- 新增路径 end-->               
               </div>
 
             </div>
@@ -1304,7 +1411,19 @@
   </div>
   </div>
   <!-- main end -->
+  <!-- Control Sidebar 换肤弹窗-->
+  <aside class="control-sidebar control-sidebar-dark">
+    <div class="tab-content">
+      <div class="tab-pane" id="control-sidebar-home-tab"></div>
+    </div>
+  </aside>
+  <div class="control-sidebar-bg"></div>
+  
 </div>
 <!-- wrapper end -->
+<!-- AdminLTE App -->
+<script src="${res}/dist/js/app.js"></script>
+<!-- 换肤 -->
+<script src="${res}/dist/js/map/mapSkinSelect.js"></script>
 </body>
 </html>

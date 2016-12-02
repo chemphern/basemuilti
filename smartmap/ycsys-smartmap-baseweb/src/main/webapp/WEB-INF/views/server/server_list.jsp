@@ -7,9 +7,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>羽辰智慧林业综合管理平台-资源管理</title>
 <!-- Tell the browser to be responsive to screen width -->
-<meta
-	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-	name="viewport">
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 <!-- Bootstrap 3.3.6 -->
 <link rel="stylesheet" href="${res}/bootstrap/css/bootstrap.css">
 <!-- iconfont -->
@@ -22,11 +20,9 @@
 <!-- iCheck -->
 <link rel="stylesheet" href="${res}/plugins/iCheck/flat/blue.css">
 <!-- list -->
-<link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css"
-	rel="stylesheet" type="text/css" />
+<link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
 <!-- 弹出框 -->
-<link href="${res}/plugins/dialog/dialog.css" rel="stylesheet"
-	type="text/css">
+<link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -85,18 +81,12 @@ body {
 	</div>
 </body>
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
-<script src="${res}/plugins/ligerUI/js/core/base.js"
-	type="text/javascript"></script>
-<script src="${res}/plugins/ligerUI/js/plugins/ligerGrid.js"
-	type="text/javascript"></script>
-<script src="${res}/plugins/ligerUI/js/plugins/ligerDrag.js"
-	type="text/javascript"></script>
-<script src="${res}/plugins/ligerUI/js/plugins/ligerMenu.js"
-	type="text/javascript"></script>
-<script src="${res}/plugins/ligerUI/js/plugins/ligerTree.js"
-	type="text/javascript"></script>
-<script src="${res}/plugins/ligerUI/js/plugins/CustomersData.js"
-	type="text/javascript"></script>
+<script src="${res}/plugins/ligerUI/js/core/base.js" type="text/javascript"></script>
+<script src="${res}/plugins/ligerUI/js/plugins/ligerGrid.js" type="text/javascript"></script>
+<script src="${res}/plugins/ligerUI/js/plugins/ligerDrag.js" type="text/javascript"></script>
+<script src="${res}/plugins/ligerUI/js/plugins/ligerMenu.js" type="text/javascript"></script>
+<script src="${res}/plugins/ligerUI/js/plugins/ligerTree.js" type="text/javascript"></script>
+<script src="${res}/plugins/ligerUI/js/plugins/CustomersData.js" type="text/javascript"></script>
 <script src="${res}/bootstrap/js/bootstrap.min.js"></script>
 <script src="${res}/plugins/knob/jquery.knob.js"></script>
 <script src="${res}/plugins/slimScroll/jquery.slimscroll.js"></script>
@@ -116,12 +106,12 @@ var gridManager = null;
 			var actionNodeID;
 			$("#tree1").ligerTree(
 	            {
-	                url: "${ctx}/server/listAllName",
+	                url: "${ctx}/server/listServerType",
                     nodeWidth : 140,
                     idFieldName :'id',
                     parentIDFieldName :'pid',
                     //textFieldName :'name',
-                    onSelect : onSelectServerName,
+                    onSelect : onSelectServerType,
                     onContextmenu : function(node, e) {
 						actionNodeID = node.data.text;
 						/* menu.show({
@@ -131,25 +121,22 @@ var gridManager = null;
 						return false;
 					}
 	             });
-			
-			
-	    	function onSelectServerName(obj) {
+	    	/* function onSelectServerName(obj) {
 	    		name = obj.data.name;
 	        	gridManager.setParm("name",name);
 	        	window.gridManager.reload();
-	        }
+	        } */
 	    	//树 end
 	            
-		
-	    	/* function onSelectRuleType(obj) {
-				var ruleType = "";
-				if(obj.data.text != '异常报警规则') {
+			function onSelectServerType(obj) {
+				var serverType = "";
+				if(obj.data.text != '平台监控配置') {
 					//alert(obj.data.id);
-					ruleType = obj.data.id
+					serverType = obj.data.id
 				}
-				gridManager.setParm("ruleType",ruleType);
+				gridManager.setParm("serverType",serverType);
 	        	window.gridManager.reload();
-	        } */
+	        }
 	    	//树 end
 	    	
 	    	//表格列表 start
@@ -158,7 +145,16 @@ var gridManager = null;
             rownumbers : true,
             columns: [
                       { display: '服务器名称', name: 'name', align: 'center', width: 100 },
-                      { display: '服务器类型', name: 'serverType.name', Width: 60 },
+                      { display: '服务器类型', name: 'serverType', Width: 60 ,
+                    	  render: function (item) {
+	                    	     var obj = parseInt(item.serverType);
+  	                    	  <c:forEach var="map" items="${serverType }">
+  	                    	  		if(obj == "${map.key }") {
+  	                    	  			return "${map.value.name }";
+  	                    	  		}
+	       						  </c:forEach>
+	                     }      
+                      },
                       { display: '是否取自服务引擎配置', name: 'fromServerEngineFlag', minWidth: 100,
                     	  fromServerEngineFlag:'int',
 	   	                    render: function (item) {
@@ -205,7 +201,10 @@ var gridManager = null;
 	    	else {
 		    	var selectedRows = gridManager.getSelecteds();
 		    	if(selectedRows.length > 1 || selectedRows.length < 1) {
-		    		alert("请选择一条记录进行修改！");
+		    		//alert("请选择一条记录进行修改！");
+		    		$.Layer.confirm({
+		                msg:"请选择一条记录进行修改！",
+		            });
 		    		return false;
 		    	}
 		    	else {
@@ -236,19 +235,21 @@ var gridManager = null;
                         type:"post",
                         dataType:"json",
                         success:function(res){
-                        //gridManager.reload();
-                            alert(res.retMsg);
-                            gridManager.reload();
+                        	if(res.retMsg=='删除成功'){
+                        		$.Layer.confirm({
+                	                msg:"删除成功",
+                	                fn:function(){
+                	                 gridManager.reload();
+                	                }
+                	            });
+                        	}
                         },error:function(){
                             alert("删除记录失败！");
                         }
                     });
                 },
-                fn2:function(){
-                	gridManager.reload();
-                }
-                
             });
+    		gridManager.reload();
     	}else{
     		var selectedRows = gridManager.getSelecteds();
         	if(selectedRows.length > 0) {
@@ -266,15 +267,17 @@ var gridManager = null;
                             type:"post",
                             dataType:"json",
                             success:function(res){
-                                alert(res.retMsg);
-                                gridManager.reload();
+                            	if(res.retMsg=='删除成功'){
+                            		$.Layer.confirm({
+                    	                msg:"删除成功",
+                    	                fn:function(){
+                    	                 gridManager.reload();
+                    	                }
+                    	            });
+                            	}
                             }
                         });
                     },
-                    fn2:function(){
-                    	gridManager.reload();
-                    }
-                    
                 });
         	} 
         	else{

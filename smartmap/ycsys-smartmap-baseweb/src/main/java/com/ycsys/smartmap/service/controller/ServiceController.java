@@ -1,7 +1,12 @@
 package com.ycsys.smartmap.service.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -104,13 +109,64 @@ public class ServiceController {
 		String clusterName = request.getParameter("clusterName");
 		String folderName = request.getParameter("folderName");
 		String[] extensionName = request.getParameterValues("extensionName");
-		List<String> extensionNameList = Arrays.asList(extensionName);
+		List<String> extensionNameList = null;
+		if(extensionName != null && extensionName.length > 0) {
+			extensionNameList = Arrays.asList(extensionName);
+		}
 		Resource resource = resourceService.get(Resource.class, Integer.parseInt(resourceFileId));
 		String serverEngineId = request.getParameter("serverEngine");
 		System.out.println("serverEngine="+serverEngineId);
 		ConfigServerEngine severEngine = configServerEngineService.get(ConfigServerEngine.class, Integer.parseInt(serverEngineId));
 		if(StringUtils.isNotBlank(resourceFileId)) {
 			resource = resourceService.get(Resource.class, Integer.parseInt(resourceFileId));
+		}
+		//把资源文件上传到ArcGisServer上
+		String path = "";
+		String fileName = "";
+		if(resource.getFilePath() != null ) {
+			 path = "\\\\172.16.10.52\\smartMap\\" + "资源";
+			 if(!"/".equals(folderName)) {
+				 path = path + "\\" + folderName;
+			 }
+			 File targetFloder = new File(path);
+			 if(!targetFloder.exists()) {
+				 targetFloder.mkdirs();
+			 }
+			 fileName = resource.getFilePath().substring(resource.getFilePath().lastIndexOf("\\"));
+			 File targetPath = new File(path, fileName);
+			 InputStream in = null;
+			 OutputStream out = null;
+			 try {
+				in = new FileInputStream(resource.getFilePath());
+				out = new FileOutputStream(targetPath);
+				byte[] bs = new byte[1024];
+	            int len = -1;
+					while((len = in.read(bs)) != -1) {
+						out.write(bs, 0, len);
+					}
+				 
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally {
+				try {
+					out.close();
+					in.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		}
+		
+		String onlineResource = "http://"+severEngine.getIntranetIp() + ":" + severEngine.getIntranetPort() + "/arcgis/rest/services/";
+		if(StringUtils.isNotBlank(folderName)) {
+			onlineResource = onlineResource + folderName + "/";
 		}
 		
 		JSONObject jsonService = new JSONObject();
@@ -136,7 +192,12 @@ public class ServiceController {
 		jsonProperties.put("virtualCacheDir", "");
 		jsonProperties.put("maxImageHeight", "2048");
 		jsonProperties.put("maxRecordCount", "1000");
-		jsonProperties.put("filePath", resource.getFilePath());
+		String filePath = "E:\\smartMap\\资源";
+		if(!"/".equals(folderName)) {
+			filePath = filePath + "\\" + folderName;
+		 }
+		filePath = filePath+fileName;
+		jsonProperties.put("filePath", filePath);
 		jsonProperties.put("maxImageWidth", "2048");
 		jsonProperties.put("cacheOnDemand", "false");
 		jsonProperties.put("virtualOutputDir", "");
@@ -149,7 +210,7 @@ public class ServiceController {
 		
 		JSONArray jsonExtensions = new JSONArray();
 		jsonService.put("extensions", jsonExtensions);
-		if(extensionNameList.contains("KmlServer")) {
+		if(extensionNameList != null && extensionNameList.contains("KmlServer")) {
 			JSONObject joExService = new JSONObject();
 			JSONObject jpExproties = new JSONObject();
 			
@@ -175,7 +236,7 @@ public class ServiceController {
 
 			jsonExtensions.add(joExService);
 		}
-		if(extensionNameList.contains("WFSServer")) {
+		if(extensionNameList != null && extensionNameList.contains("WFSServer")) {
 			JSONObject joExService = new JSONObject();
 			JSONObject jpExproties = new JSONObject();
 			joExService.put("typeName", "WFSServer");
@@ -212,7 +273,7 @@ public class ServiceController {
 			jsonExtensions.add(joExService);
 		}
 		
-		if(extensionNameList.contains("WCSServer")) {
+		if(extensionNameList != null && extensionNameList.contains("WCSServer")) {
 			JSONObject joExService = new JSONObject();
 			JSONObject jpExproties = new JSONObject();
 			joExService.put("typeName", "WCSServer");
@@ -242,13 +303,14 @@ public class ServiceController {
 			jpExproties.put("serviceHour", "serviceHour");
 			jpExproties.put("contactInstructions", "");
 			jpExproties.put("role", "");
-			jpExproties.put("onlineResource", "http://:arcgis/services/" + serviceName + "/MapServer/WCSServer");
+			onlineResource = onlineResource + serviceName + "/" + serviceType;
+			jpExproties.put("onlineResource", onlineResource);
 			
 
 			joExService.put("properties", jpExproties);
 			jsonExtensions.add(joExService);
 		}
-		if(extensionNameList.contains("FeatureServer")) {
+		if(extensionNameList != null && extensionNameList.contains("FeatureServer")) {
 			JSONObject joExService = new JSONObject();
 			JSONObject jpExproties = new JSONObject();
 			joExService.put("typeName", "FeatureServer");
@@ -270,7 +332,7 @@ public class ServiceController {
 			joExService.put("properties", jpExproties);
 			jsonExtensions.add(joExService);
 		}
-		if(extensionNameList.contains("WMSServer")) {
+		if(extensionNameList != null && extensionNameList.contains("WMSServer")) {
 			JSONObject joExService = new JSONObject();
 			JSONObject jpExproties = new JSONObject();
 			joExService.put("typeName", "WMSServer");
@@ -294,7 +356,7 @@ public class ServiceController {
 			jpExproties.put("phone", "");
 			jpExproties.put("keyword", "");
 			jpExproties.put("postalCode", "");
-			jpExproties.put("onlineResource", "http://:arcgis/services/" + serviceName + "/MapServer/WCSServer");
+			jpExproties.put("onlineResource", onlineResource);
 			jpExproties.put("title", "");
 			jpExproties.put("electronicMailAddress", "");
 			jpExproties.put("enableTransactions", "");
@@ -315,7 +377,7 @@ public class ServiceController {
 			jsonExtensions.add(joExService);
 		}
 		
-		System.out.println("jsonService.toJSONString()======"+jsonService.toJSONString());
+		System.out.println("jsonService.toJSONString()=="+jsonService.toJSONString());
 		
 		String ip = "";
 		String port = "";
@@ -329,7 +391,14 @@ public class ServiceController {
 		}
 		//发布服务
 		String msg = ServiceUtils.createService(ip,port,userName,password,serviceName, serviceType, folderName.equals("/")?"":folderName, jsonService.toJSONString());
-		map.put("msg", msg);
+		if("success".equals(msg)) {
+			resource.setStatus("1");
+			map.put("flag", "1");
+			map.put("msg", "发布成功！");
+		}
+		else {
+			map.put("msg", "发布失败！");
+		}
 		return map;
 	}
 	
@@ -391,6 +460,7 @@ public class ServiceController {
 	@ResponseBody
 	public Map<String,String> registerGis(@RequestParam("serverEngine1")String serverEngineId,@RequestParam(value="imageFile",required=false) MultipartFile file,HttpServletRequest request,Model model) {
 		Map<String, String> map = new HashMap<String, String>();
+		Service s = null;
 		try {
 			User user = (User) request.getSession().getAttribute(
 					Global.SESSION_USER);
@@ -404,7 +474,7 @@ public class ServiceController {
 				Map.Entry<String, String[]> entry = (Entry<String, String[]>) its.next();
 				datas.put(entry.getKey(), entry.getValue()[0]);
 			}
-			Service s = BeanExtUtils.assignFromMap(datas, Service.class);
+			s = BeanExtUtils.assignFromMap(datas, Service.class);
 			if (serverEngineId != null && StringUtils.isNotBlank(s.getShowName())) {
 				if (file != null && file.getSize() > 0) {
 					String fileName = file.getOriginalFilename();
@@ -420,6 +490,7 @@ public class ServiceController {
 						s.setImagePath(path + File.separator + fileName);
 					} catch (IllegalStateException | IOException e) {
 						// TODO Auto-generated catch block
+						map.put("flag", "2");
 						map.put("msg", "上传文件失败！");
 						return map;
 					}
@@ -439,18 +510,30 @@ public class ServiceController {
 				if(tempExtend.length() > 0) {
 					s.setServiceExtend(tempExtend.substring(0, tempExtend.length()-1));
 				}
-				s.setCreateDate(new Date());
-				s.setCreator(user);
-				s.setServiceStatus("0");
-				serviceService.save(s);
-				map.put("flag", "0");
-				map.put("msg", "注册成功！");
+				//新增
+				if(null == s.getId()) {
+					s.setCreateDate(new Date());
+					s.setCreator(user);
+					s.setServiceStatus("0");
+					serviceService.save(s);
+					map.put("flag", "0");
+					map.put("msg", "注册成功！");
+				}
+				//修改
+				else {
+					Service dbService = serviceService.get(Service.class, s.getId());
+					BeanExtUtils.copyProperties(dbService, s, true, true,null);
+					dbService.setUpdateDate(new Date());
+					dbService.setUpdator(user);
+					serviceService.update(dbService);
+					map.put("flag", "0");
+					map.put("msg", "编辑成功！");
+				}
+				
 			}
 		} catch (Exception e) {
 			map.put("flag", "1");
-			map.put("msg", "注册失败！");
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			map.put("msg", null == s.getId()?"注册失败！":"编辑失败！");
 		}
 		return map;
 	}
@@ -511,11 +594,15 @@ public class ServiceController {
 			if(s != null) {
 				map.put("functionType", functionType);
 				map.put("serviceExtend", s.getServiceExtend());
-				String serviceVisitAddress = "http://"+ip + ":" + port + "/arcgis/admin/services/";
+				String managerServiceUrl = "http://"+ip + ":" + port + "/arcgis/admin/services/";
+				String serviceVisitAddress = "http://"+ip + ":" + port + "/arcgis/rest/services/";
 				if(StringUtils.isNotBlank(folderName)) {
-					serviceVisitAddress =  serviceVisitAddress + folderName + "/";
+					managerServiceUrl =  managerServiceUrl + folderName + "/";
+					serviceVisitAddress = serviceVisitAddress + folderName + "/";
 				}
-				serviceVisitAddress = serviceVisitAddress + showName + "." + functionType;
+				managerServiceUrl = managerServiceUrl + showName + "." + functionType;
+				serviceVisitAddress = serviceVisitAddress + showName + "/" + functionType;
+				map.put("managerServiceUrl", managerServiceUrl);
 				map.put("serviceVisitAddress", serviceVisitAddress);
 			}
 		}
@@ -632,7 +719,7 @@ public class ServiceController {
 		Service service = null;
 		if(id != null) {
 			service =  serviceService.get(Service.class, id);
-			String url = service.getServiceVisitAddress();
+			String url = service.getManagerServiceUrl();
 			ConfigServerEngine engine = service.getServerEngine();
 			if(engine != null) {
 				result = ServiceUtils.startService(engine.getIntranetIp(), engine.getIntranetPort()+"", engine.getEngineManager(), engine.getManagerPassword(),url);
@@ -664,7 +751,7 @@ public class ServiceController {
 		Service service = null;
 		if(id != null) {
 			service =  serviceService.get(Service.class, id);
-			String url = service.getServiceVisitAddress();
+			String url = service.getManagerServiceUrl();
 			ConfigServerEngine engine = service.getServerEngine();
 			if(engine != null) {
 				result = ServiceUtils.stopService(engine.getIntranetIp(), engine.getIntranetPort()+"", engine.getEngineManager(), engine.getManagerPassword(),url);
@@ -694,6 +781,93 @@ public class ServiceController {
 				map.put("msg", "删除失败！");
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
+			}
+		}
+		return map;
+	}
+	
+	/**
+	 * 支持删除多条记录
+	 * 
+	 * @param idsStr
+	 * @return
+	 */
+	@RequestMapping("deletes")
+	@ResponseBody
+	public Map<String,String> deletes(String idsStr) {
+		Map<String,String> map = new HashMap<String,String>();
+		String ids[] = idsStr.split(",");
+		if (ids != null && ids.length > 0) {
+			try {
+				for (String id : ids) {
+					Service service = serviceService.get(Service.class,
+							Integer.parseInt(id));
+					if (service != null) {
+						serviceService.delete(service);
+					}
+				}
+				map.put("msg", "删除成功！");
+				return map;
+			} catch (Exception e) {
+				map.put("msg", "删除失败！");
+				return map;
+			}
+		} else {
+			map.put("msg", "删除失败！");
+		}
+		return map;
+	}
+	
+	@RequestMapping("toEditGis")
+	public String toEditGis(Service service,Model model) {
+		if(service.getId() != null) {
+			service = serviceService.get(Service.class,service.getId());
+			model.addAttribute("service", service);
+		}
+		//查找所有服务引擎
+		List<ConfigServerEngine> serverEngineList = configServerEngineService.find("from ConfigServerEngine");
+		//远程服务类型
+		model.addAttribute("remoteServicesType", DataDictionary.getObject("remote_services_type"));
+		//服务功能类型 service_function_type
+		model.addAttribute("serviceFunctionType", DataDictionary.getObject("service_function_type"));
+		//服务缓存类型 service_cache_Type
+		model.addAttribute("serviceCacheType", DataDictionary.getObject("service_cache_Type"));
+		//权限状态 
+		model.addAttribute("permissionStatus", DataDictionary.getObject("service_permission_status"));
+		//服务扩展功能类型service_extend_type
+		model.addAttribute("serviceExtendType", DataDictionary.getObject("service_extend_type"));
+		model.addAttribute("serverEngineList", serverEngineList);
+		return "/service/service_gis_edit";
+	}
+	
+	@RequestMapping("toRefreshVersion")
+	public String toEdit(Service service, Model model) {
+		if (service.getId() != null) {
+			service = serviceService.get(Service.class, service.getId());
+			model.addAttribute("service", service);
+		}
+		return "/service/service_refresh_version";
+	}
+
+	/**
+	 * 保存版本刷新
+	 * @param service
+	 * @return
+	 */
+	@RequestMapping("saveVersion")
+	@ResponseBody
+	public Map<String,String> saveVersion(Service service) {
+		Map<String,String> map = new HashMap<String,String>();
+		if (service.getId() != null) {
+			try {
+				Service dbService = serviceService.get(Service.class, service.getId());
+				String remark = service.getVersiomnRemarks();
+				dbService.setVersiomnRemarks(remark);
+				dbService.setMaxVersionNum(dbService.getMaxVersionNum() + 1);
+				serviceService.update(dbService);
+				map.put("msg", "更新版本成功！");
+			} catch (Exception e) {
+				map.put("msg", "更新版本失败！");
 			}
 		}
 		return map;

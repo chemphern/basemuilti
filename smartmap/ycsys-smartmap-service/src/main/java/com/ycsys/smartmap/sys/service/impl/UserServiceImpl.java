@@ -12,9 +12,9 @@ import com.ycsys.smartmap.sys.dao.UserDao;
 import com.ycsys.smartmap.sys.dao.UserRoleDao;
 import com.ycsys.smartmap.sys.entity.*;
 import com.ycsys.smartmap.sys.service.UserService;
-
-import org.apache.log4j.Logger;
 import org.hibernate.service.spi.ServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
 	private static final int SALT_SIZE = 8;	//盐长度
 
-	private static final Logger logger = Logger.getLogger(UserServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
 	@Autowired
 	private UserDao userDao;

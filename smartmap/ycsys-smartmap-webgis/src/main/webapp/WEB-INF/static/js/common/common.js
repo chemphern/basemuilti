@@ -1,5 +1,21 @@
 var mapOpt=2;//地图操作状态,默认2维操作
 
+function queryAttrLogic(){
+	if(mapOpt==2){
+		queryAttrLogic2d();
+	}else if(mapOpt==3){
+		
+	}
+}
+
+function queryAttr(){
+	if(mapOpt==2){
+		queryAttr2d();
+	}else if(mapOpt==3){
+		
+	}
+}
+
 function clearMap(){
 	if(mapOpt==2){
 		clear2dMap();

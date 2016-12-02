@@ -5,9 +5,10 @@ import com.ycsys.smartmap.sys.dao.AreaDao;
 import com.ycsys.smartmap.sys.entity.Area;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.service.AreaService;
-import org.apache.log4j.Logger;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.hibernate.service.spi.ServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -22,7 +23,7 @@ import java.util.Properties;
 @Service("/areaService")
 public class AreaServiceImpl implements AreaService{
 
-    private static final Logger logger = Logger.getLogger(AreaServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(AreaServiceImpl.class);
 
     @Resource
     private AreaDao areaDao;
@@ -134,6 +135,35 @@ public class AreaServiceImpl implements AreaService{
         }
         if(count > 0){
             throw new ServiceException("名称或者编码已存在！");
+        }
+        //设置全称
+        String name = area.getName();
+        short type = area.getType();
+        String code = area.getCode();
+        //省级校验，四位末两位为0编码或者6位末四位为0的编码
+        if(type == 1 && ((code.length() == 4 && code.endsWith("00")) || (code.length() == 6 && code.endsWith("0000")))){
+            area.setAllName(name);
+        }else if(type == 2 && (code.length() == 4 || (code.length() == 6 && code.endsWith("00") ))){
+            try {
+                //获取省级名称
+                Area p = areaDao.get("from Area where code like ? and type = ?", new Object[]{code.substring(0, 2) + "%",(short)1});
+                area.setAllName(p.getName() + name);
+            }catch (Exception e){
+                e.printStackTrace();
+                throw new ServiceException("行政编码有误,获取不到上级行政区域信息！");
+            }
+        }else if(type == 3 && code.length() == 6){
+            try {
+                //获取省级名称
+                Area p = areaDao.get("from Area where code like ? and type = ?", new Object[]{code.substring(0, 2) + "%",(short)1});
+                Area c = areaDao.get("from Area where code like ? and type = ?", new Object[]{code.substring(0, 4) + "%",(short)2});
+                area.setAllName(p.getName() + c.getName() + name);
+            }catch (Exception e){
+                e.printStackTrace();
+                throw new ServiceException("行政编码有误,获取不到上级行政区域信息！");
+            }
+        }else{
+            throw new ServiceException("行政编码和区域类型不符！");
         }
         areaDao.saveOrUpdate(area);
     }

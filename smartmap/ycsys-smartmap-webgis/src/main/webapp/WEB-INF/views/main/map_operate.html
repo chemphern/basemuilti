@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>羽辰智慧林业二三维一体化应用系统</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- jQuery  --> 
+</head>
+<style type="text/css" media="screen">
+  body,html{background-color:transparent;}
+.map-operate-wrap{position:absolute;z-index:99999;left:70px;top:35px;width:50px;height:268px;}
+.map-operate{position:absolute;top:0px;left:0px;z-index: 99999;width:50px;height:268px;}
+.map-operate div{position:absolute;}
+.BMap_stdMpPan{width:50px;height:50px;background:url(dist/img/map/earth-control-bg.png) 0 0 no-repeat;}
+.BMap_button{width:14px;height:14px;background:url(dist/img/map/earth-control-bg.png) 0 0 no-repeat;}
+.BMap_panN{left:18px;top:2px;background-position:0px -56px;}
+.BMap_panW{left:2px;top:18px;background-position:0px -68px;}
+.BMap_panE{left:34px;top:18px;background-position:0px -82px;}
+.BMap_panS{left:18px;top:34px;background-position:0px -97px;}
+.BMap_panM{left:17px;top:18px;background-position:0px -112px;}
+.BMap_stdMpPan .BMap_panN:hover{background-position:-15px -56px;}
+.BMap_stdMpPan .BMap_panW:hover{background-position:-15px -68px;}
+.BMap_stdMpPan .BMap_panE:hover{background-position:-15px -82px;}
+.BMap_stdMpPan .BMap_panS:hover{background-position:-15px -97px;}
+.BMap_stdMpPan .BMap_panM:hover{background-position:-15px -112px;}
+.BMap_stdMpZoom{width:27px;height:180px;top:58px;left:12px;}
+.BMap_stdMpZoom .BMap_button{width:18px;height:18px;left:4px;background:url(dist/img/map/earth-control-bg.png) 0 0 no-repeat;overflow:hidden;z-index: 10;cursor:pointer;}
+.BMap_stdMpZoom div.BMap_stdMpPos{background-position:-1px -134px;}
+.BMap_stdMpZoom div.BMap_stdMpZoomIn{background-position:-1px -156px;top:22px;}
+.BMap_stdMpZoom div.BMap_stdMpZoomOut{background-position:-1px -180px;top:190px;}
+.BMap_stdMpZoom div.BMap_stdMpZoomIn:hover{background-position:-31px -156px;}
+.BMap_stdMpZoom div.BMap_stdMpZoomOut:hover{background-position:-31px -180px;}
+.BMap_stdMpSlider{width:6px;height:150px;left:10px;top:40px;}
+.BMap_stdMpSliderBgTop{width:6px;top:0;height:150px;background:url(dist/img/map/earth-control-bg.png) -53px -156px no-repeat;overflow:hidden;}
+.BMap_stdMpSliderBar{width:18px;height:18px;left:-5px;background:url(dist/img/map/earth-control-bg.png) -32px -135px no-repeat;overflow:hidden;cursor:pointer;}
+.BMap_stdMpSliderBgBot{width:6px;background:url(dist/img/map/earth-control-bg.png) -53px 0px no-repeat;bottom:0;overflow:hidden;}
+</style>
+<body role="document" cz-shortcut-listen="true" >
+ 
+      <!-- 地图控制按钮 start-->
+      <div class="map-operate">
+        <div class="BMap_stdMpPan">
+          <div class="BMap_button BMap_panN" title="向上平移"></div>
+          <div class="BMap_button BMap_panW" title="向左平移"></div>
+          <div class="BMap_button BMap_panE" title="向右平移"></div>
+          <div class="BMap_button BMap_panS" title="向下平移"></div>
+          <div class="BMap_button BMap_panM" title="居中显示"></div>
+        </div>
+        <div class="BMap_stdMpZoom">
+            <div class="BMap_button BMap_stdMpPos" title="定位当前位置"></div>
+            <div class="BMap_button BMap_stdMpZoomIn" title="放大一级"></div>
+            <div class="BMap_button BMap_stdMpZoomOut" title="缩小一级"></div>
+          <div class="BMap_stdMpSlider"> 
+            <div class="BMap_stdMpSliderBgTop"></div>         
+            <div class="BMap_stdMpSliderBgBot" ></div>           
+            <div class="BMap_stdMpSliderBar" title="拖动缩放" style="cursor: url(&quot;http://webmap0.map.bdimg.com/image/api/openhand.cur&quot;) 0 0, default; "></div>
+          </div>      
+        </div>         
+      </div>
+      <!-- 地图控制按钮 end-->    
+
+</body>
+</html>

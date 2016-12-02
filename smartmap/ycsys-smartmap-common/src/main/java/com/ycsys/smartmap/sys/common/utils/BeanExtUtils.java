@@ -11,7 +11,8 @@ import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.beanutils.DynaProperty;
 import org.apache.commons.beanutils.PropertyUtilsBean;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 对象工具类，对org.apache.commons.BeanUtils 的扩展
@@ -21,7 +22,7 @@ import org.apache.log4j.Logger;
  */
 public class BeanExtUtils {
 
-	private static final Logger log = Logger.getLogger(BeanExtUtils.class);
+	private static final Logger log = LoggerFactory.getLogger(BeanExtUtils.class);
 
 	private static DefaultResolver resolver = new DefaultResolver();
 

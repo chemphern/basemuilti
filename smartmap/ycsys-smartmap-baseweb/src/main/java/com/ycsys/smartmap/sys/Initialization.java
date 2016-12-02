@@ -5,7 +5,8 @@ import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 
 import com.ycsys.smartmap.sys.service.*;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
@@ -42,7 +43,7 @@ public class Initialization implements ServletContextAware {
 	@Resource(name="config")
 	private Properties config;
 
-	private static final Logger logger = Logger.getLogger(Initialization.class);
+	private static final Logger logger = LoggerFactory.getLogger(Initialization.class);
 
 	public void setServletContext(ServletContext context) {
 		this.context = context;

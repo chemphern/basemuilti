@@ -3,7 +3,8 @@ package com.ycsys.smartmap.sys.util;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -16,7 +17,7 @@ import java.util.Map;
  * Created by lixiaoxin on 2016/11/3.
  */
 public class DbUtils {
-    private static final Logger logger = Logger.getLogger(DbUtils.class);
+    private static final Logger logger = LoggerFactory.getLogger(DbUtils.class);
 
     private QueryRunner query = new QueryRunner();
 

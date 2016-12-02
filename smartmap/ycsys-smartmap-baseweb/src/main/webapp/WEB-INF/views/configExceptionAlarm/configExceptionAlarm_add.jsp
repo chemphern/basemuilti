@@ -72,8 +72,14 @@
 		  </tr>
 		  <tr>
 		    <td class="t_r">时间间隔：</td>
-		    <td><input type="text" placeholder="请输入正整数" name="intervalTime" id="intervalTime" 
-		    value="${configExceptionAlarm.intervalTime}" class="text validate[required]" /><i>(小时)</i></td>
+		    <td>
+		    <%-- <input type="text" placeholder="请输入正整数" name="intervalTime" id="intervalTime" 
+		    value="${configExceptionAlarm.intervalTime}" class="text validate[required]" /> --%>
+		    <input 
+		    	value="${configExceptionAlarm.intervalTime}" placeholder="请输入正整数" name="intervalTime" id="intervalTime"
+		    	onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" 
+		    	onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+		    <i>(小时)</i></td>
 		  </tr>
 		  <tr>
 		    <td class="t_r">发送方式：</td>
@@ -86,13 +92,13 @@
 		  </tr>
 		  <tr>
 		    <td class="t_r">邮件地址：</td>
-		    <td><input type="email" name="mailAddress" id="mailAddress" 
+		    <td><input type="email" name="mailAddress" id="mailAddress" onchange="mailFun(this)"
 		    value="${configExceptionAlarm.mailAddress}" class="text validate[required]" />
 		    <i>请正确填写邮箱地址</i></td>
 		  </tr>
 		  <tr>
 		    <td class="t_r">电话号码：</td>
-		    <td><input type="text" name="phone" id="phone" 
+		    <td><input type="text" name="phone" id="phone" onchange="msisdn(this)"
 		    value="${configExceptionAlarm.phone}" class="text validate[required]" /></td>
 		  </tr>
 		  <tr>
@@ -156,5 +162,26 @@
 		});
 		
 	});
+</script>
+<script>
+function msisdn(){  
+    var val = document.getElementById('phone');
+    var reg = /(^0{0,1}1[3|4|5|6|7|8|9][0-9]{9}$)/;  
+    if(reg.test(val.value)){  
+       return; 
+    }else{  
+        alert('手机号：'+val.value+',错误!');  
+    }  
+}
+
+function mailFun(){
+    var val = document.getElementById('mailAddress');
+    var reg = /^[_\.0-9a-z-]+@([0-9a-z][0-9a-z-]+\.){1,4}[a-z]{2,3}$/; 
+    if(reg.test(val.value)){  
+       return; 
+    }else{  
+        alert('邮箱：'+val.value+',格式有误!');  
+    }  
+}
 </script>
 </html>

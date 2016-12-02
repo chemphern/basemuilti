@@ -14,14 +14,13 @@ import com.ycsys.smartmap.sys.service.MessageService;
  *
  */
 @Controller
-@RequestMapping("sendMessage")
 public class SendMessageController {
 	@Autowired
 	private MessageService messageService;
 	
 	@RequestMapping("sendMessage")
     @ResponseBody
-    public ResponseEx sendEmail(String phoneNumber){
+    public ResponseEx sendMessage(String phoneNumber){
         ResponseEx ex = new ResponseEx();
         try{
         	this.messageService.sendMessage(phoneNumber);

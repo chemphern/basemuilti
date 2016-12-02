@@ -22,19 +22,6 @@
 		</property>
 	</bean>
 
-	<!-- spring mvc controller -->
-	<bean id="druid-stat-interceptor" class="com.alibaba.druid.support.spring.stat.DruidStatInterceptor"></bean>
-	<bean id="druid-stat-pointcut" class="org.springframework.aop.support.JdkRegexpMethodPointcut" scope="prototype">
-		<property name="patterns">
-			<list>
-				<value>com.smartmap.*.service.impl.*</value>
-				<value>com.smartmap.*.dao.impl.*</value>
-			</list>
-		</property>
-	</bean>
-	<aop:config proxy-target-class="true">
-		<aop:advisor advice-ref="druid-stat-interceptor" pointcut-ref="druid-stat-pointcut"/>
-	</aop:config>
 	<aop:aspectj-autoproxy proxy-target-class="true"/>
 	<!-- 保证实现了Shiro内部lifecycle函数的bean执行 -->
 	<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>

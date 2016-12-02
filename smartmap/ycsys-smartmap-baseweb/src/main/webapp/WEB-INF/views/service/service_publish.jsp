@@ -339,10 +339,10 @@ body {
 				  	break;
 				case '3':
 					var extensionNames = $("input[name='extensionName']:checked");
-					if(extensionNames.length==0) {
+					/* if(extensionNames.length==0) {
 						alert("请选择至少一个服务扩展类型！");
 						return false;
-					}
+					} */
 					$("#g_serviceName").val($("#serviceName").val());
 					$("#g_resourceFile").val($("#resourceFile").val());
 					$("#g_clusterName").val($("#clusterName").val());
@@ -404,10 +404,16 @@ body {
 		//完成触发的方法
 		function onFinishCallback() {
 			//$('#form_id').submit();
+			$('.actionBar a.buttonFinish').addClass("buttonDisabled");//完成按钮变灰
 			$("#form_id").ajaxSubmit({
 				url : "${ctx }/service/publish",
-                success:function(resutl){
-                	alert(resutl.msg);
+				dataType:"json",
+                success:function(ret){
+                	alert(ret.msg);
+                	//成功
+                	if(ret.flag!="1") {
+                		$('.actionBar a.buttonFinish').removeClass("buttonDisabled");//完成按钮可用  
+                	}
                 }
              });
 			//$('#wizard').smartWizard('showMessage', 'Finish Clicked');

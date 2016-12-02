@@ -10,8 +10,9 @@ import com.ycsys.smartmap.sys.entity.DictionaryItem;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.service.DictService;
 import com.ycsys.smartmap.sys.util.DataDictionary;
-import org.apache.log4j.Logger;
 import org.hibernate.service.spi.ServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,7 +28,7 @@ import java.util.Set;
 @Service("dictService")
 public class DictServiceImpl implements DictService {
 
-	private static final Logger logger = Logger.getLogger(DictServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(DictServiceImpl.class);
 
 	@Resource
 	private DictDao dictDao;

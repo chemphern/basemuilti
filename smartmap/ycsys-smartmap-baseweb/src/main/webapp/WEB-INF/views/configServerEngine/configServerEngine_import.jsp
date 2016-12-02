@@ -8,15 +8,31 @@
     <title>羽辰智慧林业综合管理平台-资源管理</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- iconfont -->
-    <link rel="stylesheet" href="${res}/iconfont/iconfont.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="${res}/dist/css/AdminLTE.css">
-    <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="${res}/bootstrap/css/bootstrap.css">
+  <!-- iconfont -->
+  <link rel="stylesheet" href="${res}/iconfont/iconfont.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="${res}/dist/css/AdminLTE.css">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="${res}/dist/css/skins/_all-skins.css">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="${res}/plugins/iCheck/flat/blue.css">
+  <!-- list -->
+  <link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
+  <!-- 弹出框 -->
+  <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
     <script src="${res}/js/common/multiselect.js"></script>
-    <script src="${res}/plugins/jquery-validation-1.15.1/dist/jquery.validate.min.js"></script>
-    <script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
+    <%-- <script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script> --%>
     <script src="${res}/js/common/form.js"></script>
+	<script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
+	<script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
+	<script src="${res}/plugins/jquery-validation-1.15.1/dist/jquery.validate.min.js" type="text/javascript"></script>
+	<!-- 封装弹出框dialog -->
+	<script type="text/javascript" src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>
+	<script type="text/javascript" src="${res}/plugins/dialog/iframeTools.source.js"></script>
+	<script type="text/javascript" src="${res}/plugins/dialog/unit.js"></script>
 </head>
 <body>
 <form action="${ctx}/configServerEngine/importFile" method="post" id="form_id" enctype="multipart/form-data">
@@ -43,15 +59,35 @@
         val_obj.submitHandler = function(form){
                 $(form).ajaxSubmit({
                     success:function(data){
-                        if(data.retCode) {
+                       /*  if(data.retCode) {
                             p.getLigerManager().loadData();
                             dialog.close();
                         }else{
                             alert(data.retMsg);
+                        } */
+                        console.log(data);
+                        console.log(data.retCode);
+                        dialog.close();
+                        if(data.retCode) {
+                            //p.getLigerManager().loadData();
+                            $.Layer.confirm({
+            	                msg:"导入成功",
+            	                fn:function(){
+            	                	//console.log(3);
+            	                	//gridManager.reload();
+            	                	 p.getLigerManager().loadData();
+            	                	//console.log(4);
+            	                	
+            	                }
+            	            });
+                        }else{
+                            alert(data.retMsg);
                         }
+                    	
                     },
                     dataType:"json"
                 }); 
+               
         };
         $fm.validate(
                 val_obj

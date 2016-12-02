@@ -7,22 +7,32 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>羽辰智慧林业综合管理平台-资源管理</title>
 <!-- Tell the browser to be responsive to screen width -->
-<meta
-	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
-	name="viewport">
-<!-- iconfont -->
-<link rel="stylesheet" href="${res }/iconfont/iconfont.css">
-<!-- Theme style -->
-<link rel="stylesheet" href="${res }/dist/css/AdminLTE.css">
-
-<link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
-
+<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+<!-- Bootstrap 3.3.6 -->
+  <link rel="stylesheet" href="${res}/bootstrap/css/bootstrap.css">
+  <!-- iconfont -->
+  <link rel="stylesheet" href="${res}/iconfont/iconfont.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="${res}/dist/css/AdminLTE.css">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="${res}/dist/css/skins/_all-skins.css">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="${res}/plugins/iCheck/flat/blue.css">
+  <!-- list -->
+  <link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
+  <!-- 弹出框 -->
+  <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
 <script src="${res}/js/common/form.js"></script>
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
-<script
-	src="${res}/plugins/jquery-validation-1.15.1/dist/jquery.validate.min.js"
-	type="text/javascript"></script>
+<script src="${res}/plugins/jquery-validation-1.15.1/dist/jquery.validate.min.js" type="text/javascript"></script>
+<!-- 封装弹出框dialog -->
+<script type="text/javascript" src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>
+<script type="text/javascript" src="${res}/plugins/dialog/iframeTools.source.js"></script>
+<script type="text/javascript" src="${res}/plugins/dialog/unit.js"></script>
+<%-- <script src="${res}/plugins/dialog/iframeTools.source.js"></script>
+<script src="${res}/plugins/dialog/jquery.artDialog.source.js"></script> --%>
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -76,22 +86,21 @@
 		  </tr>
 		  <tr>
 		    <td class="t_r">SNMP协议端口：</td>
-		    <td><input type="text" placeholder="请输入正整数" value="${server.snmpPort}" name="snmpPort" id="snmpPort" class="text" /></td>
+		    <td>
+		    	<%-- <input type="Number" placeholder="请输入正整数" value="${server.snmpPort}" name="snmpPort" id="snmpPort" /> --%>
+		    	<input 
+		    	value="${server.snmpPort}" name="snmpPort" id="snmpPort" placeholder="请输入正整数"
+		    	onkeyup="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}" 
+		    	onafterpaste="if(this.value.length==1){this.value=this.value.replace(/[^1-9]/g,'')}else{this.value=this.value.replace(/\D/g,'')}">
+		    </td>
 		  </tr>
 		  <tr>
 		    <td class="t_r">服务器类型：</td>
 		    <td>
-		    <select type="text" name="serverType.id"  id="serverTypeId" class="text">
-		      <c:forEach var="list" items="${listTypes}">
-				<c:if test="${ not empty list }">
-					<c:if test="${server.serverType.id eq list.id }">
-						<option value="${list.id }" selected="selected">${list.name }</option>
-					</c:if>
-					<c:if test="${server.serverType.id ne list.id }">
-						<option value="${list.id }">${list.name }</option>
-					</c:if>
-				</c:if>
-			  </c:forEach>
+		    <select type="text" name="serverType"  id="serverType" class="text">
+				<c:forEach var="map" items="${serverType}">
+						<option value="${map.key }">${map.value.name }</option>
+				</c:forEach>
 		    </select>
 		    </td>
 		  </tr>
@@ -107,8 +116,9 @@ $(function() {
 	//设置下拉的值
 	if("${server.id}"){
 		var fromServerEngineFlag = "${server.fromServerEngineFlag}";
-		var name = "${server.name}";
-		$("#name option[value="+name+"]").attr("selected",true);
+		var serverType = "${server.serverType}";
+		$("#fromServerEngineFlag option[value="+fromServerEngineFlag+"]").attr("selected",true);
+		$("#serverType option[value="+serverType+"]").attr("selected",true);
 	}
 	
 	
@@ -126,10 +136,16 @@ $(function() {
 			$("#form_id").ajaxSubmit({
 				url : "${ctx}/server/save",
                 success:function(data){
-                	parentWin.gridManager.reload();
-					dialog.close();
-                 }//,
-                 //dataType:"json"
+                	dialog.close();
+                	if(data=='success'){
+                		$.Layer.confirm({
+        	                msg:"保存成功",
+        	                fn:function(){
+        	                	parentWin.gridManager.reload();
+        	                }
+        	            });
+                	} 
+                 }
              });
 		}
 		else {

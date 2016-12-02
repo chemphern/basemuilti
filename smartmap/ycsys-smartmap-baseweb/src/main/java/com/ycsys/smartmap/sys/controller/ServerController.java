@@ -23,6 +23,7 @@ import com.ycsys.smartmap.sys.common.result.Grid;
 import com.ycsys.smartmap.sys.common.result.ResponseEx;
 import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
 import com.ycsys.smartmap.sys.common.utils.JsonMapper;
+import com.ycsys.smartmap.sys.common.utils.StringUtils;
 import com.ycsys.smartmap.sys.entity.ConfigExceptionAlarm;
 import com.ycsys.smartmap.sys.entity.ConfigServerEngine;
 import com.ycsys.smartmap.sys.entity.DictionaryItem;
@@ -61,11 +62,9 @@ public class ServerController {
 		}
 		List<ConfigServerEngine> lists = configServerEngineService
 				.find("from ConfigServerEngine c where 1=1");
-		List<ServerType> listTypes = serverTypeService
-				.find("from ServerType s where 1=1");
 		
 		model.addAttribute("lists", lists);
-		model.addAttribute("listTypes", listTypes);
+		model.addAttribute("serverType", DataDictionary.getObject("server_type"));
 		return "/server/server_edit";
 	}
 	
@@ -129,25 +128,6 @@ public class ServerController {
 	 * @param idsStr
 	 * @return
 	 */
-	/*@RequestMapping("deletes")
-	@ResponseBody
-	public String deletes(String idsStr) {
-		String ids[] = idsStr.split(",");
-		if (ids != null && ids.length > 0) {
-			for (String id : ids) {
-				Server server = serverService.get(Server.class,
-						Integer.parseInt(id));
-				if (server != null) {
-					serverService.delete(server);
-				}
-			}
-			return "success";
-		} else {
-			return "failure";
-		}
-
-	}
-	*/
 	@RequestMapping("deletes")
 	@ResponseBody
 	public ResponseEx delete(String idsStr) {
@@ -183,11 +163,12 @@ public class ServerController {
 			model.addAttribute("emptyTreeFlag", "1");
 		}*/
 		model.addAttribute("list", list);
+		model.addAttribute("serverType", DataDictionary.getObject("server_type"));
 		return "/server/server_list";
 	}
 	
 	//列出所有服务器的名称
-	@ResponseBody
+	/*@ResponseBody
 	@RequestMapping(value = "listAllName",produces="application/json;charset=UTF-8")
 	public String listAll(HttpServletResponse response) {
 		List<Map<String, Object>> mapList = Lists.newArrayList();
@@ -207,24 +188,24 @@ public class ServerController {
 		}
 		String jsonStr = JsonMapper.toJsonString(mapList);
 		return jsonStr;
-	}
+	}*/
 	
 	/**
-	 * 把所有引擎类型转成json字符串
+	 * 把所有服务器类型转成json字符串
 	 */
 	@ResponseBody
-	@RequestMapping(value = "listEngineType", produces = "application/json;charset=UTF-8")
+	@RequestMapping(value = "listServerType", produces = "application/json;charset=UTF-8")
 	public String listServiceType(HttpServletResponse response) {
 		List<Map<String, Object>> mapList = Lists.newArrayList();
-		Map<String,Object> engineTypeMap = DataDictionary.getObject("engineType_type");
-		engineTypeMap.entrySet();
+		Map<String,Object> ruleTypeMap = DataDictionary.getObject("server_type");
+		ruleTypeMap.entrySet();
 		Map<String, Object> map = Maps.newHashMap();
 		String rootId = UUID.randomUUID().toString();
 		map.put("id", rootId);
 		map.put("pid", "");
 		map.put("text", "平台监控配置");
 		mapList.add(map);
-		for(Map.Entry<String,Object> entry: engineTypeMap.entrySet()) {
+		for(Map.Entry<String,Object> entry: ruleTypeMap.entrySet()) {
 			map = Maps.newHashMap();
 			//String key = entry.getKey();
 			DictionaryItem value = (DictionaryItem) entry.getValue();
@@ -236,20 +217,20 @@ public class ServerController {
 		String jsonStr = JsonMapper.toJsonString(mapList);
 		return jsonStr;
 	}
+	
 	//查询出页面表格需要的数据
 	@ResponseBody
 	@RequestMapping("/listData")
-	public Grid<Server> listData(String name, PageHelper page) {
+	public Grid<Server> listData(String serverType, PageHelper page) {
 
 		List<Server> list = null;
-		if (name==null) {
+		if (StringUtils.isNotBlank(serverType)) {
+			list = serverService.find("from Server s where s.serverType = ?",
+					new Object[] { serverType }, page);
+		} else {
 			list = serverService.find("from Server s where 1 = 1",
 					null, page);
-		} else {
-			list = serverService.find("from Server s where s.name = ?",
-					new Object[] { name }, page);
 		}
-
 		return new Grid<Server>(list);
 	}
 	

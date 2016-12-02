@@ -46,16 +46,15 @@ public class Service implements java.io.Serializable {
 
 	@Column(name = "show_name", nullable = false, length = 30)
 	private String showName; // 服务显示名
-
-	@ManyToOne
-	@JoinColumn(name = "resource_id")
-	private Resource resource; // 服务对应的资源
+	
+	@Column(name = "arc_gis_service_name")
+	private String arcGisServiceName; //在arcGisserver上面的服务名字，它可能跟注册到平台的名字不同
 
 	@Column(name = "publish_directory", length = 200)
 	private String publishDirectory; // 发布目录
 
 	@Column(name = "service_extend", length = 200)
-	private String serviceExtend;// 服务扩展
+	private String serviceExtend;// 服务扩展(KmlServer;FeatureServer;NAServer;WCSServer;WMSServer;MobileServer;JPIPServer)
 
 	@Column(name = "register_type", length = 1)
 	private String registerType; // 注册类型(0:gis服务注册;1:OneMap服务注册)
@@ -72,19 +71,13 @@ public class Service implements java.io.Serializable {
 	@Column(name = "version_remarks")
 	private String versiomnRemarks; // 更新版本备注
 
-	/*@ManyToOne
-	@JoinColumn(name = "service_type_id")
-	private ServiceType serviceType; // 服务类型 (不用了)
-*/	
 	@Column(name = "type")
 	private String type; //服务类型（0：文档服务；1：网络图集服务；2：第三方注册服务）
 	
 	@Column(name = "function_type")
-	private String functionType; //功能类型（0：GlobeServer；1：MapServer；2：GeocodeServer；3：GPServer；4：GeometryServer；5：ImageServer；6：GeoDataServer；7：SearchServer）
+	private String functionType; //功能类型（GlobeServer；MapServer；GeocodeServer；GPServer；GeometryServer；ImageServer；GeoDataServer；SearchServer）
 	
-	@Transient
-	private String arcServiceType; //ArcGIS上面的服务类型  GeometryServer | ImageServer | MapServer | GeocodeServer | GeoDataServer | GPServer | GlobeServer | SearchServer
-	@Transient
+	@Column(name = "folder_name")
 	private String folderName;
 	
 	@Column(name = "cluster_name")
@@ -98,6 +91,9 @@ public class Service implements java.io.Serializable {
 
 	@Column(name = "service_visit_address", length = 100)
 	private String serviceVisitAddress;// 服务访问地址
+	
+	@Column(name = "manager_service_rl", length = 100)
+	private String managerServiceUrl;// 服务管理url(用于启动、停止、删除服务操作)
 	
 	@Column(name = "imagePath")
 	private String imagePath; //服务缩略图 存放路径
@@ -148,14 +144,6 @@ public class Service implements java.io.Serializable {
 
 	public void setShowName(String showName) {
 		this.showName = showName;
-	}
-
-	public Resource getResource() {
-		return resource;
-	}
-
-	public void setResource(Resource resource) {
-		this.resource = resource;
 	}
 
 	public String getPublishDirectory() {
@@ -286,14 +274,6 @@ public class Service implements java.io.Serializable {
 		this.updator = updator;
 	}
 
-	public String getArcServiceType() {
-		return arcServiceType;
-	}
-
-	public void setArcServiceType(String arcServiceType) {
-		this.arcServiceType = arcServiceType;
-	}
-
 	public String getFolderName() {
 		return folderName;
 	}
@@ -341,5 +321,23 @@ public class Service implements java.io.Serializable {
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
 	}
+
+	public String getManagerServiceUrl() {
+		return managerServiceUrl;
+	}
+
+	public void setManagerServiceUrl(String managerServiceUrl) {
+		this.managerServiceUrl = managerServiceUrl;
+	}
+
+	public String getArcGisServiceName() {
+		return arcGisServiceName;
+	}
+
+	public void setArcGisServiceName(String arcGisServiceName) {
+		this.arcGisServiceName = arcGisServiceName;
+	}
+	
+	
 
 }

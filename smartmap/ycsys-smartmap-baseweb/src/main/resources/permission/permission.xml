@@ -268,7 +268,7 @@
                     </code>
                 </func>
             </url>
-            <url name="使用服务审核" sort="3" href="/service/auditUseList" funcs="service-auditUse">
+            <url name="使用服务审核" sort="3" href="/serviceApply/list" funcs="service-auditUse">
                 <func name="使用服务审核" sort="1">
                     <code>
                         service-auditUse

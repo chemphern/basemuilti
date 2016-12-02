@@ -51,6 +51,10 @@ body {
 <body>
 <body class="hold-transition skin-blue sidebar-mini">
 <form method="post" action="${ctx }/service/registerGis" id="form_id" enctype="multipart/form-data">
+	<input type="hidden" name="managerServiceUrl" id="managerServiceUrl">
+	<input type="hidden" name="folderName" id="folderName">
+	<input type="hidden" name="arcGisServiceName" id="arcGisServiceName">
+	
 	<div id="wizard" class="swMain">
 		<ul>
 			<li><a href="#step-1"> <label class="stepNumber">1</label> <span
@@ -254,12 +258,16 @@ body {
 			
 			$('#form_id').on('submit', function(e) {
 	            e.preventDefault(); // <-- important
+	            $('.actionBar a.buttonFinish').addClass("buttonDisabled");//完成按钮变灰
 	            $(this).ajaxSubmit({
 	            	dataType:"json",
 	            	success:function(result){
 	            		alert(result.msg);
 	            		if(result.flag == "0") {
 	            			dialog.close();
+	            		}
+	            		else {
+	            			$('.actionBar a.buttonFinish').removeClass("buttonDisabled");//完成按钮可用  
 	            		}
 	            		
 	                 }
@@ -291,9 +299,12 @@ body {
 						folderName = selectedRows[0].folderName;
 						showName = selectedRows[0].showName;
 						functionType = selectedRows[0].functionType;
-						//console.log(selectedRows[0].showName);
-						//console.log(selectedRows[0].folderName);
-						//console.log(selectedRows[0].functionType);
+						$("#folderName").val(folderName);
+						$("#arcGisServiceName").val(showName);
+						
+						console.log(selectedRows[0].showName);
+						console.log(selectedRows[0].folderName);
+						console.log(selectedRows[0].functionType);
 						return true;
 					  	break;
 					case '2':
@@ -325,6 +336,9 @@ body {
 		    						}
 		    					});
 		    					$("#serviceVisitAddress").val(result.serviceVisitAddress);
+		    					//console.log("serviceVisitAddress="+result.serviceVisitAddress);
+		    					//console.log("managerServiceUrl="+result.managerServiceUrl);
+		    					$("#managerServiceUrl").val(result.managerServiceUrl);
 		    					$("#functionType").val(result.functionType);
 		    				},
 		    				error: function(result) {
@@ -341,7 +355,7 @@ body {
 						$("#g_showName").html($("#showName").val());
 						$("#g_functionType").html($("#functionType").val());
 						$("#g_serviceVisitAddress").html($("#serviceVisitAddress").val());
-						$("#g_cacheType").html($("#cacheType").val() == 0 ? "Dynamic":"");
+						$("#g_cacheType").html($("#cacheType option:selected").text());
 						$("#g_remarks").html($("#remarks").val());
 						$("#g_metadataVisitAddress").html($("#metadataVisitAddress").val());
 						var tempArr = "";

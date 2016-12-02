@@ -50,9 +50,11 @@ public class Server implements java.io.Serializable {
 	@Column(name = "from_server_engine_flag")
 	private String fromServerEngineFlag;// 是否取自服务器引擎配置
 
-	@ManyToOne
+	/*@ManyToOne
 	@JoinColumn(name = "server_type_id")
-	private ServerType serverType; // 服务器类型
+	private ServerType serverType; // 服务器类型*/
+	@Column(name = "server_type")
+	private String serverType; //服务器类型
 
 	@Column(name = "remarks", length = 200)
 	private String remarks; // 备注
@@ -119,11 +121,11 @@ public class Server implements java.io.Serializable {
 		this.fromServerEngineFlag = fromServerEngineFlag;
 	}
 
-	public ServerType getServerType() {
+	public String getServerType() {
 		return serverType;
 	}
 
-	public void setServerType(ServerType serverType) {
+	public void setServerType(String serverType) {
 		this.serverType = serverType;
 	}
 
@@ -166,5 +168,4 @@ public class Server implements java.io.Serializable {
 	public void setUpdator(User updator) {
 		this.updator = updator;
 	}
-
 }

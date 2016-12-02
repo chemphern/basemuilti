@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <property name="logDir" value="../../smartmap_log" />
+    <!-- 控制台日志打印 -->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>%d [%t] %-5p [%c] - %m%n</Pattern>
+        </layout>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>DEBUG</level>
+        </filter>
+    </appender>
+
+    <appender name="detailFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <prudent>true</prudent>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logDir}/smartmap.detail.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [%t] %-5p [%c] - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="sqlFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <prudent>true</prudent>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logDir}/smartmap.sql.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [%t] %-5p [%c] - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="errorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <prudent>true</prudent>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${logDir}/smartmap.error.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>50MB</maxFileSize>
+            <maxHistory>60</maxHistory>
+            <totalSizeCap>20GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [%t] %-5p [%c] - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="net.sf.ehcache" additivity="true">
+        <level value="ERROR"/>
+    </logger>
+
+    <logger name="druid.sql" additivity="true">
+        <level value="DEBUG"/>
+        <appender-ref ref="sqlFile"/>
+    </logger>
+
+    <logger name="druid.sql.Statement" additivity="true">
+        <level value="DEBUG"/>
+    </logger>
+
+    <logger name="druid.sql.ResultSet" additivity="true">
+        <level value="DEBUG"/>
+    </logger>
+
+    <logger name="com.ycsys" additivity="true">
+        <level value="INFO"/>
+    </logger>
+
+    <root level="DEBUG">
+        <appender-ref ref="detailFile"/>
+        <appender-ref ref="stdout"/>
+        <appender-ref ref="errorFile"/>
+    </root>
+
+</configuration>

@@ -127,6 +127,7 @@
                     }
                 },
                 { display: '区域编码', name: 'code', minWidth: 60 },
+                { display: '区域全称', name: 'allName', minWidth: 60 },
                 { display: '区域类型', name: 'type', minWidth: 100,render:function(row,rowId,value,item){
                     var text = typeof(value) == 'undefined' || value == null ? '' : value;
                     var dic = dicMappers[item.name];

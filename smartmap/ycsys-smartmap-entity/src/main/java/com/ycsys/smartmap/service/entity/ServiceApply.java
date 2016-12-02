@@ -16,6 +16,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ycsys.smartmap.sys.entity.User;
 
 /**
@@ -50,13 +51,14 @@ public class ServiceApply implements java.io.Serializable {
 	private User applyUser; // 申请人
 
 	@Column(name = "apply_date")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
 	private Date applyDate; // 申请日期
 
 	@Column(name = "reason", length = 200)
 	private String reason; // 申请理由
 
 	@Column(name = "audit_status", length = 1)
-	private String auditStastus; // 审核状态（0：不通过；1：通过）
+	private String auditStastus = "0"; // 审核状态（0:未审核；1：不通过；2：通过）
 
 	@Column(name = "audit_date")
 	private Date auditDate; // 审核蜞

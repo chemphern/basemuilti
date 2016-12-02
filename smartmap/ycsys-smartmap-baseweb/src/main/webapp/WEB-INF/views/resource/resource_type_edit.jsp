@@ -75,14 +75,18 @@
 					type : "POST",
 					url : "${ctx }/resourceType/save",
 					data : $('#form_id').serialize(),
+					dataType:"json",
 					async : false,
 					error : function(request) {
 						alert("Connection error");
 					},
-					success : function(data) {
+					success : function(ret) {
+						alert(ret.msg);
+						if(ret.flag=="1") {
+							parentWin.treeManager.reload();
+							dialog.close();
+						}
 						parentWin.resource_type.hideBtn(); //隐藏新增按钮
-						parentWin.treeManager.reload();
-						dialog.close();
 					}
 				});
 			}

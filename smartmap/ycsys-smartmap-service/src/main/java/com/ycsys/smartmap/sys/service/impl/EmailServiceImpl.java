@@ -43,9 +43,11 @@ public class EmailServiceImpl implements EmailService{
 	@Override
 	public void sendEmail(String email) {
 			//构建邮件内容,并发送
-			StringBuilder content = new StringBuilder(100)
+			/*StringBuilder content = new StringBuilder(100)
 			.append("羽辰智慧林业综合管理平台温馨提示：这是异常报警邮件,点击<a href='").append("this.applicationUrl")
-			.append("index").append("'>这里</a>,登陆本平台查看具体信息！");
+			.append("index").append("'>这里</a>,登陆本平台查看具体信息！");*/
+		StringBuilder content = new StringBuilder(100)
+		.append("羽辰智慧林业综合管理平台温馨提示：这是异常报警邮件").append(",登陆本平台查看具体信息！");
 			try{
 				//发送邮件
 				send(email, content.toString());
@@ -82,7 +84,8 @@ public class EmailServiceImpl implements EmailService{
 		
 		Properties prop =  new Properties();
 		prop.put("mail.smtp.auth", "true");
-		prop.put("mail.smtp.timeout", "25000");
+		prop.put("mail.smtp.timeout", "500000");
+		//prop.put("mail.transport.protocol", "smtp");
 		sender.setJavaMailProperties(prop);
 		sender.send(message);
 	}

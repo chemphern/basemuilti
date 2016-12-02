@@ -12,10 +12,6 @@
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-	<!--继承druid的自定义filter-->
-	<!--
-	<bean id="mytest" class="com.ycsys.smartmap.sys.filter.SmartmapSqlMonitorFilter"></bean>
-	-->
 	<bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
 		<property name="mergeSql" value="true" />
 		<property name="slowSqlMillis" value="10000" />

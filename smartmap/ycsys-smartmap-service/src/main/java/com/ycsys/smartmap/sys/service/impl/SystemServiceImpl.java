@@ -4,7 +4,8 @@ import com.ycsys.smartmap.sys.common.utils.DateUtils;
 import com.ycsys.smartmap.sys.dao.SystemDao;
 import com.ycsys.smartmap.sys.entity.System;
 import com.ycsys.smartmap.sys.service.SystemService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -20,7 +21,7 @@ public class SystemServiceImpl implements SystemService{
     @Resource
     private SystemDao systemDao;
 
-    private static final Logger logger = Logger.getLogger(SystemServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SystemServiceImpl.class);
 
 
     public void initSystem(String system_code,String system_name,String system_url) {

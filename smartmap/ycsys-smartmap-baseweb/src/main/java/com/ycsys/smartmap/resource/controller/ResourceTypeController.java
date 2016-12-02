@@ -74,8 +74,9 @@ public class ResourceTypeController {
 
 	@RequestMapping("save")
 	@ResponseBody
-	public String save(ResourceType resourceType, Model model,
+	public Map<String,String> save(ResourceType resourceType, Model model,
 			HttpServletRequest request) {
+		Map<String,String> map = new HashMap<String,String>();
 		User user = (User) request.getSession().getAttribute(
 				Global.SESSION_USER);
 		//判断是否存在相同名字的资源分类
@@ -83,8 +84,10 @@ public class ResourceTypeController {
 		List<ResourceType> rtLists = resourceTypeService.find("from ResourceType t where t.parent.id="+resourceType.getParent().getId() +" and t.name='"+resourceType.getName()+"' and t.id <>" +resourceType.getId());
 		//List<ResourceType> rtLists2 = resourceTypeService.find("from ResourceType t where t.parent.id=? and t.name = ? and t.id <> ?",new Object[]{resourceType.getParent().getId(),resourceType.getName(),resourceType.getId()});
 		if(rtLists != null && rtLists.size() > 0) {
-			log.warn("存在相同的资源");
-			return "不能增加，存在相同的资源分类！";
+			log.warn("存在相同的资源分类");
+			map.put("msg", "存在相同的资源分类！");
+			map.put("flag", "2");
+			return map;
 		}
 		// 新增
 		if(null == resourceType.getId()) {
@@ -96,6 +99,8 @@ public class ResourceTypeController {
 				resourceType.setParent(null);
 			}
 			resourceTypeService.save(resourceType);
+			map.put("msg", "新增成功！");
+			map.put("flag", "1");
 		}
 		// 修改
 		else {
@@ -107,8 +112,8 @@ public class ResourceTypeController {
 				BeanExtUtils.copyProperties(dBResourceType, resourceType, true,
 						true, null);
 			} catch (IllegalAccessException | InvocationTargetException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				map.put("msg", "修改失败！");
+				return map;
 			}
 			//根结点没有父亲结点，所以为空
 			if(parent == null) {
@@ -117,9 +122,10 @@ public class ResourceTypeController {
 			dBResourceType.setUpdator(user);
 			dBResourceType.setUpdateDate(new Date());
 			resourceTypeService.update(dBResourceType);
+			map.put("msg", "修改成功！");
+			map.put("flag", "3");
 		}
-		return "success";
-		// return "redirect:/resource/list";
+		return map;
 	}
 
 	@RequestMapping("delete")

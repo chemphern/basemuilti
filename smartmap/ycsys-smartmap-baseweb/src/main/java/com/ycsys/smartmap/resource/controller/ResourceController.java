@@ -187,19 +187,25 @@ public class ResourceController {
 	public Map<String,String> deletes(String idsStr) {
 		Map<String,String> map = new HashMap<String,String>();
 		String ids[] = idsStr.split(",");
+		int count = 0;
 		if (ids != null && ids.length > 0) {
 			try {
 				for (String id : ids) {
 					Resource resource = resourceService.get(Resource.class,
 							Integer.parseInt(id));
-					if (resource != null) {
+					if (resource != null && resource.getStatus().equals("0")) {
 						resourceService.delete(resource);
+						count++;
 					}
 				}
-				map.put("msg", "删除成功！");
+				if(ids.length != count) {
+					map.put("msg", "【"+(ids.length-count) + "】条记录已发布服务，故没有删除");
+				}
+				else {
+					map.put("msg", "删除成功！");
+				}
 				return map;
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				map.put("msg", "删除失败！");
 				return map;
 			}
@@ -217,19 +223,25 @@ public class ResourceController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public ResponseEx delete(Resource resource) {
-		ResponseEx ex = new ResponseEx();
+	public Map<String,String> delete(Resource resource) {
+		Map<String,String> map = new HashMap<String,String>();
 		if(resource.getId() != null) {
 			try {
-				resourceService.delete(resource);
-				ex.setSuccess("删除成功");
+				resource = resourceService.get(Resource.class,
+						resource.getId());
+				if("1".equals(resource.getStatus())) {
+					map.put("msg", "删除失败，因为该资源已发布服务");
+				}
+				else {
+					resourceService.delete(resource);
+				}
+				map.put("msg", "删除成功");
 			} catch (Exception e) {
-				ex.setFail("删除失败");
+				map.put("msg", "删除失败");
 			}
-			return ex;
 		}
-		ex.setFail("删除失败");
-		return ex;
+		map.put("msg", "删除失败");
+		return map;
 	}
 
 	@RequestMapping("list")
@@ -281,15 +293,16 @@ public class ResourceController {
 		List<Resource> lists = resourceService
 				.find("from Resource t order by t.createDate asc");
 		Map<String, Object> map = Maps.newHashMap();
-		String rootId = "1111111111";
-		map.put("id", rootId);
 		for (Resource e : lists) {
-			map.put("id", e.getId());
-			map.put("pid", rootId);
-			String path = e.getFilePath();
-			path = path.substring(path.indexOf("资源")+3, path.length());
-			map.put("text", path);
-			mapList.add(map);
+			if(e.getFilePath() != null) {
+				map = Maps.newHashMap();
+				map.put("id", e.getId());
+				map.put("pid", "");
+				String path = e.getFilePath();
+				path = path.substring(path.indexOf("资源")+3, path.length());
+				map.put("text", path);
+				mapList.add(map);
+			}
 		}
 		String jsonStr = JsonMapper.toJsonString(mapList);
 		return jsonStr;

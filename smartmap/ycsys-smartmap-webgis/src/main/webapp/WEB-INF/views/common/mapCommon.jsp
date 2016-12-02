@@ -1,12 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%
+	String basePath = request.getScheme() + "://" + request.getServerName()+ ":" + request.getServerPort() + request.getContextPath();
+	request.setAttribute("path", basePath);
+%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link href="http://172.16.10.50:8080/arcgis_js_api/3.18/esri/css/esri.css" rel="stylesheet">
 <link href="http://172.16.10.50:8080/arcgis_js_api/3.18/dijit/themes/claro/claro.css" rel="stylesheet">
-
 <script type="text/javascript">
         var dojoConfig = {
             async: true,
@@ -16,18 +19,21 @@
             }]
         };			
 </script>
+<script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script src="http://172.16.10.50:8080/arcgis_js_api/3.18/init.js"></script>
-
+<script src="${res}/js/map2d/tiandituImgLayer.js"></script>
 <script type="text/javascript">
+	var path="${path}";
 	var centerPt=[113.244931,23.115074];
-	var map,naviBar,measure,draw,printer,locator;
+	var map,naviBar,measure,draw,printer,locator,baseLyr,imgLyr;
 	var NAVI;
 	var minx,miny,maxx,maxy;
+	var lyrList=[];
+	
 	require([
 		  "dojo/parser",
 		  "esri/map",
 		  "esri/toolbars/navigation",
-		  "esri/dijit/Measurement",
 		  "dojo/dom",
 		  "esri/toolbars/draw",
 		  "esri/dijit/OverviewMap",
@@ -41,21 +47,29 @@
 		  "esri/dijit/Legend",
 		  "esri/layers/FeatureLayer",
 		  "esri/geometry/Extent",
+		  "esri/SpatialReference",
+		  "esri/symbols/SimpleFillSymbol", "esri/symbols/SimpleLineSymbol",
+	      "esri/renderers/SimpleRenderer","esri/Color","esri/layers/ArcGISImageServiceLayer",
+	      "esri/tasks/QueryTask","esri/tasks/query","esri/InfoTemplate",
 		  "dojo/domReady!"
-		], function(parser,Map, Navigation,Measurement,dom,Draw,OverviewMap,MeasureTools,Print,PrintTask,PrintParameters,PrintTemplate,Scalebar,LocateButton,Legend,
-				FeatureLayer) {
+		], function(parser,Map, Navigation,dom,Draw,OverviewMap,MeasureTools,Print,PrintTask,PrintParameters,PrintTemplate,Scalebar,LocateButton,Legend,
+				FeatureLayer,Extent,SpatialReference) {
 			parser.parse();
 			NAVI=Navigation;
 			map = new Map("map2d",{
-			    basemap: "streets",
+			    logo:false,
 	            zoom: 8,
 	            autoResize:true,
+	            basemap:"streets",
 	            displayGraphicsOnPan:false,
 	            slider:false,
-	            navigationMode:"css-transform",//css-transform|classic
 	            center: centerPt
 			  });
 			map.on("load",init);
+// 			baseLyr = new TDTLayer();
+// 			map.addLayer(baseLyr);//天地图地图
+// 			annoLyr= new TDTAnnoLayer();
+// 			map.addLayer(annoLyr);//天地图注记图
 			
 			function init(){
 				map.on("onMouseMove",showCoordinate);
@@ -67,7 +81,6 @@
 				measure=new MeasureTools({map:map},dom.byId("measureDiv"));
 				
 				draw=new Draw(map);
-//	 			dojo.connect(draw, "onDrawEnd", doMeasure);
 				
 				var overView = new OverviewMap({
 					map: map,  
@@ -85,141 +98,176 @@
 			
 				var legend = new Legend({map: map}, "legendDiv");
   				legend.startup();
+  				
+  				//获取图层树
+  				$.fn.zTree.init($("#treeMaptcgl"), setting);
+  				   
 			}
 			
 			
 		});
 	
-	function showCoordinate(evt){
+	
+	function getLayerList() {
+		var setting = {
+			view : {
+				selectedMulti : false
+			},
+			check : {
+				enable : true
+			},
+			data : {
+				simpleData : {
+					enable : true
+				}
+			},
+			async : {
+				enable : true,
+				contentType : "application/json",
+				url : "${path}/layerService/layerList.do",
+				autoParam : [ "id", "name" ]
+			},
+			callback : {
+				beforeCheck : beforeCheck,
+				onCheck : onCheck
+			}
+		};
+		$.fn.zTree.init($("#treeMaptcgl"), setting);
+	}
+
+	function showCoordinate(evt) {
 		var mp = evt.mapPoint;
-        dojo.byId("coord").innerHTML ="坐标：" + mp.x + " , " + mp.y;
+		dojo.byId("coord").innerHTML = "坐标：" + mp.x + " , " + mp.y;
 	}
-	
-	function to2dMap(){
-		mapOpt=2;
-		map.setBasemap("streets");
+
+	function to2dMap() {
+		mapOpt = 2;
+		map.removeLayer(imgLyr);
+		map.addLayer(baseLyr);
+		map.addLayer(annoLyr);
 	}
-	
-	function to2dImgMap(){
-		mapOpt=2;
-		map.setBasemap("satellite");
+
+	function to2dImgMap() {
+		mapOpt = 2;
+		imgLyr = new TDTImageryLayer();
+		map.removeLayer(baseLyr);
+		map.removeLayer(annoLyr);
+		map.addLayer(imgLyr);
 	}
-	
-	function zoomInAuto(){
-		map.setLevel(map.getLevel()+1);
+
+	function zoomInAuto() {
+		map.setLevel(map.getLevel() + 1);
 	}
-	
-	function zoomOutAuto(){
-		map.setLevel(map.getLevel()-1);
+
+	function zoomOutAuto() {
+		map.setLevel(map.getLevel() - 1);
 	}
-	
-	function panLeft(){
-		var deta=(map.extent.xmax-map.extent.xmin)/3;
-		map.setExtent(map.extent.offset(-deta,0),true);
+
+	function panLeft() {
+		var deta = (map.extent.xmax - map.extent.xmin) / 3;
+		map.setExtent(map.extent.offset(-deta, 0), true);
 	}
-	function panRight(){
-		var deta=(map.extent.xmax-map.extent.xmin)/3;
-		map.setExtent(map.extent.offset(deta,0),true);
+	function panRight() {
+		var deta = (map.extent.xmax - map.extent.xmin) / 3;
+		map.setExtent(map.extent.offset(deta, 0), true);
 	}
-	function panUp(){
-		var deta=(map.extent.ymax-map.extent.ymin)/3;
-		map.setExtent(map.extent.offset(0,deta),true);
+	function panUp() {
+		var deta = (map.extent.ymax - map.extent.ymin) / 3;
+		map.setExtent(map.extent.offset(0, deta), true);
 	}
-	function panDown(){
-		var deta=(map.extent.ymax-map.extent.ymin)/3;
-		map.setExtent(map.extent.offset(0,-deta),true);
+	function panDown() {
+		var deta = (map.extent.ymax - map.extent.ymin) / 3;
+		map.setExtent(map.extent.offset(0, -deta), true);
 	}
-	function panCenter(){
+	function panCenter() {
 		map.centerAt(centerPt);
 	}
-	function locateCurPos(){
+	function locateCurPos() {
 		locator.locate();
 	}
-	function print2dMap(){
+	function print2dMap() {
 		map.setMapCursor("wait");
-		var printTask = new esri.tasks.PrintTask("https://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task");  
-        var template = new esri.tasks.PrintTemplate();  
-//         var dpi = document.getElementById("dpi").value ;  
-        template.exportOptions = {  
-            width: 800,  
-            height: 600,  
-//             dpi: Number(dpi)  
-        };  
-        template.format = "PDF";  
-        template.layout = "MAP_ONLY";  
-        template.preserveScale = false;  
-        var params = new esri.tasks.PrintParameters();  
-        params.map = map;  
-        params.template = template;  
-        printTask.execute(params, function(evt){ 
-        	map.setMapCursor("default");
-            window.open(evt.url,"_blank");  
-        });  
+		var printTask = new esri.tasks.PrintTask(
+				"https://sampleserver6.arcgisonline.com/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task");
+		var template = new esri.tasks.PrintTemplate();
+		//         var dpi = document.getElementById("dpi").value ;  
+		template.exportOptions = {
+			width : 800,
+			height : 600,
+		//             dpi: Number(dpi)  
+		};
+		template.format = "PDF";
+		template.layout = "MAP_ONLY";
+		template.preserveScale = false;
+		var params = new esri.tasks.PrintParameters();
+		params.map = map;
+		params.template = template;
+		printTask.execute(params, function(evt) {
+			map.setMapCursor("default");
+			window.open(evt.url, "_blank");
+		});
 	}
-	
-	function clear2dMap(){
-		map.graphics.clear();	
-		if(measure){
+
+	function clear2dMap() {
+		map.graphics.clear();
+		if (measure) {
 			measure._measureLayer.clear();
 		}
 	}
-	
-	function pan2dMap(){
-		if(mapOpt==2){
+
+	function pan2dMap() {
+		if (mapOpt == 2) {
 			map.showPanArrows();
 			naviBar.activate(NAVI.PAN);
-		}else{
-			
+		} else {
+
 		}
 	}
-	
-	function zoomIn2dMap(){
-		if(mapOpt==2){
+
+	function zoomIn2dMap() {
+		if (mapOpt == 2) {
 			map.showZoomSlider();
 			naviBar.activate(NAVI.ZOOM_IN);
-		}else{
-			
+		} else {
+
 		}
 	}
-	
-	function zoomOut2dMap(){
-		if(mapOpt==2){
+
+	function zoomOut2dMap() {
+		if (mapOpt == 2) {
 			naviBar.activate(NAVI.ZOOM_OUT);
-		}else{
-			
+		} else {
+
 		}
-		
+
 	}
-	
-	function preView2dMap(){
-		if(mapOpt==2){
+
+	function preView2dMap() {
+		if (mapOpt == 2) {
 			naviBar.zoomToPrevExtent();
-		}else{
-			
+		} else {
+
 		}
 	}
-	
-	function nextView2dMap(){
-		if(mapOpt==2){
+
+	function nextView2dMap() {
+		if (mapOpt == 2) {
 			naviBar.zoomToNextExtent();
-		}else{
-			
+		} else {
+
 		}
 	}
-	
-	function measureDistance2d(){
+
+	function measureDistance2d() {
 		measure._startMeasureDistance();
 	}
-	
-	function measureArea2d(){
+
+	function measureArea2d() {
 		measure._startMeasureArea();
 	}
-	
-	
-	
 </script>
 </head>
 <body>
-
+	<script type="text/javascript" src="${res }/js/map2d/query.js"></script>
 </body>
 </html>

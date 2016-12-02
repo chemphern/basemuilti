@@ -1,11 +1,12 @@
 package com.ycsys.smartmap.sys.advise;
 
-import org.apache.log4j.Logger;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component;
 //@Component
 //@Aspect
 public class LogAdvise {
-    private Logger logger = Logger.getLogger(LogAdvise.class);
+    private Logger logger = LoggerFactory.getLogger(LogAdvise.class);
     /** 开始的毫秒数 */
     private long beginTimeMillis;
     /** 结束的毫秒数 */

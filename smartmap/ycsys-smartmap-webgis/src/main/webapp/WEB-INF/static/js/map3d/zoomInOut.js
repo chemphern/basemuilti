@@ -28,7 +28,7 @@ function zoomInMapExtent(){
 	YcMap3D.AttachEvent("OnRButtonUp", zoomInOutRBUpHandler);
 	YcMap3D.AttachEvent("OnFrame", zoomInOutFrameHandler);
 	YcMap3D.Window.SetInputMode(1);
-	YcMap3D.Window.ShowMessageBarText("请按住左键，拖拉出需要放大的矩形区域。可重复操作，右键结束放大操作。",1,-1);
+	YcMap3D.Window.ShowMessageBarText("请按住左键，拖拉出需要放大的矩形区域。可重复操作，右键结束放大操作。",1,5000);
 }
 
 //拉框缩小
@@ -41,7 +41,7 @@ function zoomOutMapExtent(){
 	YcMap3D.AttachEvent("OnRButtonUp", zoomInOutRBUpHandler);
 	YcMap3D.AttachEvent("OnFrame", zoomInOutFrameHandler);
 	YcMap3D.Window.SetInputMode(1);
-	YcMap3D.Window.ShowMessageBarText("请按住左键，拖拉出需要缩小的中心矩形区域。可重复操作，右键结束缩小操作。",1,-1);
+	YcMap3D.Window.ShowMessageBarText("请按住左键，拖拉出需要缩小的中心矩形区域。可重复操作，右键结束缩小操作。",1,5000);
 }
 
 //拉框缩放左键事件
@@ -53,7 +53,7 @@ function zoomInOutLBUpHandler(flags, x, y){
 		//过滤微小操作和高度过高、过低
 		var cameraHeight = YcMap3D.Navigate.GetPosition(0).Altitude;
 		var rectScreenScale = getMinScale(rectangle);
-		if(rectScreenScale < 100)
+		if(rectScreenScale < 80)
 		{
 			//缩放操作
 			if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomIn"&&cameraHeight>50){
@@ -61,9 +61,15 @@ function zoomInOutLBUpHandler(flags, x, y){
 			}else if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomOut"&&cameraHeight<20850000){
 				ZoomOutWithRectangle(rectangle);
 			}else if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomIn"&&cameraHeight<=50){
-				YcMap3D.Window.ShowMessageBarText("已经放大到最大程度。右键结束放大操作或点击缩小功能进行缩小操作！",1,-1);
+				//结束放大操作
+				zoomInOutRBUpHandler();
+				//提示到最大值
+				YcMap3D.Window.ShowMessageBarText("已经放大到最大程度。滚轮缩放地图范围或点击缩小功能进行缩小操作！",1,5000);
 			}else if(ZoomInOutToolGlobe.ZoomInOutType == "ZoomOut"&&cameraHeight>=20850000){
-				YcMap3D.Window.ShowMessageBarText("已经缩小到最大程度。右键结束缩小操作或点击放大功能进行放大操作！",1,-1);
+				//结束缩小操作
+				zoomInOutRBUpHandler();
+				//提示到最小值
+				YcMap3D.Window.ShowMessageBarText("已经缩小到最大程度。滚轮缩放地图范围或点击放大功能进行放大操作！",1,5000);
 			}
 		}
 		//删除绘制图形
@@ -130,7 +136,24 @@ function ZoomInWithRectangle(Rectabgle){
 	//获取左上、右下坐标
 	var extent={"xmin":Math.min(Rectabgle.Left,Rectabgle.Right),"xmax":Math.max(Rectabgle.Left,Rectabgle.Right),"ymin":Math.min(Rectabgle.Bottom,Rectabgle.Top),"ymax":Math.max(Rectabgle.Bottom,Rectabgle.Top)};
 	//设置到地图范围
-	set3DMapExtent(extent, type)
+	setZoomInLevel(extent, type)
+}
+
+//设置放大后三维地图范围
+function setZoomInLevel(extent, type) {
+    var centerx = (extent.xmax + extent.xmin) * 0.5;
+    var centery = (extent.ymax + extent.ymin) * 0.5;
+    var distanceY, distanceX;
+    if (type == "meter") {
+        distanceY = (extent.ymax - extent.ymin) * 0.5 / (Math.tan(26 / 180 * Math.PI));
+        distanceX = (extent.xmax - extent.xmin) * 0.5 / (Math.tan(26 / 180 * Math.PI));
+    } else {
+        distanceY = (extent.ymax - extent.ymin) * 0.5 * 111111 / (Math.tan(26 / 180 * Math.PI));
+        distanceX = (extent.xmax - extent.xmin) * 0.5 * 111111 / (Math.tan(26 / 180 * Math.PI));
+    }
+    var pos = YcMap3D.Creator.CreatePosition(centerx, centery, 0, 0, 0, -90, 0, 0);
+    pos.distance = Math.max(distanceX, distanceY);
+    YcMap3D.Navigate.FlyTo(pos, 14);
 }
 
 //拉框缩小算法
@@ -141,7 +164,7 @@ function ZoomOutWithRectangle(Rectabgle){
 	var centerPosition = YcMap3D.Creator.CreatePosition(centerx, centery, 0, 0, 0, -90, 0, 0);
 	//计算缩小后相机位置的高度
 	var heightScale = getZoomOutHeight(Rectabgle);
-	if(heightScale>20850000)
+	if(heightScale>=20850000)
 		centerPosition.Altitude = 20850000;
 	else if(heightScale<YcMap3D.Navigate.GetPosition(0).Altitude)
 		centerPosition.Altitude = YcMap3D.Navigate.GetPosition(0).Altitude;

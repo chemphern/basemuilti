@@ -2,11 +2,11 @@ package com.ycsys.smartmap.sys.util;
 
 import com.ycsys.smartmap.sys.entity.Dictionary;
 import com.ycsys.smartmap.sys.entity.DictionaryItem;
-import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.transform.Transformers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class DataDictionary {
     public static final String DICT_OBJECT = "_OBJECT_";
-    private static final Logger logger = Logger.getLogger(DataDictionary.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataDictionary.class);
     public static final String CACHE_NAME = "DATA_SYS_DICT";
     private boolean initStatus = true;
 

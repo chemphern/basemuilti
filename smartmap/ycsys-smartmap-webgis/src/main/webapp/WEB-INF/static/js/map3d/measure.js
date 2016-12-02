@@ -22,7 +22,7 @@ var MeasureToolGlobe={
     "FillColor":"#384048",
     "FillAlpha":0.5,
     "LabelStyle":"",
-    "ImagePath":getProjectPath()+"img/YcMap3D/point.png",
+    "ImagePath":getProjectPath()+"static/dist/img/map/point.png",
     "MeasureFolderID":""
 }   
 

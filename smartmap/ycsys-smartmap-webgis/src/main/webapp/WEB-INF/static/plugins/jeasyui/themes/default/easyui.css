@@ -2030,14 +2030,14 @@
 .slider-rulelabel span {
   color: #000000;
 }
-/* .menu {
+ .menu {
   position: absolute;
   margin: 0;
   padding: 2px;
   border-width: 1px;
   border-style: solid;
   overflow: hidden;
-} */
+} 
 .menu-item {
   position: relative;
   margin: 0;
@@ -2117,11 +2117,11 @@
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #fff;
 }
-/* .menu {
+ .menu {
   background-color: #fafafa;
   border-color: #ddd;
   color: #444;
-} */
+} 
 .menu-content {
   background: #ffffff;
 }

@@ -20,7 +20,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * httpClient 工具类
@@ -29,7 +30,7 @@ import org.apache.log4j.Logger;
  * @date 2016年11月9日
  */
 public class HttpClientUtils {
-	private static Logger log = Logger.getLogger(HttpClientUtils.class);
+	private static Logger log = LoggerFactory.getLogger(HttpClientUtils.class);
 
 	/**
 	 * post 请求调用

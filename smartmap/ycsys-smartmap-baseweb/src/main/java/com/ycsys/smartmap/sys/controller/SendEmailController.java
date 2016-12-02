@@ -27,7 +27,7 @@ public class SendEmailController {
 	@Autowired
 	private EmailService emailService;
 	
-	@RequestMapping("sendemail")
+	@RequestMapping("sendEmail")
     @ResponseBody
     public ResponseEx sendEmail(String email){
         ResponseEx ex = new ResponseEx();

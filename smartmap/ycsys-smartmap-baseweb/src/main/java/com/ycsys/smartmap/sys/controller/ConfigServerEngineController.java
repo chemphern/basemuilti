@@ -40,6 +40,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.ycsys.smartmap.service.entity.Service;
+import com.ycsys.smartmap.service.service.ServiceService;
 import com.ycsys.smartmap.sys.common.config.Global;
 import com.ycsys.smartmap.sys.common.exception.SysException;
 import com.ycsys.smartmap.sys.common.result.Grid;
@@ -52,8 +54,10 @@ import com.ycsys.smartmap.sys.common.utils.StringUtils;
 import com.ycsys.smartmap.sys.entity.ConfigServerEngine;
 import com.ycsys.smartmap.sys.entity.DictionaryItem;
 import com.ycsys.smartmap.sys.entity.PageHelper;
+import com.ycsys.smartmap.sys.entity.Server;
 import com.ycsys.smartmap.sys.entity.User;
 import com.ycsys.smartmap.sys.service.ConfigServerEngineService;
+import com.ycsys.smartmap.sys.service.ServerService;
 import com.ycsys.smartmap.sys.service.UserService;
 import com.ycsys.smartmap.sys.util.DataDictionary;
 
@@ -70,6 +74,11 @@ public class ConfigServerEngineController extends BaseController{
 			.getLogger(ConfigServerEngineController.class);
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private ServiceService serviceService;
+	@Autowired
+	private ServerService serverService;
 	
 	@Autowired
 	private ConfigServerEngineService configServerEngineService;
@@ -227,10 +236,16 @@ public class ConfigServerEngineController extends BaseController{
 			for(String id:ids) {
 				ConfigServerEngine configServerEngine = configServerEngineService.get(ConfigServerEngine.class, Integer.parseInt(id));
 				if(configServerEngine != null) {
-					configServerEngineService.delete(configServerEngine);
+					List<Service> list = serviceService.find("from Service t where t.serverEngine.id = ?", new Object[]{configServerEngine.getId()});
+					List<Server> serverList = serverService.find("from Server s where s.serverEngine.id =?", new Object[]{configServerEngine.getId()});
+					if((list != null && list.size() > 0) || (serverList!=null && serverList.size()>0)) {
+		        		ex.setSuccess("服务引擎被引用不能删除");
+		        	}else{
+		        		configServerEngineService.delete(configServerEngine);
+		        		ex.setSuccess("删除成功");
+		        	}
 				}
 			}
-			ex.setSuccess("删除成功");
 		}
 		else {
 			ex.setFail("删除失败");
@@ -246,8 +261,15 @@ public class ConfigServerEngineController extends BaseController{
     public ResponseEx delete(ConfigServerEngine configServerEngine){
         ResponseEx ex = new ResponseEx();
         try{
-        	configServerEngineService.delete(configServerEngine);
-            ex.setSuccess("删除成功");
+        	List<Service> list = serviceService.find("from Service t where t.serverEngine.id = ?", new Object[]{configServerEngine.getId()});
+        	List<Server> serverList = serverService.find("from Server s where s.serverEngine.id= ?", new Object[]{configServerEngine.getId()});
+        	if((list != null && list.size() > 0) || (serverList!=null && serverList.size()>0)) {
+        		ex.setSuccess("服务引擎被引用不能删除");
+        	}
+        	else {
+        		configServerEngineService.delete(configServerEngine);
+        		ex.setSuccess("删除成功");
+        	}
         }catch (Exception e){
             ex.setFail("删除失败");
         }
@@ -337,6 +359,8 @@ public class ConfigServerEngineController extends BaseController{
 			String updateDate = "";
 			if(engine.getUpdateDate() != null) {
 				updateDate = DateUtils.formatDate(engine.getUpdateDate() , "yyyy-MM-dd HH:mm:ss");
+			}else{
+				updateDate = DateUtils.formatDate(new Date() , "yyyy-MM-dd HH:mm:ss");
 			}
 			e14.addText(updateDate);
 
@@ -523,9 +547,18 @@ public class ConfigServerEngineController extends BaseController{
     				engine.setManagerPassword(child2.get(10).getText());
     				String createDate = child2.get(11).getText();
     				String updateDate = child2.get(13).getText();
+    				System.out.println("createDate=============="+createDate);
+    				System.out.println("updateDate=============="+updateDate);
     				try {
-    					Date d1 = DateUtils.parseDate(createDate, "yyyy-MM-dd HH:mm:ss");
+    					/*if (updateDate==null) {
+    						updateDate = DateUtils.formatDate(new Date() , "yyyy-MM-dd HH:mm:ss");
+						}
+						if (createDate==null) {
+							createDate = DateUtils.formatDate(new Date() , "yyyy-MM-dd HH:mm:ss");
+						}	*/
+						Date d1 = DateUtils.parseDate(createDate, "yyyy-MM-dd HH:mm:ss");
     					Date d2 = DateUtils.parseDate(updateDate, "yyyy-MM-dd HH:mm:ss");
+    					
     					engine.setCreateDate(d1);
     					engine.setUpdateDate(d2);
     				} catch (ParseException e1) {
@@ -557,6 +590,11 @@ public class ConfigServerEngineController extends BaseController{
         }
         return ex;
     }
-	
+	public static void main(String[] args) {
+		String str = "2016-11-29 12:27:12";
+		System.out.println(DateUtils.parseDate(str));
+		new Date();
+		System.out.println(new Date());
+	}
 
 }

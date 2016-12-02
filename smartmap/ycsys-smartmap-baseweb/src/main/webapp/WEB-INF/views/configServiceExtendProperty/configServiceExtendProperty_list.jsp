@@ -139,7 +139,10 @@
 	    	else {
 		    	var selectedRows = gridManager.getSelecteds();
 		    	if(selectedRows.length > 1 || selectedRows.length < 1) {
-		    		alert("请选择一条记录进行修改！");
+		    		//alert("请选择一条记录进行修改！");
+		    		$.Layer.confirm({
+		                msg:"请选择一条记录进行修改！",
+		            });
 		    		return false;
 		    	}
 		    	else {
@@ -168,37 +171,26 @@
                         type:"post",
                         dataType:"json",
                         success:function(res){
-                            alert(res.retMsg);
-                            gridManager.reload();
+                        	console.log(res);
+                        	console.log(res.retMsg);
+                        	if(res.retMsg=='删除成功'){
+                        		$.Layer.confirm({
+                	                msg:"删除成功",
+                	                fn:function(){
+                	                	//console.log(3);
+                	                	gridManager.reload();
+                	                	//console.log(4);
+                	                	
+                	                }
+                	            });
+                        	}
                         },error:function(){
                             alert("删除记录失败！");
                         }
                     });
                 },
-                fn2:function(){
-                	gridManager.reload();
-                }
-                
             });
     	}else{ 
-    		/* var url = "${ctx}/configServiceExtendProperty/deletes";
-        	var selectedRows = gridManager.getSelecteds();
-        	if(selectedRows.length > 0) {
-    	    	//console.log(selectedRows);
-    	    	var ids = [];
-    	    	for(var i = 0; i < selectedRows.length; i++) {
-    	    		ids.push(selectedRows[i].id);
-    	    	}
-    	    	var str = ids.join(",");
-    			$.post(url,{"idsStr":str},function(result){
-    				if("success"==result) {
-    			    	gridManager.reload();
-    				}
-    			});
-        	} 
-        	else{
-        		alert("请选择需要删除的数据！");
-        	} */
         	var selectedRows = gridManager.getSelecteds();
         	if(selectedRows.length > 0) {
     	    	var ids = [];
@@ -215,8 +207,14 @@
                             type:"post",
                             dataType:"json",
                             success:function(res){
-                                alert(res.retMsg);
-                                gridManager.reload();
+                            	if(res.retMsg=='删除成功'){
+                            		$.Layer.confirm({
+                    	                msg:"删除成功",
+                    	                fn:function(){
+                    	                gridManager.reload();
+                    	                }
+                    	            });
+                            	}
                             },error:function(){
                                 alert("删除记录失败！");
                             }
@@ -229,7 +227,10 @@
                 });
         	} 
         	else{
-        		alert("请选择需要删除的数据！");
+        		//alert("请选择需要删除的数据！");
+        		$.Layer.confirm({
+	                msg:"请选择需要删除的数据！",
+	            });
         	}
     	}
     } 

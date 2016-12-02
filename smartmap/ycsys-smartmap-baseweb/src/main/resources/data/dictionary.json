@@ -296,5 +296,68 @@
         "sort":"2"
       }
     ]
+  },
+   {
+  	"name":"审核状态",
+  	"code":"audit_status",
+    "memo":"",
+    "dictionaryItems":[
+        {
+        "name":"未审核",
+        "value":"0",
+        "memo":"",
+        "sort":"1"
+      },
+      {
+        "name":"通过",
+        "value":"1",
+        "memo":"",
+        "sort":"2"
+      },
+      {
+        "name":"不通过",
+        "value":"2",
+        "memo":"",
+        "sort":"3"
+      }
+    ]
+  },
+  {
+  	"name":"服务有效时间",
+  	"code":"service_valid_date",
+    "memo":"",
+    "dictionaryItems":[
+        {
+        "name":"三个月",
+        "value":"0",
+        "memo":"",
+        "sort":"1"
+      },
+      {
+        "name":"六个月",
+        "value":"1",
+        "memo":"",
+        "sort":"2"
+      },
+      {
+        "name":"一年",
+        "value":"2",
+        "memo":"",
+        "sort":"3"
+      },
+      {
+        "name":"两年",
+        "value":"3",
+        "memo":"",
+        "sort":"4"
+      },
+      {
+        "name":"无限期",
+        "value":"4",
+        "memo":"",
+        "sort":"5"
+      }
+    ]
   }
+  
 ]

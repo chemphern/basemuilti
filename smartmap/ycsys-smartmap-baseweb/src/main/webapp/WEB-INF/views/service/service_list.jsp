@@ -136,6 +136,11 @@ body {
 	<script src="${res}/dist/js/app.js"></script>
 	<!-- AdminLTE for demo purposes -->
 	<script src="${res}/dist/js/demo.js"></script>
+	<script type="text/javascript"
+	src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>
+	<script type="text/javascript"
+		src="${res}/plugins/dialog/iframeTools.source.js"></script>
+	<script type="text/javascript" src="${res}/plugins/dialog/unit.js"></script>
 	<script type="text/javascript">
 	var treeManager = null;
 	var gridManager = null;
@@ -210,8 +215,47 @@ body {
 			    	}
 				});
 				
-				//服务停止
+				//服务删除
 				$("#serviceDelete").on("click",function(e) {
+					e.preventDefault();
+					var selectedRows = gridManager.getSelecteds();
+			    	if(selectedRows.length > 0) {
+				    	var ids = [];
+				    	for(var i = 0; i < selectedRows.length; i++) {
+				    		ids.push(selectedRows[i].id);
+				    	}
+				    	var str = ids.join(",");
+				    	$.Layer.confirm({
+			                msg:"确定要删除选择的【" +selectedRows.length+ "】记录吗？",
+			                fn:function(){
+			                    $.ajax({
+			                    	url: "${ctx}/service/deletes",
+			                        data:{'idsStr':str},
+			                        type:"post",
+			                        dataType:"json",
+			                        success:function(result){
+			                        	alert(result.msg);
+							    		gridManager.reload();
+			                        },error:function(){
+			                            alert("删除失败！");
+			                        }
+			                    });
+			                },
+			                fn2:function(){
+			                	//gridManager.reload();
+			                }
+			                
+			            });
+			    	}
+			    	else {
+			    		alert("请选择数据！");
+			    		return false;
+			    	}
+			    	
+				});
+				
+				//版本刷新
+				$("#refreshVersion").on("click",function(e) {
 					e.preventDefault();
 					var selectedRows = gridManager.getSelecteds();
 			    	if(selectedRows.length != 1) {
@@ -219,19 +263,21 @@ body {
 			    		return false;
 			    	}
 			    	else {
-			    		$.ajax({
-	                    	url: "${ctx}/service/delete",
-	                        data:{'id':selectedRows[0].id},
-	                        type:"post",
-	                        dataType:"json",
-	                        success:function(res){
-	                        	gridManager.reload();
-	                            alert(res.msg);
-	                        },error:function(){
-	                            alert("删除失败！");
-	                        }
-	                    });
+			    		var dialog = $.Layer.iframe(
+			                { 
+			                  id:"refreshVersionDialog",
+			                  title: "更新版本",
+			                  url:"${ctx}/service/toRefreshVersion?id="+selectedRows[0].id,
+			                  width: 500,
+			                  height: 150
+			               });
 			    	}
+				});
+				
+				//服务注册
+				$("#serviceRegister").on("click",function(e) {
+					e.preventDefault();
+					window.location.href="${ctx}/service/toRegister";
 				});
 				
 				//表格列表
@@ -295,9 +341,9 @@ body {
 	                          var h = "";
 	                          if (!rowdata._editing)
 	                          {
-	                            h += "<input type='button' class='list-btn bt_edit' onclick='resource_list.editResource(2,"+ rowdata.id+ ")'/>";
-	                            h += "<input type='button' class='list-btn bt_del' onclick='resource_list.deleteResource(" + rowdata.id + ")'/>";
-	                            h += "<input type='button' class='list-btn bt_view' onclick='resource_list.viewResource(" + rowdata.id + ")'/>";
+	                            h += "<input type='button' class='list-btn bt_edit' onclick='service_list.editService("+ rowdata.id+ ")'/>";
+	                            h += "<input type='button' class='list-btn bt_del'  onclick='service_list.deleteService(" + rowdata.id + ")'/>";
+	                            h += "<input type='button' class='list-btn bt_view' onclick='service_list.viewService(" + rowdata.id + ")'/>";
 	                          }
 	                          return h;
 	                        }
@@ -312,6 +358,53 @@ body {
 				});
 			});
 		})(jQuery);
+		
+		//服务管理相关操作 function
+		var service_list = {
+			//删除服务
+			deleteService: function(id) {
+		    	if(id) {
+		    		$.Layer.confirm({
+		                msg:"确定删除该记录吗？",
+		                fn:function(){
+		                    $.ajax({
+		                    	url: "${ctx}/service/delete",
+		                        data:{'id':id},
+		                        type:"post",
+		                        dataType:"json",
+		                        success:function(ret){
+		                        	gridManager.reload();
+		                            alert(ret.msg);
+		                        },error:function(){
+		                            alert("删除失败！");
+		                        }
+		                    });
+		                },
+		                fn2:function(){
+		                	gridManager.reload();
+		                }
+		                
+		            });	 
+		    	}
+			},
+			//编辑服务
+			editService: function(id) {
+				if(id) {
+					$.Layer.iframe(
+		                { 
+		                  id:"editGisServiceDialog",
+		                  title: "编辑服务",
+		                  url:"${ctx}/service/toEditGis?id="+id,
+		                  width: 1000,
+		                  height: 600
+		            });
+				}
+			},
+			viewService: function(id) {
+				alert("view");
+			}
+			    	
+		}
 	</script>
 </body>
 </html>

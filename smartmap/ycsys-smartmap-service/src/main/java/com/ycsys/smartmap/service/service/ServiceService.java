@@ -11,8 +11,4 @@ import com.ycsys.smartmap.sys.service.BaseService;
  */
 public interface ServiceService extends BaseService<Service, Integer> {
 
-	/**
-	 * 注册服务列表
-	 */
-	public List<Service> find(String hql);
 }

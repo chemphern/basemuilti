@@ -8,8 +8,9 @@ import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.Permission;
 import com.ycsys.smartmap.sys.service.PermissionService;
 import com.ycsys.smartmap.sys.util.PermissionUtil;
-import org.apache.log4j.Logger;
 import org.hibernate.service.spi.ServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +31,7 @@ public class PermissionServiceImpl implements PermissionService {
 	@Autowired
 	private SystemDao systemDao;
 
-	private static final Logger logger = Logger.getLogger(PermissionServiceImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(PermissionServiceImpl.class);
 
 	/**
 	 * 获取角色拥有的菜单
