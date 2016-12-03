@@ -123,7 +123,7 @@
     </init-param>
     <init-param>
       <param-name>kaptcha.obscurificator.impl</param-name>
-      <param-value>com.google.code.kaptcha.impl.ShadowGimpy</param-value>
+      <param-value>com.ycsys.smartmap.sys.common.config.kaptcha.RippleGimpy</param-value>
     </init-param>
     <init-param>
       <param-name>kaptcha.background.clear.from</param-name>
@@ -139,7 +139,7 @@
     </init-param>
       <init-param>
           <param-name>kaptcha.textproducer.char.space</param-name>
-          <param-value>6</param-value>
+          <param-value>5</param-value>
       </init-param>
   </servlet>
   <servlet-mapping>
