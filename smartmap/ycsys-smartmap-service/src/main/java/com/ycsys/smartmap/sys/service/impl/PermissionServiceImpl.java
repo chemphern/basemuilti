@@ -1,13 +1,13 @@
 package com.ycsys.smartmap.sys.service.impl;
 
-import com.ycsys.smartmap.sys.common.config.parseobject.*;
+import com.ycsys.smartmap.sys.common.config.parseobject.permission.*;
 import com.ycsys.smartmap.sys.common.utils.DateUtils;
 import com.ycsys.smartmap.sys.dao.PermissionDao;
 import com.ycsys.smartmap.sys.dao.SystemDao;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.Permission;
 import com.ycsys.smartmap.sys.service.PermissionService;
-import com.ycsys.smartmap.sys.util.PermissionUtil;
+import com.ycsys.smartmap.sys.util.XmlParseObjectUtil;
 import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,7 +64,7 @@ public class PermissionServiceImpl implements PermissionService {
 	@Override
 	public void importPermission(InputStream is, String encoding){
 		try {
-			PermissionXmlObject obj = PermissionUtil.getXmlObjectByStream(is, encoding);
+			PermissionXmlObject obj = XmlParseObjectUtil.getXmlObjectByStream(is, encoding,PermissionXmlObject.class);
 			//删除系统表
 			permissionDao.executeHql("delete from System");
 			//删除角色权限表
@@ -80,18 +80,17 @@ public class PermissionServiceImpl implements PermissionService {
 	/**
 	 *初始化权限表（当权限表没有数据的时候，会从permission.xml中导入基础数据）
 	 * **/
-	public void initPermission(String system_code) {
-		long i = permissionDao.count("select count(*) from Permission p where p.systemCode = ?",new Object[]{system_code});
+	public void initPermission(PermissionXmlObject pxo) {
+		long i = permissionDao.count("select count(*) from Permission p");
 		//当本系统没有数据时，方才执行初始化导入
-		if(i == 0){
-			String ab_path = PermissionServiceImpl.class.getClassLoader().getResource("").getPath();
+		if(i < 1){
+			logger.info("==================初始化权限开始========================");
 			try {
-				PermissionXmlObject obj = PermissionUtil.getXmlObjectByFile(ab_path + "/permission/permission.xml","UTF-8");
-				updateSystemFromXmlObject(obj);
-				logger.info("==================导入权限========================");
+				updateSystemFromXmlObject(pxo);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			logger.info("==================初始化权限结束========================");
 		}
 	}
 

@@ -20,15 +20,20 @@ import org.hibernate.annotations.DynamicUpdate;
 @Table(name = "map_roam_flightpath")
 @DynamicUpdate
 @DynamicInsert
-public class FlightPath {
+public class FlightPath implements java.io.Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @Column(name = "ID", unique = true, nullable = false)
     private Integer id;
 	
 	//路径名称
-	@Column(name = "path_name", unique = true, nullable = false, length=100)
+	@Column(name = "path_name", nullable = false, length=100)
 	private String pathName;
 	
 	//飞行路径创建者
@@ -36,11 +41,10 @@ public class FlightPath {
 	private String creator;
 	
 	//飞行路径创建时间
-	@Column(name = "create_time")
+	@Column(name = "create_time", nullable = false)
 	private Date createTime;
 	
 	
-	//id
 	public Integer getId() {
         return this.id;
     }
@@ -48,7 +52,6 @@ public class FlightPath {
         this.id = id;
     }
     
-    //路径名称
     public String getPathName(){
     	return pathName;
     }
@@ -56,7 +59,6 @@ public class FlightPath {
     	this.pathName = pathName;
     }
     
-    //飞行路径创建者
     public String getCreator(){
     	return this.creator;
     }
@@ -64,11 +66,20 @@ public class FlightPath {
     	this.creator = creator;
     }
     
-    //飞行路径创建时间
     public Date getCreateTime(){
     	return this.createTime;
     }
     public void setCreateTime(Date createTime){
     	this.createTime = createTime;
+    }
+    
+    public FlightPath(){
+    	
+    }
+    
+    public FlightPath(String pathName,String creator,Date current){
+    	this.pathName = pathName;
+    	this.creator = creator;
+    	this.createTime = current;
     }
 }

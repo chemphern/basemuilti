@@ -48,9 +48,6 @@ public class UserRealmImpl extends AuthorizingRealm {
 
 	@Autowired
 	private PermissionDao permissionDao;
-
-	@Value("#{config.super_roles}")
-	private String super_roles;
 	/**
 	 * 认证回调函数,登录时调用.
 	 */
@@ -64,19 +61,10 @@ public class UserRealmImpl extends AuthorizingRealm {
 			//设置用户session
 			//是否超级管理员
 			boolean is_super = false;
-			String [] super_roles_arr = null;
-			if(super_roles != null){
-				super_roles_arr = super_roles.split(",");
-			}
 			for(UserRole userRole:user.getUserRoles()){
-				//判断是否超级管理员
-				if(super_roles_arr != null){
-					for(String super_role : super_roles_arr){
-						String role_code = userRole.getRole().getCode();
-						if(role_code != null && role_code.equals(super_role)){
-							is_super = true;
-						}
-					}
+				if(userRole.getRole().getIsSuper()){
+					is_super = true;
+					break;
 				}
 			}
 			user.setSuper(is_super);
@@ -103,21 +91,14 @@ public class UserRealmImpl extends AuthorizingRealm {
 		SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 		//是否超级管理员
 		boolean is_super = false;
-		String [] super_roles_arr = null;
-		if(super_roles != null){
-			super_roles_arr = super_roles.split(",");
-		}
 		//赋予角色
 		for(UserRole userRole:user.getUserRoles()){
 			String role_code = userRole.getRole().getCode();
 			info.addRole(role_code);
-			//判断是否超级管理员
-			if(super_roles_arr != null){
-				for(String super_role : super_roles_arr){
-					if(role_code != null && role_code.equals(super_role)){
-						is_super = true;
-					}
-				}
+
+			boolean isSuper = userRole.getRole().getIsSuper();
+			if(isSuper){
+				is_super = true;
 			}
 		}
 		if(is_super){

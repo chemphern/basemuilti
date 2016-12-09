@@ -38,7 +38,7 @@
   font: normal 12px Verdana, Arial, Helvetica, sans-serif; 
   color:#5A5655;   
   background-color:#F8F8F8;  
-  height:300px;
+  height:420px;
   text-align:left;
   overflow:visible;    
   z-index:88; 
@@ -53,7 +53,6 @@
   position: relative; 
   clear:both;
   margin:             3px 0 0 0;   
-  border:             1px solid #CCC;
   padding:            0;    
   color:              #5A5655;   
   background-color:   #F8F8F8;

@@ -1,5 +1,6 @@
 package com.ycsys.smartmap.sys.service;
 
+import com.ycsys.smartmap.sys.common.config.parseobject.role.RoleRootXmlObject;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.Permission;
 import com.ycsys.smartmap.sys.entity.Role;
@@ -25,4 +26,7 @@ public interface RoleService {
 
     /**获取所有角色**/
     List<Role> findAll();
+
+    /**初始化角色**/
+    void initRole(RoleRootXmlObject roles);
 }

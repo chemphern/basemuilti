@@ -113,7 +113,7 @@ public class DictServiceImpl implements DictService {
 
 	@Override
 	public void initDictionary() throws Exception{
-		String filepath = "/data/dictionary.json";
+		String filepath = "/data/init/dictionary.json";
 		InputStream inputStream = AreaServiceImpl.class.getResource(filepath).openStream();
 		if (inputStream != null) {
 			String json = StreamUtils.InputStreamTOString(inputStream, "UTF-8");

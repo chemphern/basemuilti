@@ -46,14 +46,14 @@ body {
 <body>
 	<div>
 		<!-- Content Header (Page header) -->
-		<section class="content-header">
+		<!-- <section class="content-header">
 			<h1>服务注册</h1>
 			<ol class="breadcrumb">
 				<li><a href="list_index.html"><i
 						class="iconfont iconfont-bars"></i> 首页</a></li>
 				<li class="active">服务注册</li>
 			</ol>
-		</section>
+		</section> -->
 
 		<!-- Main content -->
 		<section class="content" style="min-height: 650px">
@@ -71,10 +71,10 @@ body {
 										class="glyphicon glyphicon-pencil"></i></a>
 									<p>第三方服务注册</p></li>
 							</ul></li>
-						<li class="aa">
+						<!-- <li class="aa">
 							<button class="btn next">下一步</button>
 							<button class="btn ">取消</button>
-						</li>
+						</li> -->
 					</ul>
 
 

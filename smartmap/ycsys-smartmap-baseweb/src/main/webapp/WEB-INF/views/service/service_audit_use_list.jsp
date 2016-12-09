@@ -47,7 +47,7 @@ body {
 <body>
 <div>
     <!-- Content Header (Page header) -->
-    <section class="content-header">
+    <!-- <section class="content-header">
       <h1>
         使用服务审核
       </h1>
@@ -55,7 +55,7 @@ body {
         <li><a href="list_fwgl.html"><i class="iconfont iconfont-bars"></i> 首页</a></li>
         <li class="active">使用服务审核</li>
       </ol>
-    </section>
+    </section> -->
 
     <!-- Main content -->
     <section class="content">
@@ -240,7 +240,7 @@ body {
 		                ], 
 		                pageSize:30,
 		                url:"${ctx}/serviceApply/listData",
-		                width: '100%',height:'97%'
+		                width: '100%',height:'95%'
 					});
 
 					$("#pageloading").hide();
@@ -267,9 +267,9 @@ body {
 				                { 
 				                  id:"viewServiceApplyDialog",
 				                  title: '查看服务申请',
-				                  url:'${ctx}/serviceApply/detail?id='+id,
+				                  url:'${ctx}/serviceApply/view?id='+id,
 				                  width: 400,
-				                  height: 500,
+				                  height: 280,
 				                  button:[]
 				               });
 					}

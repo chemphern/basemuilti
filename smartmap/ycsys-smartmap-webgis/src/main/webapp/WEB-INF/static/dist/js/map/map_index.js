@@ -57,16 +57,9 @@ $(document).ready(function(){
         $(".resizable-right").addClass('active');
         $(".resizable-left").removeClass('active')
     });
-    //主页切换二维
-    $('.homemenu li').click(function(){
-        $(this).toggleClass('active');
-        $('#mapView-btn-3dmy').removeClass('active').siblings('.mapView-btn').addClass('active');
-        $('.resizable-left').addClass('active').siblings('div.resizable-right').removeClass('active');
-        $('.resizable-left').css('display','block');
-        $('.resizable-right').css('display','none');
-    })
+
     //左菜单切换效果
-     $('.menu').on('click','a',function(){
+     $('.submenu').on('click','a',function(){
         $(this).addClass('active').siblings().removeClass('active');
      })
 
@@ -245,27 +238,28 @@ $(document).ready(function(){
     };
 
 //颜色选择调用
-window.myColorPicker = $('input.color').colorPicker({
-    buildCallback: function($elm) {
-        this.$colorPatch = $elm.prepend('<div class="cp-disp">').find('.cp-disp');
-    },
-    cssAddon:
-        '.cp-disp {padding:0px 10px; margin-bottom:6px; font-size:12px; height:20px; line-height:20px}' +
-        '.cp-xy-slider {width:110px; height:128px;}' +
-        '.cp-xy-cursor {width:16px; height:16px; border-width:2px; margin:-8px}' +
-        '.cp-z-slider {height:128px; width:20px;}' +
-        '.cp-z-cursor {border-width:8px; margin-top:-8px;}' +
-        '.cp-alpha {height:16px;}' +
-        '.cp-alpha-cursor {border-width:8px; margin-left:-8px;}',
 
-    renderCallback: function($elm, toggled) {
-        var colors = this.color.colors;
-
-        this.$colorPatch.css({
-            backgroundColor: '#' + colors.HEX,
-            color: colors.RGBLuminance > 0.22 ? '#222' : '#ddd'
-        }).text(this.color.toString($elm._colorMode)); // $elm.val();
-    }
-});
+//window.myColorPicker = $('input.color').colorPicker({
+//    buildCallback: function($elm) {
+//        this.$colorPatch = $elm.prepend('<div class="cp-disp">').find('.cp-disp');
+//    },
+//    cssAddon:
+//        '.cp-disp {padding:0px 10px; margin-bottom:6px; font-size:12px; height:20px; line-height:20px}' +
+//        '.cp-xy-slider {width:110px; height:128px;}' +
+//        '.cp-xy-cursor {width:16px; height:16px; border-width:2px; margin:-8px}' +
+//        '.cp-z-slider {height:128px; width:20px;}' +
+//        '.cp-z-cursor {border-width:8px; margin-top:-8px;}' +
+//        '.cp-alpha {height:16px;}' +
+//        '.cp-alpha-cursor {border-width:8px; margin-left:-8px;}',
+//
+//    renderCallback: function($elm, toggled) {
+//        var colors = this.color.colors;
+//
+//        this.$colorPatch.css({
+//            backgroundColor: '#' + colors.HEX,
+//            color: colors.RGBLuminance > 0.22 ? '#222' : '#ddd'
+//        }).text(this.color.toString($elm._colorMode)); // $elm.val();
+//    }
+//});
 
 });

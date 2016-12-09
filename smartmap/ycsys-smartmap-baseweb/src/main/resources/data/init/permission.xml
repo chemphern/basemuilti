@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permission>
+    <!--支持多个系统权限导入-->
+    <system name="运维平台管理系统" code="smartmap" url="/smartmap">
+        <module name="安全管理" sort="1">
+            <url sort="1" name="机构管理" href="/org/list" funcs="sys-org-list">
+                <func name="查看" sort="1">
+                    <code>
+                        sys-org-list,
+                        sys-org-listData
+                    </code>
+                </func>
+                <func name="新增" sort="2">
+                    <code>
+                        sys-org-addOrgv,
+                        sys-org-saveOrUpdate,
+                        sys-org-getOrgs,
+                        sys-dict-getDictItemByCode,
+                        sys-area-getAreas
+                    </code>
+                </func>
+                <func name="修改" sort="3">
+                    <code>
+                        sys-org-updateOrgv,
+                        sys-org-saveOrUpdate,
+                        sys-area-getAreas,
+                        sys-dict-getDictItemByCode
+                    </code>
+                </func>
+                <func name="删除" sort="4">
+                    <code>
+                        sys-org-delete
+                    </code>
+                </func>
+                <func name="新增子机构" sort="5">
+                    <code>
+                        sys-org-addChildOrgv,
+                        sys-area-getAreas,
+                        sys-dict-getDictItemByCode,
+                        sys-org-saveOrUpdate
+                    </code>
+                </func>
+            </url>
+            <url sort="2" name="用户管理" href="/user/list" funcs="sys-user-list">
+                <func name="查看" sort="1" >
+                    <code>
+                        sys-user-list,
+                        sys-user-listData,
+                        sys-org-getOrgs,
+                        sys-user-showUserv
+                    </code>
+                </func>
+                <func name="新增" sort="2">
+                    <code>
+                        sys-user-addUserv,
+                        sys-dict-getDictItemByCode,
+                        sys-role-getRoles,
+                        sys-user-saveOrUpdate
+                    </code>
+                </func>
+                <func name="修改" sort="3">
+                    <code>
+                        sys-user-updateUserv,
+                        sys-user-saveOrUpdate,
+                        sys-dict-getDictItemByCode,
+                        sys-role-getRoles
+                    </code>
+                </func>
+                <func name="删除" sort="4">
+                    <code>
+                        sys-user-delete
+                    </code>
+                </func>
+            </url>
+            <url name="角色管理" sort="3" href="/role/list" funcs="sys-role-list">
+                <func name="查看" sort="1">
+                    <code>
+                        sys-role-list,
+                        sys-role-listData
+                    </code>
+                </func>
+                <func name="新增" sort="2">
+                    <code>
+                        sys-role-addRolev,
+                        sys-role-saveOrUpdate
+                    </code>
+                </func>
+                <func name="修改" sort="3">
+                    <code>
+                        sys-role-updateRolev,
+                        sys-role-saveOrUpdate
+                    </code>
+                </func>
+                <func name="删除" sort="4">
+                    <code>
+                        sys-role-delete
+                    </code>
+                </func>
+                <func name="分配权限" sort="5">
+                      <code>
+                        sys-role-roleGivev,
+                        sys-permission-findPermissions,
+                        sys-role-updatePermission
+                    </code>
+                </func>
+            </url>
+            <url name="权限管理" sort="4" href="/permission/list" funcs="sys-permission-list">
+                <func name="查看" sort="1">
+                    <code>
+                        sys-permission-findSystems,
+                        sys-permission-list,
+                        sys-permission-listData
+                    </code>
+                </func>
+                <func name="导入" sort="2">
+                    <code>
+                        sys-permission-importPermissionv,
+                        sys-permission-importPermission
+                    </code>
+                </func>
+                <func name="导出" sort="3">
+                    <code>
+                        sys-permission-exportPermission
+                    </code>
+                </func>
+            </url>
+            <url name="地区管理" sort="5" href="/area/list" funcs="sys-area-list">
+                <func name="查看" sort="1">
+                    <code>
+                        sys-area-list,
+                        sys-area-listData
+                    </code>
+                </func>
+                <func name="新增" sort="2">
+                    <code>
+                        sys-area-addAreav,
+                        sys-area-saveOrUpdate
+                    </code>
+                </func>
+                <func name="修改" sort="3">
+                    <code>
+                        sys-area-updatev,
+                        sys-area-saveOrUpdate
+                    </code>
+                </func>
+                <func name="删除" sort="4">
+                    <code>
+                        sys-area-delete
+                    </code>
+                </func>
+            </url>
+            <url name="缓存管理" sort="6" href="/cache/list" funcs="sys-cache-list">
+                <func name="管理" sort="1">
+                    sys-cache-refreshDict,
+                    sys-cache-listData,
+                    sys-cache-list
+                </func>
+            </url>
+        </module>
+        <module sort="2" name="系统配置">
+            <url sort="1" name="字典管理" href="/dictionary/list" funcs="sys-dictionary-list">
+                <func name="查看" sort="1">
+                    <code>
+                        sys-dict-list,
+                        sys-dict-listData
+                    </code>
+                </func>
+                <func name="新增" sort="2">
+                    <code>
+                        sys-dict-addDictv,
+                        sys-dict-create
+                    </code>
+                </func>
+                <func name="修改" sort="3">
+                    <code>
+                        sys-dict-updateDictv,
+                        sys-dict-update,
+                        sys-dict-updateDictItemv,
+                        sys-dict-deleteItem,
+                        sys-dict-listItemData,
+                        sys-dict-updateItem
+                    </code>
+                </func>
+                <func name="删除" sort="4">
+                    <code>
+                        sys-dict-delete
+                    </code>
+                </func>
+            </url>
+            <url sort="2" name="日志管理" href="/log/list" funcs="sys-log-list"/>
+            <url name="服务引擎配置" sort="3" href="/configServerEngine/list" funcs="sys-configServerEngine-list">
+                <func name="服务引擎配置" sort="1">
+                    <code>
+                        sys-configServerEngine-list,
+                        sys-configServerEngine-listData
+                    </code>
+                </func>
+            </url>
+            <url name="服务扩展属性配置" sort="4" href="/configServiceExtendProperty/list" funcs="sys-configServiceExtendProperty-list">
+                <func name="服务引擎配置" sort="1">
+                    <code>
+                        sys-configServiceExtendProperty-list,
+                        sys-configServiceExtendProperty-listData
+                    </code>
+                </func>
+            </url>
+            <url name="服务监控配置" sort="5" href="/serverMonitor/list" funcs="sys-serverMonitor-list">
+                <func name="服务监控配置" sort="1">
+                    <code>
+                        sys-serverMonitor-list,
+                        sys-serverMonitor-listData
+                    </code>
+                </func>
+            </url>
+            <url name="平台监控配置" sort="6" href="/server/list" funcs="sys-server-list">
+                <func name="平台监控配置" sort="1">
+                    <code>
+                        sys-server-list,
+                        sys-server-listData
+                    </code>
+                </func>
+            </url>
+            <url name="异常报警配置" sort="7" href="/configExceptionAlarm/list" funcs="sys-configExceptionAlarm-list">
+                <func name="异常报警配置" sort="1">
+                    <code>
+                        sys-configExceptionAlarm-list,
+                        sys-configExceptionAlarm-listData
+                    </code>
+                </func>
+            </url>
+			<url name="图层管理" sort="8" href="/layer/list" funcs="sys-layer-list">
+                <func name="图层管理" sort="1">
+                    <code>
+                        sys-layer-list,
+                        sys-layer-listData
+                    </code>
+                </func>
+            </url>
+			<url name="专题图管理" sort="9" href="/layerTheme/list" funcs="sys-layerTheme-list">
+                <func name="专题图管理" sort="1">
+                    <code>
+                        sys-layerTheme-list,
+                        sys-layerTheme-listData
+                    </code>
+                </func>
+            </url>
+        </module>
+        <module name="资源管理" sort="3">
+            <url name="资源管理" sort="1" href="/resource/list" funcs="resource-list">
+                <func name="创建" sort="1">
+                    <code>
+                        resource-create,
+                        resourec-type-create
+                    </code>
+                </func>
+                <func name="修改" sort="2">
+                    <code>
+                        resource-edit,
+                        resource-type-edit
+                    </code>
+                </func>
+                <func name="删除" sort="3">
+                    <code>
+                        resource-delete,
+                        resource-type-delete
+                    </code>
+                </func>
+                <func name="查看" sort="4">
+                    <code>
+                        resource-view,
+                        resource-list,
+                        resource-list-data,
+                        resource-type-list
+                    </code>
+                </func>
+                <func name="移动" sort="5">
+                    <code>
+                        resource-move
+                    </code>
+                </func>
+                <func name="备份" sort="6">
+                	<code>
+                        resource-type-backup
+                    </code>
+                </func>
+            </url>
+        </module>
+        <module name="服务使用与审核" sort="4">
+            <url name="服务发布" sort="1" href="/service/toPublish" funcs="service-publish">
+                <func name="服务发布" sort="1">
+                    <code>
+                        service-publish
+                    </code>
+                </func>
+            </url>
+            <url name="服务注册" sort="2" href="/service/toRegister" funcs="service-register">
+                <func name="服务注册" sort="1">
+                    <code>
+                        service-register
+                    </code>
+                </func>
+            </url>
+            <url name="使用服务审核" sort="3" href="/serviceApply/list" funcs="service-auditUse">
+                <func name="使用服务审核" sort="1">
+                    <code>
+                        service-auditUse
+                    </code>
+                </func>
+            </url>
+            <url name="注册服务审核" sort="4" href="/service/auditRegisterList" funcs="service-auditRegister">
+                <func name="注册服务审核" sort="1">
+                    <code>
+                        service-auditRegister
+                    </code>
+                </func>
+            </url>
+        </module>
+        <module name="服务管理" sort="5">
+            <url name="服务管理" sort="1" href="/service/list" funcs="service-list">
+            	<func name="启动" sort="1">
+                    <code>
+                        service-start
+                    </code>
+                </func>
+                <func name="停止" sort="2">
+                    <code>
+                        service-stop
+                    </code>
+                </func>
+                <func name="删除" sort="3">
+                    <code>
+                        service-delete
+                    </code>
+                </func>
+                <func name="版本刷新" sort="4">
+                    <code>
+                        service-refresh-version
+                    </code>
+                </func>
+                <func name="注册" sort="5">
+                    <code>
+                        service-register
+                    </code>
+                </func>
+                <func name="导出" sort="6">
+                    <code>
+                        service-export
+                    </code>
+                </func>
+                <func name="导入" sort="7">
+                    <code>
+                        service-import
+                    </code>
+                </func>
+                <func name="查看" sort="8">
+                    <code>
+                        service-list,
+                        service-type-list
+                    </code>
+                </func>
+                <func name="编辑" sort="9">
+                    <code>
+                        service-edit
+                    </code>
+                </func>
+            </url>
+        </module>
+    </system>
+</permission>

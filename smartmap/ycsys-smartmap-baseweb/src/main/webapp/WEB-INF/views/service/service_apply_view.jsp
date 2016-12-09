@@ -25,7 +25,7 @@
   <![endif]-->
 </head>
 <body>
-	<form method="post" id="form_id" enctype="multipart/form-data">
+	<form id="form_id">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0"
 			class="date_add_table">
 			<tr>
@@ -58,7 +58,7 @@
 				<td width="120" class="t_r">审核结果</td>
 				<td>
 					<c:forEach var="map" items="${auditStatus }" begin="1">
-						${map.value.name }<input type="radio" name="auditStastus" value="${map.key }">
+						${map.value.name }<input type="radio" disabled="disabled" name="auditStastus" value="${map.key }">
 					</c:forEach>
 					
 					</td>
@@ -67,8 +67,7 @@
 			<tr>
 				<td class="t_r">审核意见：</td>
 				<td><textarea name="auditOption" id="auditOption" clos="20" rows="15" disabled="disabled"
-						class="text_area"
-						validate="{maxlength : 100,messages:{maxlength:'审核意见的字符长度大于100个字符！'}}">${serviceApply.auditOption }</textarea></td>
+						style="width:170px; height:80px; resize:both; overflow:auto;" >${serviceApply.auditOption }</textarea></td>
 			</tr>
 		</table>
 	</form>
@@ -76,10 +75,13 @@
 <script>
 	$(function() {
 		//设置下拉的值
-		//var validDate = "${serviceApply.validDate}";
-		//var fileType = "${serviceApply.fileType}";
-		//$("#validDate option[value="+validDate+"]").attr("selected",true);
-		//$("#fileType option[value="+fileType+"]").attr("selected",true);
+		if("${serviceApply.validDate}") {
+			$("#validDate option[value=${serviceApply.validDate}]").attr("selected",true);
+		}
+		//设置单选的值
+		if("${serviceApply.auditStastus}") {
+			$("input[name='auditStastus']:radio[value='${serviceApply.auditStastus}']").attr('checked','true');
+		}
 	});
 </script>
 </html>

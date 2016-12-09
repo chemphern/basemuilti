@@ -8,12 +8,16 @@
 
 <script type="text/javascript">
 
+//声明地图范围变量
+var mapExtent2d = null;
+
 /**
 *
 *初始化页面，加载工程，监听工程加载完毕事件
 *
 */
-function to3dMap() {
+function to3dMap(mapExtent) {
+	mapExtent2d = mapExtent;
 	//检查是否使用IE浏览器
 	if(!checkBrowser())
 		return
@@ -23,7 +27,8 @@ function to3dMap() {
 		return
 	
 	//检查是否初始化项目
-	if(YcMap3D==null||YcMap3D==undefined||YcMap3D.Project.Name==""){
+	//if(YcMap3D==null||YcMap3D==undefined||YcMap3D.Project.Name==""){
+	if(map3DInit==false){
 		//初始化打开工程并定位
 	    try {
 	        //fly文件路径
@@ -36,17 +41,20 @@ function to3dMap() {
 	        YcMap3D.Window.DisablePresentationControl = true;
 	        //添加onloadFinished事件
 	        YcMap3D.AttachEvent("OnLoadFinished", OnProjectLoadFinished);
+	        //标识三维已经初始化状态
+	        map3DInit = true;
 	    }
 	    catch (e) {
 	        alert("Error: " + e.description);
 	    }
 	}else{
-		var initPositionID = YcMap3D.ProjectTree.FindItem("InitLocation");
-		if(initPositionID!=""){
-			YcMap3D.Navigate.FlyTo(YcMap3D.ProjectTree.GetObject(initPositionID),14);
-		}
+		//var initPositionID = YcMap3D.ProjectTree.FindItem("InitLocation");
+		//if(initPositionID!=""){
+		//	YcMap3D.Navigate.FlyTo(YcMap3D.ProjectTree.GetObject(initPositionID),14);
+		//}
+		setExtentTo2dMap();
 	}
-	//表示目前显示三维状态
+	//标识目前显示三维状态
     mapOpt = 3;
 }
 
@@ -62,6 +70,17 @@ function OnProjectLoadFinished() {
     window.setTimeout("setExtentTo2dMap()",500);
   	//初始化试图记录
     beginRecordView();
+  	//创建临时文件夹、文件夹
+  	creatCacheFolder();
+	//判断加载二维中已加载图层
+    initMapLayer();
+}
+
+function creatCacheFolder(){
+	if(configration.WMSServiceFolder!="")
+		createFolder(configration.WMSServiceFolder);
+	if(configration.WFSServiceFolder!="")
+		createFolder(configration.WFSServiceFolder);
 }
 
 /**
@@ -70,10 +89,30 @@ function OnProjectLoadFinished() {
 *
 */
 function setExtentTo2dMap(){
-	var initPositionID = YcMap3D.ProjectTree.FindItem("InitLocation");
-	if(initPositionID!=""){
-		YcMap3D.Navigate.FlyTo(YcMap3D.ProjectTree.GetObject(initPositionID),0);
+	//var initPositionID = YcMap3D.ProjectTree.FindItem("InitLocation");
+	//if(initPositionID!=""){
+	//	YcMap3D.Navigate.FlyTo(YcMap3D.ProjectTree.GetObject(initPositionID),0);
+	//}
+	if(mapExtent2d!=null){
+		var type = "meter";
+		var isPlaner = YcMap3D.CoordServices.SourceCoordinateSystem.IsPlanar();
+		if(!isPlaner)
+			type = "globe";
+		setZoomInLevel(mapExtent2d,type);
 	}
+}
+
+function getFlightPathByName(pathName){
+	var url = "${ctx }/flightRoam/roamPath";
+	alert(url);
+	$.ajax({
+	  url: url,
+	  data:{"pathName":"testpath"},
+	  type: "Get",
+	  success: function(result){
+		  alert(JSON.stringify(result));
+	  },
+	});
 }
 
 </script>
@@ -89,5 +128,7 @@ function setExtentTo2dMap(){
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/analysis.js"></script>
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/config.js"></script>
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/fly.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dQuery.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dService.js"></script>
 </body>
 </html>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orgs>
+    <org name="广东省林业厅" areaName="广东省" code="gdlyt" type="1" remark="广东省林业厅厅机关">
+        <org name="广东省森林防火办公室" areaName="广东省" code="gdslfhb" type="1" remark="森林防火办公室"/>
+        <org name="广州市林业和园林局" areaName="广东省广州市" code="gzslyj" type="1" remark="广州市林业和园林局">
+            <org name="广州市森林防火办" areaName="广东省广州市天河区" code="thqnyhylj" type="2" remark="天河区农业和园林局"/>
+            <org name="天河区自然保护管理处" areaName="广东省广州市天河区" code="thqzrbhq" type="2" remark="天河区自然保护管理处"/>
+        </org>
+    </org>
+</orgs>

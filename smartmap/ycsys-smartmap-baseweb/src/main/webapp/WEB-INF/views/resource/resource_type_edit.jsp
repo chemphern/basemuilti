@@ -21,6 +21,8 @@
 <script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
 <script src="${res}/js/common/form.js"></script>
 
+
+
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
@@ -46,13 +48,15 @@
 				<td class="t_r">结点名称：</td>
 				<td><input type="text" name="name" id="name" size="15"
 					value="${resourceType.name }" class="text validate[required]"
-					validate="{required:true,maxlength:15,messages:{required:'必填',maxlength:'结点名称 的字符长度大于15个字符！'}}" /></td>
+					validate="{required:true,maxlength:15,messages:{required:'必填',maxlength:'结点名称 的字符长度大于15个字符！'}}" />
+				<span style="color: red">*</span>
+				</td>
 			</tr>
 
 			<tr>
 				<td class="t_r">备注：</td>
 				<td><textarea name="remarks" id="remarks" clos="20" rows="15"
-						class="text_area"
+						style="width:170px; height:80px; resize:both; overflow:auto;" 
 						validate="{maxlength : 100,messages:{maxlength:'备注的字符长度大于100个字符！'}}">${resourceType.remarks }</textarea></td>
 			</tr>
 		</table>
@@ -61,40 +65,37 @@
 <script>
 	$(function() {
 		var form = $("#form_id");
-		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
-		form.validate(val_obj);
-		
 		var parentWin = window.parent;
 		var dialog = parentWin.art.dialog.list["editResourceTypeDialog"];
 		var dialog_div = dialog.DOM.wrap;
 		
 		dialog_div.on("ok", function() {
-            var counts = $('div.l-exclamation'); //填的不对的记录数
-			if(counts.length < 1) {
-				$.ajax({
-					type : "POST",
-					url : "${ctx }/resourceType/save",
-					data : $('#form_id').serialize(),
-					dataType:"json",
-					async : false,
-					error : function(request) {
-						alert("Connection error");
-					},
-					success : function(ret) {
-						alert(ret.msg);
-						if(ret.flag=="1") {
-							parentWin.treeManager.reload();
-							dialog.close();
-						}
-						parentWin.resource_type.hideBtn(); //隐藏新增按钮
-					}
-				});
-			}
-			else {
-				alert("请重新填写那些有误的信息！");
-			}
-
+			form.submit();
 		});
+		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
+		val_obj.submitHandler = function(){
+			$.ajax({
+				type : "POST",
+				url : "${ctx }/resourceType/save",
+				data : $('#form_id').serialize(),
+				dataType:"json",
+				async : false,
+				error : function(ret) {
+					//console.log(ret);
+					alert("connection error!");
+				},
+				success : function(ret) {
+					alert(ret.msg);
+					if(ret.flag=="1") {
+						parentWin.treeManager.reload();
+						dialog.close();
+					}
+					parentWin.resource_type.hideBtn(); //隐藏新增按钮
+				}
+			});
+	    };
+	    form.validate(val_obj);
+		
 	});
 </script>
 </html>

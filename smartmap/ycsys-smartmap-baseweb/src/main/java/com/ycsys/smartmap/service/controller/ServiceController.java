@@ -21,6 +21,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -74,37 +75,72 @@ public class ServiceController {
 	 * @return
 	 */
 	@RequestMapping("toPublish")
+	@RequiresPermissions(value = "service-publish")
 	public String toPublish(Model model) {
 		//查找所有服务引擎
 		List<ConfigServerEngine> serverEngineList = configServerEngineService.find("from ConfigServerEngine");
 		model.addAttribute("serverEngineList", serverEngineList);
-		model.addAttribute("clusterNames", ClusterUtils.lists());
-		//Map<String, Object> i = DataDictionary.getObject("service_type");
-		//服务发布目录（即是服务在那个folder下）
-		model.addAttribute("listFolder", ServiceUtils.listFolder("http://172.16.10.52:6080/arcgis/admin/services","siteadmin","ld@yc2016"));
-		model.addAttribute("serviceTypes", DataDictionary.getObject("service_type"));
+		//服务功能类型 service_function_type
+		model.addAttribute("serviceFunctionType", DataDictionary.getObject("service_function_type"));
+		//服务扩展功能类型service_extend_type
+		model.addAttribute("serviceExtendType", DataDictionary.getObject("service_extend_type"));
 		return "/service/service_publish";
 	}
 	
+	
+	/**
+	 * 找服务器引擎的相关信息（集群和服务发布的目录）
+	 * @param id
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("getClusterAndFolder")
+	@RequiresPermissions(value = "service-publish")
+	public Map<String,String> getClusterAndFolder(Integer id) {
+		Map<String,String> map = new HashMap<String,String>();
+		ConfigServerEngine engine = configServerEngineService.get(ConfigServerEngine.class, id);
+		if(engine != null) {
+			String ip = engine.getIntranetIp();
+			String port = engine.getIntranetPort() + "";
+			String userName = engine.getEngineManager();
+			String password = engine.getManagerPassword();
+			List<String> folderList = ServiceUtils.listFolder(ip, port, userName, password);
+			List<String> clusterList = ClusterUtils.lists(ip, port, userName, password);
+			StringBuffer sb1 = new StringBuffer();
+			StringBuffer sb2 = new StringBuffer();
+			//拼接成下拉的option串
+			for(String i : folderList) {
+				sb1.append("<option value='").append(i).append("'>").append(i).append("</option>").append("<br>");
+			}
+			for(String j : clusterList) {
+				sb2.append("<option value='").append(j).append("'>").append(j).append("</option>").append("<br>");
+			}
+			map.put("folderList", sb1.toString());
+			map.put("clusterList", sb2.toString());
+		}
+		return map;
+	}
 	/**
 	 * 选择资源
 	 * @param model
 	 * @return
 	 */
 	@RequestMapping("viewResource")
+	@RequiresPermissions(value = "service-publish")
 	public String viewResource(Model model) {
 		
 		return "/service/service_select_resource";
 	}
 	
-	@RequestMapping("publish")
 	@ResponseBody
+	@RequestMapping("publish")
+	@RequiresPermissions(value = "service-publish")
 	public Map<String,String> publish(HttpServletRequest request,Model model) {
 		Map<String,String> map = new HashMap<String, String>();
 		String serviceName = request.getParameter("serviceName");
 		String serviceResource = request.getParameter("serviceResource");
 		String serviceType = request.getParameter("serviceType");
-		String resourceFile = request.getParameter("resourceFile");
+		//String resourceFile = request.getParameter("resourceFile");
 		String resourceFileId = request.getParameter("resourceFileId");
 		String clusterName = request.getParameter("clusterName");
 		String folderName = request.getParameter("folderName");
@@ -408,6 +444,7 @@ public class ServiceController {
 	 */
 	@ResponseBody
 	@RequestMapping("/toCheckServer")
+	@RequiresPermissions(value = "service-publish")
 	public Map<String,String> toCheckServer(Integer id){
 		Map<String,String> map = new HashMap<String, String>();
 		map.put("msg", "验证服务器连接失败！");
@@ -434,11 +471,13 @@ public class ServiceController {
 	
 	
 	@RequestMapping("toRegister")
+	@RequiresPermissions(value = "service-register")
 	public String toRegister() {
 		return "/service/service_register";
 	}
 	
 	@RequestMapping("toRegisterGis")
+	@RequiresPermissions(value = "service-register")
 	public String toRegisterGis(Model model) {
 		//查找所有服务引擎
 		List<ConfigServerEngine> serverEngineList = configServerEngineService.find("from ConfigServerEngine");
@@ -456,8 +495,9 @@ public class ServiceController {
 		return "/service/service_register_gis";
 	}
 	
-	@RequestMapping("registerGis")
 	@ResponseBody
+	@RequestMapping("registerGis")
+	@RequiresPermissions(value = "service-register")
 	public Map<String,String> registerGis(@RequestParam("serverEngine1")String serverEngineId,@RequestParam(value="imageFile",required=false) MultipartFile file,HttpServletRequest request,Model model) {
 		Map<String, String> map = new HashMap<String, String>();
 		Service s = null;
@@ -503,6 +543,12 @@ public class ServiceController {
 				//System.out.println("functionType="+functionType + "extensionName= "+serviceExtend +" serviceVisitAddress="+serviceVisitAddress);
 				s.setRegisterType("0");
 				//s.setFunctionType(functionType);
+				
+				//设置服务状态
+				boolean seviceStatus = ServiceUtils.getStatus(s.getManagerServiceUrl(), se.getIntranetIp(), se.getIntranetPort() + "", se.getEngineManager(), se.getManagerPassword());
+				if(seviceStatus) {
+					s.setServiceStatus("1");
+				}
 				String tempExtend = "";
 				for(String e : serviceExtend) {
 					tempExtend = tempExtend + e + ",";
@@ -538,6 +584,12 @@ public class ServiceController {
 		return map;
 	}
 	
+	/**
+	 * 列出服务信息（用于服务注册）
+	 * @param serverEngineId
+	 * @param page
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("/listData")
 	public Grid<Service> listData(Integer serverEngineId, PageHelper page) {
@@ -546,14 +598,16 @@ public class ServiceController {
 		if (serverEngineId != null) {
 			ConfigServerEngine se = configServerEngineService.get(ConfigServerEngine.class, serverEngineId);
 			//http://172.16.10.52:6080/arcgis/admin/services/
-			String url = "http://" + se.getIntranetIp() + ":" + se.getIntranetPort() + "/arcgis/admin/services/";
-			String userName = se.getMachineName();
+			//String url = "http://" + se.getIntranetIp() + ":" + se.getIntranetPort() + "/arcgis/admin/services/";
+			String userName = se.getEngineManager();
 			String password = se.getManagerPassword();
-			List<String> folders = ServiceUtils.listFolder(url, userName, password);
-			list = ServiceUtils.listServices(url, userName, password);
+			String ip = se.getIntranetIp();
+			String port = se.getIntranetPort() + "";
+			List<String> folders = ServiceUtils.listFolder(ip , port , userName, password);
+			list = ServiceUtils.listServices(ip, port, null, userName, password);
 			//在折叠目录下的服务
 			for(String f : folders) {
-				list.addAll(ServiceUtils.listServices(url+f, userName, password));
+				list.addAll(ServiceUtils.listServices(ip, port, f, userName, password));
 			}
 		}
 
@@ -562,6 +616,7 @@ public class ServiceController {
 	
 	@ResponseBody
 	@RequestMapping("/listService")
+	@RequiresPermissions(value = "service-list")
 	public Grid<Service> listService(String registerServerType, PageHelper page) {
 		List<Service> list = null;
 		if(StringUtils.isNotBlank(registerServerType)) {
@@ -630,7 +685,7 @@ public class ServiceController {
 	
 	@RequestMapping("registerOther")
 	@ResponseBody
-	public Map<String,String> registerOther(@RequestParam("serverEngine1")String serverEngineId,@RequestParam(value="imageFile",required=false) MultipartFile file,HttpServletRequest request,Model model) {
+	public Map<String,String> registerOther(@RequestParam(value="serverEngine1",required = false)String serverEngineId,@RequestParam(value="imageFile",required=false) MultipartFile file,HttpServletRequest request,Model model) {
 		Map<String, String> map = new HashMap<String, String>();
 		try {
 			User user = (User) request.getSession().getAttribute(
@@ -646,7 +701,7 @@ public class ServiceController {
 				datas.put(entry.getKey(), entry.getValue()[0]);
 			}
 			Service s = BeanExtUtils.assignFromMap(datas, Service.class);
-			if (serverEngineId != null && StringUtils.isNotBlank(s.getShowName())) {
+			if (StringUtils.isNotBlank(s.getShowName())) {
 				if (file != null && file.getSize() > 0) {
 					String fileName = file.getOriginalFilename();
 					//得到数字字典的图片类型, 再判断上传的文件是否是图片
@@ -665,14 +720,10 @@ public class ServiceController {
 						return map;
 					}
 				}
-				ConfigServerEngine se = configServerEngineService.get(ConfigServerEngine.class, Integer.parseInt(serverEngineId));
-				s.setServerEngine(se);
-				//String functionType = request.getParameter("functionType");
-				//String serviceVisitAddress = request.getParameter("serviceVisitAddress");
+				//ConfigServerEngine se = configServerEngineService.get(ConfigServerEngine.class, Integer.parseInt(serverEngineId));
+				//s.setServerEngine(se);
 				String[] serviceExtend = request.getParameterValues("serviceExtend");
-				//System.out.println("functionType="+functionType + "extensionName= "+serviceExtend +" serviceVisitAddress="+serviceVisitAddress);
 				s.setRegisterType("1");
-				//s.setFunctionType(functionType);
 				String tempExtend = "";
 				for(String e : serviceExtend) {
 					tempExtend = tempExtend + e + ",";
@@ -697,6 +748,7 @@ public class ServiceController {
 	}
 	
 	@RequestMapping("list")
+	@RequiresPermissions(value = "service-list")
 	public String list(Model model) {
 		model.addAttribute("serviceStatus", DataDictionary.getObject("service_status"));
 		model.addAttribute("permissionStatus", DataDictionary.getObject("service_permission_status"));
@@ -711,8 +763,9 @@ public class ServiceController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping("start")
 	@ResponseBody
+	@RequestMapping("start")
+	@RequiresPermissions(value = "service-start")
 	public Map<String,String> start(Integer id) {
 		Map<String,String> map = new HashMap<String,String>();
 		boolean result = false;
@@ -743,8 +796,9 @@ public class ServiceController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping("stop")
 	@ResponseBody
+	@RequestMapping("stop")
+	@RequiresPermissions(value = "service-stop")
 	public Map<String,String> stop(Integer id) {
 		Map<String,String> map = new HashMap<String,String>();
 		boolean result = false;
@@ -769,8 +823,9 @@ public class ServiceController {
 		return map;
 	}
 	
-	@RequestMapping("delete")
 	@ResponseBody
+	@RequestMapping("delete")
+	@RequiresPermissions(value = "service-delete")
 	public Map<String,String> delete(Service service) {
 		Map<String,String> map = new HashMap<String,String>();
 		if(service.getId() != null) {
@@ -794,6 +849,7 @@ public class ServiceController {
 	 */
 	@RequestMapping("deletes")
 	@ResponseBody
+	@RequiresPermissions(value = "service-delete")
 	public Map<String,String> deletes(String idsStr) {
 		Map<String,String> map = new HashMap<String,String>();
 		String ids[] = idsStr.split(",");
@@ -819,6 +875,7 @@ public class ServiceController {
 	}
 	
 	@RequestMapping("toEditGis")
+	@RequiresPermissions(value = "service-edit")
 	public String toEditGis(Service service,Model model) {
 		if(service.getId() != null) {
 			service = serviceService.get(Service.class,service.getId());
@@ -841,6 +898,7 @@ public class ServiceController {
 	}
 	
 	@RequestMapping("toRefreshVersion")
+	@RequiresPermissions(value = "service-refresh-version")
 	public String toEdit(Service service, Model model) {
 		if (service.getId() != null) {
 			service = serviceService.get(Service.class, service.getId());
@@ -854,8 +912,9 @@ public class ServiceController {
 	 * @param service
 	 * @return
 	 */
-	@RequestMapping("saveVersion")
 	@ResponseBody
+	@RequestMapping("saveVersion")
+	@RequiresPermissions(value = "service-refresh-version")
 	public Map<String,String> saveVersion(Service service) {
 		Map<String,String> map = new HashMap<String,String>();
 		if (service.getId() != null) {
@@ -883,7 +942,8 @@ public class ServiceController {
 	 * 把所有资源分类转成json字符串
 	 */
 	@ResponseBody
-	@RequestMapping(value = "listServiceType", produces = "application/json;charset=UTF-8")
+	@RequestMapping("listServiceType")
+	@RequiresPermissions(value = "service-type-list")
 	public String listServiceType(HttpServletResponse response) {
 		List<Map<String, Object>> mapList = Lists.newArrayList();
 		Map<String,Object> registerTypeMap = DataDictionary.getObject("service_register_type");
@@ -917,4 +977,34 @@ public class ServiceController {
 		return "/service/service_audit_use_list";
 	}
 	
+	
+
+	/**
+	 * 导出
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("export")
+	@RequiresPermissions(value = "service-import")
+	public Map<String,String> export(String idsStr,HttpServletRequest request,HttpServletResponse response) {
+		Map<String,String> map = new HashMap<String,String>();
+		String ids[] = idsStr.split(",");
+		if (ids != null && ids.length > 0) {
+				for (String id : ids) {
+					Service service = serviceService.get(Service.class,
+							Integer.parseInt(id));
+					if (service != null) {
+						//导出
+					}
+				}
+				map.put("msg", "删除成功！");
+				return map;
+		} else {
+			map.put("msg", "导出失败！");
+		}
+		return map;
+	}
 }

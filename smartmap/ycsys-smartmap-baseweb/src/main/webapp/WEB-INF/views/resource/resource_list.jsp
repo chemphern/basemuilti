@@ -72,21 +72,29 @@ body {
 				<div class="box-header with-border">
 					<h4 class="box-title">资源列表</h4>
 					<div class="btn_box">
-						<button class="current" onclick="resource_list.editResource('1');">
-							<i class="iconfont icon-plus"></i>新增
-						</button>
-						<button onclick="resource_list.deleteResource();">
-							<i class="iconfont icon-trash"></i>删除
-						</button>
-						<button onclick="resource_list.editResource('2');">
-							<i class="iconfont icon-edit"></i>编辑
-						</button>
-						<button onclick="resource_list.up();">
-							<i class="iconfont icon-angle-double-up"></i>上移
-						</button>
-						<button onclick="resource_list.down();">
-							<i class="iconfont icon-angle-double-down"></i>下移
-						</button>
+						<shiro:hasPermission name="resource-create">
+							<button class="current" onclick="resource_list.editResource('1');">
+								<i class="iconfont icon-plus"></i>新增
+							</button>
+						</shiro:hasPermission>
+						<shiro:hasPermission name="resource-delete">
+							<button onclick="resource_list.deleteResource();">
+								<i class="iconfont icon-trash"></i>删除
+							</button>
+						</shiro:hasPermission>
+						<shiro:hasPermission name="resource-edit">
+							<button onclick="resource_list.editResource('2');">
+								<i class="iconfont icon-edit"></i>编辑
+							</button>
+						</shiro:hasPermission>
+						<shiro:hasPermission name="resource-move">
+							<button onclick="resource_list.up();">
+								<i class="iconfont icon-angle-double-up"></i>上移
+							</button>
+							<button onclick="resource_list.down();">
+								<i class="iconfont icon-angle-double-down"></i>下移
+							</button>
+						</shiro:hasPermission>
 					</div>
 				</div>
 				<div class="box_l">
@@ -146,12 +154,19 @@ var tempResourceTypeId = null;
         $(function () {
             menu = $.ligerMenu({ top: 100, left: 100, width: 120, items:
             [
-            { text: '增加', click: operate, icon: 'add' },
-            { text: '修改', click: operate },
-            { text: '删除', click: deleteResourceType},
-            { line: true },
-            {text: '备份', click: backResource}
-            //{ text: '查看', click: see }
+			<shiro:hasPermission name="resourec-type-create">
+            	{ text: '增加', click: operate, icon: 'add' },
+            </shiro:hasPermission>
+            <shiro:hasPermission name="resource-type-edit">
+            	{ text: '修改', click: operate },
+            </shiro:hasPermission>
+            <shiro:hasPermission name="resource-type-delete">
+            	{ text: '删除', click: deleteResourceType},
+            </shiro:hasPermission>
+            <shiro:hasPermission name="resource-type-backup">
+           		{ line: true },
+            	{text: '备份', click: backupResource}
+           	</shiro:hasPermission>
             ]
             });
 
@@ -236,7 +251,7 @@ var tempResourceTypeId = null;
     		
     	}
     	
-        function backResource(item,i) {
+        function backupResource(item,i) {
         	$.Layer.confirm({
                 msg:"确定要备份该节点下全部资源吗？",
                 fn:function(){
@@ -307,9 +322,15 @@ var tempResourceTypeId = null;
 	                          var h = "";
 	                          if (!rowdata._editing)
 	                          {
-	                            h += "<input type='button' class='list-btn bt_edit' onclick='resource_list.editResource(2,"+ rowdata.id+ ")'/>";
-	                            h += "<input type='button' class='list-btn bt_del' onclick='resource_list.deleteResource(" + rowdata.id + ")'/>";
-	                            h += "<input type='button' class='list-btn bt_view' onclick='resource_list.viewResource(" + rowdata.id + ")'/>";
+	                        	<shiro:hasPermission name="resource-edit">
+		                            h += "<input type='button' class='list-btn bt_edit' onclick='resource_list.editResource(2,"+ rowdata.id+ ")'/>";
+	                        	</shiro:hasPermission>
+	                           <shiro:hasPermission name="resource-delete">
+		                            h += "<input type='button' class='list-btn bt_del' onclick='resource_list.deleteResource(" + rowdata.id + ")'/>";
+	                           </shiro:hasPermission>
+	                           <shiro:hasPermission name="resource-view">
+	                            	h += "<input type='button' class='list-btn bt_view' onclick='resource_list.viewResource(" + rowdata.id + ")'/>";
+	                            </shiro:hasPermission>
 	                          }
 	                          return h;
 	                        }
@@ -434,7 +455,7 @@ var tempResourceTypeId = null;
 			                { 
 			                  id:"viewResourceDialog",
 			                  title: '查看资源',
-			                  url:'${ctx}/resource/detail?id='+id,
+			                  url:'${ctx}/resource/view?id='+id,
 			                  width: 400,
 			                  height: 500,
 			                  button:[]
@@ -495,7 +516,7 @@ var tempResourceTypeId = null;
 		                        dataType:"json",
 		                        success:function(res){
 		                        	gridManager.reload();
-		                            alert(res.retMsg);
+		                            alert(res.msg);
 		                        },error:function(){
 		                            alert("删除失败！");
 		                        }

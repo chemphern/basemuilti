@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<roles>
+    <role name="超级管理员" code="ROLE_ADMIN" isSuper="true"/>
+</roles>

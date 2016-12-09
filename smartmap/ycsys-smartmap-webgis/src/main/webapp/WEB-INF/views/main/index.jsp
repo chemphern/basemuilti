@@ -11,7 +11,7 @@
   <title>羽辰智慧林业二三维一体化应用系统</title>
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" href="${res}/dist/css/mapPublic.css">
-  <link rel="stylesheet" href="${res}/dist/css/mapIndex.css">
+  <link rel="stylesheet" href="${res}/dist/css/mapIndex.css"> 
   <!-- Theme style -->
   <link rel="stylesheet" href="${res}/dist/css/mapAdminLTE.css">
   <!-- 换肤 -->
@@ -25,12 +25,11 @@
   <!-- 弹出框 -->
   <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
   <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
-  <script src="${res}/plugins/jQueryUI/jquery-ui.min.js"></script>
+<!--   <script src="${res}/plugins/jQueryUI/jquery-ui.min.js"></script>  -->
   <script src="${res}/plugins/mCustomScrollbar/jquery.mousewheel.js"></script>
   
   <link rel="stylesheet" href="${res}/bootstrap/css/bootstrap.css">
   <script src="${res}/bootstrap/js/bootstrap.min.js"></script>
- 
    <!-- HTML5 IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
   <script src="${res}dist/js/html5shiv.min.js"></script>
@@ -38,16 +37,21 @@
   <![endif]-->
     <!-- jQuery Easyui js-->
   <script src="${res}/plugins/jeasyui/jquery.easyui.min.js"></script>
-    <!-- jQuery 修改浏览器默认滚动条 -->
+  <!-- jQuery 修改浏览器默认滚动条 -->
   <script src="${res}/plugins/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
-
+  <!-- index js  -->
+  <script src="${res}/dist/js/map/map_index.js"></script>
+  <script src="${res}/dist/js/map/map_index_dialog.js"></script>
+  <!--jQuery pagination js  分页 -->
+  <script src="${res}/dist/js/map/jquery.pagination.js"></script>
   <!-- 颜色选择 -->
+  <!--
  <script src="${res}/plugins/jqColorPicker/colors.js"></script>
  <script src="${res}/plugins/jqColorPicker/jqColorPicker.js"></script>
   <script type="text/javascript">
       $('.color').colorPicker(); 
-  <script src="${res}/dist/js/map/map_index.js"></script>
-  <script src="${res}/dist/js/map/map_index_dialog.js"></script>
+  </script> -->
+
   <!-- jQuery 地图鱼骨控件滑动效果 -->
   <script  src="${res}/dist/js/map/scrollBar.js"></script>
 
@@ -56,11 +60,13 @@
   <script  src="${res}/plugins/ztree/js/jquery.ztree.core.js"></script>
   <script  src="${res}/plugins/ztree/js/jquery.ztree.excheck.js"></script>
 
-  <script  src="${res}/dist/js/map/treeMaptcgl.js"></script>
+  <script  src="${res}/js/common/layerManager.js"></script>
 <%--   <script  src="${res}/dist/js/map/treeMapzt.js"></script> --%>
   
   <!-- 二三维地图工具栏基础功能 -->
   <script  src="${res}/js/common/common.js"></script>
+  <script  src="${res}/js/common/locate.js"></script>
+  <script  src="${res}/js/common/query.js"></script>
   <!-- 三维地图飞行漫游功能模块 -->
   <script  src="${res}/js/common/flightRoaming.js"></script>
   <!-- 表格 -->
@@ -86,6 +92,8 @@
               <li class="user dropdown">             
                 <a href="#" class="user_box dropdown-toggle" data-toggle="dropdown" id="dLabel"><img src="${res}/dist/img/map/photo1.png" alt="头像" /><span class="user_name">admin</span> <span class="caret"></span></a>
                 <ul class="dropdown-menu memu-list"  role="menu" aria-labelledby="dLabel">
+                  <!-- 下面一行为添加的标签 -->
+                  <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>               
                   <li><a href="#"><i class="icon iconfont">&#xe60e;</i><span>个人信息</span></a></li>
 <!--                   <li><a href="#"><i class="icon iconfont">&#xe614;</i><span>修改资料</span></a></li> -->
                   <li><a href="#"><i class="icon iconfont">&#xe615;</i><span>修改密码</span></a></li>
@@ -95,6 +103,8 @@
               <li class="user_info dropdown" ><a href="javascript:;" title="消息" class="icon-msg dropdown-toggle"  data-toggle="dropdown"><i class="icon iconfont">&#xe651;</i><span class="icon-msg-count">2</span></a>
                 <!-- messages start-->
                 <ul class="dropdown-menu msg-box">
+                  <!-- 下面一行为添加的标签 -->
+                  <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>               
                   <li class="msg-box-hd">你有<span class="orange">4个</span>消息待查看<a href="#">全部+</a></li>
                   <li>
                     <ul class="msg-box-bd">
@@ -164,9 +174,6 @@
           </div>
           <!-- bigmenu -->
           <div id="navbar-collapse" class="navbar-collapse collapse" >
-            <ul class="nav navbar-nav homemenu" onclick="to2dMap()">
-                <li class="home"><a href="javaScript:;"><i class="icon iconfont">&#xe640;</i><h1>主页</h1></a></li>
-            </ul>
             <ul class="nav navbar-nav bigmenu" id="idTabs">
               <li class="active"><a href="javaScript:;"><i class="icon iconfont">&#xe893;</i><h1>地图查询</h1></a></li>
               <li><a href="javaScript:;"><i class="icon iconfont">&#xe600;</i><h1>地图定位</h1></a></li>
@@ -223,38 +230,112 @@
                 <h3 class="panelBox-title">属性查询</h3><span class="arrow arrowUp"></span>
               </div>
               <div class="panelBox-body">
-                <form class="form-horizontal search-form" role="form">
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">查询图层：</label>
-                    <div class="col-sm-8">
-<%--                       <select class="form-control input-sm easyui-combotree " data-options="url:'${res }/dist/js/map/data/mapLayerData.json',method:'get'" name="mapLayer"></select> --%>
-                      <select class="easyui-combobox" data-options="valueField:'value',textField:'name'" name="" id="queryLyrLst" style="width:160px;"></select>
+                <div id="Sxcxbox">
+                  <form class="form-horizontal search-form" role="form">
+                    <div class="form-group form-group-sm">
+                      <label for="name" class="col-sm-4">查询图层：</label>
+                      <div class="col-sm-8">
+  <%--                       <select class="form-control input-sm easyui-combotree " data-options="url:'${res }/dist/js/map/data/mapLayerData.json',method:'get'" name="mapLayer"></select> --%>
+                        <select class="form-control input-sm" id="queryLyrLst" onchange="listFields();"></select>
+                      </div>
                     </div>
-                  </div>
-                  <div class="form-group form-group-sm">                    
-                    <label for="name" class="col-sm-4">查询属性：</label>
-                    <div class="col-sm-8">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                      </select>
+                    <div class="form-group form-group-sm">                    
+                      <label for="name" class="col-sm-4">查询属性：</label>
+                      <div class="col-sm-8">
+                        <select class="form-control input-sm" id="queryFieldsLst"></select>
+                      </div>
                     </div>
-                  </div>
-                  <div class="form-group">
-                    <label for="name" class="col-sm-4">查询值：</label>
-                    <div class="col-sm-8">
-                      <input type="text" class="form-control input-sm" placeholder="查询值">
+                    <div class="form-group">
+                      <label for="name" class="col-sm-4">查询值：</label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control input-sm" placeholder="查询值" id="queryValue">
+                      </div>
                     </div>
-                  </div>
-                  <div class="searchBtn">
-                    <button type="button" class="btn btn-success" onclick="queryAttr();">查 询</button>
-                    <button type="reset" class="btn btn-warning">重 置</button>
-                  </div>
-                </form>
+                    <div class="searchBtn">
+                      <button type="button" class="btn btn-success btn_add" >查 询</button>
+<!--                       <button type="button" class="btn btn-success btn_add" onclick="queryAttr();">查 询</button> -->
+                      <button type="reset" class="btn btn-warning">重 置</button>
+                    </div>
+                  </form>
+                </div>
+                <!-- 查询结果 start-->
+                <div id="Sxcxbox-result" style="display:none">                  
+                  <form action="" method="get" class="form-inline search-form" role="form">                   
+                    <div class="Sxcxlist">
+                      <p>共有<span class="red">8</span>条结果<a href="#" class="btn_back">返回<i class="arrow-back"></i></a></p>
+                      <!-- 第一页内容 -->
+                      <div id="Searchresult">
+                        <ul class="result">
+                          <li><i class="no-1"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-2"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-3"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-4"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-5"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                        </ul>
+                      </div>
+                      <!-- 下一页内容 -->
+                      <div id="hiddenresult" style="display:none">
+                        <ul class="result">
+                          <li><i class="no-1"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-2"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-3"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-4"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-5"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                        </ul>                      
+                        <ul class="result">
+                          <li><i class="no-1"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-2"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-3"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-4"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-5"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                        </ul>
+                        <ul class="result">
+                          <li><i class="no-1"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-2"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-3"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-4"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-5"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                        </ul>
+                        <ul class="result">
+                          <li><i class="no-1"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-2"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-3"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-4"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                          <li><i class="no-5"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                        </ul> 
+                      </div> 
+                      <div id="Pagination" class="pagination"><span class="current prev"></span><span class="current">1</span><a href="#">2</a><span>...</span><a href="#">4</a><a href="#" class="next"></a></div>                        
+                    </div>
+
+                  </form>
+                </div>
+                <script type="text/javascript">
+                  $(function(){
+                    //这是一个非常简单的demo实例，让列表元素分页显示
+                    //回调函数的作用是显示对应分页的列表项内容
+                    //回调函数在用户每次点击分页链接的时候执行
+                    //参数page_index{int整型}表示当前的索引页
+                    var initPagination = function() {
+                      var num_entries = $("#hiddenresult ul.result").length;
+                      // 创建分页
+                      $("#Pagination").pagination(num_entries, {
+                        num_edge_entries: 1, //边缘页数
+                        num_display_entries: 4, //主体页数
+                        callback: pageselectCallback,
+                        items_per_page:1 //每页显示1项
+                      });
+                     }();
+                     
+                    function pageselectCallback(page_index, jq){
+                      var new_content = $("#hiddenresult ul.result:eq("+page_index+")").clone();
+                      $("#Searchresult").empty().append(new_content); //装载对应分页的内容
+                      return false;
+                    }
+                  });
+                  </script>
+                <!-- 查询结果 end-->   
               </div>
+
             </div>
             <div class="panelBox" id="fore-2d3d-side-cx-kjcx" >
               <div class="panelBox-heading" >
@@ -295,16 +376,15 @@
                 <form class="form-horizontal search-form" role="form">
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">查询图层：</label>
-                    <div class="col-sm-8 sel-combotree">
-                      <select class="form-control input-sm easyui-combotree " data-options="url:'${res }/dist/js/map/data/mapLayerData.json',method:'get'" name="mapLayer2"></select>
+                    <div class="col-sm-8">
+<%--                       <select class="form-control input-sm easyui-combotree " data-options="url:'${res }/dist/js/map/data/mapLayerData.json',method:'get'" name="mapLayer2"></select> --%>
+                      <select class="form-control input-sm" id="queryLyrLogic" onchange="listFieldsLogic();"></select>
                     </div>
                   </div>
                   <div class="form-group form-group-sm">                    
                     <label for="name" class="col-sm-4">查询字段：</label>
                     <div class="col-sm-8">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
+                      <select class="form-control input-sm" id="queryFieldsLogic">
                       </select>
                     </div>
                   </div>
@@ -379,15 +459,12 @@
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">地名：</label>
                     <div class="col-sm-8">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
+                      <input class="form-control input-sm" id="address">
+						<div id="search" style="display:block;width:160px;height:30px;"></div>
                     </div>
                   </div>
                   <div class="searchBtn">
-                    <button class="btn btn-success" onclick="">查询</button>
+                    <button type="button" class="btn btn-success" onclick="locateAddress();">查询</button>
                     <button type="reset" class="btn btn-warning">重置</button>
                   </div>
                 </form>
@@ -409,21 +486,21 @@
                     <div class="form-group">
                       <label for="name">经度：</label>
                       <div class="col-ms-12">
-                        <input type="text" class="form-control input-sm text-min" placeholder=""><span>度</span>
-                        <input type="text" class="form-control input-sm text-min" placeholder=""><span>分</span>
-                        <input type="text" class="form-control input-sm text-min" placeholder=""><span>秒</span>
+                        <input type="text" class="form-control input-sm text-min" placeholder="" id="degreeLng"><span>度</span>
+                        <input type="text" class="form-control input-sm text-min" placeholder="" id="minLng"><span>分</span>
+                        <input type="text" class="form-control input-sm text-min" placeholder="" id="secLng"><span>秒</span>
                       </div>
                     </div>
                     <div class="form-group">
                       <label for="name">纬度：</label>
                       <div class="col-ms-12">
-                        <input type="text" class="form-control input-sm text-min" placeholder=""><span>度</span>
-                        <input type="text" class="form-control input-sm text-min" placeholder=""><span>分</span>
-                        <input type="text" class="form-control input-sm text-min" placeholder=""><span>秒</span>
+                        <input type="text" class="form-control input-sm text-min" placeholder="" id="degreeLat"><span>度</span>
+                        <input type="text" class="form-control input-sm text-min" placeholder="" id="minLat"><span>分</span>
+                        <input type="text" class="form-control input-sm text-min" placeholder="" id="secLat"><span>秒</span>
                       </div>
                     </div>
                     <div class="searchBtn">
-                      <button type="submit" class="btn btn-success">定 位</button>
+                      <button type="button" class="btn btn-success" onclick="locateLngLat();">定 位</button>
                       <button type="reset" class="btn btn-warning">重 置</button>
                     </div>  
                   </div>
@@ -431,17 +508,17 @@
                     <div class="form-group">
                       <label for="name" class="col-sm-4">X轴坐标：</label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control input-sm" >
+                        <input type="text" class="form-control input-sm" id="posX">
                       </div>
                     </div>                  
                     <div class="form-group">
                       <label for="name" class="col-sm-4">Y轴坐标：</label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control input-sm">
+                        <input type="text" class="form-control input-sm" id="posY">
                       </div>
                     </div>
                     <div class="searchBtn">
-                      <button type="submit" class="btn btn-success">定 位</button>
+                      <button type="button" class="btn btn-success" onclick="locateXY();">定 位</button>
                       <button type="reset" class="btn btn-warning">重 置</button>
                     </div>
                   </div>
@@ -466,7 +543,7 @@
                         </span>
                       </div>
                     </div>
-                  </div>                   
+                  </div> 
                     <div class="searchBtn btn_list" id="Sqdwtoolbar">
                       <button type="button" class="btn btn_add active">新 增</button>
                       <button type="button" class="btn btn_edit">编 辑</button>
@@ -490,7 +567,8 @@
                             <th data-field="pathDataSource">描述</th>
                           </tr>
                         </thead>
-                    </table>
+                    </table> 
+
                 </form>
               </div>
             </div>
@@ -1149,11 +1227,11 @@
             <div class="panelBox-heading" ><i class="icon iconfont icon_map">&#xe7f6;</i><h3 class="panelBox-title">三维漫游</h3><span class="arrow iconfont"></span></div>
             <div  class="panelBox-body">
               <div class="row submenu">
-                <a href="#fore-2d3d-menu-my-fxmy" class="col-sm-6 active" data-toggle="tab" onclick="getFlys()">
+                <a href="#fore-2d3d-menu-my-fxmy" class="col-sm-6 active" data-toggle="tab" onclick="getFlyPaths('tableFlyPathForRoam')">
                   <i class="icon iconfont mapSearch">&#xe630;</i>
                   <h2>飞行漫游</h2>
                 </a>
-                <a href="#fore-2d3d-menu-my-ljgl" class="col-sm-6" data-toggle="tab">
+                <a href="#fore-2d3d-menu-my-ljgl" class="col-sm-6" data-toggle="tab" onclick="getFlyPaths('tableFlyPathForEdit')">
                   <i class="icon iconfont mapSearch">&#xe647;</i>
                   <h2>路径管理</h2>
                 </a>
@@ -1186,24 +1264,18 @@
                       </button>                                      
                     </div>
 
-                    <table class="table  table-hover table-responsive search-form-table" id="tableFxmy"  
-                     data-toolbar="#pathtoolbar"
+                    <table class="table  table-hover table-responsive search-form-table" id="tableFlyPathForRoam"
                      data-toggle="table"
-                     data-click-to-select="true"
-                     data-row-style="rowStyle"
-                     data-query-params="queryParams"
-                     data-pagination="true"
-                     data-page-size="5"
-                     data-striped="true">
+                     data-row-style="rowStyle">
                         <thead>
                           <tr>
                             <th data-field="state" data-radio="true"></th>
                             <th data-field="id">编号</th>
                             <th data-field="pathName">路径名称</th>
-                            <th data-field="pathDataSource">路径数据源</th>
+                            <th data-field="createTime">创建时间</th>
                           </tr>
                         </thead>
-                    </table>               
+                    </table>
                 </form>              
               </div>
             </div>
@@ -1221,42 +1293,71 @@
                       </span>
                     </div>
                       <div class="form-group form-group-sm btn_list" id="pathtoolbar2">
-                        <button type="button" class="btn btn-default btn-sm btn_add active">
+                        <button type="button" class="btn btn-default btn-sm btn_add active" onclick="beginAddPath()">
                           <span class="glyphicon glyphicon-plus"></span> 新增
                         </button>
-                         <button type="button" class="btn btn-default btn-sm btn_edit">
+                         <button type="button" class="btn btn-default btn-sm btn_edit" onclick="beginEditPath()">
                           <span class="glyphicon glyphicon-pencil"></span> 修改
                         </button>
-                         <button type="button" class="btn btn-default btn-sm btn_del">
+                         <button type="button" class="btn btn-default btn-sm btn_del" onclick="beginDeletePath()">
                           <span class="glyphicon glyphicon-minus"></span> 删除
                         </button>                                      
                       </div>
                     
-                      <table class="table  table-hover table-responsive search-form-table" id="tableLjgl"  
-                       data-toolbar="#pathtoolbar2"
-                       data-toggle="table"
-                       data-url="dist/js/map/data/tableFxmyData.json"
-                       data-click-to-select="true"
-                       data-row-style="rowStyle"
-                       data-query-params="queryParams"
-                       data-pagination="true"
-                       data-page-size="5"
-                       data-striped="true">
-                          <thead>
-                            <tr>
-                              <th data-field="state" data-radio="true"></th>
-                              <th data-field="id">编号</th>
-                              <th data-field="pathName">路径名称</th>
-                              <th data-field="pathDataSource">路径数据源</th>
-                            </tr>
-                          </thead>
+                      <table class="table  table-hover table-responsive search-form-table" id="tableFlyPathForEdit"
+                             data-toggle="table"
+                             data-row-style="rowStyle">
+                        <thead>
+                        <tr>
+                          <th data-field="state" data-radio="true"></th>
+                          <th data-field="id">编号</th>
+                          <th data-field="pathName">路径名称</th>
+                          <th data-field="createTime">创建时间</th>
+                        </tr>
+                        </thead>
                       </table>              
                   </form>
                 </div>
-                <!-- 新增路径 start-->
+                <!-- 新增路径 or 编辑路径-->
                 <div class="pathbox-add" style="display:none">                  
                   <form action="" method="get" class="form-inline search-form" role="form">
-                    <div class="form-group form-group-sm btn_list" id="pathtoolbar2">
+                    <div class="form-group">
+                      <label for="name" class="col-sm-4">路径名称：</label>
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control input-sm" id="selectRoamPathName">
+                      </div>
+                    </div>
+                     <div class="form-group form-group-sm btn_list" id="pathtoolbar3">
+                        <button type="button" class="btn btn-default btn-sm btn_add active" onclick="addRoamPathPoint()">
+                          <span class="glyphicon glyphicon-plus"></span> 添加
+                        </button>
+                         <button type="button" class="btn btn-default btn-sm btn_edit" onclick="editRoamPathPoint()">
+                          <span class="glyphicon glyphicon-pencil"></span> 修改
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm btn_del" onclick="deleteRoamPathPint()">
+                          <span class="glyphicon glyphicon-minus"></span> 删除
+                        </button>                                    
+                      </div>
+                    
+                      <table class="table  table-hover table-responsive search-form-table" id="tablePathPoint"
+                             data-toggle="table"
+                             data-row-style="rowStyle">
+                          <thead>
+                            <tr>
+                              <th data-field="state" data-radio="true"></th>
+                              <th data-field="pointIndex">编号</th>
+                              <th data-field="pointName">路径点名</th>
+                              <th data-field="stopTime">停留时间</th>
+                            </tr>
+                          </thead>
+                      </table> 
+                    <%--<div class="form-group">--%>
+                      <%--<label for="name" class="col-sm-4">路径名称：</label>--%>
+                      <%--<div class="col-sm-8">--%>
+                        <%--<input type="text" class="form-control input-sm" >--%>
+                      <%--</div>--%>
+                    <%--</div>  --%>
+                    <div class="form-group-sm btn_list text-right" style="margin-top: 20px">
                         <button type="button" class="btn btn-default btn-sm btn_save active">
                           <span class="glyphicon glyphicon-saved"></span> 保存
                         </button>
@@ -1264,25 +1365,7 @@
                           <span class="glyphicon glyphicon-remove"></span> 取消
                         </button>                                     
                     </div>
-                    <div class="form-group">
-                      <label for="name" class="col-sm-4">位置名称：</label>
-                      <div class="col-sm-8">
-                        <input type="text" class="form-control input-sm" >
-                      </div>
-                    </div>                  
-                    <div class="form-group">
-                      <label for="name" class="col-sm-4">停留时间：</label>
-                      <input type="text" class="form-control input-sm col-sm-7 wd140">               
-                      <div class="col-sm-1 input-sm">秒</div>
-                    </div>
-                    <div class="form-group form-group-sm">
-                      <div class="col-sm-6">
-                          <input type="text" class="form-control input-sm ">
-                      </div>
-                      <div class="col-sm-6">
-                          <button type="button" class="btn btn-sm">拾取当前位置</button> 
-                      </div>
-                    </div>                     
+                                     
                   </form>
                 </div>
                 <!-- 新增路径 end-->               
@@ -1369,22 +1452,28 @@
       <!-- 地图控制按钮 end-->    
       <!-- 地图切换按钮 start-->
       <div class="tab-mapBtn">
+            <!-- 下面一行为添加的标签 -->
+          <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
           <div class="mapBtn" id="myTab">
            <div class="btn-group mapView">
               <button type="button" class="btn btn-default mapView-btn active" onclick="to2dMap();">地图</button>
               <button type="button" class="btn btn-default " onclick="to2dImgMap();">卫星</button>
-              <button type="button" class="btn btn-default mapView-btn" id="mapView-btn-3dmy" onclick="to3dMap()">三维</button>
-              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+              <button type="button" class="btn btn-default mapView-btn" id="mapView-btn-3dmy" onclick="toggleTo3d()">三维</button>
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height:34px;">
                 <span class="caret"></span>
                 <span class="sr-only">切换下拉菜单</span>
               </button>
               <ul class="dropdown-menu mapBtn-sel" role="menu">
+                <!-- 下面一行为添加的标签 -->
+                <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
                 <li><a href="#"><label> <input type="checkbox" name="2d3dcheckbox" id="2d3dcheckbox">二三维联动</label></a></li>
               </ul>
             </div>
           <div class="btn-group">
             <button type="button" class="btn btn-default  maplayer-btn dropdown-toggle" ata-toggle="dropdown">图层<span class="caret"></span></button>
             <ul class="dropdown-menu maplayer" role="menu" >
+              <!-- 下面一行为添加的标签 -->
+              <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
               <li><a href="#">森林资源分布图</a></li>
               <li><a href="#">基础数据</a></li>
               <li><a href="#">功能分析</a></li>
@@ -1411,14 +1500,23 @@
   </div>
   </div>
   <!-- main end -->
-  <!-- Control Sidebar 换肤弹窗-->
-  <aside class="control-sidebar control-sidebar-dark">
-    <div class="tab-content">
-      <div class="tab-pane" id="control-sidebar-home-tab"></div>
-    </div>
-  </aside>
-  <div class="control-sidebar-bg"></div>
+  <div class="select-skin">
+    <!-- 下面一行为添加的标签 -->
+    <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
+     <!-- Control Sidebar 换肤弹窗-->
+    <aside class="control-sidebar control-sidebar-dark">
+      <div class="tab-content">
+        <div class="tab-pane" id="control-sidebar-home-tab"></div>
+      </div>
+    </aside>
+    <div class="control-sidebar-bg"></div>         
+  </div>
+
   
+  <div id="dialog" style="position:absolute;display:none;right:100px;top:200px;z-index:100 ;width:500px;height:600px; ">
+		<table id="grid"></table>
+  </div>
+	
 </div>
 <!-- wrapper end -->
 <!-- AdminLTE App -->

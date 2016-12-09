@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -30,8 +32,15 @@ public class LayerTheme implements Serializable {
 	@Column(name = "pId")
 	private Integer pId;//父节点
 	
-	@Column(name = "name", length = 50)
+	@Column(name = "name")
 	private String name;
+	
+	@Column(name = "type")
+	private String type;
+	
+	@ManyToOne
+	@JoinColumn(name = "parent_id")
+	private LayerTheme parent; // 父亲结点
 	
 	public Integer getId() {
 		return id;
@@ -39,6 +48,14 @@ public class LayerTheme implements Serializable {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+	
+	public LayerTheme getParent() {
+		return parent;
+	}
+
+	public void setParent(LayerTheme parent) {
+		this.parent = parent;
 	}
 
 	public Integer getpId() {
@@ -67,5 +84,13 @@ public class LayerTheme implements Serializable {
 
 	@Column(name = "address", length = 300)
 	private String address;
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 	
 }

@@ -1,5 +1,6 @@
 package com.ycsys.smartmap.sys.service;
 
+import com.ycsys.smartmap.sys.common.config.parseobject.user.UserRootXmlObject;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.*;
 
@@ -19,7 +20,7 @@ public interface UserService {
 
     public List<User> findAllUsers(PageHelper page);
 
-    void initAdminuser(String adminLoginName,String admin_password,String admin_role);
+    void initAdminuser(UserRootXmlObject users);
     
     public User get(Class<User> c, Serializable id);
 

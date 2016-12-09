@@ -101,7 +101,7 @@ body {
             <h2 class="StepTitle">拓展信息</h2>   
             <table width="80%" border="0" cellpadding="0"
 				cellspacing="0" class="date_add_table">
-              <tr>
+              <%-- <tr>
                 <td class="t_r">集群服务器：</td>
                 <td>
                 <select type="text" name="serverEngine1" id="serverEngine1"
@@ -111,7 +111,14 @@ body {
 				  </c:forEach>
                 </select>
                 </td>
+              </tr> --%>
+              
+              <tr>
+                <td class="t_r">服务访问地址：</td>
+                <td><input type="text" name="serviceVisitAddress"
+						id="serviceVisitAddress" class="text validate[required]" /></td>
               </tr>
+              
               <tr>
                 <td class="t_r">远程服务类型：</td>
                 <td>
@@ -141,14 +148,6 @@ body {
                 	<c:forEach var="map" items="${serviceExtendType }">
                 		<input type="checkbox" name="serviceExtend" value="${map.key }"/><span>${map.value.name }</span>
                 	</c:forEach>
-                	<!-- <input type="checkbox" name="serviceExtend" value="KmlServer" readonly="readonly"/><span>Kml</span>
-					<input type="checkbox" name="serviceExtend" value="FeatureServer" readonly="readonly"/><span>Feature</span> 
-					<input type="checkbox" name="serviceExtend" value="NAServer" readonly="readonly"/><span>NA</span>
-					<input type="checkbox" name="serviceExtend" value="WCSServer" readonly="readonly"/><span>WCS</span>
-					<input type="checkbox" name="serviceExtend" value="WFSServer" readonly="readonly"/><span>WFS</span>
-					<input type="checkbox" name="serviceExtend" value="WMSServer" readonly="readonly"/><span>WMS</span>
-					<input type="checkbox" name="serviceExtend" value="MobileServer" readonly="readonly"/><span>Mobile</span>
-					<input type="checkbox" name="serviceExtend" value="JPIPServer" readonly="readonly"/><span>JPIP</span> -->
                 <br /></td>
               </tr>
               <tr>
@@ -173,11 +172,7 @@ body {
                 </select>
                 </td>
               </tr>
-              <tr>
-                <td class="t_r">服务访问地址：</td>
-                <td><input type="text" name="serviceVisitAddress"
-						id="serviceVisitAddress" class="text validate[required]" /></td>
-              </tr>
+              
               <tr>
                 <td class="t_r">服务浓缩图：</td>
                 <td><input type="file" id="imagePath" name="imageFile"></td>

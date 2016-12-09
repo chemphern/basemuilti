@@ -26,13 +26,6 @@
     .header .bigmenu li.active{background:#57cc84;}
     .content .toolbar a{margin-right:8px !important;min-width: 36px;}
     .content .toolbar h3{display:none !important;}
-    .header .homemenu {width:100%;background-color:#26bf8c;padding-bottom:10px;}
-    .header .homemenu li{width:100%;display:block;line-height: 35px;height:35px;}
-    .header .homemenu>li>a{display:inline-block;width:100%;height:35px;padding:10px;}
-    .header .homemenu .icon{left:0;float:left;margin-left:10px;font-size: 24px;margin-right:10px;}
-    .header .homemenu h1{float:left;display:inline-block;}
-    .header .homemenu>li a:hover{background: #57cc84;}
-    .header .homemenu li.active{background:#57cc84;}
 }
 
 .fore-core-side>div{display:none;}
@@ -44,7 +37,7 @@
 .content{height:100%;position:absolute;top:0px;left:298px; right:0px;bottom:0px;overflow:hidden;z-index: 2;margin:0 !important;padding:0 !important;}
 .content .toolbar{height:36px;background:rgba(244,251,244,.9);text-align: right;-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);box-shadow: 0 6px 12px rgba(0,0,0,.175);}
 .content .toolbar a{line-height:36px;display:inline-block;margin-right:15px;}
-.content .toolbar .icon{font-size: 16px;color:#26bf8c;}
+.content .toolbar .icon{font-size: 16px;color:#26bf8c;font-weight: 600;}
 .content .toolbar h3{font-size: 14px;color:#666;display:inline-block;padding-left:10px;margin:0;}
 
 /**legendBox 图例**/
@@ -76,7 +69,7 @@
 .esriScalebar{height:20px;width:108px;background-color:#fff;}
 
 /**map-operate **/
-.map-operate-wrap{position:absolute;z-index:99999;left:70px;top:35px;width:50px;height:268px;}
+.map-operate-wrap{position:absolute;z-index:99999;left:70px;top:55px;width:50px;height:268px;}
 .map-operate{position:absolute;top:55px;left:40px;z-index: 99999;width:50px;height:268px;}
 .map-operate div{position:absolute;}
 .BMap_stdMpPan{width:50px;height:50px;background:url(../../dist/img/map/earth-control-bg.png) 0 0 no-repeat;}

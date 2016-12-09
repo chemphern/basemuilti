@@ -23,10 +23,4 @@ public class UserDaoImpl extends BaseDaoImpl<User,Integer>  implements UserDao  
         criteria.add(criterion);
         return (User)criteria.uniqueResult();
     }
-
-    public void saveAdminUser(User user, Role role, UserRole userRole) {
-        this.getCurrentSession().save(user);
-        this.getCurrentSession().save(role);
-        this.getCurrentSession().save(userRole);
-    }
 }

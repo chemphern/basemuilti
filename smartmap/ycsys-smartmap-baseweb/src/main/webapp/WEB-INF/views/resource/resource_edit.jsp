@@ -57,13 +57,17 @@
 				<td class="t_r">资源名称：</td>
 				<td><input type="text" name="name" id="name" size="20"
 					value="${resource.name }" class="text validate[required]"
-					validate="{required:true,maxlength : 15,messages:{required:'必填',maxlength:'资源名称 的字符长度大于15个字符！'}}" /></td>
+					validate="{required:true,maxlength : 15,messages:{required:'必填',maxlength:'资源名称 的字符长度大于15个字符！'}}" />
+					<span style="color: red">*</span>
+				</td>
 			</tr>
 			<tr>
 				<td class="t_r">资源全称：</td>
 				<td><input type="text" name="fullName" id="fullName" size="50"
 					value="${resource.fullName }" class="text validate[required]"
-					validate="{required:true,maxlength : 50,messages:{required:'必填',maxlength:'资源全称 的字符长度大于50个字符！'}}"/></td>
+					validate="{required:true,maxlength : 50,messages:{required:'必填',maxlength:'资源全称 的字符长度大于50个字符！'}}"/>
+					<span style="color: red">*</span>
+				</td>
 			</tr>
 
 			<tr>
@@ -104,7 +108,9 @@
 			</tr>
 			<tr>
 				<td class="t_r">上传文件：</td>
-				<td><input type="file" name="file" id="fileToUpload" src="${resource.filePath }"/></td>
+				<td><input type="file" name="file" id="fileToUpload" class="text" src="${resource.filePath }" validate="{required:true,messages:{required:'必填'}}"/>
+					<span id="fileToUploadTip" style="color: red">*</span>
+				</td>
 			</tr>
 			<tr>
 				<td class="t_r">备注：</td>
@@ -117,12 +123,16 @@
 </body>
 <script>
 	$(function() {
-		//设置下拉的值
+		//修改时则 回显下拉的值
 		if("${resource.id}"){
 			var type = "${resource.type}";
 			var fileType = "${resource.fileType}";
 			$("#type option[value="+type+"]").attr("selected",true);
 			$("#fileType option[value="+fileType+"]").attr("selected",true);
+			
+			//如果是修改则去除文件域的验证属性 removeAttr
+			$("#fileToUpload").removeAttr("validate");
+			$("#fileToUploadTip").hide();
 		}
 		
 		if("${resourceTypeId}") {
@@ -130,33 +140,28 @@
 		}
 		
 		var form = $("#form_id");
-		var val_obj = exec_validate(form); //方法在 ${res}/js/common/form.js
-		form.validate(val_obj);
-		
 		var parentWin = window.parent;
 		var dialog = parentWin.art.dialog.list["editResourceDialog"];
 		var dialog_div = dialog.DOM.wrap;
 		dialog_div.on("ok", function() {
-			var counts = $('div.l-exclamation'); //填的不对的记录数
-			if(counts.length < 1) {
-				//支持文件上传的ajax提交方式
-				$("#form_id").ajaxSubmit({
-					url : "${ctx }/resource/save",
-					dataType:"json",
-	                success:function(result){
-	                	alert(result.msg);
-	                	if(result.flag=="3"||result.flag=="4") {
-		                	parentWin.gridManager.reload();
-							dialog.close();
-	                	}
-	                }
-	             });
-			}
-			else {
-				alert("请重新填写那些有误的信息！");
-			}
+			form.submit();
 		});
-		
+		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
+		val_obj.submitHandler = function(){
+			//支持文件上传的ajax提交方式
+			$("#form_id").ajaxSubmit({
+				url : "${ctx }/resource/save",
+				dataType:"json",
+                success:function(result){
+                	alert(result.msg);
+                	if(result.flag=="3"||result.flag=="4") {
+	                	parentWin.gridManager.reload();
+						dialog.close();
+                	}
+                }
+             });
+	    };
+	    form.validate(val_obj);
 	});
 </script>
 </html>

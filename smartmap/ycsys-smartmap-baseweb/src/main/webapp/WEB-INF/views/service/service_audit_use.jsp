@@ -74,13 +74,16 @@
 				<td class="t_r">审核意见：</td>
 				<td><textarea name="auditOption" id="auditOption" clos="20" rows="15"
 						class="text_area"
-						validate="{maxlength : 100,messages:{maxlength:'审核意见的字符长度大于100个字符！'}}">${serviceApply.remarks }</textarea></td>
+						validate="{maxlength : 100,messages:{maxlength:'审核意见的字符长度大于100个字符！'}}">${serviceApply.auditOption }</textarea></td>
 			</tr>
 		</table>
 	</form>
 </body>
 <script>
 	$(function() {
+		//设置单选择第一个值
+		$("input[name='auditStastus']:radio").eq(0).attr('checked','true');
+		
 		var form = $("#form_id");
 		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
 		form.validate(val_obj);

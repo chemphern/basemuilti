@@ -1,19 +1,15 @@
 var mapOpt=2;//地图操作状态,默认2维操作
+var map3DInit=false;//标识三维是否初始化
+var mapExtent;//当前地图范围
 
-function queryAttrLogic(){
-	if(mapOpt==2){
-		queryAttrLogic2d();
-	}else if(mapOpt==3){
-		
-	}
+function getMapExtent(){
+	mapExtent = getMapExtentLngLat();
+	return mapExtent;
 }
 
-function queryAttr(){
-	if(mapOpt==2){
-		queryAttr2d();
-	}else if(mapOpt==3){
-		
-	}
+function toggleTo3d(){
+	mapExtent=getMapExtent();
+	to3dMap(mapExtent);
 }
 
 function clearMap(){

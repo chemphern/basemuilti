@@ -61,7 +61,7 @@ public class ServiceApply implements java.io.Serializable {
 	private String auditStastus = "0"; // 审核状态（0:未审核；1：不通过；2：通过）
 
 	@Column(name = "audit_date")
-	private Date auditDate; // 审核蜞
+	private Date auditDate; // 审核日期
 
 	@ManyToOne
 	@JoinColumn(name = "auditor_id")
@@ -71,7 +71,7 @@ public class ServiceApply implements java.io.Serializable {
 	private String auditOption;// 审核意见
 
 	@Column(name = "valid_date", length = 10)
-	private String validDate; // 有效期
+	private String validDate; // 有效期（0：三个月）
 
 	@Column(name = "create_date")
 	private Date createDate; // 创建时间

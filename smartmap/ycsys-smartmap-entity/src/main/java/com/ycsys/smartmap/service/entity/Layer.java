@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -31,6 +33,14 @@ public class Layer implements Serializable{
 	@Column(name = "pid")
 	private Integer pId;//父节点
 	
+	@ManyToOne
+	@JoinColumn(name = "parent_id")
+	private Layer parent; // 父亲结点
+	
+	@ManyToOne
+	@JoinColumn(name = "service_id")
+	private Service service;
+	
 	@Column(name = "name", length = 50)
 	private String name;
 	
@@ -50,6 +60,14 @@ public class Layer implements Serializable{
 	@Transient
 	private Boolean open=true;
 	
+	/**
+	 * 树的节点类型
+	 */
+	@Column(name="type")
+	private String type;
+	
+	
+	
 	public Integer getId() {
 		return id;
 	}
@@ -57,6 +75,24 @@ public class Layer implements Serializable{
 	public void setId(Integer id) {
 		this.id = id;
 	}
+	
+	
+	public Service getService() {
+		return service;
+	}
+
+	public void setService(Service service) {
+		this.service = service;
+	}
+
+	public Layer getParent() {
+		return parent;
+	}
+
+	public void setParent(Layer parent) {
+		this.parent = parent;
+	}
+
 
 	public Integer getPId() {
 		return pId;
@@ -96,6 +132,14 @@ public class Layer implements Serializable{
 
 	public void setOpen(Boolean open) {
 		this.open = open;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	

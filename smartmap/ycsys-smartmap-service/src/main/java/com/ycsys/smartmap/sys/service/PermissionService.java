@@ -1,5 +1,6 @@
 package com.ycsys.smartmap.sys.service;
 
+import com.ycsys.smartmap.sys.common.config.parseobject.permission.PermissionXmlObject;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.Permission;
 
@@ -18,7 +19,7 @@ public interface PermissionService {
     public List<Permission> getMenus();
 
     /**初始化权限**/
-    void initPermission(String systemCode);
+    void initPermission(PermissionXmlObject pxo);
 
     /**分页获取所有权限**/
     List<Permission> findAll(PageHelper page);

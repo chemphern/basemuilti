@@ -302,9 +302,9 @@ body {
 						$("#folderName").val(folderName);
 						$("#arcGisServiceName").val(showName);
 						
-						console.log(selectedRows[0].showName);
-						console.log(selectedRows[0].folderName);
-						console.log(selectedRows[0].functionType);
+						//console.log(selectedRows[0].showName);
+						//console.log(selectedRows[0].folderName);
+						//console.log(selectedRows[0].functionType);
 						return true;
 					  	break;
 					case '2':

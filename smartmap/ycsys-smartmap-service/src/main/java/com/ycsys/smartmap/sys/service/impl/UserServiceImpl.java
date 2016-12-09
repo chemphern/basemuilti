@@ -2,6 +2,8 @@ package com.ycsys.smartmap.sys.service.impl;
 
 import com.ycsys.smartmap.sys.common.annotation.ToLog;
 import com.ycsys.smartmap.sys.common.config.Global;
+import com.ycsys.smartmap.sys.common.config.parseobject.user.UserRootXmlObject;
+import com.ycsys.smartmap.sys.common.config.parseobject.user.UserXmlObject;
 import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
 import com.ycsys.smartmap.sys.common.utils.DateUtils;
 import com.ycsys.smartmap.sys.common.utils.security.Digests;
@@ -132,20 +134,55 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**初始化管理员**/
-	public void initAdminuser(String adminLoginName,String admin_password,String admin_role) {
-		if(adminLoginName != null && admin_password != null && admin_role != null){
-			if(getUser(adminLoginName) == null) {
-				User user = new User(adminLoginName, "超级管理员", admin_password);
-				user.setPlainPassword(admin_password);
-				entryptPassword(user);
+	public void initAdminuser(UserRootXmlObject urxo) {
+		long count = userDao.count("select count(*) from User");
+		if(count < 1){
+			logger.info("=========================初始化用户开始==============================");
+			for(UserXmlObject uxo :urxo.getUserXmlObjectList()){
+				User user = new User();
+				user.setName(uxo.getName());
+				user.setLoginName(uxo.getLoginName());
+				user.setPassword(uxo.getPassword());
+				user.setPlainPassword(uxo.getPassword());
+				user.setRemark(uxo.getRemark());
+				user.setType((short)1);
 				user.setCreateTime(DateUtils.getSysTimestamp());
-				Role role = new Role("超级管理员",admin_role);
-				UserRole userRole = new UserRole(user,role);
-				userDao.saveAdminUser(user,role,userRole);
-				logger.info("================插入管理员记录================");
+				user.setEmail(uxo.getEmail());
+				user.setPhone(uxo.getPhone());
+				entryptPassword(user);
+				String sex = uxo.getSex();
+				short sexs = 1;
+				if(sex != null) {
+					if (sex.equals("男")) {
+					} else if (sex.equals("女")) {
+						sexs = 2;
+					} else {
+						sexs = Short.parseShort(sex);
+					}
+				}
+				user.setSex(sexs);
+				//机构
+				String orgs = uxo.getOrg();
+				if(orgs != null && !orgs.equals("")){
+					Organization org = organizationDao.get("from Organization where code = ?",new Object[]{orgs});
+					user.setOrganization(org);
+				}
+				//角色
+				String roles = uxo.getRoles();
+				String [] rolesArr = roles.split(",");
+				userDao.save(user);
+				for(String r : rolesArr){
+					Role role = roleDao.get("from Role where code = ?",new Object[]{r});
+					if(role != null){
+						UserRole ur = new UserRole();
+						ur.setRole(role);
+						ur.setUser(user);
+						userRoleDao.save(ur);
+					}
+				}
 			}
+			logger.info("=========================初始化用户结束==============================");
 		}
-
 	}
 	
 	/**根据用户id 查找用户 **/

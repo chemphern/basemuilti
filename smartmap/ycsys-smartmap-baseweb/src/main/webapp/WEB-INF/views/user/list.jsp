@@ -97,7 +97,7 @@
             });
 
             var $tree = $("#orgTree").ligerTree({
-                nodeWidth:268,
+                nodeWidth:160,
                 url:"${ctx}/org/getOrgs",
                 checkbox: false,
                 ajaxType: 'get',

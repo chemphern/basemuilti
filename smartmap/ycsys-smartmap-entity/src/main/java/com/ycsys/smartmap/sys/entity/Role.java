@@ -38,6 +38,10 @@ public class Role implements java.io.Serializable {
 	@Column(name = "code",length=50)
 	private String code;
 
+	@Column
+	@org.hibernate.annotations.Type(type="yes_no")
+	private boolean isSuper;
+
 	//备注描述
 	@Column(name = "remark",length = 3999)
 	private String remark;
@@ -172,4 +176,11 @@ public class Role implements java.io.Serializable {
 		this.rolePermissions = rolePermissions;
 	}
 
+	public boolean getIsSuper() {
+		return isSuper;
+	}
+
+	public void setIsSuper(boolean aSuper) {
+		isSuper = aSuper;
+	}
 }

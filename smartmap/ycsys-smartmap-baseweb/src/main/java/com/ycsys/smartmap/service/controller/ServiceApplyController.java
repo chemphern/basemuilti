@@ -163,8 +163,8 @@ public class ServiceApplyController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("detail")
-	public String detail(ServiceApply serviceApply, Model model) {
+	@RequestMapping("view")
+	public String view(ServiceApply serviceApply, Model model) {
 		if (serviceApply.getId() != null) {
 			serviceApply = serviceApplyService.get(ServiceApply.class, serviceApply.getId());
 			model.addAttribute("serviceApply", serviceApply);

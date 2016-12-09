@@ -152,18 +152,9 @@ body {
 								<td><select type="text" name="serviceType" id="serviceType"
 									class="text">
 										<!-- GeometryServer | ImageServer | MapServer | GeocodeServer | GeoDataServer | GPServer | GlobeServer | SearchServer -->
-										<option value="GeometryServer">GeometryServer</option>
-										<option value="ImageServer">ImageServer</option>
-										<option value="MapServer">MapServer</option>
-										<option value="GeocodeServer">GeocodeServer</option>
-										<option value="GeoDataServer">GeoDataServer</option>
-										<option value="GPServer">GPServer</option>
-										<option value="GPServer">GPServer</option>
-										<option value="GlobeServer">GlobeServer</option>
-										<option value="SearchServer">SearchServer</option>
-										<%-- <c:forEach var="map" items="${serviceTypes }">
-											<option value="${map.key }">${map.key }</option>	
-										</c:forEach> --%>
+										<c:forEach var="map" items="${serviceFunctionType }">
+											<option value="${map.value.name }">${map.value.name }</option>
+										</c:forEach>
 								</select></td>
 							</tr>
 							<tr>
@@ -183,9 +174,9 @@ body {
 								<td class="t_r">GIS Services集群：</td>
 								<td><select type="text" name="clusterName" id="clusterName"
 									class="text">
-										<c:forEach var="list" items="${clusterNames }">
+										<%-- <c:forEach var="list" items="${clusterNames }">
 											<option value="${list }">${list }</option>
-										</c:forEach>
+										</c:forEach> --%>
 								</select></td>
 							</tr>
 							<tr>
@@ -193,9 +184,9 @@ body {
 								<td><select type="text" name="folderName" id="folderName"
 									class="text">
 										<option value="/">根目录</option>
-										<c:forEach var="list" items="${listFolder }">
+										<%-- <c:forEach var="list" items="${listFolder }">
 											<option value="${list }">${list }</option>
-										</c:forEach>
+										</c:forEach> --%>
 								</select></td>
 							</tr>
 						</table>
@@ -208,14 +199,9 @@ body {
 							<tr>
 								<td class="t_r">请选择服务拓展模块：</td>
 								<td>
-									<input type="checkbox" name="extensionName" value="KmlServer" />KmlServer
-									<input type="checkbox" name="extensionName" value="FeatureServer" />FeatureServer 
-									<input type="checkbox" name="extensionName" value="NAServer" />NAServer 
-									<input type="checkbox" name="extensionName" value="WCSServer" />WCSServer 
-									<input type="checkbox" name="extensionName" value="WFSServer" />WFSServer
-									<input type="checkbox" name="extensionName" value="WMSServer" />WMSServer
-									<input type="checkbox" name="extensionName" value="MobileServer" />MobileServer
-									<input type="checkbox" name="extensionName" value="JPIPServer" />JPIPServer
+									<c:forEach var="map" items="${serviceExtendType }">
+				                		<input type="checkbox" name="serviceExtend" value="${map.key }"/><span>${map.value.name }</span>
+				                	</c:forEach>
 									<br /></td>
 							</tr>
 						</table>
@@ -324,6 +310,21 @@ body {
 						alert("验证服务器引擎连接失败，请重试或选择其它服务器引擎！");
 						return false;
 					}
+					//验证成功则找服务器引擎的相关信息（集群和服务发布的目录）
+					$.ajax({
+	    				url:"${ctx}/service/getClusterAndFolder",
+	    				method:"post",
+	    				data:{'id':$("#serverEngine").val()},
+	    				dataType:"json",
+	    				success:function(ret) {
+	    					$("#clusterName").append(ret.clusterList);
+	    					$("#folderName").append(ret.folderList);
+	    				},
+	    				error: function(ret) {
+	    					
+	    				}
+	    			});
+					
 					return true;
 				  	break;
 				case '2':

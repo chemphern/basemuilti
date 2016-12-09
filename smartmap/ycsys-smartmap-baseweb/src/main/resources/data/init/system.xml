@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<systems>
+    <system name="平台运维管理系统" code="smartmap" url="/smartmap/index"/>
+</systems>

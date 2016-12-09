@@ -14,13 +14,10 @@
    * @type Array
    */
   var my_skins = [
-    "skin-blue",
-    "skin-green",
     "skin-cyan",
-    "skin-blue-light",
-    "skin-green-light",
-    "skin-cyan-light"
-
+    "skin-blue",
+    "skin-green"
+    
   ];
 
   //Create the new tab
@@ -43,64 +40,31 @@
   //Create the menu
   var demo_settings = $("<div />");
 
-  //Layout options
-/*  demo_settings.append(
-      "<h4 class='control-sidebar-heading'>"
-      + "布局选项"
-      + "</h4>"
-        //Boxed layout
-      + "<div class='form-group'>"
-      + "<label class='control-sidebar-subheading'>"
-      + "<input type='checkbox' data-layout='layout-boxed'class='pull-right'/> "
-      + "盒子布局"
-      + "</label>"
-      + "<p>激活盒子布局</p>"
-      + "</div>"
-        //Sidebar Toggle
-      + "<div class='form-group'>"
-      + "<label class='control-sidebar-subheading'>"
-      + "<input type='checkbox' data-layout='sidebar-collapse' class='pull-right'/> "
-      + "切换侧边栏"
-      + "</label>"
-      + "<p>拨动左侧边栏的状态（打开或折叠）</p>"
-      + "</div>"
-        //Control Sidebar Toggle
-      + "<div class='form-group'>"
-      + "<label class='control-sidebar-subheading'>"
-      + "<input type='checkbox' data-controlsidebar='control-sidebar-open' class='pull-right'/> "
-      + "右侧边栏的滑动切换"
-      + "</label>"
-      + "<p>幻灯片内容和推送内容效果之间的切换</p>"
-      + "</div>"
-        //Control Sidebar Skin Toggle
-      + "<div class='form-group'>"
-      + "<label class='control-sidebar-subheading'>"
-      + "<input type='checkbox' data-sidebarskin='toggle' class='pull-right'/> "
-      + "切换右侧边栏的皮肤"
-      + "</label>"
-      + "</div>"
-  );*/
   var skins_list = $("<ul />", {"class": 'list-unstyled clearfix'});
 
   //Dark sidebar skins
+  var skin_cyan =
+      $("<li />", {"class": 'active',"data-id":'1', "data-name":'skin-cyan'})
+          .append("<a href='javascript:void(0);' data-skin='skin-cyan' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)' class='clearfix  skin-cyan-hover '>"
+          + "<div><span class='bg-cyan' style='display:block; width: 100%; float: left; height: 45px; '></span><span class='skin-select-active active'></span></div>"
+          + "</a>"
+          + "<p class='text-center color-name'>极简·青</p>");
+  skins_list.append(skin_cyan);
   var skin_blue =
-      $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
-          .append("<a href='javascript:void(0);' data-skin='skin-blue' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)' class='clearfix full-opacity-hover'>"
-          + "<div><span class='bg-light-blue' style='display:block; width: 100%; float: left; height: 30px; background: #f4f5f7;'></span></div>"
-          + "</a>");
+      $("<li />", {"class": '',"data-id":'2', "data-name":'skin-blue'})
+          .append("<a href='javascript:void(0);' data-skin='skin-blue' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)' class='clearfix skin-blue-hover'>"
+          + "<div><span class='bg-blue' style='display:block; width: 100%; float: left; height: 45px; '></span><span class='skin-select-active'></span></div>"
+          + "</a>"
+          + "<p class='text-center color-name'>科技·蓝</p>");
   skins_list.append(skin_blue);
   var skin_green =
-      $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
-          .append("<a href='javascript:void(0);' data-skin='skin-green' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)' class='clearfix full-opacity-hover'>"
-          + "<div><span class='bg-green' style='display:block; width: 100%; float: left; height: 30px;' ></span></div>"
-          + "</a>");
+      $("<li />", {"class": '',"data-id":'3', "data-name":'skin-green'})
+          .append("<a href='javascript:void(0);' data-skin='skin-green' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)' class='clearfix skin-green-hover'>"
+          + "<div><span class='bg-green' style='display:block; width: 100%; float: left; height: 45px;' ></span><span class='skin-select-active'></span></div>"
+          + "</a>"
+          + "<p class='text-center color-name'>生命·绿</p>");
   skins_list.append(skin_green);
-  var skin_cyan =
-      $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
-          .append("<a href='javascript:void(0);' data-skin='skin-cyan' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)' class='clearfix full-opacity-hover'>"
-          + "<div><span class='bg-cyan' style='display:block; width: 100%; float: left; height: 30px; background: #f4f5f7;'></span></div>"
-          + "</a>");
-  skins_list.append(skin_cyan);
+
 
 
   //demo_settings.append("<h4 class='control-sidebar-heading'>皮肤选项</h4>");
@@ -110,6 +74,44 @@
   $("#control-sidebar-home-tab").after(tab_pane);
 
   setup();
+  // 当前皮肤
+   //  $('.list-unstyled li').click(function() { 
+   //    Mycookie(this.id)
+   //  });
+   //  var cookie=$.cookie("cookie");         
+   //  //var name=$(this).data("name");
+   //  if(cookie){
+   //    Mycookie(cookie);
+   //  }
+   // function Mycookie(thiscookie){
+   //  $("#"+thiscookie).addClass('active').siblings().removeClass('active');
+   //  //$("#colortable").attr("href",thiscookie+".css");
+
+   //  $.cookie("cookie",thiscookie,{
+   //    "path":"/",
+   //    "expires":10
+   //  })
+   // }
+
+      // if($.cookie("Skin")!=null){
+      //   $.cookie("Skin", "name");
+      // }else{
+
+      //   $.cookie("Skin") == name;
+      // }
+
+
+        // if(不存在cookie){
+        //   获取当前点击li的"data-key"
+        //   创建cookie，并把当前点击li的"data-key"值给cookie
+      
+        // }else{  
+        //   获取对应的"data-key"
+        //   修改cookie值，把当前点击li的"data-key"值给cookie
+        // }
+        
+        // 页面加载 的时候，依据cookie值里面的"data-key" 来给对应的li加class 
+
 
   /**
    * Toggles layout classes
@@ -138,13 +140,14 @@
    */
   function change_skin(cls) {
     $.each(my_skins, function (i) {
-      $("body").removeClass(my_skins[i]);
+      $("body").removeClass(my_skins[i]);      
     });
-
-    $("body").addClass(cls);
-    store('skin', cls);
+    
+    $("body").addClass(cls);    
+    store('skin', cls);   
     return false;
   }
+
 
   /**
    * Store a new settings in the browser
@@ -187,53 +190,14 @@
 
     //Add the change skin listener
     $("[data-skin]").on('click', function (e) {
-      if($(this).hasClass('knob'))
-        return;
+      if($(this).hasClass('knob'))              
+        return;      
       e.preventDefault();
       change_skin($(this).data('skin'));
+      $(this).parents().addClass('active').siblings().removeClass('active');
     });
 
-    //Add the layout manager
-    $("[data-layout]").on('click', function () {
-      change_layout($(this).data('layout'));
-    });
 
-    $("[data-controlsidebar]").on('click', function () {
-      change_layout($(this).data('controlsidebar'));
-      var slide = !AdminLTE.options.controlSidebarOptions.slide;
-      AdminLTE.options.controlSidebarOptions.slide = slide;
-      if (!slide)
-        $('.control-sidebar').removeClass('control-sidebar-open');
-    });
-
-    $("[data-sidebarskin='toggle']").on('click', function () {
-      var sidebar = $(".control-sidebar");
-      if (sidebar.hasClass("control-sidebar-dark")) {
-        sidebar.removeClass("control-sidebar-dark")
-        sidebar.addClass("control-sidebar-light")
-      } else {
-        sidebar.removeClass("control-sidebar-light")
-        sidebar.addClass("control-sidebar-dark")
-      }
-    });
-
-    $("[data-enable='expandOnHover']").on('click', function () {
-      $(this).attr('disabled', true);
-      AdminLTE.pushMenu.expandOnHover();
-      if (!$('body').hasClass('sidebar-collapse'))
-        $("[data-layout='sidebar-collapse']").click();
-    });
-
-    // Reset options
-    if ($('body').hasClass('fixed')) {
-      $("[data-layout='fixed']").attr('checked', 'checked');
-    }
-    if ($('body').hasClass('layout-boxed')) {
-      $("[data-layout='layout-boxed']").attr('checked', 'checked');
-    }
-    if ($('body').hasClass('sidebar-collapse')) {
-      $("[data-layout='sidebar-collapse']").attr('checked', 'checked');
-    }
 
   }
 })(jQuery, $.AdminLTE);

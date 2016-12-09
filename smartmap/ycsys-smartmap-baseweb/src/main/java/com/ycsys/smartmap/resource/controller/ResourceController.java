@@ -2,9 +2,10 @@ package com.ycsys.smartmap.resource.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream.GetField;
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +14,9 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,8 +34,9 @@ import com.ycsys.smartmap.resource.service.ResourceService;
 import com.ycsys.smartmap.resource.service.ResourceTypeService;
 import com.ycsys.smartmap.sys.common.config.Global;
 import com.ycsys.smartmap.sys.common.result.Grid;
-import com.ycsys.smartmap.sys.common.result.ResponseEx;
+import com.ycsys.smartmap.sys.common.utils.ArrayUtil;
 import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
+import com.ycsys.smartmap.sys.common.utils.FileUtils;
 import com.ycsys.smartmap.sys.common.utils.JsonMapper;
 import com.ycsys.smartmap.sys.common.utils.StringUtils;
 import com.ycsys.smartmap.sys.entity.DictionaryItem;
@@ -49,7 +53,7 @@ import com.ycsys.smartmap.sys.util.DataDictionary;
 @Controller
 @RequestMapping("/resource")
 public class ResourceController {
-	private static Logger log = Logger.getLogger(ResourceController.class);
+	private static Logger log = LoggerFactory.getLogger(ResourceController.class);
 	@Autowired
 	private ResourceService resourceService;
 
@@ -57,6 +61,7 @@ public class ResourceController {
 	private ResourceTypeService resourceTypeService;
 
 	@RequestMapping("toEdit")
+    @RequiresPermissions(value = "resource-edit")
 	public String toEdit(String resourceTypeId, Resource resource, Model model) {
 		// 修改
 		if (resource.getId() != null) {
@@ -82,7 +87,21 @@ public class ResourceController {
 		model.addAttribute("clusterNames", ClusterUtils.lists());
 		return "/resource/resource_edit";
 	}
-
+	
+	/**
+	 * 得到资源分类的所有父亲节点名称包含自己（把它们拼成串）
+	 * @param resourceType
+	 * @return
+	 */
+	private String getResourceTypeParent(ResourceType resourceType) {
+		if(resourceType.getParent() != null) {
+			return resourceType.getName() + "##"+getResourceTypeParent(resourceType.getParent());
+		}
+		else {
+			return resourceType.getName();
+		}
+		
+	}
 	/**
 	 * 保存资源
 	 * 
@@ -92,15 +111,16 @@ public class ResourceController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping("save")
 	@ResponseBody
+	@RequestMapping("save")
+	@RequiresPermissions(value = "resource-edit")
 	public Map<String,String> save(MultipartFile file, Resource resource, Model model,
 			HttpServletRequest request) {
 		Map<String, String> map = new HashMap<String, String>();
 		User user = (User) request.getSession().getAttribute(
 				Global.SESSION_USER);
 		String path = request.getSession().getServletContext()
-				.getRealPath("upload");
+				.getRealPath("upload" + File.separator + "资源");
 		ResourceType resourceType = resourceTypeService.get(ResourceType.class,
 				resource.getResourceType().getId());
 		// 上传文件处理
@@ -116,20 +136,48 @@ public class ResourceController {
 				map.put("msg", "详细分类跟所上传的文件类型不匹配，请重新上传！");
 				return map;
 			}
-			path = path + File.separator + "资源" + File.separator
-					+ resourceType.getName();
-			File targetFile = new File(path, fileName);
-			if (!targetFile.exists()) {
-				targetFile.mkdirs();
+			
+			//得到资源分类的所有父亲结点名称（包含自己的），上传的文件要根据所在资源分类来存储
+			String rtParent = getResourceTypeParent(resourceType);
+			String parentName[] = rtParent.split("##");
+			List<String> parentNameList = Arrays.asList(parentName);
+			Collections.reverse(parentNameList);
+			StringBuffer sb = new StringBuffer();
+			for(String s:parentNameList) {
+				sb.append(File.separator).append(s);
 			}
+			path = path + sb.toString();
+			//path = path + File.separator + "资源" + File.separator + resourceType.getName();
+			if(!(new File(path).exists())) {
+				new File(path).mkdirs();
+			}
+			
+			List<Resource> rList = null;
+			if(resource.getId() != null) {
+				String hql = "from Resource t where t.id != ? and t.fileName = ? and t.resourceType = ?";
+				rList = resourceService.find(hql, new Object[] {resource.getId(),fileName,resourceType});
+			}
+			else {
+				String hql = "from Resource t where t.fileName = ? and t.resourceType = ?";
+				rList = resourceService.find(hql, new Object[] {fileName,resourceType});
+			}
+			System.out.println("rList === "+rList.size());
+			if(rList.size() > 0) {
+				String temp[] = fileName.split("\\.");
+				fileName = temp[0] + "("+rList.size() + ")." + temp[1];
+			}
+			File targetFile = new File(path, fileName);
+			/*if (!targetFile.exists()) {
+				targetFile.mkdirs();
+			}*/
 			try {
 				file.transferTo(targetFile);
 				resource.setUploadDate(new Date());
 				resource.setUploadPerson(user);
 				resource.setUploadStatus("1");
+				resource.setFileName(fileName);
 				resource.setFilePath(path + File.separator + fileName);
 			} catch (IllegalStateException | IOException e) {
-				// TODO Auto-generated catch block
 				map.put("flag", "2");
 				map.put("msg", "上传文件失败！");
 				log.warn("上传文件失败：" + e.getMessage());
@@ -182,8 +230,9 @@ public class ResourceController {
 	 * @param idsStr
 	 * @return
 	 */
-	@RequestMapping("deletes")
 	@ResponseBody
+	@RequestMapping("deletes")
+	@RequiresPermissions(value = "resource-delete")
 	public Map<String,String> deletes(String idsStr) {
 		Map<String,String> map = new HashMap<String,String>();
 		String ids[] = idsStr.split(",");
@@ -196,6 +245,8 @@ public class ResourceController {
 					if (resource != null && resource.getStatus().equals("0")) {
 						resourceService.delete(resource);
 						count++;
+						//删除相应的文件
+						FileUtils.deleteFile(resource.getFilePath());
 					}
 				}
 				if(ids.length != count) {
@@ -223,6 +274,7 @@ public class ResourceController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@RequiresPermissions(value = "resource-delete")
 	public Map<String,String> delete(Resource resource) {
 		Map<String,String> map = new HashMap<String,String>();
 		if(resource.getId() != null) {
@@ -235,16 +287,21 @@ public class ResourceController {
 				else {
 					resourceService.delete(resource);
 				}
+				//删除相应的文件
+				FileUtils.deleteFile(resource.getFilePath());
 				map.put("msg", "删除成功");
 			} catch (Exception e) {
 				map.put("msg", "删除失败");
 			}
 		}
-		map.put("msg", "删除失败");
+		else {
+			map.put("msg", "删除失败");
+		}
 		return map;
 	}
 
 	@RequestMapping("list")
+	@RequiresPermissions(value = "resource-list")
 	public String list(Model model) {
 		List<ResourceType> list = resourceTypeService
 				.find("from ResourceType r where 1 = 1");
@@ -258,6 +315,7 @@ public class ResourceController {
 
 	@ResponseBody
 	@RequestMapping("/listData")
+	@RequiresPermissions(value = "resource-list-data")
 	public Grid<Resource> listData(String resourceTypeId, PageHelper page) {
 		//System.out.println("resourceTypeId=" + resourceTypeId);
 		List<Resource> list = null;
@@ -284,9 +342,10 @@ public class ResourceController {
 	}
 	
 	/**
-	 * 把所有资源分类转成json字符串
+	 * 把所有资源文件转成json字符串
 	 */
 	@ResponseBody
+	@RequiresPermissions(value="list_resource_file")
 	@RequestMapping(value = "listAll", produces = "application/json;charset=UTF-8")
 	public String listAll(HttpServletResponse response) {
 		List<Map<String, Object>> mapList = Lists.newArrayList();
@@ -319,8 +378,9 @@ public class ResourceController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping("move")
 	@ResponseBody
+	@RequestMapping("move")
+	@RequiresPermissions(value="resource-move")
 	public Map<String, String> move(Integer srcId, Integer targetId,
 			HttpServletResponse response, HttpServletRequest request) {
 		Map<String, String> map = new HashMap<String, String>();
@@ -350,8 +410,9 @@ public class ResourceController {
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("detail")
-	public String detail(Resource resource, Model model) {
+	@RequestMapping("view")
+	@RequiresPermissions(value = "resource-view")
+	public String view(Resource resource, Model model) {
 		if (resource.getId() != null) {
 			resource = resourceService.get(Resource.class, resource.getId());
 			model.addAttribute("resource", resource);

@@ -7,6 +7,4 @@ import com.ycsys.smartmap.sys.entity.*;
  */
 public interface UserDao extends BaseDao<User,Integer> {
     User findByAttr(String loginName, String loginName1);
-
-    void saveAdminUser(User user, Role role, UserRole userRole);
 }

@@ -1,16 +1,19 @@
 package com.ycsys.smartmap.sys.service.impl;
 
+import com.ycsys.smartmap.sys.common.config.parseobject.role.RoleRootXmlObject;
+import com.ycsys.smartmap.sys.common.config.parseobject.role.RoleXmlObject;
 import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
 import com.ycsys.smartmap.sys.common.utils.DateUtils;
 import com.ycsys.smartmap.sys.dao.OrganizationDao;
 import com.ycsys.smartmap.sys.dao.PermissionDao;
 import com.ycsys.smartmap.sys.dao.RoleDao;
-import com.ycsys.smartmap.sys.entity.Organization;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.Permission;
 import com.ycsys.smartmap.sys.entity.Role;
 import com.ycsys.smartmap.sys.service.RoleService;
 import org.hibernate.service.spi.ServiceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -22,6 +25,9 @@ import java.util.List;
  */
 @Service("roleService")
 public class  RoleServiceImpl implements RoleService{
+
+    private static final Logger logger = LoggerFactory.getLogger(RoleServiceImpl.class);
+
     @Resource
     private RoleDao roleDao;
 
@@ -39,6 +45,38 @@ public class  RoleServiceImpl implements RoleService{
     @Override
     public List<Role> findAll() {
         return roleDao.find("from Role");
+    }
+
+    @Override
+    public void initRole(RoleRootXmlObject roles) {
+        long count = roleDao.count("select count(*) from Role");
+        if(count < 1 ){
+            logger.info("=============================初始化角色表开始=======================");
+            for(RoleXmlObject rxo : roles.getRoleXmlObjectList()){
+                long temp_count  = roleDao.count("select count(*) from Role where code = ?",new Object[]{rxo.getCode()});
+                if(temp_count < 1) {
+                    Role r = new Role();
+                    r.setName(rxo.getName());
+                    r.setRemark(rxo.getRemark());
+                    r.setCode(rxo.getCode());
+                    r.setCreateTime(DateUtils.getSysTimestamp());
+                    boolean isSuper = false;
+                    if(rxo.getIsSuper() != null) {
+                        try {
+                            isSuper = Boolean.parseBoolean(rxo.getIsSuper());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    r.setIsSuper(isSuper);
+                    if (rxo.getSort() != null) {
+                        r.setSort(Integer.parseInt(rxo.getSort()));
+                    }
+                    roleDao.save(r);
+                }
+            }
+            logger.info("============================初始化角色表结束===========================");
+        }
     }
 
     @Override

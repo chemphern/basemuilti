@@ -167,7 +167,7 @@ function ZoomOutWithRectangle(Rectabgle){
 	if(heightScale>=20850000)
 		centerPosition.Altitude = 20850000;
 	else if(heightScale<YcMap3D.Navigate.GetPosition(0).Altitude)
-		centerPosition.Altitude = YcMap3D.Navigate.GetPosition(0).Altitude;
+		centerPosition.Altitude = YcMap3D.Navigate.GetPosition(0).Altitude + heightScale;
 	else
 		centerPosition.Altitude = heightScale
 	YcMap3D.Navigate.FlyTo(centerPosition,14);

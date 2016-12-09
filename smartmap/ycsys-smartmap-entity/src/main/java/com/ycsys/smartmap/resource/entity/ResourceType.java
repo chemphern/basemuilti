@@ -46,6 +46,9 @@ public class ResourceType implements java.io.Serializable {
 
 	@Column(name = "backups_flag", nullable = false, length = 1)
 	private String backupsFlag = "0"; // 0:未备份；1：已备份
+	
+	@Column(name = "backup_date")
+	private Date backupDate; // 备份时间
 
 	@ManyToOne
 	@JoinColumn(name = "parent_id")
@@ -97,6 +100,15 @@ public class ResourceType implements java.io.Serializable {
 
 	public void setBackupsFlag(String backupsFlag) {
 		this.backupsFlag = backupsFlag;
+	}
+
+	
+	public Date getBackupDate() {
+		return backupDate;
+	}
+
+	public void setBackupDate(Date backupDate) {
+		this.backupDate = backupDate;
 	}
 
 	public ResourceType getParent() {

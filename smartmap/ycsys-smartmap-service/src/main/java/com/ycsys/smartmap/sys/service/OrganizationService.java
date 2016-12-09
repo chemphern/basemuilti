@@ -1,5 +1,6 @@
 package com.ycsys.smartmap.sys.service;
 
+import com.ycsys.smartmap.sys.common.config.parseobject.org.OrgRootXmlObject;
 import com.ycsys.smartmap.sys.entity.Organization;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.Permission;
@@ -31,4 +32,7 @@ public interface OrganizationService {
 
     /**根据机构id获取权限列表**/
     List<Permission> getPermissionByOrgId(String id);
+
+    /**初始化机构**/
+    void initOrg(OrgRootXmlObject orgs);
 }

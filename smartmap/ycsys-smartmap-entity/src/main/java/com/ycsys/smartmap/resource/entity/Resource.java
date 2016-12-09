@@ -57,6 +57,9 @@ public class Resource implements java.io.Serializable {
 
 	@Column(name = "file_path", length = 200)
 	private String filePath; // 上传文件路径
+	
+	@Column(name = "file_name")
+	private String fileName; //上传的文件名（包含后缀）
 
 	@Column(name = "upload_status", length = 1)
 	private String uploadStatus = "0"; // 1：成功；0：失败
@@ -261,6 +264,14 @@ public class Resource implements java.io.Serializable {
 
 	public void setUpdator(User updator) {
 		this.updator = updator;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 }

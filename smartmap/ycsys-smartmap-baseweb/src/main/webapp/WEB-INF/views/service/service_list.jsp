@@ -78,30 +78,47 @@ body {
 						<div class="box-header with-border">
 							<h4 class="box-title">服务列表</h4>
 							<div class="btn_box">
-								<button class="current" id="serviceStart">
-									<i class="glyphicon glyphicon-play"></i> 启动
-								</button>
-								<button id="serviceStop">
-									<i class="glyphicon glyphicon-stop"></i> 停止
-								</button>
-								<button id="serviceDelete">
-									<i class="iconfont icon-trash"></i> 删除
-								</button>
-								<button id="refreshVersion">
-									<i class="glyphicon glyphicon-refresh"></i> 版本刷新
-								</button>
-								<button id="serviceRegister">
-									<i class="glyphicon glyphicon-plus-sign"></i> 注册
-								</button>
-								<button id="serviceImport">
-									<i class="glyphicon glyphicon-import"></i> 导入
-								</button>
-								<button id="serviceExport">
-									<i class="glyphicon glyphicon-export"></i> 导出
-								</button>
-								<button id="seriveQuery">
-									<i class="glyphicon glyphicon-search"></i> 查询
-								</button>
+								<shiro:hasPermission name="service-start">
+									<button class="current" id="serviceStart">
+										<i class="glyphicon glyphicon-play"></i> 启动
+									</button>
+								</shiro:hasPermission>
+								<shiro:hasPermission name="service-stop">
+									<button id="serviceStop">
+										<i class="glyphicon glyphicon-stop"></i> 停止
+									</button>
+								</shiro:hasPermission>
+								<shiro:hasPermission name="service-delete">
+									<button id="serviceDelete">
+										<i class="iconfont icon-trash"></i> 删除
+									</button>
+								</shiro:hasPermission>
+								<shiro:hasPermission name="service-refresh-version">
+									<button id="refreshVersion">
+										<i class="glyphicon glyphicon-refresh"></i> 版本刷新
+									</button>
+								</shiro:hasPermission>
+								
+								<shiro:hasPermission name="service-register">
+									<button id="serviceRegister">
+										<i class="glyphicon glyphicon-plus-sign"></i> 注册
+									</button>
+								</shiro:hasPermission>
+								<shiro:hasPermission name="service-import">
+									<button id="serviceImport">
+										<i class="glyphicon glyphicon-import"></i> 导入
+									</button>
+								</shiro:hasPermission>
+								<shiro:hasPermission name="service-export">
+									<button id="serviceExport">
+										<i class="glyphicon glyphicon-export"></i> 导出
+									</button>
+								</shiro:hasPermission>
+								<shiro:hasPermission name="service-list">
+									<button id="seriveQuery">
+										<i class="glyphicon glyphicon-search"></i> 查询
+									</button>
+								</shiro:hasPermission>
 							</div>
 						</div>
 						<div class="box_l">
@@ -280,6 +297,42 @@ body {
 					window.location.href="${ctx}/service/toRegister";
 				});
 				
+				$("#serviceExport").on("click",function(e) {
+					e.preventDefault();
+					var selectedRows = gridManager.getSelecteds();
+			    	if(selectedRows.length > 0) {
+				    	var ids = [];
+				    	for(var i = 0; i < selectedRows.length; i++) {
+				    		ids.push(selectedRows[i].id);
+				    	}
+				    	var str = ids.join(",");
+				    	$.Layer.confirm({
+			                msg:"确定要导出选择的【" +selectedRows.length+ "】记录吗？",
+			                fn:function(){
+			                    $.ajax({
+			                    	url: "${ctx}/service/export",
+			                        data:{'idsStr':str},
+			                        type:"post",
+			                        dataType:"json",
+			                        success:function(result){
+			                        	alert(result.msg);
+							    		gridManager.reload();
+			                        },error:function(){
+			                            alert("删除失败！");
+			                        }
+			                    });
+			                },
+			                fn2:function(){
+			                }
+			                
+			            });
+			    	}
+			    	else {
+			    		alert("请选择数据！");
+			    		return false;
+			    	}
+				});
+				
 				//表格列表
 				$(function() {
 					gridManager = $("#maingrid4").ligerGrid({
@@ -341,9 +394,15 @@ body {
 	                          var h = "";
 	                          if (!rowdata._editing)
 	                          {
-	                            h += "<input type='button' class='list-btn bt_edit' onclick='service_list.editService("+ rowdata.id+ ")'/>";
-	                            h += "<input type='button' class='list-btn bt_del'  onclick='service_list.deleteService(" + rowdata.id + ")'/>";
-	                            h += "<input type='button' class='list-btn bt_view' onclick='service_list.viewService(" + rowdata.id + ")'/>";
+	                        	<shiro:hasPermission name="service-edit">
+	                            	h += "<input type='button' class='list-btn bt_edit' onclick='service_list.editService("+ rowdata.id+ ")'/>";
+	                            </shiro:hasPermission>
+	                            <shiro:hasPermission name="service-delete">
+	                            	h += "<input type='button' class='list-btn bt_del'  onclick='service_list.deleteService(" + rowdata.id + ")'/>";
+	                            </shiro:hasPermission>
+	                            //<shiro:hasPermission name="service-view">
+	                            	h += "<input type='button' class='list-btn bt_view' onclick='service_list.viewService(" + rowdata.id + ")'/>";
+	                            //</shiro:hasPermission>
 	                          }
 	                          return h;
 	                        }

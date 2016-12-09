@@ -36,47 +36,35 @@
         });         
         /******书签定位******/
         //添加
-         $("#tableSqdw").on('click','.btn_add', function (e) { 
+         $("#Sqdwtoolbar").on('click','.btn_add', function (e) { 
             e.preventDefault();  
+            var url=path+'/locateService/toAdd.do';
             var dialog = $.Layer.iframe(
                 {
                     title: '添加书签',
-                    url:'map_add_sqdw.html',
+                    id:'bookmarkadd',
+                    url:url,
                     width: 400,
                     height: 300
                 });
         });
          //编辑
-        $("#tableSqdw").on('click','.btn_edit', function (e) { 
+        $("#Sqdwtoolbar").on('click','.btn_edit', function (e) { 
             e.preventDefault();  
+            var bookmarkId=$('#tableSqdw').bootstrapTable('getSelections')[0].id;
             var dialog = $.Layer.iframe(
                 {
                     title: '编辑书签',
-                    url:'map_add_sqdw.html',
+                    id:'bookmarkedit',
+                    url:path+'/locateService/toEdit.do?id='+bookmarkId,
                     width: 400,
                     height: 300
                 });
         });
-        //删除
-        $("#tableSqdw").on('click', '.btn_del', function(e){ 
-            e.preventDefault();         
-            if ($('#tableSqdw input[name="checkItem"]:checked').length<1){ 
-                $.Layer.confirm({
-                    msg: '请选择数据？', fn: function () {        
-                    }
-                });
-                return;
-            }else{
-                $.Layer.confirm({
-                    msg: '是否要删除数据？', fn: function () {
-                        
-                    }
-                });
-            }
-        });
+
         /******三维漫游 路径管理******/
         //添加
-         $(".pathbox").on('click','.btn_add', function () { 
+         $(".pathbox").on('click','.btn_add,btn_edit', function () { 
             if ($('.pathbox').is(":visible")) {
                 $('.pathbox').hide();
                 $('.pathbox-add').show();

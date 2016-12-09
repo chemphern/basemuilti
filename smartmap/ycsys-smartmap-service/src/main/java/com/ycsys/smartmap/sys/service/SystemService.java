@@ -1,14 +1,15 @@
 package com.ycsys.smartmap.sys.service;
 
+import com.ycsys.smartmap.sys.common.config.parseobject.system.SystemRootXmlObject;
 import com.ycsys.smartmap.sys.entity.System;
 
 import java.util.List;
 
 /**
- * Created by Administrator on 2016/11/8.
+ * Created by lixiaoxin on 2016/11/8.
  */
 public interface SystemService {
-    void initSystem(String system_code,String system_name,String system_url);
+    void initSystem(SystemRootXmlObject srxo);
 
 
     List<System> findAll();

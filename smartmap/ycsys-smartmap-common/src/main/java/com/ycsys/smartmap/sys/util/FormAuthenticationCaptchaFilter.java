@@ -30,9 +30,6 @@ public class FormAuthenticationCaptchaFilter extends FormAuthenticationFilter {
 
 	private String captchaParam = Global.LOGIN_CAPTCHA;
 
-	@Value("#{config.super_roles}")
-	private String super_roles;
-
 	public String getCaptchaParam() {
 		return captchaParam;
 	}
@@ -70,20 +67,13 @@ public class FormAuthenticationCaptchaFilter extends FormAuthenticationFilter {
 					if(user != null){
 						//是否超级管理员
 						boolean is_super = false;
-						String [] super_roles_arr = null;
-						if(super_roles != null){
-							super_roles_arr = super_roles.split(",");
-						}
-						List<Map<String,Object>> resList = db.queryForList(conn,"select r.code from sys_role r join sys_user_role ur on r.id = ur.role_id where ur.user_id = ?",new Object[]{user.getId().toString()});
+						List<Map<String,Object>> resList = db.queryForList(conn,"select r.isSuper from sys_role r join sys_user_role ur on r.id = ur.role_id where ur.user_id = ?",new Object[]{user.getId().toString()});
 						for(Map<String,Object> res:resList){
 							//判断是否超级管理员
-							if(super_roles_arr != null){
-								for(String super_role : super_roles_arr){
-									String role_code = res.get("code").toString();
-									if(role_code != null && role_code.equals(super_role)){
-										is_super = true;
-									}
-								}
+							String isSuper = res.get("isSuper").toString();
+							if(isSuper.equals("Y") || isSuper.equals("y")){
+								is_super = true;
+								break;
 							}
 						}
 						user.setSuper(is_super);

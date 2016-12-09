@@ -10,14 +10,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import com.ycsys.smartmap.resource.entity.Resource;
 import com.ycsys.smartmap.sys.entity.ConfigServerEngine;
 import com.ycsys.smartmap.sys.entity.User;
 
@@ -87,7 +85,7 @@ public class Service implements java.io.Serializable {
 	private String cacheType;// 服务缓存类型(0:Dynamic;1:Tiled)
 
 	@Column(name = "remote_services_type", length = 1)
-	private String remoteServicesType; //远程服务类型（0：ArcGIS;1:OGC;2:Other）
+	private String remoteServicesType; //远程服务类型（0：ArcGIS;1:OGC;）
 
 	@Column(name = "service_visit_address", length = 100)
 	private String serviceVisitAddress;// 服务访问地址

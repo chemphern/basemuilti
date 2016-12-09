@@ -78,7 +78,7 @@
     function left_href(context, href) {
         if (href) {
             var i = $("<iframe />", {
-                "width": "96%",
+                "width": "100%",
                 "align": "center",
                 "id": "main_iframe",
                 "name": "main_iframe",

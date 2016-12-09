@@ -9,6 +9,6 @@ import com.ycsys.smartmap.webgis.dao.FlightPathDao;
 /**
  * Created by chenlong on 2016/12/2.
  */
-@Repository("FlightPathDao")
+@Repository("flightPathDao")
 public class FlightPathDaoImpl extends BaseDaoImpl<FlightPath,Integer> implements FlightPathDao {
 }

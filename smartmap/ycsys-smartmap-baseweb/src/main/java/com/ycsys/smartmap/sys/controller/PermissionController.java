@@ -1,6 +1,6 @@
 package com.ycsys.smartmap.sys.controller;
 
-import com.ycsys.smartmap.sys.common.config.parseobject.*;
+import com.ycsys.smartmap.sys.common.config.parseobject.permission.*;
 import com.ycsys.smartmap.sys.common.exception.SysException;
 import com.ycsys.smartmap.sys.common.result.Grid;
 import com.ycsys.smartmap.sys.common.result.ResponseEx;
