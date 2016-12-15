@@ -68,7 +68,7 @@ public class JavaInformations implements Serializable { // NOPMD
 	private final boolean webXmlExists = localWebXmlExists;
 	private final boolean pomXmlExists = localPomXmlExists;
 
-	static final class ThreadInformationsComparator
+	public static final class ThreadInformationsComparator
 			implements Comparator<ThreadInformations>, Serializable {
 		private static final long serialVersionUID = 1L;
 
@@ -133,16 +133,16 @@ public class JavaInformations implements Serializable { // NOPMD
 		}
 	}
 
-	static void setWebXmlExistsAndPomXmlExists(boolean webXmlExists, boolean pomXmlExists) {
+	public static void setWebXmlExistsAndPomXmlExists(boolean webXmlExists, boolean pomXmlExists) {
 		localWebXmlExists = webXmlExists;
 		localPomXmlExists = pomXmlExists;
 	}
 
-	boolean doesWebXmlExists() {
+	public boolean doesWebXmlExists() {
 		return webXmlExists;
 	}
 
-	boolean doesPomXmlExists() {
+	public boolean doesPomXmlExists() {
 		return pomXmlExists;
 	}
 
@@ -247,7 +247,7 @@ public class JavaInformations implements Serializable { // NOPMD
 		return jvmArgs.toString();
 	}
 
-	static List<ThreadInformations> buildThreadInformationsList() {
+	public static List<ThreadInformations> buildThreadInformationsList() {
 		final ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
 		final Map<Thread, StackTraceElement[]> stackTraces = Thread.getAllStackTraces();
 		final List<Thread> threads = new ArrayList<Thread>(stackTraces.keySet());
@@ -296,7 +296,7 @@ public class JavaInformations implements Serializable { // NOPMD
 		return threadInfosList;
 	}
 
-	static List<Thread> getThreadsFromThreadGroups() {
+	public static List<Thread> getThreadsFromThreadGroups() {
 		ThreadGroup group = Thread.currentThread().getThreadGroup(); // NOPMD
 		while (group.getParent() != null) {
 			group = group.getParent();
@@ -371,35 +371,35 @@ public class JavaInformations implements Serializable { // NOPMD
 		return false;
 	}
 
-	MemoryInformations getMemoryInformations() {
+	public MemoryInformations getMemoryInformations() {
 		return memoryInformations;
 	}
 
-	List<TomcatInformations> getTomcatInformationsList() {
+	public List<TomcatInformations> getTomcatInformationsList() {
 		return tomcatInformationsList;
 	}
 
-	long getProcessCpuTimeMillis() {
+	public long getProcessCpuTimeMillis() {
 		return processCpuTimeMillis;
 	}
 
-	double getSystemLoadAverage() {
+	public double getSystemLoadAverage() {
 		return systemLoadAverage;
 	}
 
-	double getSystemCpuLoad() {
+	public	double getSystemCpuLoad() {
 		return systemCpuLoad;
 	}
 
-	long getUnixOpenFileDescriptorCount() {
+   public	long getUnixOpenFileDescriptorCount() {
 		return unixOpenFileDescriptorCount;
 	}
 
-	long getUnixMaxFileDescriptorCount() {
+	public long getUnixMaxFileDescriptorCount() {
 		return unixMaxFileDescriptorCount;
 	}
 
-	double getUnixOpenFileDescriptorPercentage() {
+	public double getUnixOpenFileDescriptorPercentage() {
 		if (unixOpenFileDescriptorCount >= 0) {
 			return 100d * unixOpenFileDescriptorCount / unixMaxFileDescriptorCount;
 		}
@@ -407,58 +407,58 @@ public class JavaInformations implements Serializable { // NOPMD
 	}
 
 
-	String getOS() {
+	public String getOS() {
 		return os;
 	}
 
-	int getAvailableProcessors() {
+	public int getAvailableProcessors() {
 		return availableProcessors;
 	}
 
-	String getJavaVersion() {
+	public String getJavaVersion() {
 		return javaVersion;
 	}
 
-	String getJvmVersion() {
+	public String getJvmVersion() {
 		return jvmVersion;
 	}
 
-	String getPID() {
+	public String getPID() {
 		return pid;
 	}
 
-	String getServerInfo() {
+	public String getServerInfo() {
 		return serverInfo;
 	}
 
 
-	String getContextDisplayName() {
+	public String getContextDisplayName() {
 		return contextDisplayName;
 	}
 
-	Date getStartDate() {
+	public Date getStartDate() {
 		return startDate;
 	}
 
-	String getJvmArguments() {
+	public String getJvmArguments() {
 		return jvmArguments;
 	}
 
 
-	int getThreadCount() {
+	public int getThreadCount() {
 		return threadCount;
 	}
 
-	int getPeakThreadCount() {
+	public int getPeakThreadCount() {
 		return peakThreadCount;
 	}
 
-	long getTotalStartedThreadCount() {
+	public long getTotalStartedThreadCount() {
 		return totalStartedThreadCount;
 	}
 
 
-	List<ThreadInformations> getThreadInformationsList() {
+	public List<ThreadInformations> getThreadInformationsList() {
 		// on trie sur demande (si affichage)
 		final List<ThreadInformations> result = new ArrayList<ThreadInformations>(
 				threadInformationsList);
@@ -467,7 +467,7 @@ public class JavaInformations implements Serializable { // NOPMD
 	}
 
 
-	boolean isDependenciesEnabled() {
+	public boolean isDependenciesEnabled() {
 		return dependenciesList != null && !dependenciesList.isEmpty();
 	}
 
@@ -478,7 +478,7 @@ public class JavaInformations implements Serializable { // NOPMD
 		return Collections.emptyList();
 	}
 
-	String getDependencies() {
+	public String getDependencies() {
 		if (!isDependenciesEnabled()) {
 			return null;
 		}
@@ -495,7 +495,7 @@ public class JavaInformations implements Serializable { // NOPMD
 		return sb.toString();
 	}
 
-	boolean isStackTraceEnabled() {
+	public boolean isStackTraceEnabled() {
 		for (final ThreadInformations threadInformations : threadInformationsList) {
 			final List<StackTraceElement> stackTrace = threadInformations.getStackTrace();
 			if (stackTrace != null && !stackTrace.isEmpty()) {

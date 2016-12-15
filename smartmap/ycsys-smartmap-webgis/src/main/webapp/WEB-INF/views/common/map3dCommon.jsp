@@ -38,7 +38,7 @@ function to3dMap(mapExtent) {
 	        //打开工程
 	        YcMap3D.Project.Open(flyPath,true);
 	        //关闭自带漫游控件
-	        YcMap3D.Window.DisablePresentationControl = true;
+//	        YcMap3D.Window.DisablePresentationControl = true;
 	        //添加onloadFinished事件
 	        YcMap3D.AttachEvent("OnLoadFinished", OnProjectLoadFinished);
 	        //标识三维已经初始化状态
@@ -48,10 +48,6 @@ function to3dMap(mapExtent) {
 	        alert("Error: " + e.description);
 	    }
 	}else{
-		//var initPositionID = YcMap3D.ProjectTree.FindItem("InitLocation");
-		//if(initPositionID!=""){
-		//	YcMap3D.Navigate.FlyTo(YcMap3D.ProjectTree.GetObject(initPositionID),14);
-		//}
 		setExtentTo2dMap();
 	}
 	//标识目前显示三维状态
@@ -74,6 +70,10 @@ function OnProjectLoadFinished() {
   	creatCacheFolder();
 	//判断加载二维中已加载图层
     initMapLayer();
+    //初始化相关操作标识
+    initOperationFlag();
+    //开启侦听全局更改事件OnInputModeChanged
+    YcMap3D.AttachEvent("OnInputModeChanged", OnInputModeChangedListening);
 }
 
 function creatCacheFolder(){
@@ -81,6 +81,10 @@ function creatCacheFolder(){
 		createFolder(configration.WMSServiceFolder);
 	if(configration.WFSServiceFolder!="")
 		createFolder(configration.WFSServiceFolder);
+	if(configration.POIFolder != "")
+        createFolder(configration.POIFolder);
+	if(configration.QueryIcoFolder !="" )
+        createFolder(configration.QueryIcoFolder);
 }
 
 /**
@@ -89,30 +93,68 @@ function creatCacheFolder(){
 *
 */
 function setExtentTo2dMap(){
-	//var initPositionID = YcMap3D.ProjectTree.FindItem("InitLocation");
-	//if(initPositionID!=""){
-	//	YcMap3D.Navigate.FlyTo(YcMap3D.ProjectTree.GetObject(initPositionID),0);
-	//}
 	if(mapExtent2d!=null){
-		var type = "meter";
-		var isPlaner = YcMap3D.CoordServices.SourceCoordinateSystem.IsPlanar();
-		if(!isPlaner)
-			type = "globe";
-		setZoomInLevel(mapExtent2d,type);
+		setZoomInLevel(mapExtent2d);
 	}
 }
 
-function getFlightPathByName(pathName){
-	var url = "${ctx }/flightRoam/roamPath";
-	alert(url);
-	$.ajax({
-	  url: url,
-	  data:{"pathName":"testpath"},
-	  type: "Get",
-	  success: function(result){
-		  alert(JSON.stringify(result));
-	  },
-	});
+function initOperationFlag(){
+    var storage=window.localStorage;
+	storage.setItem("RoamPathEdit","false");
+    storage.setItem("RoamPathPointEdit","false");
+    storage.setItem("BookMarkEdit","false");
+}
+
+//自动更新(废弃)
+function beginMonitorRefresh() {
+    window.setInterval(function () {
+        if(mapOpt==3){
+            var storage=window.localStorage;
+            if(storage.getItem("RoamPathEdit")=="true"){
+                storage.setItem("RoamPathEdit","false");
+                $('#tableFlyPathForEdit').bootstrapTable('refresh', {
+                    url: "${path}/flightRoam/roamPathList"
+                });
+
+            }
+            if(storage.getItem("RoamPathPointEdit")=="true"){
+                storage.setItem("RoamPathPointEdit","false");
+                getPathPointsFromPathName(selectRoamPath);
+            }
+            if(storage.getItem("BookMarkEdit")=="true"){
+                $('#tableSqdw').bootstrapTable('refresh', {
+                    url: "${path}/locateService/toList.do"
+                });
+                storage.setItem("BookMarkEdit","false");
+            }
+        }
+    },500)
+}
+
+//自动更新
+function OnInputModeChangedListening(NewMode) {
+    if(mapOpt==3&&NewMode==1){
+        var storage=window.localStorage;
+        if(storage.getItem("RoamPathEdit")=="true"){
+            storage.setItem("RoamPathEdit","false");
+            YcMap3D.Window.SetInputMode(0);
+            $('#tableFlyPathForEdit').bootstrapTable('refresh', {
+                url: "${path}/flightRoam/roamPathList"
+            });
+        }
+        if(storage.getItem("RoamPathPointEdit")=="true"){
+            storage.setItem("RoamPathPointEdit","false");
+            YcMap3D.Window.SetInputMode(0);
+            getPathPointsFromPathName(selectRoamPath);
+        }
+        if(storage.getItem("BookMarkEdit")=="true"){
+            storage.setItem("BookMarkEdit","false");
+            YcMap3D.Window.SetInputMode(0);
+            $('#tableSqdw').bootstrapTable('refresh', {
+                url: "${path}/locateService/toList.do"
+            });
+        }
+    }
 }
 
 </script>

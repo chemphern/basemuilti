@@ -1,0 +1,47 @@
+﻿/*html5*/
+article,aside,dialog,footer,header,section,footer,nav,figure,menu{display:block;}
+/*公共*/
+html,body{height: 100%;}
+html{overflow:auto;}
+body {margin:0; padding:0; font:12px/1.5;font-family:  \5FAE\8F6F\96C5\9ED1, \5b8b\4f53,Arial,sans-serif !important; color:#666;overflow:auto;}
+div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,blockquote,p{padding:0; margin:0;}
+ol,ul {list-style:none;padding:0; margin:0;}
+li{list-style-type:none;}
+img{vertical-align:middle;border:0;}
+h1,h2,h3,h4,h5,h6{font-size:inherit; font-weight:normal;}
+address,cite,code,em,th,i{font-weight:normal; font-style:normal;}
+/* 登录 */
+.login-page {display:none;}
+.login-logo{float:left; width: 500px; margin:0 auto; background-image: url(../../dist/img/map/logo_login.png); }
+.login-box{width: 400px; background-image: url(../../dist/img/map/bg_loginbox.png); background-size:100% 100%;position:absolute;top:50%;right:50%;margin-top:-15%;margin-right: -470px; } 
+.login-box-body{padding: 35px 45px; border-top: 0; color: #666; border-radius: 2px; }
+.login-box-body .form-control{border:none;border-radius: 0;color:#b6b6b6;height:42px;width:300px;} 
+.login-hd{font-size: 34px;color:#26bf8c;margin-bottom: 25px;}
+.login-img{width: 100%; height: 100%; margin:15px auto; } 
+#cap_btn{height:42px;}
+.login-box-body .form-control-feedback {color: #b6b6b6; line-height:42px;} 
+.login-box-body .login-form {width: 55%; float: left; } 
+.login-btn-l{width:98%;float: left; background-color: #f29d49; border-radius: 2px; border:none; padding:8px 40px; color:#fff; font-weight: bold; height:42px;font-size: 16px;}
+.login-btn-r{float: right; background-color: #19b957; border-radius: 2px; border:none; padding:8px 40px; color:#fff; font-weight: bold; } 
+.login-box-msg, .register-box-msg {margin: 0; text-align: center; padding: 0 20px 20px 20px; } 
+.social-auth-links {margin: 10px 0; }
+input[placeholder], [placeholder], *[placeholder] { 
+color:#b6b6b6 !important; 
+} 
+@media (min-width: 1024px) and (max-width:1440px){
+.login-box{margin-top:-162px;}
+.login-hd{font-size: 24px;margin-bottom: 20px;}
+.login-box{width: 300px;height:325px;margin-right: -370px; } 
+.login-box-body{padding: 35px 25px; }
+.login-box-body .form-control{height:42px;width:245px;} 
+.login-box-body .login-form{width:46%;}
+}
+ @media (min-width: 767px) and (max-width:1023px){
+.login-box{margin-top:-186px;}
+.login-hd{font-size: 24px;margin-bottom: 20px;}
+.login-box{width: 300px;height:325px;margin-right: -370px; } 
+.login-box-body{padding: 35px 25px; }
+.login-box-body .form-control{height:42px;width:245px;} 
+.login-box-body .login-form{width:46%;}
+.login-page {background: url(../../dist/img/map/bg_maplogin768.jpg) center center no-repeat; display:block;position:fixed;left:0;top:0;width:100%;height:100%;}
+} 

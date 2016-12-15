@@ -39,7 +39,7 @@ import com.ycsys.smartmap.sys.util.DataDictionary;
 /**
  * 异常报警配置 controller
  * 
- * @author linrongren
+ * @author lrr
  * @date 2016年11月17日
  */
 @Controller

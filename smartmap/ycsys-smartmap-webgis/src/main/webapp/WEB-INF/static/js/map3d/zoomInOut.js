@@ -136,15 +136,15 @@ function ZoomInWithRectangle(Rectabgle){
 	//获取左上、右下坐标
 	var extent={"xmin":Math.min(Rectabgle.Left,Rectabgle.Right),"xmax":Math.max(Rectabgle.Left,Rectabgle.Right),"ymin":Math.min(Rectabgle.Bottom,Rectabgle.Top),"ymax":Math.max(Rectabgle.Bottom,Rectabgle.Top)};
 	//设置到地图范围
-	setZoomInLevel(extent, type)
+	setZoomInLevel(extent)
 }
 
 //设置放大后三维地图范围
-function setZoomInLevel(extent, type) {
+function setZoomInLevel(extent) {
     var centerx = (extent.xmax + extent.xmin) * 0.5;
     var centery = (extent.ymax + extent.ymin) * 0.5;
     var distanceY, distanceX;
-    if (type == "meter") {
+    if (getRefernceType() == "meter") {
         distanceY = (extent.ymax - extent.ymin) * 0.5 / (Math.tan(26 / 180 * Math.PI));
         distanceX = (extent.xmax - extent.xmin) * 0.5 / (Math.tan(26 / 180 * Math.PI));
     } else {

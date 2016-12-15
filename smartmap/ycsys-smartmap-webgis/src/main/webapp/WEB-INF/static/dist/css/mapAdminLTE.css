@@ -86,10 +86,10 @@
   z-index: 1000;
   bottom: 0;
 }
-.control-sidebar-bg,
+
 .control-sidebar {
   top: 55px;
-  right: -230px;
+  right: 0px;
   width: 230px;
   -webkit-transition: right 0.3s ease-in-out;
   -o-transition: right 0.3s ease-in-out;

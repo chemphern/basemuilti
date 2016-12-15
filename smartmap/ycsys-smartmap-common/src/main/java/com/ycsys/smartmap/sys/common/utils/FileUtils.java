@@ -426,6 +426,8 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 		try {
 			ZipOutputStream zouts = new ZipOutputStream(new FileOutputStream(
 					descFile));
+			//设置编码（获取当前系统中的文件名的编码方式）
+			zouts.setEncoding(System.getProperty("sun.jnu.encoding"));
 			if ("*".equals(fileName) || "".equals(fileName)) {
 				FileUtils.zipDirectoryToZipFile(dirPath, fileDir, zouts);
 			} else {

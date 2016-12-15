@@ -3,9 +3,8 @@
  * ----------
  */
 .skin-blue .header{background:#1e8bf2;border-bottom:1px solid #077ae4 !important;}
-.skin-blue .header .bigmenu>li a:hover{background-image: url(../../../dist/img/map/icon_blue_bg_hover.png) ;background-repeat: no-repeat;border:0;background-color:#1e8bf2;}
+.skin-blue .header .bigmenu>li a:hover,.skin-blue .header .bigmenu > li > a:focus{background-image: url(../../../dist/img/map/icon_blue_bg_hover.png) ;background-repeat: no-repeat;border:0;background-color:#1e8bf2;}
 .skin-blue .header .bigmenu li.active{background-image: url(../../../dist/img/map/icon_blue_bg_hover.png) ;background-repeat: no-repeat;}
-.skin-blue .header .bigmenu > li > a:hover,.skin-blue .header .bigmenu > li > a:focus {text-decoration: none; background-color: #1e8bf2; }
 .skin-blue .navbar-user li .user_box{border-left:1px solid #077ae4;}
 .skin-blue .navbar-user .memu-list>li>a:hover{color:#1e8bf2;background:none;}
 .skin-blue .navbar-user .memu-list>li>a:hover i.iconfont{color:#1e8bf2;}
@@ -24,12 +23,14 @@
 .skin-blue .side-menu a:hover .side-menu-icon{color: rgba(30,139,242,0.75);}
 .skin-blue .side-menu a:hover h2{color:rgba(30,139,242,0.75);}
 .skin-blue .nav-tabs>li>a:hover{color:#1e8bf2;}
-.skin-blue .icon-searchway a.active .iconfont,.icon-searchway a:hover .iconfont{color:#1e8bf2;}
-.skin-blue .icon-searchway a.active h5,.icon-searchway a:hover h5{color:#1e8bf2;}
+.skin-blue .icon-searchway a.active .iconfont{color:#1e8bf2;}
+.skin-blue .icon-searchway a.active h5{color:#1e8bf2;}
+.skin-blue .icon-searchway a:hover .iconfont{color:rgba(30,139,242,0.75);}
+.skin-blue .icon-searchway a:hover h5{color:rgba(30,139,242,0.75);}
 .skin-blue .bs-glyphicons-list li:hover{color:#fff;background-color:#1e8bf2;}
 .skin-blue .side-plot a.active span{color:#1e8bf2;}
 .skin-blue .side-plot a:hover span{color: rgba(30,139,242,0.75);}
-.skin-blue .subTabs .nav-tabs > li.active > a,.subTabs .nav-tabs > li.active > a:hover,.subTabs .nav-tabs > li.active > a:focus {color: #1e8bf2; }
+.skin-blue .subTabs .nav-tabs > li.active > a,.skin-blue .subTabs .nav-tabs > li.active > a:hover,.skin-blue .subTabs .nav-tabs > li.active > a:focus {color: #1e8bf2; }
 .skin-blue .subTabs .nav-tabs > li.active{border-bottom:3px solid #1e8bf2;}
 .skin-blue .search-form .search-btn button{color:#1e8bf2;}
 .skin-blue .search-form .btn_list button.active{background-color:#1e8bf2;border-color:#1e8bf2;color:#fff;}
@@ -45,20 +46,21 @@
 .skin-blue .search-form .searchBtn .btn-warning:hover{color: #fff; background-color: #1a7dd9; border-color: #1a7dd9;}
 .skin-blue .l_icon{background:url(../../../dist/img/map/left_hidden_icon_blue.png) 0px 0px no-repeat;}
 .skin-blue .fore-core-side .arrow{ background:url(../../../dist/img/map/icon_arrow_blue.png) 0px -64px no-repeat;}
+.skin-blue .fore-core-side span.arrow_unfold{background-position: 0px -82px;}
 .skin-blue .legendWrap .legendIcon{background-image:url(../../../dist/img/map/icon_arrow_blue.png);}
+.skin-blue .search-form .select-item{background:#fff url(../../../dist/img/map/icon_arrow_blue.png) 132px -110px no-repeat;}
+.skin-blue  .search-form input:focus,.skin-blue  .search-form .select-item select.form-control:focus{border:1px solid #1a7dd9;}
 @media (min-width: 320px) and  (max-width:1023px){
     .skin-blue .header .bigmenu {background-color:#1e8bf2;}
-    .skin-blue .header .bigmenu>li a:hover{background-color:#087ae4;}
-    .skin-blue .header .bigmenu li.active{background-color:#087ae4;}
+    .skin-blue .header .bigmenu li.active,.skin-blue .header .bigmenu>li a:hover,.skin-blue .header .bigmenu>li a:focus{background-color:#087ae4;background-image: none;}
 }
 /*
  * Skin: Green
  * ----------
  */
 .skin-green .header{background:#19b957;border-bottom:1px solid #17b153 !important;}
-.skin-green .header .bigmenu>li a:hover{background-image: url(../../../dist/img/map/icon_green_bg_hover.png) ;background-repeat: no-repeat;border:0;background-color:#19b957;}
+.skin-green .header .bigmenu>li a:hover,.skin-green .header .bigmenu > li > a:focus{background-image: url(../../../dist/img/map/icon_green_bg_hover.png) ;background-repeat: no-repeat;border:0;background-color:#19b957;}
 .skin-green .header .bigmenu li.active{background-image: url(../../../dist/img/map/icon_green_bg_hover.png) ;background-repeat: no-repeat;}
-.skin-green .header .bigmenu > li > a:hover,.skin-green .header .bigmenu > li > a:focus {text-decoration: none; background-color: #19b957; }
 .skin-green .navbar-user li .user_box{border-left:1px solid #47c77a;}
 .skin-green .navbar-user .memu-list>li>a:hover{color:#19b957;background:none;}
 .skin-green .navbar-user .memu-list>li>a:hover i.iconfont{color:#19b957;}
@@ -77,12 +79,14 @@
 .skin-green .side-menu a:hover .side-menu-icon{color: rgba(25,185,87,0.75);}
 .skin-green .side-menu a:hover h2{color:rgba(25,185,87,0.75);}
 .skin-green .nav-tabs>li>a:hover{color:#19b957;}
-.skin-green .icon-searchway a.active .iconfont,.icon-searchway a:hover .iconfont{color:#19b957;}
-.skin-green .icon-searchway a.active h5,.icon-searchway a:hover h5{color:#19b957;}
+.skin-green .icon-searchway a.active .iconfont{color:#19b957;}
+.skin-green .icon-searchway a.active h5{color:#19b957;}
+.skin-green .icon-searchway a:hover .iconfont{color:rgba(25,185,87,0.75);}
+.skin-green .icon-searchway a:hover h5{color:rgba(25,185,87,0.75);}
 .skin-green .bs-glyphicons-list li:hover{color:#fff;background-color:#19b957;}
 .skin-green .side-plot a.active span{color:#19b957;}
 .skin-green .side-plot a:hover span{color: rgba(25,185,87,0.75);}
-.skin-green .subTabs .nav-tabs > li.active > a,.subTabs .nav-tabs > li.active > a:hover,.subTabs .nav-tabs > li.active > a:focus {color: #19b957; }
+.skin-green .subTabs .nav-tabs > li.active > a,.skin-green .subTabs .nav-tabs > li.active > a:hover,.skin-green .subTabs .nav-tabs > li.active > a:focus {color: #19b957; }
 .skin-green .subTabs .nav-tabs > li.active{border-bottom:3px solid #19b957;}
 .skin-green .search-form .search-btn button{color:#19b957;}
 .skin-green .search-form .btn_list button.active{background-color:#19b957;border-color:#19b957;color:#fff;}
@@ -98,20 +102,21 @@
 .skin-green .search-form .searchBtn .btn-warning:hover{color: #fff; background-color: #db9f14; border-color: #db9f14;}
 .skin-green .l_icon{background:url(../../../dist/img/map/left_hidden_icon_green.png) 0px 0px no-repeat;}
 .skin-green .fore-core-side .arrow{ background:url(../../../dist/img/map/icon_arrow_green.png) 0px -64px no-repeat;}
+.skin-green .fore-core-side span.arrow_unfold{background-position: 0px -82px;}
 .skin-green .legendWrap .legendIcon{background-image:url(../../../dist/img/map/icon_arrow_green.png);}
+.skin-green .search-form .select-item{background:#fff url(../../../dist/img/map/icon_arrow_green.png) 132px -110px no-repeat;}
+.skin-green  .search-form input:focus,.skin-green  .search-form .select-item select.form-control:focus{border:1px solid #16a14b;}
 @media (min-width: 320px) and  (max-width:1023px){
     .skin-green .header .bigmenu {background-color:#19b957;}
-    .skin-green .header .bigmenu>li a:hover{background:#16a14b;}
-    .skin-green .header .bigmenu li.active{background:#16a14b;}
+    .skin-green .header .bigmenu li.active,.skin-green .header .bigmenu>li a:hover,.skin-green .header .bigmenu>li a:focus{background-color: #16a14b;background-image:none;}
 }
 /*
  * Skin: Cyan
  * ----------
  */
 .skin-cyan .header{background:#26bf8c;border-bottom:1px solid #1d9069 !important;}
-.skin-cyan .header .bigmenu>li a:hover{background-image: url(../../../dist/img/map/icon_bg_hover.png) ;background-repeat: no-repeat;border:0;background-color:#26bf8c;}
+.skin-cyan .header .bigmenu>li a:hover,.skin-cyan .header .bigmenu>li a:focus{background-image: url(../../../dist/img/map/icon_bg_hover.png) ;background-repeat: no-repeat;border:0;background-color:#26bf8c;}
 .skin-cyan .header .bigmenu li.active{background-image: url(../../../dist/img/map/icon_bg_hover.png) ;background-repeat: no-repeat;}
-.skin-cyan .header .bigmenu > li > a:hover,.skin-cyan .header .bigmenu > li > a:focus {text-decoration: none; background-color: #26bf8c; }
 .skin-cyan .navbar-user li .user_box{border-left:1px solid #68d2af;}
 .skin-cyan .navbar-user .memu-list>li>a:hover{color:#26bf8c;background:none;}
 .skin-cyan .navbar-user .memu-list>li>a:hover i.iconfont{color:#26bf8c;}
@@ -130,12 +135,14 @@
 .skin-cyan .side-menu a:hover .side-menu-icon{color: rgba(39,191,140,0.75);}
 .skin-cyan .side-menu a:hover h2{color:rgba(39,191,140,0.75);}
 .skin-cyan .nav-tabs>li>a:hover{color:#26bf8c;}
-.skin-cyan .icon-searchway a.active .iconfont,.icon-searchway a:hover .iconfont{color:#26bf8c;}
-.skin-cyan .icon-searchway a.active h5,.icon-searchway a:hover h5{color:#26bf8c;}
+.skin-cyan .icon-searchway a.active .iconfont{color:#26bf8c;}
+.skin-cyan .icon-searchway a.active h5{color:#26bf8c;}
+.icon-searchway a:hover .iconfont{color:rgba(39,191,140,0.75);}
+.icon-searchway a:hover h5{color:rgba(39,191,140,0.75);}
 .skin-cyan .bs-glyphicons-list li:hover{color:#fff;background-color:#26bf8c;}
 .skin-cyan .side-plot a.active span{color:#26bf8c;}
 .skin-cyan .side-plot a:hover span{color: rgba(39,191,140,0.75);}
-.skin-cyan .subTabs .nav-tabs > li.active > a,.subTabs .nav-tabs > li.active > a:hover,.subTabs .nav-tabs > li.active > a:focus {color: #26bf8c; }
+.skin-cyan .subTabs .nav-tabs > li.active > a,.skin-cyan .subTabs .nav-tabs > li.active > a:hover,.skin-cyan .subTabs .nav-tabs > li.active > a:focus {color: #26bf8c; }
 .skin-cyan .subTabs .nav-tabs > li.active{border-bottom:3px solid #26bf8c;}
 .skin-cyan .search-form .search-btn button{color:#26bf8c;}
 .skin-cyan .search-form .btn_list button.active{background-color:#55cc85;border-color:#55cc85;color:#fff;}
@@ -148,6 +155,5 @@
 
 @media (min-width: 320px) and  (max-width:1023px){
     .skin-cyan .header .bigmenu {background-color:#26bf8c;}
-    .skin-cyan .header .bigmenu>li a:hover{background-color:#55cc85;}
-    .skin-cyan .header .bigmenu li.active{background-color:#55cc85;}
+    .skin-cyan .header .bigmenu li.active,.skin-cyan .header .bigmenu>li a:hover,.skin-cyan .header .bigmenu>li a:focus{background-color:#55cc85;background-image: none;}
 }

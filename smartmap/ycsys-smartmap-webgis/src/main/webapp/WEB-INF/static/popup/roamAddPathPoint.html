@@ -3,16 +3,17 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>羽辰智慧林业二三维一体化应用系统</title>
+  <title>三维漫游</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="dist/css/mapPublic.css">
+    <link rel="stylesheet" href="../dist/css/mapPublic.css">
   <!-- 弹出框 -->
-  <link href="plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
+  <link href="../plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
   <!-- jQuery  -->
   <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
   <script src="../js/map3d/YcMap3D.js"></script>
 </head>
+<body onload="initAddPoint()">
 <div style="display: block; position: absolute; width: 400px;margin-left:-200px; margin-top:-160px; left: 50%; top: 50%; z-index: 1994;" class="aui_state_focus aui_state_lock">
   <div class="aui_outer">
     <table class="aui_border">
@@ -31,7 +32,7 @@
               <tr>
                 <td colspan="2" class="aui_header">
                 <div class="aui_titleBar">
-                <div class="aui_title" style="cursor: move;">添加飞行路径</div><a class="aui_close" href="javascript:/*artDialog*/;">×</a>
+                <div class="aui_title" style="cursor: move;">添加飞行路径</div><a onclick="closeAddPathPoint()" class="aui_close" href="javascript:/*artDialog*/;">×</a>
                 </div>
                 </td>
               </tr>
@@ -42,20 +43,20 @@
                 <td class="aui_main" style="width: 400px;  visibility: visible;">
                   <div class="aui_content aui_state_full" style="padding: 20px 25px;">
 
-                  <form action="" method="get" id="form_id">
+                  <form action="" id="form_id" method="post">
                   <table width="100%" border="0" cellpadding="0" cellspacing="0" class="date_add_table">
                     <tr>
                       <td width="110" class="t_r">位置名称：</td>
-                      <td ><input type="text" name="textfield2" id="textfield2" class="text" /></td>
+                      <td ><input id="pointName" type="text" name="textfield2" id="textfield2" class="text" /></td>
                     </tr>
                     <tr>
                       <td class="t_r">停留时间：</td>
-                      <td><label><input type="text" name="" value="" class="text"><span>秒</span></label></td>
+                      <td><label><input id="stopTime" type="text" name="" value="0" class="text"><span>秒</span></label></td>
                     </tr>
                     <tr>
                       <td class="t_r"></td>
                       <td>    
-                        <label><input type="text" name="" value="" class="text"><button type="button" class="btn btn_pos">当前位置</button></label>      
+                        <label><input id="pointCoord" type="text" name="" value="" class="text"><button type="button" class="btn btn_pos" onclick="getCurrentPosition()">当前位置</button></label>
                       </td>
                     </tr>
                   </table>
@@ -67,8 +68,8 @@
                 <tr>
                   <td colspan="2" class="aui_footer">
                   <div class="aui_buttons">
-                  <button class="bt_sub aui_state_highlight" type="button">提交</button>
-                  <button type="button">取消</button>
+                  <button class="bt_sub aui_state_highlight" type="button" onclick="addPathPoint()">提交</button>
+                  <button type="button" onclick="closeAddPathPoint()">取消</button>
                   </div>
                   </td>
                 </tr>
@@ -90,6 +91,66 @@
 
 
 <script type="text/javascript">
+
+    var flyPathName;
+    var postUrl;
+    var x,y,z,yaw,pitch,roll;
+
+    function initAddPoint() {
+        flyPathName = getQueryString("path");
+        postUrl = getQueryString("url");
+    }
+
+    function getCurrentPosition() {
+        var currentPosition = YcMap3D.Navigate.GetPosition(3);
+        x = currentPosition.X;
+        y = currentPosition.Y;
+        z = currentPosition.Altitude;
+        yaw = currentPosition.Yaw;
+        pitch = currentPosition.Pitch;
+        roll = currentPosition.Roll;
+        $('#pointCoord').val("X:" + x + ",Y:" + y + ",Z:" + z + ",Yaw:" + yaw + ",Pitch:" + pitch + ",Roll:" + roll);
+    }
+
+    function addPathPoint() {
+        var coord = $('#pointCoord').val();
+        var pathPointName = $('#pointName').val();
+        var pointStopTime = $('#stopTime').val();
+        if(postUrl!=""&&flyPathName!=""&&coord!=""&& pathPointName!=""&& pointStopTime!=""){
+            var pathUrl = postUrl + "/flightRoam/addRoamPathPoint";
+            $.ajax({
+                url: pathUrl,
+                type: "post",
+                data:{
+                    pathName:flyPathName,
+                    pointName:pathPointName,
+                    x:x,
+                    y:y,
+                    z:z,
+                    yaw:yaw,
+                    pitch:pitch,
+                    roll:roll,
+                    stopTime:pointStopTime
+                },
+                complete:function () {
+                    var storage=window.localStorage;
+                    storage.setItem("RoamPathPointEdit","true");
+                    YcMap3D.Window.SetInputMode(1);
+                    closeAddPathPoint();
+                },
+                error: function(textStatus){
+                    alert("添加飞行路径点出错！详细：" + textStatus);
+                }
+            });
+        }
+        else{
+            alert("请检查数据填写是否完整！");
+        }
+    }
+
+    function closeAddPathPoint() {
+        YcMap3D.Window.RemovePopupByCaption("飞行路径添加路径点");
+    }
 
 </script>
 

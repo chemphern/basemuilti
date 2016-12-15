@@ -42,12 +42,12 @@ public class FlightPathPointServiceImpl implements FlightPathPointService {
 	}
 
 	@Override
-	public void updateFlightPathToPath(FlightPathPoint pathPoint) {
+	public void updateFlightPointToPath(FlightPathPoint pathPoint) {
 		flightPathPointDao.update(pathPoint);
 	}
 
 	@Override
-	public void deleteFlightPathToPath(FlightPathPoint pathPoint) {
+	public void deleteFlightPointToPath(FlightPathPoint pathPoint) {
 		flightPathPointDao.delete(pathPoint);
 	}
 }

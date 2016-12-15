@@ -66,9 +66,12 @@
 				<!--  0:文档资料;1:专题地图;2:网络图集 -->
 				<td class="t_r">资源类型：</td>
 				<td><select type="text" name="type" id="type" class="text" disabled="disabled">
-						<option value="0">文档资料</option>
+						<!-- <option value="0">文档资料</option>
 						<option value="1">专题地图</option>
-						<option value="2">网络图集</option>
+						<option value="2">网络图集</option> -->
+						<c:forEach var="map" items="${resourceType }">
+							<option value="${map.key }">${map.value.name }</option>	
+						</c:forEach>
 				</select></td>
 			</tr>
 			<tr>
@@ -132,10 +135,12 @@
 <script>
 	$(function() {
 		//设置下拉的值
-		var type = "${resource.type}";
-		var fileType = "${resource.fileType}";
-		$("#type option[value="+type+"]").attr("selected",true);
-		$("#fileType option[value="+fileType+"]").attr("selected",true);
+		if("${resource.type}") {
+			$("#type option[value=${resource.type}]").attr("selected",true);
+		}
+		if("${resource.fileType}") {
+			$("#fileType option[value=${resource.fileType}]").attr("selected",true);
+		}
 	});
 </script>
 </html>

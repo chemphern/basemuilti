@@ -31,11 +31,13 @@ var setting = {
   
   function onCheck(e, treeId, treeNode) {
 	  var url=treeNode.address;
-	  if(url){//子节点
+	  var nodeType=treeNode.type;
+	  console.log(treeNode);
+	  if(nodeType=='n'){//子节点node
 		  toggleLayerInMgr(treeNode);
 		  if(map3DInit==true)
 			  changeVisibleInMap3D(treeNode);
-	  }else{//根节点
+	  }else if(nodeType=='r'){//根节点root
 		  var nodes=treeNode.children;
 		  for(var i=0;i<nodes.length;i++){
 			  var node=nodes[i];
@@ -62,10 +64,13 @@ var setting = {
 		  if(treeNode.checked){
 			  var opt=new Option(treeNode.name,treeNode.id);
 			  opt.url=treeNode.address;
+			  opt.nameField=treeNode.nameField;
+			  opt.summaryFields=treeNode.summaryFields;
+			  opt.displayFields=treeNode.displayFields;
 			  select.options.add(opt);
 		  }else{
 			  for ( var i=select.length-1;i>-1;i--) {
-				if(select.options[i].value==treeNode.address){
+				if(select.options[i].url==treeNode.address){
 					select.options.remove(i);
 					break;
 				}

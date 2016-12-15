@@ -119,8 +119,6 @@ body {
 <script src="${res}/plugins/ligerUI/js/plugins/CustomersData.js"
 	type="text/javascript"></script>
 <script src="${res}/bootstrap/js/bootstrap.min.js"></script>
-<script src="${res}/plugins/knob/jquery.knob.js"></script>
-<script src="${res}/plugins/slimScroll/jquery.slimscroll.js"></script>
 <script src="${res}/dist/js/app.js"></script>
 <script src="${res}/dist/js/demo.js"></script>
 <script type="text/javascript"
@@ -137,7 +135,7 @@ var tempResourceTypeId = null;
     	$("#tree1").ligerTree(
 	            {
 	                url: "${ctx}/resourceType/listAll",  
-                    nodeWidth : 190,
+                    nodeWidth : 170,
                     idFieldName :'id',
                     parentIDFieldName :'pid',
                     onSelect : onSelectResourceType
@@ -284,22 +282,17 @@ var tempResourceTypeId = null;
             checkbox: true,
             rownumbers : true,
             columns: [
-	          	        { display: '资源id',  name: 'id', align: 'left', width: 100 },
 	          	        { display: '资源名称', name: 'name', align: 'left', width: 100 },
 	          	        { display: '资源全称', name: 'fullName', minWidth: 60 },
 	          	        { display: '资源类型', name: 'type', width: 100,align:'center',
 	          	        			type:'int',
    	        	                    render: function (item) {
    	        	                    	     var obj = parseInt(item.type);
-   	        	                             if (obj == 0) {
-   	        	                            	 return '文档资料';
-   	        	                             }
-   	        	                             else if(obj == 1) {
-   	        	                            	 return "专题地图";
-   	        	                             }
-   	        	                             else if(obj == 2) {
-	    	        	                        return "网络图集";
-   	        	                             }
+	   	        	                    	  <c:forEach var="map" items="${resourceType }">
+		        	                    	  		if(obj == "${map.key }") {
+		        	                    	  			return "${map.value.name }";
+		        	                    	  		}
+	     	       						  	  </c:forEach>
     	        	                     }
 	          	        },
 	          	        { display: '详细类型', name: 'fileType', minWidth: 100 ,

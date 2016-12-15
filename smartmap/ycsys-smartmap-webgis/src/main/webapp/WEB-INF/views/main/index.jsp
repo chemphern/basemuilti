@@ -24,10 +24,11 @@
   <link href="${res}/plugins/table/bootstrap-table.min.css" rel="stylesheet">
   <!-- 弹出框 -->
   <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
-  <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
+
+<%--   <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script> --%>
 <!--   <script src="${res}/plugins/jQueryUI/jquery-ui.min.js"></script>  -->
   <script src="${res}/plugins/mCustomScrollbar/jquery.mousewheel.js"></script>
-  
+
   <link rel="stylesheet" href="${res}/bootstrap/css/bootstrap.css">
   <script src="${res}/bootstrap/js/bootstrap.min.js"></script>
    <!-- HTML5 IE8 support of HTML5 elements and media queries -->
@@ -39,18 +40,13 @@
   <script src="${res}/plugins/jeasyui/jquery.easyui.min.js"></script>
   <!-- jQuery 修改浏览器默认滚动条 -->
   <script src="${res}/plugins/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+
   <!-- index js  -->
   <script src="${res}/dist/js/map/map_index.js"></script>
   <script src="${res}/dist/js/map/map_index_dialog.js"></script>
   <!--jQuery pagination js  分页 -->
   <script src="${res}/dist/js/map/jquery.pagination.js"></script>
-  <!-- 颜色选择 -->
-  <!--
- <script src="${res}/plugins/jqColorPicker/colors.js"></script>
- <script src="${res}/plugins/jqColorPicker/jqColorPicker.js"></script>
-  <script type="text/javascript">
-      $('.color').colorPicker(); 
-  </script> -->
+
 
   <!-- jQuery 地图鱼骨控件滑动效果 -->
   <script  src="${res}/dist/js/map/scrollBar.js"></script>
@@ -72,10 +68,14 @@
   <!-- 表格 -->
 <script src="${res}/plugins/table/bootstrap-table.min.js"></script>
 <script src="${res}/plugins/table/bootstrap-table-zh-CN.min.js"></script>
+
 <!-- 封装弹出框dialog -->
 <script src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>
 <script src="${res}/plugins/dialog/iframeTools.source.js"></script>
 <script src="${res}/plugins/dialog/unit.js"></script>
+
+<script src="${res}/bootstrap/js/bootstrap-switch.min.js"></script>
+<link href="${res}/bootstrap/css/bootstrap-switch.min.css">
 </head>
 <body role="document" cz-shortcut-listen="true" class="hold-transition  sidebar-mini skin-cyan">
 <!-- wrapper start -->
@@ -169,7 +169,7 @@
                 </ul>
                 <!-- messages end-->
               </li>
-              <li class="user_info pr10 "><a href="javascript:;" title="换肤"  data-toggle="control-sidebar"><i class="icon iconfont">&#xe64c;</i></a></li> 
+              <li class="user_info pr10 "><a href="javascript:;" title="换肤"  id="control-sidebar-skin"><i class="icon iconfont">&#xe64c;</i></a></li> 
             </ul>
           </div>
           <!-- bigmenu -->
@@ -182,7 +182,7 @@
               <li><a href="javaScript:;"><i class="icon iconfont">&#xe622;</i><h1>地图编辑</h1></a></li>
               <li><a href="javaScript:;"><i class="icon iconfont">&#xe6e0;</i><h1>图层管理</h1></a></li>
               <li><a href="javaScript:;"><i class="icon iconfont">&#xe8b4;</i><h1>空间分析</h1></a></li>
-              <li onclick="to3dMap()"><a href="javaScript:;" id="3dmy"><i class="icon iconfont">&#xe7f6;</i><h1>三维漫游</h1></a></li>
+              <li onclick="toggleTo3d()" id="3dmy"><a href="javaScript:;" ><i class="icon iconfont">&#xe7f6;</i><h1>三维漫游</h1></a></li>
             </ul>
           </div>
           
@@ -234,14 +234,14 @@
                   <form class="form-horizontal search-form" role="form">
                     <div class="form-group form-group-sm">
                       <label for="name" class="col-sm-4">查询图层：</label>
-                      <div class="col-sm-8">
+                      <div class="col-sm-8 select-item">
   <%--                       <select class="form-control input-sm easyui-combotree " data-options="url:'${res }/dist/js/map/data/mapLayerData.json',method:'get'" name="mapLayer"></select> --%>
                         <select class="form-control input-sm" id="queryLyrLst" onchange="listFields();"></select>
                       </div>
                     </div>
                     <div class="form-group form-group-sm">                    
                       <label for="name" class="col-sm-4">查询属性：</label>
-                      <div class="col-sm-8">
+                      <div class="col-sm-8 select-item">
                         <select class="form-control input-sm" id="queryFieldsLst"></select>
                       </div>
                     </div>
@@ -252,7 +252,7 @@
                       </div>
                     </div>
                     <div class="searchBtn">
-                      <button type="button" class="btn btn-success btn_add" >查 询</button>
+                      <button type="button" class="btn btn-success btn_add" id="btnQueryAttr"  onclick="queryAttr()">查 询</button>
 <!--                       <button type="button" class="btn btn-success btn_add" onclick="queryAttr();">查 询</button> -->
                       <button type="reset" class="btn btn-warning">重 置</button>
                     </div>
@@ -262,78 +262,16 @@
                 <div id="Sxcxbox-result" style="display:none">                  
                   <form action="" method="get" class="form-inline search-form" role="form">                   
                     <div class="Sxcxlist">
-                      <p>共有<span class="red">8</span>条结果<a href="#" class="btn_back">返回<i class="arrow-back"></i></a></p>
-                      <!-- 第一页内容 -->
+                      <p>共有<span class="red" id='queryNum'></span>条结果<a href="#" class="btn_back" id='btnBack'>返回<i class="arrow-back"></i></a></p>
                       <div id="Searchresult">
-                        <ul class="result">
-                          <li><i class="no-1"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-2"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-3"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-4"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-5"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
+                        <ul class="result" id="queryItem">
                         </ul>
                       </div>
-                      <!-- 下一页内容 -->
-                      <div id="hiddenresult" style="display:none">
-                        <ul class="result">
-                          <li><i class="no-1"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-2"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-3"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-4"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-5"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                        </ul>                      
-                        <ul class="result">
-                          <li><i class="no-1"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-2"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-3"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-4"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-5"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                        </ul>
-                        <ul class="result">
-                          <li><i class="no-1"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-2"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-3"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-4"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-5"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                        </ul>
-                        <ul class="result">
-                          <li><i class="no-1"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-2"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-3"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-4"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                          <li><i class="no-5"></i><a>锦江之星酒店</a><span>广州市越秀区解放北路777号</span></li>
-                        </ul> 
-                      </div> 
                       <div id="Pagination" class="pagination"><span class="current prev"></span><span class="current">1</span><a href="#">2</a><span>...</span><a href="#">4</a><a href="#" class="next"></a></div>                        
                     </div>
 
                   </form>
                 </div>
-                <script type="text/javascript">
-                  $(function(){
-                    //这是一个非常简单的demo实例，让列表元素分页显示
-                    //回调函数的作用是显示对应分页的列表项内容
-                    //回调函数在用户每次点击分页链接的时候执行
-                    //参数page_index{int整型}表示当前的索引页
-                    var initPagination = function() {
-                      var num_entries = $("#hiddenresult ul.result").length;
-                      // 创建分页
-                      $("#Pagination").pagination(num_entries, {
-                        num_edge_entries: 1, //边缘页数
-                        num_display_entries: 4, //主体页数
-                        callback: pageselectCallback,
-                        items_per_page:1 //每页显示1项
-                      });
-                     }();
-                     
-                    function pageselectCallback(page_index, jq){
-                      var new_content = $("#hiddenresult ul.result:eq("+page_index+")").clone();
-                      $("#Searchresult").empty().append(new_content); //装载对应分页的内容
-                      return false;
-                    }
-                  });
-                  </script>
-                <!-- 查询结果 end-->   
               </div>
 
             </div>
@@ -346,15 +284,15 @@
                   <div class="form-group">
                     <label for="name">请选择查询方式</label>
                     <div class="icon-searchway">
-                      <a href="javascript:;" class="col-sm-4 active">
+                      <a href="javascript:;" class="col-sm-4 active" id="btnQueryPoint">
                         <i class="icon iconfont">&#xe64d;</i>
                         <h5>点击选择点</h5>
                       </a>
-                      <a href="javascript:;" class="col-sm-4 ">
+                      <a href="javascript:;" class="col-sm-4 " id="btnQueryPolyline">
                         <i class="icon iconfont">&#xe64f;</i>
                         <h5>点击选择线</h5>
                       </a>
-                      <a href="javascript:;" class="col-sm-4 ">
+                      <a href="javascript:;" class="col-sm-4 " id="btnQuerypolygon">
                         <i class="icon iconfont">&#xe638;</i>
                         <h5>点击选择多边形</h5>
                       </a>
@@ -366,6 +304,16 @@
                     <p class="help-block">2.在地图上点击选择需要查询区域</p>
                   </div>
                 </form>
+                 <div id="Sxcxbox-geometry" style="display:none">                  
+                  <div class="Sxcxlist">
+                      <p>共有<span class="red" id='queryGeoNum'></span>条结果<a href="#" class="btn_back" id='btnGeoBack' onclick="clearQueryFeature()">返回<i class="arrow-back"></i></a></p>
+                      <div>
+                        <ul class="result" id="queryItemGeo">
+                        </ul>
+                      </div>
+                      <div id="PaginationGeo" class="pagination"><span class="current prev"></span><span class="current">1</span><a href="#">2</a><span>...</span><a href="#">4</a><a href="#" class="next"></a></div>                        
+                    </div>
+                </div>
               </div>
             </div>
             <div class="panelBox" id="fore-2d3d-side-cx-ljcx">
@@ -376,46 +324,86 @@
                 <form class="form-horizontal search-form" role="form">
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">查询图层：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
 <%--                       <select class="form-control input-sm easyui-combotree " data-options="url:'${res }/dist/js/map/data/mapLayerData.json',method:'get'" name="mapLayer2"></select> --%>
                       <select class="form-control input-sm" id="queryLyrLogic" onchange="listFieldsLogic();"></select>
                     </div>
                   </div>
                   <div class="form-group form-group-sm">                    
                     <label for="name" class="col-sm-4">查询字段：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
                       <select class="form-control input-sm" id="queryFieldsLogic">
                       </select>
                     </div>
                   </div>
                   <div class="form-group">
                     <label for="name" class="col-sm-4">操作符：</label>
-                    <div class="col-sm-8">
-                      <input type="text" class="form-control input-sm" >
+                    <div class="col-sm-8 select-item">
+<!--                       <input type="text" class="form-control input-sm" > -->
+                      <select class="form-control input-sm" id="queryOptLogic">
+                      	<option value="large" label="大于">
+                      	<option value="largeAnd" label="大于等于">
+                      	<option value="equal" label="等于">
+                      	<option value="little" label="小于">
+                      	<option value="littleAnd" label="小于等于">
+                      	<option value="notEqual" label="不等">
+                      	<option value="contain" label="包含">
+                      	<option value="null" label="为空">
+                      </select>
                     </div>
                   </div>                  
                   <div class="form-group">
-                    <label for="name" class="col-sm-4">查询值</label>
+                    <label for="name" class="col-sm-4">查询值：</label>
                     <div class="col-sm-8">
-                      <input type="text" class="form-control input-sm" >
+                      <input type="text" class="form-control input-sm" id="queryLogicVal">
                     </div>
                   </div>
                   <div class="searchBtn btn_list">
-                    <button type="button" class="btn btn_add active">添 加</button>
-                    <button type="button" class="btn">并 且</button>
-                    <button type="button" class="btn">或 者</button>
+                    <button type="button" class="btn btn_add active" id='btnAddLogic'>添 加</button>
+<!--                     <button type="button" class="btn">并 且</button> -->
+                    <button type="button" class="btn" id="btnDelLogic">删除</button>
                   </div>
                   <div class="form-group mg0">                    
                     <label for="name">组合逻辑：</label>
-                    <select  multiple class="form-control">
-                      <option>1</option>
-                      <option>2</option>
-                    </select>
+<!--                     <select  multiple class="form-control"> -->
+<!--                       <option>1</option> -->
+<!--                       <option>2</option> -->
+<!--                     </select> -->
+					<table class="table  table-hover table-responsive search-form-table" id="tableLogic"  
+                     data-toolbar="#toolbar" data-content-type="application/x-www-form-urlencoded"
+                     data-toggle="table" data-method="post" data-id-field='id'
+                     data-click-to-select="true" data-single-select="true"
+                     data-row-style="rowStyle"
+                     data-query-params="queryParams">
+                        <thead>
+                          <tr>
+                            <th data-checkbox="true"></th>
+                            <th data-field="id" data-visible='false'></th>
+                            <th data-field="fieldName">字段</th>
+                            <th data-field="fieldOpt">操作符</th>
+                            <th data-field="logicOpt" data-visible='false'>操作符</th>
+                            <th data-field="fieldVal">字段值</th>
+                            <th data-field="logicVal" data-visible='false'>字段值</th>
+                            <th data-field="fieldLogic" data-visible='false'>逻辑关系</th>
+                            <th data-field="operator" data-formatter="logicFormatter">逻辑关系</th>
+                          </tr>
+                        </thead>
+                    </table> 
                   </div>
                   <div class="searchBtn">
-                    <button type="button" class="btn btn-success" onclick="queryAttrLogic();">查询</button>
-                    <button type="reset" class="btn btn-warning">重置</button>
+                    <button type="button" class="btn btn-success" id="btnQueryAttrLogic">查询</button>
+                    <button type="reset" class="btn btn-warning" id="btnLogicReset">重置</button>
                   </div>
+                  <div id="Sxcxbox-logic" style="display:none">                  
+                  <div class="Sxcxlist">
+                      <p>共有<span class="red" id='queryLogicNum'></span>条结果<a href="#" class="btn_back" id='btnLogicBack'>返回<i class="arrow-back"></i></a></p>
+                      <div>
+                        <ul class="result" id="queryItemLogic">
+                        </ul>
+                      </div>
+                      <div id="PaginationLogic" class="pagination"><span class="current prev"></span><span class="current">1</span><a href="#">2</a><span>...</span><a href="#">4</a><a href="#" class="next"></a></div>                        
+                    </div>
+                </div>
                 </form>
               </div>
             </div>
@@ -464,7 +452,7 @@
                     </div>
                   </div>
                   <div class="searchBtn">
-                    <button type="button" class="btn btn-success" onclick="locateAddress();">查询</button>
+                    <button type="button" class="btn btn-success" id="btnLocateAddress">查询</button>
                     <button type="reset" class="btn btn-warning">重置</button>
                   </div>
                 </form>
@@ -500,7 +488,7 @@
                       </div>
                     </div>
                     <div class="searchBtn">
-                      <button type="button" class="btn btn-success" onclick="locateLngLat();">定 位</button>
+                      <button type="button" class="btn btn-success" id="btnLocateLngLat">定 位</button>
                       <button type="reset" class="btn btn-warning">重 置</button>
                     </div>  
                   </div>
@@ -518,7 +506,7 @@
                       </div>
                     </div>
                     <div class="searchBtn">
-                      <button type="button" class="btn btn-success" onclick="locateXY();">定 位</button>
+                      <button type="button" class="btn btn-success" id="btnlocateXY">定 位</button>
                       <button type="reset" class="btn btn-warning">重 置</button>
                     </div>
                   </div>
@@ -532,14 +520,14 @@
                 <h3 class="panelBox-title">书签定位</h3><span class="arrow arrowUp"></span>
               </div>
               <div id="collapse-dtdw-sqdw" class="panelBox-body">
-                <form class="form-inline search-form" role="form">
+                <form class="form-inline search-form" role="form" method="post">
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">书签名称：</label>
                     <div class="col-sm-8">
                       <div class="input-group search-btn">
-                        <input type="text" class="form-control">
+                        <input type="text" class="form-control" name="name" id="bookName">
                         <span class="input-group-btn btn-group-sm">
-                          <button class="btn btn-default icon iconfont" type="submit" >&#xe644;</button>
+                          <button class="btn btn-default icon iconfont" type="button" id="bookmarkSearch">&#xe644;</button>
                         </span>
                       </div>
                     </div>
@@ -550,10 +538,10 @@
                       <button type="button" class="btn btn_del">删 除</button>
                     </div>
                     <table class="table  table-hover table-responsive search-form-table" id="tableSqdw"  
-                     data-toolbar="#Sqdwtoolbar"
-                     data-toggle="table"
-                     data-url="dist/js/map/data/tableFxmyData.json"
-                     data-click-to-select="true"
+                     data-toolbar="#Sqdwtoolbar" data-content-type="application/x-www-form-urlencoded"
+                     data-toggle="table" data-method="post"
+                     data-url="${path}/locateService/toList.do"
+                     data-click-to-select="true" data-single-select="true"
                      data-row-style="rowStyle"
                      data-query-params="queryParams"
                      data-pagination="true"
@@ -561,10 +549,10 @@
                      data-striped="true">
                         <thead>
                           <tr>
-                            <th data-field="state" data-radio="true"></th>
+                            <th data-checkbox="true"></th>
                             <th data-field="id">序号</th>
-                            <th data-field="pathName">书签名称</th>
-                            <th data-field="pathDataSource">描述</th>
+                            <th data-field="name">书签名称</th>
+                            <th data-field="description">描述</th>
                           </tr>
                         </thead>
                     </table> 
@@ -615,7 +603,7 @@
                 <form class="form-horizontal search-form" role="form">
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">字体：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
                       <select class="form-control input-sm">
                         <option>1</option>
                         <option>2</option>
@@ -625,7 +613,7 @@
                   </div>
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">字体尺寸：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
                       <select class="form-control input-sm">
                         <option>1</option>
                         <option>2</option>
@@ -637,7 +625,7 @@
                     <label for="name" class="col-sm-4">字体颜色：</label>
                     <div class="col-sm-8">
                       <div class="input-group-btn">
-                        <input type="text" class="form-control text-mid input-in color">
+                        <input type="text" class="form-control input-in color">
                       </div>
                     </div>
                   </div>
@@ -645,7 +633,7 @@
                     <label for="name" class="col-sm-4">图形颜色：</label>
                     <div class="col-sm-8">
                       <div class="input-group-btn">
-                        <input type="text" class="form-control text-mid input-in color">
+                        <input type="text" class="form-control input-in color">
                       </div>
                     </div>
                   </div>
@@ -653,13 +641,13 @@
                     <label for="name" class="col-sm-4">填充颜色：</label>
                     <div class="col-sm-8">
                       <div class="input-group-btn">
-                        <input type="text" class="form-control text-mid input-in color">
+                        <input type="text" class="form-control input-in color">
                       </div>
                     </div>
                   </div>
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">透明度：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
                       <select class="form-control input-sm">
                         <option>1</option>
                         <option>2</option>
@@ -669,7 +657,7 @@
                   </div>
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">线宽：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
                       <select class="form-control input-sm">
                         <option>1</option>
                         <option>2</option>
@@ -691,7 +679,7 @@
                 <form class="form-horizontal search-form" role="form">
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">字体：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
                       <select class="form-control input-sm">
                         <option>1</option>
                         <option>2</option>
@@ -701,7 +689,7 @@
                   </div>
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">字体尺寸：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
                       <select class="form-control input-sm">
                         <option>1</option>
                         <option>2</option>
@@ -713,7 +701,7 @@
                     <label for="name" class="col-sm-4">字体颜色：</label>
                     <div class="col-sm-8">
                       <div class="input-group-btn">
-                        <input type="text" class="form-control text-mid input-in color">
+                        <input type="text" class="form-control input-in color">
                       </div>
                     </div>
                   </div>
@@ -721,7 +709,7 @@
                     <label for="name" class="col-sm-4">图形颜色：</label>
                     <div class="col-sm-8">
                       <div class="input-group-btn">
-                        <input type="text" class="form-control text-mid input-in color">
+                        <input type="text" class="form-control input-in color">
                       </div>
                     </div>
                   </div>
@@ -729,13 +717,13 @@
                     <label for="name" class="col-sm-4">填充颜色：</label>
                     <div class="col-sm-8">
                       <div class="input-group-btn">
-                        <input type="text" class="form-control text-mid input-in color">
+                        <input type="text" class="form-control input-in color">
                       </div>
                     </div>
                   </div>
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">透明度：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
                       <select class="form-control input-sm">
                         <option>1</option>
                         <option>2</option>
@@ -745,7 +733,7 @@
                   </div>
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">线宽：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
                       <select class="form-control input-sm">
                         <option>1</option>
                         <option>2</option>
@@ -767,7 +755,7 @@
                 <form class="form-horizontal search-form" role="form">
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">字体：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
                       <select class="form-control input-sm">
                         <option>1</option>
                         <option>2</option>
@@ -777,7 +765,7 @@
                   </div>
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">字体尺寸：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
                       <select class="form-control input-sm">
                         <option>1</option>
                         <option>2</option>
@@ -789,7 +777,7 @@
                     <label for="name" class="col-sm-4">字体颜色：</label>
                     <div class="col-sm-8">
                       <div class="input-group-btn">
-                        <input type="text" class="form-control text-mid input-in color">
+                        <input type="text" class="form-control input-in color">
                       </div>
                     </div>
                   </div>
@@ -797,7 +785,7 @@
                     <label for="name" class="col-sm-4">图形颜色：</label>
                     <div class="col-sm-8">
                       <div class="input-group-btn">
-                        <input type="text" class="form-control text-mid input-in color">
+                        <input type="text" class="form-control input-in color">
                       </div>
                     </div>
                   </div>
@@ -805,13 +793,13 @@
                     <label for="name" class="col-sm-4">填充颜色：</label>
                     <div class="col-sm-8">
                       <div class="input-group-btn">
-                        <input type="text" class="form-control text-mid input-in color">
+                        <input type="text" class="form-control input-in color">
                       </div>
                     </div>
                   </div>
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">透明度：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
                       <select class="form-control input-sm">
                         <option>1</option>
                         <option>2</option>
@@ -821,7 +809,7 @@
                   </div>
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">线宽：</label>
-                    <div class="col-sm-8">
+                    <div class="col-sm-8 select-item">
                       <select class="form-control input-sm">
                         <option>1</option>
                         <option>2</option>
@@ -920,7 +908,7 @@
               <form class="form-horizontal search-form" role="form">
                 <div class="form-group form-group-sm">
                   <label for="name" class="col-sm-4">选择图层：</label>
-                  <div class="col-sm-8">
+                  <div class="col-sm-8 select-item">
                     <select class="form-control input-sm">
                       <option>1</option>
                       <option>2</option>
@@ -933,125 +921,129 @@
                   <button type="submit" class="btn btn-sm">保存编辑</button>
                   <button type="submit" class="btn btn-sm">取消编辑</button>
                 </div>
-                <ul id="myTab" class="nav nav-tabs">
-                  <li class="active"><a href="#pointSymbol"  data-toggle="tab">点符号</a></li>
-                  <li><a href="#lineSymbol"  data-toggle="tab">线符号</a></li>
-                  <li><a href="#planeSymbol"  data-toggle="tab">面符号</a></li>
-                </ul>
-                <div id="myTabContent" class="tab-content">                
-                  <div class="tab-pane  active" id="pointSymbol">
-                    <ul class="bs-glyphicons-list clearfix">
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点1</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                    </ul>
-                  </div>
-                  <div class="tab-pane " id="lineSymbol">
-                    <ul class="bs-glyphicons-list clearfix">
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点2</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                    </ul> 
-                  </div>
-                  <div class="tab-pane " id="planeSymbol">
-                    <ul class="bs-glyphicons-list clearfix">
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点3</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                      <li>
-                        <span class="glyphicon glyphicon-asterisk"></span>
-                        <span class="glyphicon-class">锚点</span>
-                      </li>
-                    </ul> 
-                  </div>
+                <%--<ul id="myTab" class="nav nav-tabs">--%>
+                  <%--<li class="active"><a href="#pointSymbol"  data-toggle="tab">点符号</a></li>--%>
+                  <%--<li><a href="#lineSymbol"  data-toggle="tab">线符号</a></li>--%>
+                  <%--<li><a href="#planeSymbol"  data-toggle="tab">面符号</a></li>--%>
+                <%--</ul>--%>
+                <%--<div id="myTabContent" class="tab-content">                --%>
+                  <%--<div class="tab-pane  active" id="pointSymbol">--%>
+                    <%--<ul class="bs-glyphicons-list clearfix">--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点1</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                    <%--</ul>--%>
+                  <%--</div>--%>
+                  <%--<div class="tab-pane " id="lineSymbol">--%>
+                    <%--<ul class="bs-glyphicons-list clearfix">--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点2</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                    <%--</ul> --%>
+                  <%--</div>--%>
+                  <%--<div class="tab-pane " id="planeSymbol">--%>
+                    <%--<ul class="bs-glyphicons-list clearfix">--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点3</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                      <%--<li>--%>
+                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
+                        <%--<span class="glyphicon-class">锚点</span>--%>
+                      <%--</li>--%>
+                    <%--</ul> --%>
+                  <%--</div>--%>
 
-                    <div class="form-group form-group-sm">
-                      <label for="name" class="col-sm-4">颜色：</label>
-                      <div class="col-sm-8">
-                        <select class="form-control input-sm">
-                          <option>1</option>
-                          <option>2</option>
-                          <option>3</option>
-                        </select>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label for="name" class="col-sm-4">大小：</label>
-                      <div class="col-sm-8">
-                        <input type="text" class="form-control input-sm" >
-                      </div>
-                    </div>                  
-                    <div class="form-group">
-                      <label for="name" class="col-sm-4">角度：</label>
-                      <div class="col-sm-8">
-                        <input type="text" class="form-control input-sm">
-                      </div>
-                    </div>
-                    <div class="searchBtn">
-                      <button type="submit" class="btn btn-success">新增</button>
-                      <button type="reset" class="btn btn-warning">删除</button>
-                    </div> 
-
-                </div> 
+                  <%--<div class="form-group form-group-sm">--%>
+                    <%--<label for="name" class="col-sm-4">颜色：</label>--%>
+                    <%--<div class="col-sm-8 select-item">--%>
+                      <%--<select class="form-control input-sm">--%>
+                        <%--<option>1</option>--%>
+                        <%--<option>2</option>--%>
+                        <%--<option>3</option>--%>
+                      <%--</select>--%>
+                    <%--</div>--%>
+                  <%--</div>--%>
+                  <%--<div class="form-group">--%>
+                    <%--<label for="name" class="col-sm-4">大小：</label>--%>
+                    <%--<div class="col-sm-8">--%>
+                      <%--<input type="text" class="form-control input-sm" >--%>
+                    <%--</div>--%>
+                  <%--</div>--%>
+                  <%--<div class="form-group">--%>
+                    <%--<label for="name" class="col-sm-4">角度：</label>--%>
+                    <%--<div class="col-sm-8">--%>
+                      <%--<input type="text" class="form-control input-sm">--%>
+                    <%--</div>--%>
+                  <%--</div>--%>
+                  <%--<div class="searchBtn">--%>
+                    <%--<button type="submit" class="btn btn-success">新增</button>--%>
+                    <%--<button type="reset" class="btn btn-warning">删除</button>--%>
+                  <%--</div>--%>
+                <%--</div>--%>
+                <!-- 编辑工作区 -->
+                <div class="editorRegion">
+                  <div id="templateDiv"></div>
+                  <div id="editorDiv"></div>
+                </div>
               </form>
               </div>
             </div>
@@ -1131,7 +1123,7 @@
                 <form class="form-inline search-form" role="form">
                 <div class="form-group form-group-sm">
                     <label for="name">导入GPS</label>
-                    <div class="filebox"><input type="file" name="file_0_ture" size="20" onchange="document.getElementById('file_0').value=this.value" class="filetext opacity "><input name="file_0" id="file_0" value="" class="form-control"> <button type="button"  class="btn">导 入</button></div>
+                    <div class="filebox"><input type="file" name="file_0_ture" size="20" onchange="document.getElementById('file_0').value=this.value" class="filetext opacity "><input name="file_0" id="file_0" value="" class="form-control"> <button type="button"  class="btn btn_import">导 入</button></div>
                 </div>
                 </form>              
               </div>
@@ -1158,7 +1150,7 @@
                 </div>
                 <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-5">分析图层：</label>
-                    <div class="col-sm-7">
+                    <div class="col-sm-7 select-item">
                       <select class="form-control input-sm">
                         <option>1</option>
                         <option>2</option>
@@ -1174,7 +1166,7 @@
                   </div>
                   <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-5">统计类似：</label>
-                    <div class="col-sm-7">
+                    <div class="col-sm-7 select-item">
                       <select class="form-control input-sm">
                         <option>村</option>
                         <option>2</option>
@@ -1245,7 +1237,7 @@
                 <h3 class="panelBox-title">飞行漫游</h3><span class="arrow arrowUp"></span>
               </div>
               <div  class="panelBox-body">
-                <form class="form-inline search-form" role="form">
+                <form class="form-inline search-form" role="form" method="post">
                   <div class="input-group search-btn wd200">
                     <input type="text" class="form-control input-sm" placeholder="飞行漫游信息">
                     <span class="input-group-btn btn-group-sm">
@@ -1265,8 +1257,8 @@
                     </div>
 
                     <table class="table  table-hover table-responsive search-form-table" id="tableFlyPathForRoam"
-                     data-toggle="table"
-                     data-row-style="rowStyle">
+                     data-toggle="table" data-cache="false"
+                     data-row-style="rowStyle" data-click-to-select="true">
                         <thead>
                           <tr>
                             <th data-field="state" data-radio="true"></th>
@@ -1285,7 +1277,7 @@
               </div>
               <div  class="panelBox-body">
                 <div class="pathbox">
-                  <form class="form-inline search-form" role="form">
+                  <form class="form-inline search-form" role="form" method="post">
                     <div class="input-group search-btn wd200">
                       <input type="text" class="form-control input-sm " placeholder="飞行漫游信息">
                       <span class="input-group-btn btn-group-sm">
@@ -1305,8 +1297,8 @@
                       </div>
                     
                       <table class="table  table-hover table-responsive search-form-table" id="tableFlyPathForEdit"
-                             data-toggle="table"
-                             data-row-style="rowStyle">
+                             data-toggle="table" data-cache="false"
+                             data-row-style="rowStyle" data-click-to-select="true">
                         <thead>
                         <tr>
                           <th data-field="state" data-radio="true"></th>
@@ -1324,7 +1316,7 @@
                     <div class="form-group">
                       <label for="name" class="col-sm-4">路径名称：</label>
                       <div class="col-sm-8">
-                        <input type="text" class="form-control input-sm" id="selectRoamPathName">
+                        <input type="text" class="form-control input-sm" id="selectRoamPathName" oninput="roamPathEdit()">
                       </div>
                     </div>
                      <div class="form-group form-group-sm btn_list" id="pathtoolbar3">
@@ -1340,14 +1332,20 @@
                       </div>
                     
                       <table class="table  table-hover table-responsive search-form-table" id="tablePathPoint"
-                             data-toggle="table"
-                             data-row-style="rowStyle">
+                             data-toggle="table" data-cache="false"  data-method="post"
+                             data-row-style="rowStyle" data-click-to-select="true">
                           <thead>
                             <tr>
                               <th data-field="state" data-radio="true"></th>
                               <th data-field="pointIndex">编号</th>
                               <th data-field="pointName">路径点名</th>
                               <th data-field="stopTime">停留时间</th>
+                              <th data-field="X" data-visible="false"></th>
+                              <th data-field="Y" data-visible="false"></th>
+                              <th data-field="Z" data-visible="false"></th>
+                              <th data-field="Yaw" data-visible="false"></th>
+                              <th data-field="Pitch" data-visible="false"></th>
+                              <th data-field="Roll" data-visible="false"></th>
                             </tr>
                           </thead>
                       </table> 
@@ -1358,11 +1356,11 @@
                       <%--</div>--%>
                     <%--</div>  --%>
                     <div class="form-group-sm btn_list text-right" style="margin-top: 20px">
-                        <button type="button" class="btn btn-default btn-sm btn_save active">
+                        <button id="roamPathNameEditSave" type="button" class="btn btn-default btn-sm btn_save active" onclick="addOrEditRoamPath()" disabled="true">
                           <span class="glyphicon glyphicon-saved"></span> 保存
                         </button>
                          <button type="button" class="btn btn-default btn-sm btn_cancel">
-                          <span class="glyphicon glyphicon-remove"></span> 取消
+                          <span class="glyphicon glyphicon-remove"></span> 返回
                         </button>                                     
                     </div>
                                      
@@ -1380,6 +1378,8 @@
     <!-- left end -->
     <!--left hidden-->
     <div class="left_h">
+    <!-- 下面一行为添加的标签 让标签浮在三维地图上-->
+    <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
       <div class="l_icon"></div>
     </div>
     <!-- content start -->
@@ -1399,6 +1399,7 @@
       </div>
       <!-- 地图图例 start-->
       <div id="js_legend" class="legendWrap">
+      <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
         <div class="legendBox">
           <div class="legend_hd"><h2>图例</h2></div>
           	<div id="legendDiv" class="legendBody"></div>
@@ -1453,11 +1454,11 @@
       <!-- 地图切换按钮 start-->
       <div class="tab-mapBtn">
             <!-- 下面一行为添加的标签 -->
-          <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
           <div class="mapBtn" id="myTab">
-           <div class="btn-group mapView">
+            <div class="btn-group mapView">
+            <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
               <button type="button" class="btn btn-default mapView-btn active" onclick="to2dMap();">地图</button>
-              <button type="button" class="btn btn-default " onclick="to2dImgMap();">卫星</button>
+              <button type="button" class="btn btn-default mapView-btn" onclick="to2dImgMap();" id="mapView-btn-2dwx">卫星</button>
               <button type="button" class="btn btn-default mapView-btn" id="mapView-btn-3dmy" onclick="toggleTo3d()">三维</button>
               <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" style="height:34px;">
                 <span class="caret"></span>
@@ -1469,16 +1470,17 @@
                 <li><a href="#"><label> <input type="checkbox" name="2d3dcheckbox" id="2d3dcheckbox">二三维联动</label></a></li>
               </ul>
             </div>
-          <div class="btn-group">
-            <button type="button" class="btn btn-default  maplayer-btn dropdown-toggle" ata-toggle="dropdown">图层<span class="caret"></span></button>
-            <ul class="dropdown-menu maplayer" role="menu" >
-              <!-- 下面一行为添加的标签 -->
-              <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
-              <li><a href="#">森林资源分布图</a></li>
-              <li><a href="#">基础数据</a></li>
-              <li><a href="#">功能分析</a></li>
-            </ul>
-          </div>
+            <div class="btn-group sel-maplayer">
+            <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
+              <button type="button" class="btn btn-default  maplayer-btn dropdown-toggle" data-toggle="dropdown">图层<span class="caret"></span></button>
+              <ul class="dropdown-menu maplayer" role="menu" >
+                <!-- 下面一行为添加的标签 -->
+                <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
+                <li><a href="#">森林资源分布图</a></li>
+                <li><a href="#">基础数据</a></li>
+                <li><a href="#">功能分析</a></li>
+              </ul>
+            </div>
         </div>
       </div>
       <!-- 地图切换按钮 end-->
@@ -1504,12 +1506,12 @@
     <!-- 下面一行为添加的标签 -->
     <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
      <!-- Control Sidebar 换肤弹窗-->
-    <aside class="control-sidebar control-sidebar-dark">
+    <aside class="control-sidebar control-sidebar-dark" style="display:none;">
       <div class="tab-content">
         <div class="tab-pane" id="control-sidebar-home-tab"></div>
       </div>
     </aside>
-    <div class="control-sidebar-bg"></div>         
+       
   </div>
 
   
@@ -1519,8 +1521,7 @@
 	
 </div>
 <!-- wrapper end -->
-<!-- AdminLTE App -->
-<script src="${res}/dist/js/app.js"></script>
+
 <!-- 换肤 -->
 <script src="${res}/dist/js/map/mapSkinSelect.js"></script>
 </body>

@@ -85,7 +85,7 @@ final class TomcatInformations implements Serializable {
 		}
 	}
 
-	static List<TomcatInformations> buildTomcatInformationsList() {
+	public static List<TomcatInformations> buildTomcatInformationsList() {
 		if (!TOMCAT_USED) {
 			return Collections.emptyList();
 		}
@@ -127,7 +127,7 @@ final class TomcatInformations implements Serializable {
 	}
 
 	// visibilité package pour réinitialisation en test unitaire
-	static void initMBeans() throws MalformedObjectNameException {
+	public static void initMBeans() throws MalformedObjectNameException {
 		// rq: en général, il y a 2 connecteurs (http et ajp 1.3) définis dans server.xml et donc
 		// 2 threadPools et 2 globalRequestProcessors de même nom : http-8080 et jk-8009 (ajp13)
 		final MBeans mBeans = new MBeans();
@@ -137,43 +137,43 @@ final class TomcatInformations implements Serializable {
 		GLOBAL_REQUEST_PROCESSORS.addAll(mBeans.getTomcatGlobalRequestProcessors());
 	}
 
-	String getName() {
+	public String getName() {
 		return name;
 	}
 
-	int getMaxThreads() {
+	public int getMaxThreads() {
 		return maxThreads;
 	}
 
-	int getCurrentThreadCount() {
+	public int getCurrentThreadCount() {
 		return currentThreadCount;
 	}
 
-	int getCurrentThreadsBusy() {
+	public int getCurrentThreadsBusy() {
 		return currentThreadsBusy;
 	}
 
-	long getBytesReceived() {
+	public long getBytesReceived() {
 		return bytesReceived;
 	}
 
-	long getBytesSent() {
+	public long getBytesSent() {
 		return bytesSent;
 	}
 
-	int getRequestCount() {
+	public int getRequestCount() {
 		return requestCount;
 	}
 
-	int getErrorCount() {
+	public int getErrorCount() {
 		return errorCount;
 	}
 
-	long getProcessingTime() {
+	public long getProcessingTime() {
 		return processingTime;
 	}
 
-	long getMaxTime() {
+	public long getMaxTime() {
 		return maxTime;
 	}
 

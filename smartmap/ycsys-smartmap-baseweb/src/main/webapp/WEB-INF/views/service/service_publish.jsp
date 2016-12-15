@@ -144,8 +144,12 @@ body {
 							<tr>
 								<td class="t_r">服务资源：</td>
 								<td>
-									<input type="checkbox" name="serviceResource" checked="checked" value="0"/>非SD文件
-									<input type="checkbox" name="serviceResource" value="1" />SD文件</td>
+									<!-- <input type="checkbox" name="serviceResource" checked="checked" value="1" />SD文件
+									<input type="checkbox" name="serviceResource" value="0"/>非SD文件 -->
+									<c:forEach var="map" items="${serviceResource }">
+										${map.value.name }<input type="radio" name="serviceResource" value="${map.key }">
+									</c:forEach>
+									</td>
 							</tr>
 							<tr>
 								<td class="t_r">服务类型：</td>
@@ -200,7 +204,7 @@ body {
 								<td class="t_r">请选择服务拓展模块：</td>
 								<td>
 									<c:forEach var="map" items="${serviceExtendType }">
-				                		<input type="checkbox" name="serviceExtend" value="${map.key }"/><span>${map.value.name }</span>
+				                		<input type="checkbox" name="extensionName" value="${map.key }"/><span>${map.value.name }</span>
 				                	</c:forEach>
 									<br /></td>
 							</tr>
@@ -293,7 +297,9 @@ body {
                  }
             });
         }); */
-		
+        
+     	//设置单选择第一个值
+		$("input[name='serviceResource']:radio").eq(0).attr('checked','true');
 		// Smart Wizard     
 		$('#wizard').smartWizard({ 
 			onLeaveStep:onLeaveStepCallback,

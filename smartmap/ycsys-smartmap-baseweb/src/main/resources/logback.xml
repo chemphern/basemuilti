@@ -70,6 +70,9 @@
         <level value="DEBUG"/>
     </logger>
 
+    <logger name="org.quartz.core.QuartzSchedulerThread" additivity="true">
+        <level value="ERROR"/>
+    </logger>
     <logger name="com.ycsys" additivity="true">
         <level value="INFO"/>
     </logger>

@@ -40,7 +40,7 @@
 </head>
 <body>
 <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">异常报警规则</h4>
@@ -54,7 +54,7 @@
         </div>
     </div>
     <!-- /.col -->
-    <div class="col-md-10">
+    <div class="col-md-9">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">异常报警规则列表</h4>
@@ -88,9 +88,7 @@
 <!-- Bootstrap 3.3.6 -->
 <script src="${res}/bootstrap/js/bootstrap.min.js"></script>
 <!-- jQuery Knob Chart -->
-<script src="${res}/plugins/knob/jquery.knob.js"></script>
 <!-- Slimscroll 滚动条 -->
-<script src="${res}/plugins/slimScroll/jquery.slimscroll.js"></script>
 <!-- AdminLTE App -->
 <script src="${res}/dist/js/app.js"></script>
 <!-- AdminLTE for demo purposes -->

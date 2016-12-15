@@ -42,6 +42,18 @@ public class LayerTheme implements Serializable {
 	@JoinColumn(name = "parent_id")
 	private LayerTheme parent; // 父亲结点
 	
+	@ManyToOne
+	@JoinColumn(name = "service_id")
+	private Service service;
+	
+	public Service getService() {
+		return service;
+	}
+
+	public void setService(Service service) {
+		this.service = service;
+	}
+
 	public Integer getId() {
 		return id;
 	}

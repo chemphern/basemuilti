@@ -46,7 +46,7 @@ class ThreadInformations implements Serializable {
 	private final List<StackTraceElement> stackTrace;
 
 	@SuppressWarnings("all")
-    ThreadInformations(Thread thread, List<StackTraceElement> stackTrace, long cpuTimeMillis,
+    public ThreadInformations(Thread thread, List<StackTraceElement> stackTrace, long cpuTimeMillis,
                        long userTimeMillis, boolean deadlocked, String hostAddress) {
 		super();
 		assert thread != null;
@@ -64,11 +64,11 @@ class ThreadInformations implements Serializable {
 		this.globalThreadId = buildGlobalThreadId(thread, hostAddress);
 	}
 
-	static long getCurrentThreadCpuTime() {
+	public static long getCurrentThreadCpuTime() {
 		return getThreadCpuTime(Thread.currentThread().getId());
 	}
 
-	static long getThreadCpuTime(long threadId) {
+	public static long getThreadCpuTime(long threadId) {
 		if (CPU_TIME_ENABLED) {
 			// le coût de cette méthode se mesure à environ 0,6 microseconde
 			return THREAD_BEAN.getThreadCpuTime(threadId);
@@ -76,34 +76,34 @@ class ThreadInformations implements Serializable {
 		return 0;
 	}
 
-	String getName() {
+	public String getName() {
 		return name;
 	}
 
-	long getId() {
+	public long getId() {
 		return id;
 	}
 
-	int getPriority() {
+	public int getPriority() {
 		return priority;
 	}
 
-	boolean isDaemon() {
+	public boolean isDaemon() {
 		return daemon;
 	}
 
-	Thread.State getState() {
+	public Thread.State getState() {
 		return state;
 	}
 
-	List<StackTraceElement> getStackTrace() {
+	public List<StackTraceElement> getStackTrace() {
 		if (stackTrace != null) {
 			return Collections.unmodifiableList(stackTrace);
 		}
 		return stackTrace;
 	}
 
-	String getExecutedMethod() {
+	public String getExecutedMethod() {
 		final List<StackTraceElement> trace = stackTrace;
 		if (trace != null && !trace.isEmpty()) {
 			return trace.get(0).toString();
@@ -111,19 +111,19 @@ class ThreadInformations implements Serializable {
 		return "";
 	}
 
-	long getCpuTimeMillis() {
+	public long getCpuTimeMillis() {
 		return cpuTimeMillis;
 	}
 
-	long getUserTimeMillis() {
+	public long getUserTimeMillis() {
 		return userTimeMillis;
 	}
 
-	boolean isDeadlocked() {
+	public boolean isDeadlocked() {
 		return deadlocked;
 	}
 
-	String getGlobalThreadId() {
+	public String getGlobalThreadId() {
 		return globalThreadId;
 	}
 

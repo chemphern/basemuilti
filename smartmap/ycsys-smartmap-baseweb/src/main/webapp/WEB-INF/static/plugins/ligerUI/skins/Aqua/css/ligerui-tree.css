@@ -4,7 +4,7 @@
 * ------------ */
 .l-tree
 {
-    margin:0; padding:0; list-style:none; overflow:hidden; position:relative; display:block; background:white;
+    margin:0; padding:0; list-style:none; overflow:hidden; position:relative; display:block;
 } 
 .l-tree-loading
 {

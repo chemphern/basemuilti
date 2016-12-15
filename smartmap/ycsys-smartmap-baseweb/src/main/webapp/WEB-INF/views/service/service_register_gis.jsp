@@ -80,7 +80,7 @@ body {
 				class="date_add_table">
 				<tr>
 					<td class="t_r">请选择服务引擎：</td>
-					<td><select type="text" name="serverEngine1" id="serverEngine" onchange="serverEngineChange(this);"
+					<td><select type="text" name="serverEngine.id" id="serverEngine" onchange="serverEngineChange(this);"
 						class="text">
 							<option value="">-请选择-</option>
 							<c:forEach var="list" items="${serverEngineList }">

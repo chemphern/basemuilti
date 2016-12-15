@@ -66,34 +66,7 @@ body {
 						</div>
 						<div class="box_l">
 							<ul id="tree1">
-								<li><span>节点1</span>
-									<ul>
-										<li><span>节点1.1</span>
-											<ul>
-												<li><span>节点1.1.2</span></li>
-												<li><span>节点1.1.2</span></li>
-											</ul></li>
-										<li><span>节点1.2</span></li>
-									</ul></li>
-								<li><span>节点2</span></li>
-								<li><span>节点3</span>
-									<ul>
-										<li><span>节点3.1</span></li>
-										<li><span>节点3.2</span></li>
-									</ul></li>
-								<li><span>节点4</span>
-									<ul>
-										<li isexpand="false"><span>节点4.1</span>
-											<ul>
-												<li><span>节点4.1.1</span>
-													<ul>
-														<li><span>节点4.1.1.2</span></li>
-														<li><span>节点4.1.1.2</span></li>
-													</ul></li>
-												<li><span>节点4.1.2</span></li>
-											</ul></li>
-										<li><span>节点4.2</span></li>
-									</ul></li>
+								
 							</ul>
 						</div>
 						<!-- /.box-body -->
@@ -105,30 +78,17 @@ body {
 						<div class="box-header with-border">
 							<h4 class="box-title">服务列表</h4>
 							<div class="btn_box">
-								<button class="current">
-									<i class="glyphicon glyphicon-play"></i> 启动
-								</button>
-								<button>
-									<i class="glyphicon glyphicon-stop"></i> 停止
-								</button>
-								<button>
-									<i class="iconfont icon-trash"></i> 删除
-								</button>
-								<button>
-									<i class="glyphicon glyphicon-refresh"></i> 版本刷新
-								</button>
-								<button>
-									<i class="glyphicon glyphicon-plus-sign"></i> 注册
-								</button>
-								<button>
-									<i class="glyphicon glyphicon-import"></i> 导入
-								</button>
-								<button>
-									<i class="glyphicon glyphicon-export"></i> 导出
-								</button>
-								<button>
-									<i class="glyphicon glyphicon-search"></i> 查询
-								</button>
+								<shiro:hasPermission name="service-auditRegister">
+									<button class="current" id="serviceAudit">
+										<i class="glyphicon glyphicon-play"></i> 审核
+									</button>
+								</shiro:hasPermission>
+								
+								<shiro:hasPermission name="service-list">
+									<button id="seriveQuery">
+										<i class="glyphicon glyphicon-search"></i> 查询
+									</button>
+								</shiro:hasPermission>
 							</div>
 						</div>
 						<div class="box_l">
@@ -157,93 +117,120 @@ body {
 		type="text/javascript"></script>
 	<script src="${res}/plugins/ligerUI/js/plugins/ligerTree.js"
 		type="text/javascript"></script>
-	<script src="${res}/plugins/ligerUI/js/plugins/CustomersData.js"
-		type="text/javascript"></script>
 	<!-- Bootstrap 3.3.6 -->
 	<script src="${res}/bootstrap/js/bootstrap.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="${res}/dist/js/app.js"></script>
 	<!-- AdminLTE for demo purposes -->
 	<script src="${res}/dist/js/demo.js"></script>
+	<script type="text/javascript"
+	src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>
+	<script type="text/javascript"
+		src="${res}/plugins/dialog/iframeTools.source.js"></script>
+	<script type="text/javascript" src="${res}/plugins/dialog/unit.js"></script>
 	<script type="text/javascript">
-		;
-		(function($) { //避免全局依赖,避免第三方破坏
+	var treeManager = null;
+	var gridManager = null;
+		;(function($) { //避免全局依赖,避免第三方破坏
 			$(document).ready(function() {
 				//树节点
-				var menu;
-				var actionNodeID;
-				function itemclick(item, i) {
-					alert(actionNodeID + " | " + item.text);
-				}
 				$(function() {
-					menu = $.ligerMenu({
-						top : 100,
-						left : 100,
-						width : 120,
-						items : [ {
-							text : '增加',
-							click : aa,
-							icon : 'add'
-						}, {
-							text : '修改',
-							click : aa
-						}, {
-							line : true
-						}, {
-							text : '查看',
-							click : itemclick
-						} ]
-					});
-
-					$("#tree1").ligerTree({
-						onContextmenu : function(node, e) {
-							actionNodeID = node.data.text;
-							menu.show({
-								top : e.pageY,
-								left : e.pageX
-							});
-							return false;
-						}
+					treeManager = $("#tree1").ligerTree({
+						url: "${ctx}/service/listServiceType",  
+	                    nodeWidth : 90,
+	                    idFieldName :'id',
+	                    parentIDFieldName :'pid',
+	                    onSelect : onSelectServiceType
 					});
 				});
-				function aa() {
-					var dialog = $.Layer.iframe({
-						title : '用户注册审批',
-						url : 'add_yhzc.html',
-						width : 400,
-						height : 400
-					});
-				}
-
+				
+				//选择了树结点事件
+				function onSelectServiceType(obj) {
+					var serverEngineId = "";
+					if(obj.data.text != '服务分类') {
+						serverEngineId = obj.data.id
+					}
+					gridManager.setParm("registerServerType",serverEngineId);
+		        	window.gridManager.reload();
+		        }
+				
+				//服务审核
+				$("#serviceAudit").on("click",function(e) {
+					e.preventDefault();
+					var selectedRows = gridManager.getSelecteds();
+			    	if(selectedRows.length != 1) {
+			    		alert("请选择一条记录进行操作！");
+			    		return false;
+			    	}
+			    	else {
+			    		service_audit_reg_list.audit(selectedRows[0].id);
+			    	}
+				});
+				
 				//表格列表
 				$(function() {
-					$("#maingrid4").ligerGrid({
+					gridManager = $("#maingrid4").ligerGrid({
 						checkbox : true,
-						columns : [ {
+						columns : [ 
+							{ display: '审批状态', name: 'auditStatus', align: 'center', width: 100,
+								render: function (item) {
+							  	     var obj = parseInt(item.auditStatus);
+							      	  <c:forEach var="map" items="${auditStatus }">
+							      	  		if(obj == "${map.key }") {
+							      	  			return "${map.value.name }";
+							      	  		}
+											  </c:forEach>
+							    }    
+							},
+						 {
 							display : '服务注册名',
-							name : 'CustomerID',
+							name : 'registerName',
 							align : 'left',
 							width : 100
 						}, {
 							display : '服务显示名',
-							name : 'CompanyName',
+							name : 'showName',
 							minWidth : 60
 						}, {
 							display : '注册类型',
-							name : 'ContactName',
+							name : 'registerType',
 							width : 100,
-							align : 'left'
+							align : 'left',
+							render: function (item) {
+  	                    	     var obj = parseInt(item.registerType);
+      	                    	  <c:forEach var="map" items="${serviceRegisterType }">
+      	                    	  		if(obj == "${map.key }") {
+      	                    	  			return "${map.value.name }";
+      	                    	  		}
+  	       						  </c:forEach>
+   	                     	}   
 						}, {
 							display : '服务状态',
-							name : 'ContactName',
-							minWidth : 100
+							name : 'serviceStatus',
+							minWidth : 100,
+							render: function (item) {
+ 	                    	     var obj = parseInt(item.serviceStatus);
+     	                    	  <c:forEach var="map" items="${serviceStatus }">
+     	                    	  		if(obj == "${map.key }") {
+     	                    	  			return "${map.value.name }";
+     	                    	  		}
+ 	       						  </c:forEach>
+  	                     	}   
 						}, {
 							display : '权限状态',
-							name : 'ContactName',
-							minWidth : 60
+							name : 'permissionStatus',
+							minWidth : 60,
+							render: function (item) {
+	                    	     var obj = parseInt(item.permissionStatus);
+    	                    	  <c:forEach var="map" items="${permissionStatus }">
+    	                    	  		if(obj == "${map.key }") {
+    	                    	  			return "${map.value.name }";
+    	                    	  		}
+	       						  </c:forEach>
+ 	                     	}   
 						}, {
 							display : '最大版本号',
-							name : 'ContactName',
+							name : 'maxVersionNum',
 							minWidth : 100
 						}, {
 							display : '操作',
@@ -252,15 +239,15 @@ body {
 	                          var h = "";
 	                          if (!rowdata._editing)
 	                          {
-	                            h += "<input type='button' class='list-btn bt_edit' onclick='resource_list.editResource(2,"+ rowdata.id+ ")'/>";
-	                            h += "<input type='button' class='list-btn bt_del' onclick='resource_list.deleteResource(" + rowdata.id + ")'/>";
-	                            h += "<input type='button' class='list-btn bt_view' onclick='resource_list.viewResource(" + rowdata.id + ")'/>";
+	                        	<shiro:hasPermission name="service-auditRegister">
+	                            	h += "<input type='button' class='list-btn bt_edit' onclick='service_audit_reg_list.audit("+ rowdata.id+ ")'/>";
+	                            </shiro:hasPermission>
 	                          }
 	                          return h;
 	                        }
 						} ],
 						pageSize : 30,
-						data : CustomersData,
+						url:"${ctx}/service/listAuditService",
 						width : '100%',
 						height : '97%'
 					});
@@ -269,6 +256,36 @@ body {
 				});
 			});
 		})(jQuery);
+		
+		//服务审核相关操作 function
+		var service_audit_reg_list = {
+			audit: function(id) {
+	               if(id) {
+			    		var dialog = $.Layer.iframe(
+				                { 
+				                  id:"auditServiceRegDialog",
+				                  title: '审核服务',
+				                  url:"${ctx}/service/toAuditRegister?id="+id,
+				                  width: 400,
+				                  height: 350
+				               });
+					}
+				},
+				view: function(id) {
+					if(id) {
+			    		var dialog = $.Layer.iframe(
+				                { 
+				                  id:"viewServiceRegDialog",
+				                  title: '查看服务申请',
+				                  url:"${ctx}/service/view?id="+id,
+				                  width: 400,
+				                  height: 280,
+				                  button:[]
+				               });
+					}
+				}
+			    	
+		}
 	</script>
 </body>
 </html>

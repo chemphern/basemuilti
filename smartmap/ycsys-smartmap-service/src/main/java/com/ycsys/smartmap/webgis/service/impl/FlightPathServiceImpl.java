@@ -29,7 +29,7 @@ public class FlightPathServiceImpl implements FlightPathService {
 	@Override
 	public FlightPath getFlightPathFromName(String pathName) {
 		Object[] p = {pathName};
-		List<FlightPath> paths = flightPathDao.find("from FlightPath t where t.pathName=? order by t.createTime",p);
+		List<FlightPath> paths = flightPathDao.find("from FlightPath t where t.pathName=?",p);
 		if(paths!=null&&paths.size()>=1)
 			return paths.get(0);
 		else

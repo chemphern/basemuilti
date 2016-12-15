@@ -44,21 +44,21 @@
 
   //Dark sidebar skins
   var skin_cyan =
-      $("<li />", {"class": 'active',"data-id":'1', "data-name":'skin-cyan'})
+      $("<li />", {"class": ''})
           .append("<a href='javascript:void(0);' data-skin='skin-cyan' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)' class='clearfix  skin-cyan-hover '>"
           + "<div><span class='bg-cyan' style='display:block; width: 100%; float: left; height: 45px; '></span><span class='skin-select-active active'></span></div>"
           + "</a>"
           + "<p class='text-center color-name'>极简·青</p>");
   skins_list.append(skin_cyan);
   var skin_blue =
-      $("<li />", {"class": '',"data-id":'2', "data-name":'skin-blue'})
+      $("<li />", {"class": ''})
           .append("<a href='javascript:void(0);' data-skin='skin-blue' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)' class='clearfix skin-blue-hover'>"
           + "<div><span class='bg-blue' style='display:block; width: 100%; float: left; height: 45px; '></span><span class='skin-select-active'></span></div>"
           + "</a>"
           + "<p class='text-center color-name'>科技·蓝</p>");
   skins_list.append(skin_blue);
   var skin_green =
-      $("<li />", {"class": '',"data-id":'3', "data-name":'skin-green'})
+      $("<li />", {"class": ''})
           .append("<a href='javascript:void(0);' data-skin='skin-green' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.4)' class='clearfix skin-green-hover'>"
           + "<div><span class='bg-green' style='display:block; width: 100%; float: left; height: 45px;' ></span><span class='skin-select-active'></span></div>"
           + "</a>"
@@ -74,44 +74,25 @@
   $("#control-sidebar-home-tab").after(tab_pane);
 
   setup();
-  // 当前皮肤
-   //  $('.list-unstyled li').click(function() { 
-   //    Mycookie(this.id)
-   //  });
-   //  var cookie=$.cookie("cookie");         
-   //  //var name=$(this).data("name");
-   //  if(cookie){
-   //    Mycookie(cookie);
-   //  }
-   // function Mycookie(thiscookie){
-   //  $("#"+thiscookie).addClass('active').siblings().removeClass('active');
-   //  //$("#colortable").attr("href",thiscookie+".css");
 
-   //  $.cookie("cookie",thiscookie,{
-   //    "path":"/",
-   //    "expires":10
-   //  })
-   // }
+// cookie实现记录用户状态的功能
+$(".list-unstyled").find("li").click(function(){
+  //移除li里面的样式
+  $(".list-unstyled").find("li").removeClass('active');
+  //当前选择的下标
+  var index = $(".list-unstyled").find("li").index(this);
+  //记录下标
+  $.cookie("current", index);
+  //同时添加记录样式
+  $(this).addClass("active");
+});
 
-      // if($.cookie("Skin")!=null){
-      //   $.cookie("Skin", "name");
-      // }else{
-
-      //   $.cookie("Skin") == name;
-      // }
-
-
-        // if(不存在cookie){
-        //   获取当前点击li的"data-key"
-        //   创建cookie，并把当前点击li的"data-key"值给cookie
-      
-        // }else{  
-        //   获取对应的"data-key"
-        //   修改cookie值，把当前点击li的"data-key"值给cookie
-        // }
-        
-        // 页面加载 的时候，依据cookie值里面的"data-key" 来给对应的li加class 
-
+if ($.cookie("current")!= null){
+  //获取记录的状态
+      var num = $.cookie("current");
+  //当前下标的元素添加样式
+     $(".list-unstyled").find("li").eq(num).addClass("active");
+}
 
   /**
    * Toggles layout classes
@@ -177,6 +158,19 @@
       window.alert('Please use a modern browser to properly view this template!');
     }
   }
+ /*
+ 换肤窗口显示隐藏控制
+  */
+var srTarget;   
+$("#control-sidebar-skin").click(function(e){
+     srTarget=e.target;
+     $(".control-sidebar").fadeIn();
+});
+$("html").click(function(event) {
+    if (event.target !=srTarget) {
+      $(".control-sidebar").fadeOut();
+    }
+});
 
   /**
    * Retrieve default settings and apply them to the template
@@ -194,10 +188,8 @@
         return;      
       e.preventDefault();
       change_skin($(this).data('skin'));
-      $(this).parents().addClass('active').siblings().removeClass('active');
+      //$(this).parents().addClass('active').siblings().removeClass('active');
+      $('.control-sidebar').fadeOut();
     });
-
-
-
   }
 })(jQuery, $.AdminLTE);

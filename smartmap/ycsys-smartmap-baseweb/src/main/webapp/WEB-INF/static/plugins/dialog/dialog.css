@@ -19,7 +19,7 @@ table.aui_border, table.aui_dialog { border:0; margin:0; border-collapse:collaps
 .aui_close { display:block; position:absolute; text-decoration:none; outline:none; _cursor:pointer; }
 .aui_close:hover { text-decoration:none; }
 .aui_main { text-align:center; min-width:9em; min-width:0\9/*IE8 BUG*/; }
-.aui_content { display:inline-block; *zoom:1; *display:inline; text-align:left; border:none 0; }
+.aui_content { display:inline-block; *zoom:1; *display:inline; text-align:left; border:none 0; box-sizing: content-box;-webkit-box-sizing: content-box;}
 .aui_content.aui_state_full { display:block; width:100%; margin:0; padding:0!important; height:100%; }
 .aui_loading { width:96px; height:32px;  position: absolute;top:40%; left:40%; text-indent:-999em; overflow:hidden; background:url(icons/loading.gif) no-repeat center center; }
 .aui_icon { vertical-align: middle; }

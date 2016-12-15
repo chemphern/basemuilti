@@ -12,6 +12,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.security.PublicKey;
+
 /**
  * 飞行路径停靠点实体
  * Created by chenlong on 2016/12/2.
@@ -76,7 +78,21 @@ public class FlightPathPoint implements java.io.Serializable {
 	//路径点到下一个点的速度坐标（秒）
 	@Column(name = "stop_time", nullable = false)
 	private Float stopTime = 0F;
-	
+
+	public  FlightPathPoint(){}
+
+	public 	FlightPathPoint(FlightPath flightPath,String pointName,Integer pointIndex,Double pointX,Double pointY,Double pointZ,Double pointYaw,Double pointPitch,Double pointRoll,Float stopTime){
+		this.flightPath = flightPath;
+		this.pointName = pointName;
+		this.pointIndex = pointIndex;
+		this.pointX = pointX;
+		this.pointY = pointY;
+		this.pointZ = pointZ;
+		this.pointYaw = pointYaw;
+		this.pointPitch = pointPitch;
+		this.pointRoll = pointRoll;
+		this.stopTime = stopTime;
+	}
 	
 	public Integer getId() {
         return this.id;

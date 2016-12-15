@@ -62,7 +62,7 @@ class MemoryInformations implements Serializable {
 	private final long usedSwapSpaceSize;
 	private final String memoryDetails;
 
-	MemoryInformations() {
+	public MemoryInformations() {
 		super();
 		usedMemory = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		maxMemory = Runtime.getRuntime().maxMemory();
@@ -185,17 +185,17 @@ class MemoryInformations implements Serializable {
 				|| "sun.management.OperatingSystemImpl".equals(className);
 	}
 
-	static long getLongFromOperatingSystem(OperatingSystemMXBean operatingSystem,
+	public 	static long getLongFromOperatingSystem(OperatingSystemMXBean operatingSystem,
 			String methodName) {
 		return (Long) getFromOperatingSystem(operatingSystem, methodName);
 	}
 
-	static double getDoubleFromOperatingSystem(OperatingSystemMXBean operatingSystem,
+	public 	static double getDoubleFromOperatingSystem(OperatingSystemMXBean operatingSystem,
 			String methodName) {
 		return (Double) getFromOperatingSystem(operatingSystem, methodName);
 	}
 
-	static Object getFromOperatingSystem(OperatingSystemMXBean operatingSystem, String methodName) {
+	public static Object getFromOperatingSystem(OperatingSystemMXBean operatingSystem, String methodName) {
 		try {
 			final Method method = operatingSystem.getClass().getMethod(methodName,
 					(Class<?>[]) null);
@@ -215,58 +215,58 @@ class MemoryInformations implements Serializable {
 		}
 	}
 
-	long getUsedMemory() {
+	public long getUsedMemory() {
 		return usedMemory;
 	}
 
-	long getMaxMemory() {
+	public long getMaxMemory() {
 		return maxMemory;
 	}
 
-	double getUsedMemoryPercentage() {
+	public double getUsedMemoryPercentage() {
 		return 100d * usedMemory / maxMemory;
 	}
 
-	long getUsedPermGen() {
+	public long getUsedPermGen() {
 		return usedPermGen;
 	}
 
-	long getMaxPermGen() {
+	public long getMaxPermGen() {
 		return maxPermGen;
 	}
 
-	double getUsedPermGenPercentage() {
+	public double getUsedPermGenPercentage() {
 		if (usedPermGen > 0 && maxPermGen > 0) {
 			return 100d * usedPermGen / maxPermGen;
 		}
 		return -1d;
 	}
 
-	long getUsedNonHeapMemory() {
+	public long getUsedNonHeapMemory() {
 		return usedNonHeapMemory;
 	}
 
-	long getUsedBufferedMemory() {
+	public long getUsedBufferedMemory() {
 		return usedBufferedMemory;
 	}
 
-	int getLoadedClassesCount() {
+	public int getLoadedClassesCount() {
 		return loadedClassesCount;
 	}
 
-	long getGarbageCollectionTimeMillis() {
+	public long getGarbageCollectionTimeMillis() {
 		return garbageCollectionTimeMillis;
 	}
 
-	long getUsedPhysicalMemorySize() {
+	public long getUsedPhysicalMemorySize() {
 		return usedPhysicalMemorySize;
 	}
 
-	long getUsedSwapSpaceSize() {
+	public long getUsedSwapSpaceSize() {
 		return usedSwapSpaceSize;
 	}
 
-	String getMemoryDetails() {
+	public String getMemoryDetails() {
 		return memoryDetails;
 	}
 

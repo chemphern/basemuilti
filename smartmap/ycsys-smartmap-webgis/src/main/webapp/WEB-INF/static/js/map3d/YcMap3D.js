@@ -144,6 +144,12 @@ function getUrlValue(url, name) {
     }
 }
 
+function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return decodeURI(r[2]); return null;
+}
+
 
 //获得三维地图范围
 function get3DMapExtent(type) {
@@ -334,10 +340,16 @@ function clearMap3D(){
 	}
 }
 
-//--------------------------------------------飞行漫游--------------------------------------------//
-
-var flightTrip = {
-	"Folder":HiddenGroup+"\\飞行漫游",
-	"FolderID":""
+//确认删除对话框
+function deleteConfirm(mes)
+{
+    return confirm(mes);
 }
- 
+
+//判断项目坐标类型
+function getRefernceType() {
+     var referenceType = "meter";
+     if(!YcMap3D.CoordServices.SourceCoordinateSystem.IsPlanar())
+         referenceType = "globe";
+     return referenceType;
+}

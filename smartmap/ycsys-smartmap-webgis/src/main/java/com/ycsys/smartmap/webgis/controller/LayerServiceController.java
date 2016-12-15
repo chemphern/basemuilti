@@ -49,7 +49,7 @@ public class LayerServiceController {
 	public String findLayerList(HttpServletRequest request,HttpServletResponse response){
 		String string=null;
 		try {
-			String sql="from Layer";
+			String sql="select new com.ycsys.smartmap.service.entity.Layer(l.id,l.name,l.address,l.geometryType,l.pId,l.type,l.nameField,l.summaryFields,l.displayFields) from Layer l where l.type is not null";
 			List<Layer> list=layerService.find(sql);
 			string=JSON.toJSONString(list);
 		} catch (Exception e) {

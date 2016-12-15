@@ -6,6 +6,7 @@
  * @returns
  */
 function locateLngLat2d(lng,lat){
+	map.graphics.clear();
 	var point=new esri.geometry.Point(lng,lat);
 	renderPoint(point);
 }
@@ -16,6 +17,7 @@ function locateLngLat2d(lng,lat){
  * @returns
  */
 function locateXY2d(x,y){
+	map.graphics.clear();
 	var point=new esri.geometry.Point(x,y,new esri.SpatialReference({wkid:3857}));
 	renderPoint(point);
 }
@@ -25,9 +27,16 @@ function locateXY2d(x,y){
  * @returns
  */
 function locateAddress2d(address){
-	search.startup();
+	map.graphics.clear();
+	search.on('search-results',searchBack);
 	search.clear();
 	search.search(address);
+}
+function searchBack(result){
+	console.log(result);
+	if(result.numResults<1){
+		showAlertDialog("没有搜索到结果");
+	}
 }
 function renderPoint(point){
 	var symbol=getPointSymbol();
@@ -39,4 +48,56 @@ function getPointSymbol(){
 	var color=new esri.Color([0, 255, 255, 1 ]);
 	return new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_DIAMOND,10,
 			new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,color,1),color);
+}
+function bookmarkSearch2d(){
+	$('#tableSqdw').bootstrapTable('refresh');
+}
+function bookmarkAdd2d(e){
+	e.preventDefault();  
+    var url=path+'/locateService/toAdd.do';
+    var dialog = $.Layer.iframe(
+        {
+            title: '添加书签',
+            id:'bookmarkadd',
+            url:url,
+            width: 400,
+            height: 300
+        });
+}
+function bookmarkEdit2d(e){
+    var bookmarkId=$('#tableSqdw').bootstrapTable('getSelections')[0].id;
+    var dialog = $.Layer.iframe(
+        {
+            title: '编辑书签',
+            id:'bookmarkedit',
+            url:path+'/locateService/toEdit.do?id='+bookmarkId,
+            width: 400,
+            height: 300
+        });
+}
+function bookmarkDel2d(e){
+	e.preventDefault();  
+	$.Layer.confirm({
+		msg:"确认删除",
+		fn:function(){
+        	var bookmarkId=$('#tableSqdw').bootstrapTable('getSelections')[0].id;
+			var url=path+'/locateService/delete.do?id='+bookmarkId;
+			$.get(url,function(data){
+				if(data.retCode==1){
+					$('#tableSqdw').bootstrapTable('refresh');
+				}
+			},'json')
+		}
+	})
+}
+function locateBookmark2d(e, row, field){
+	var extent=new esri.geometry.Extent(row.xmin,row.ymin,row.xmax,row.ymax,esri.SpatialReference(4326));
+	extent=esri.geometry.geographicToWebMercator(extent);
+	map.setExtent(extent,true);
+}
+function queryParams(params){
+	var queryParams=$("#bookName").serialize();
+	queryParams.limit=params.limit;
+	queryParams.offset=params.offset;
+	return queryParams;
 }

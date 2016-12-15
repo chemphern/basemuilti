@@ -192,6 +192,10 @@ body {
 			    		alert("请选择一条记录进行操作！");
 			    		return false;
 			    	}
+			    	else if(selectedRows[0].registerType != "0") {
+			    		alert("第三方注册的服务不能进行启动操作！");
+			    		return false;
+			    	}
 			    	else {
 			    		$.ajax({
 	                    	url: "${ctx}/service/start",
@@ -214,6 +218,10 @@ body {
 					var selectedRows = gridManager.getSelecteds();
 			    	if(selectedRows.length != 1) {
 			    		alert("请选择一条记录进行操作！");
+			    		return false;
+			    	}
+			    	else if(selectedRows[0].registerType != "0") {
+			    		alert("第三方注册的服务不能进行停止操作！");
 			    		return false;
 			    	}
 			    	else {
@@ -297,6 +305,18 @@ body {
 					window.location.href="${ctx}/service/toRegister";
 				});
 				
+				$("#serviceImport").on("click",function(e) {
+					e.preventDefault();
+					var dialog = $.Layer.iframe(
+	                {
+	                    id:"importServiceDialog",
+	                    title: "导入服务",
+	                    url:"${ctx}/service/toImportFile",
+	                    width: 400,
+	                    height: 100
+	                });
+				});
+				
 				$("#serviceExport").on("click",function(e) {
 					e.preventDefault();
 					var selectedRows = gridManager.getSelecteds();
@@ -309,7 +329,7 @@ body {
 				    	$.Layer.confirm({
 			                msg:"确定要导出选择的【" +selectedRows.length+ "】记录吗？",
 			                fn:function(){
-			                    $.ajax({
+			                  /*   $.ajax({
 			                    	url: "${ctx}/service/export",
 			                        data:{'idsStr':str},
 			                        type:"post",
@@ -318,9 +338,10 @@ body {
 			                        	alert(result.msg);
 							    		gridManager.reload();
 			                        },error:function(){
-			                            alert("删除失败！");
+			                            alert("导出失败！");
 			                        }
-			                    });
+			                    }); */
+			                	window.location.href="${ctx}/service/export?idsStr="+str;
 			                },
 			                fn2:function(){
 			                }
@@ -395,7 +416,7 @@ body {
 	                          if (!rowdata._editing)
 	                          {
 	                        	<shiro:hasPermission name="service-edit">
-	                            	h += "<input type='button' class='list-btn bt_edit' onclick='service_list.editService("+ rowdata.id+ ")'/>";
+		                            h += "<input type='button' class='list-btn bt_edit' onclick='service_list.editService("+ rowdata.id+ ","+rowdata.registerType+")'/>";
 	                            </shiro:hasPermission>
 	                            <shiro:hasPermission name="service-delete">
 	                            	h += "<input type='button' class='list-btn bt_del'  onclick='service_list.deleteService(" + rowdata.id + ")'/>";
@@ -447,20 +468,41 @@ body {
 		    	}
 			},
 			//编辑服务
-			editService: function(id) {
+			editService: function(id,registerType) {
+				//alert("registerType="+registerType + "  id="+id);
+				var url = "";
+				var dialogId = "";
+				if(registerType == "0") {
+					url = "${ctx}/service/toEditGis?id="+id;
+					dialogId = "editGisServiceDialog";
+				}
+				else {
+					url = "${ctx}/service/toEditOther?id="+id;
+					dialogId = "editOtherServiceDialog";
+				}
 				if(id) {
 					$.Layer.iframe(
 		                { 
-		                  id:"editGisServiceDialog",
+		                  id:dialogId,
 		                  title: "编辑服务",
-		                  url:"${ctx}/service/toEditGis?id="+id,
+		                  url:url,
 		                  width: 1000,
 		                  height: 600
 		            });
 				}
 			},
 			viewService: function(id) {
-				alert("view");
+				if(id) {
+		    		$.Layer.iframe(
+		                { 
+		                  id:"viewServiceDialog",
+		                  title: "查看服务",
+		                  url:"${ctx}/service/view?id="+id,
+		                  width: 600,
+		                  height: 600,
+		                  button:[]
+		               });
+				}
 			}
 			    	
 		}

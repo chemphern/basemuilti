@@ -1,4 +1,4 @@
-@import url(sans.css);
+@import url(fonts.gooleapis.css);
 /*!
  *   AdminLTE v2.3.7
  *   Author: Almsaeed Studio
@@ -50,11 +50,36 @@ body {
 .date_add_table td i{ font-size:12px; color:#999; padding-left:5px; font-style: normal;}
 /* Layout */
 
+/*报表开始*/
+.charts{width: 100%;height:350px; overflow: hidden;}
+/*报表结束*/
+
+/*用户*/
+.navbar-user{padding:0;margin:0;}
+.navbar-user {display:inline-block;cursor:pointer;vertical-align: top;}
+.navbar-user a{padding:0;display:block;text-align: center;color: #fff;font-size: 14px;}
+.navbar-user .user_name{padding-left: 10px;width:60px;text-overflow: ellipsis; white-space: nowrap;}
+.navbar-user .user_box{width:130px;line-height:50px;padding:0;border-left:1px solid #68d2af;}
+.navbar-user .user_box:hover{color:#fff;}
+.nav .navbar-user .user a.user_box:focus{border-color: #68d2af;}
+.navbar-user .user a:hover{background-image:none;}
+.navbar-user .user img{width:36px;height:36px;border-radius:100%;background:#ccc;}
+.navbar-user .user_exit a{width:82px; height:20px;padding:0px;margin-top:32px;display:inline-block;border-left:1px solid #68d2af;}
+.navbar-user .user_exit a:hover{background-image:none;}
+.user_exit .icon{font-size: 15px;margin-top:0px;}
+.navbar-user .memu-list{min-width:120px;top:50px;padding:0px;}
+.navbar-user .memu-list>li{display:block;line-height: 40px;text-align: center;border-bottom: 1px solid #f4f4f4;}
+.navbar-user .memu-list>li>a{width:100%;line-height: 40px;padding:0;display:inline-block;color:#7f7e7e;}
+.navbar-user .memu-list>li>a:hover{color:#26bf8c;background:none;}
+.navbar-user .memu-list>li>a:hover i.iconfont{color:#26bf8c;}
+.main{max-height:100%;position:absolute;left:0px; right:0px; top:80px; bottom:0px; overflow:auto;zoom:1;}
+.memu-list .iconfont{font-size:18px;color:#7f7e7e;padding:0px 8px 0px 0px;line-height: 40px;display:inline-block;}
 /*列表操作*/
 .list-btn{width:16px; height:20px; border:none;margin:10px 13px 0px 0px; cursor:pointer; outline:none;}
 .bt_edit{ background:url(../img/icon_action.png) 0 0px no-repeat;}
 .bt_del{ background:url(../img/icon_action.png) 0 -19px no-repeat;}
 .bt_view{background:url(../img/icon_action.png) 0 -39px no-repeat;}
+.bt_add{background:url(../img/icon_action.png) 0 -430px no-repeat;}
 
 /**2016.11.14 庾平峰  服务发布**/
 .gis{margin: 20px 0 0 20px;}
@@ -180,7 +205,7 @@ body.hold-transition .main-header .logo {
 }
 /* Content */
 .content {
-  min-height: 400px;
+  overflow: hidden;
   padding: 15px;
   margin-right: auto;
   margin-left: auto;
@@ -211,7 +236,6 @@ a:active,
 a:focus {
   outline: none;
   text-decoration: none;
-  color: #72afd2;
 }
 /* Page Header */
 .page-header {
@@ -497,7 +521,7 @@ a:focus {
   }
 }
 .list{margin: 0;padding:0;width: 100%;height:100%;}
-.list02{margin: 0;padding:0;width: 100%;}
+.list02{margin: 0;padding:0;}
 .sidebar {
   padding-bottom: 10px;
 }
@@ -1075,7 +1099,7 @@ a:focus {
 }
 .navbar-nav > .messages-menu > .dropdown-menu > li .menu > li > a > h4 {
   padding: 0;
-  margin: 0 0 0 45px;
+  margin: 0 0 0 30px;
   color: #444444;
   font-size: 15px;
   position: relative;
@@ -1088,7 +1112,7 @@ a:focus {
   right: 0;
 }
 .navbar-nav > .messages-menu > .dropdown-menu > li .menu > li > a > p {
-  margin: 0 0 0 45px;
+  margin: 0 0 0 30px;
   font-size: 12px;
   color: #888888;
 }
@@ -1795,6 +1819,10 @@ a:focus {
   font-size: 18px;
   margin: 0;
   line-height: 1;
+  float: left;
+}
+.box-header .box-title01{
+  color:#666;
   float: left;
 }
 .box-header > .fa,
@@ -2591,7 +2619,7 @@ a:focus {
 .nav-tabs-custom > .nav-tabs > li.header {
   line-height: 35px;
   padding: 0 10px;
-  font-size: 20px;
+  font-size: 16px;
   color: #444;
 }
 .nav-tabs-custom > .nav-tabs > li.header > .fa,
@@ -3272,6 +3300,7 @@ table.text-center th {
 .register-page {
    background-image: url(../img/login.jpg);
    background-size:100% 100%;
+   overflow-y:hidden;
 }
 .login-box,
 .register-box {

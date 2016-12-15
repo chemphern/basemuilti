@@ -87,9 +87,7 @@
 <!-- Bootstrap 3.3.6 -->
 <script src="${res}/bootstrap/js/bootstrap.min.js"></script>
 <!-- jQuery Knob Chart -->
-<script src="${res}/plugins/knob/jquery.knob.js"></script>
 <!-- Slimscroll 滚动条 -->
-<script src="${res}/plugins/slimScroll/jquery.slimscroll.js"></script>
 <!-- AdminLTE App -->
 <script src="${res}/dist/js/app.js"></script>
 <!-- AdminLTE for demo purposes -->

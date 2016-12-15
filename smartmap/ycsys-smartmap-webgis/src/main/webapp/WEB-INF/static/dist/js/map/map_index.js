@@ -17,6 +17,7 @@ $(document).ready(function(){
      if(_width < 769){
          $(".main").addClass('hide-left-menu');
          $("#mapContent").css('left','0px');
+         $('.leftBox').css('left','-298px');
      }
     //小屏主菜单加下拉菜单
     $(".menu-toggler").click(function() {
@@ -28,9 +29,11 @@ $(document).ready(function(){
         if($(".leftBox").is(":visible")){
          $(".main").addClass('hide-left-menu');
          $("#mapContent").css('left','0px');
+         $('.leftBox').css('left','-298px');
         }else{   
          $(".main").removeClass('hide-left-menu');
          $("#mapContent").css('left','298px');
+         $('.leftBox').css('left','0px');
         }
     });
 
@@ -43,6 +46,7 @@ $(document).ready(function(){
         if($(".leftBox").is(":hidden")){ 
           $(".main").removeClass('hide-left-menu');
           $("#mapContent").css('left','298px');
+          $('.leftBox').css('left','0px');
         };
         if($(".menu-toggler").is(":visible")){
           $("#navbar-collapse").slideToggle();
@@ -70,7 +74,8 @@ $(document).ready(function(){
     })
 
     //操作按钮激活
-     $('.btn_list').on('click','button',function(){
+     $('.btn_list').on('click','button',function(event){
+        event.preventDefault();
         $(this).addClass('active').siblings().removeClass('active');
      })
     
@@ -116,8 +121,8 @@ $(document).ready(function(){
     $('#fullScreenBtn').click(function(){
         $("#mapContent").css('left','0px');
         $(".main").addClass('hide-left-menu');
+        $('.leftBox').css('left','-298px');
         requestFullScreen();
-        return false;
     });
 
     $(document).keyup(function(event) {
@@ -125,7 +130,7 @@ $(document).ready(function(){
            exitFullScreen(); 
            $("#mapContent").css('left','298px');
            $(".main").removeClass('hide-left-menu');
-           return false;
+           $('.leftBox').css('left','0px');
         }
     });
     function requestFullScreen() {
@@ -185,7 +190,14 @@ $(document).ready(function(){
         
     });
 
-
+    $('.mapView').on('click','#mapView-btn-2dwx',function(){
+        if ($(this).hasClass('active')) {
+            $(".resizable-left").css('display','block');
+            $(".resizable-right").css('display','none'); 
+            $(".resizable-left").css('width','100%');          
+        };
+    });
+    
     $check.click(function(event){
             $lir.find("input[name='2d3dcheckbox']").prop('checked',$(this).prop('checked'));
             $('.mapView-btn').removeClass('active');
@@ -237,29 +249,28 @@ $(document).ready(function(){
         return false;
     };
 
-//颜色选择调用
+  //颜色选择调用
+    window.myColorPicker = $('input.color').colorPicker({
+        buildCallback: function($elm) {
+            this.$colorPatch = $elm.prepend('<div class="cp-disp">').find('.cp-disp');
+        },
+        cssAddon:
+            '.cp-disp {padding:0px 10px; margin-bottom:6px; font-size:12px; height:20px; line-height:20px}' +
+            '.cp-xy-slider {width:110px; height:128px;}' +
+            '.cp-xy-cursor {width:16px; height:16px; border-width:2px; margin:-8px}' +
+            '.cp-z-slider {height:128px; width:20px;}' +
+            '.cp-z-cursor {border-width:8px; margin-top:-8px;}' +
+            '.cp-alpha {height:16px;}' +
+            '.cp-alpha-cursor {border-width:8px; margin-left:-8px;}',
 
-//window.myColorPicker = $('input.color').colorPicker({
-//    buildCallback: function($elm) {
-//        this.$colorPatch = $elm.prepend('<div class="cp-disp">').find('.cp-disp');
-//    },
-//    cssAddon:
-//        '.cp-disp {padding:0px 10px; margin-bottom:6px; font-size:12px; height:20px; line-height:20px}' +
-//        '.cp-xy-slider {width:110px; height:128px;}' +
-//        '.cp-xy-cursor {width:16px; height:16px; border-width:2px; margin:-8px}' +
-//        '.cp-z-slider {height:128px; width:20px;}' +
-//        '.cp-z-cursor {border-width:8px; margin-top:-8px;}' +
-//        '.cp-alpha {height:16px;}' +
-//        '.cp-alpha-cursor {border-width:8px; margin-left:-8px;}',
-//
-//    renderCallback: function($elm, toggled) {
-//        var colors = this.color.colors;
-//
-//        this.$colorPatch.css({
-//            backgroundColor: '#' + colors.HEX,
-//            color: colors.RGBLuminance > 0.22 ? '#222' : '#ddd'
-//        }).text(this.color.toString($elm._colorMode)); // $elm.val();
-//    }
-//});
+        renderCallback: function($elm, toggled) {
+            var colors = this.color.colors;
+
+            this.$colorPatch.css({
+                backgroundColor: '#' + colors.HEX,
+                color: colors.RGBLuminance > 0.22 ? '#222' : '#ddd'
+            }).text(this.color.toString($elm._colorMode)); // $elm.val();
+        }
+    });
 
 });

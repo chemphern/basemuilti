@@ -71,8 +71,6 @@
 <script src="${res}/plugins/ligerUI/js/plugins/ligerTree.js" type="text/javascript"></script>
 <script src="${res}/plugins/ligerUI/js/plugins/CustomersData.js" type="text/javascript"></script>
 <script src="${res}/bootstrap/js/bootstrap.min.js"></script>
-<script src="${res}/plugins/knob/jquery.knob.js"></script>
-<script src="${res}/plugins/slimScroll/jquery.slimscroll.js"></script>
 <script src="${res}/dist/js/app.js"></script>
 <script src="${res}/dist/js/demo.js"></script>
 <script type="text/javascript" src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>

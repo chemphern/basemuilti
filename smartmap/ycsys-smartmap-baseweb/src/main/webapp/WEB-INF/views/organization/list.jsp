@@ -41,8 +41,6 @@
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script src="${res}/plugins/ligerUI/js/ligerui.all.js" type="text/javascript"></script>
 <script src="${res}/bootstrap/js/bootstrap.min.js"></script>
-<script src="${res}/plugins/knob/jquery.knob.js"></script>
-<script src="${res}/plugins/slimScroll/jquery.slimscroll.js"></script>
 <script src="${res}/dist/js/app.js"></script>
 <script src="${res}/dist/js/demo.js"></script>
 <script type="text/javascript" src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>
@@ -142,7 +140,7 @@
                         {
                             h += "<input type='button' class='list-btn bt_edit' onclick='yc_update(" + rowdata.id + ")'/>";
                             h += "<input type='button' class='list-btn bt_del' onclick='yc_delete(" + rowdata.id + ")'/>";
-                            h += "<input type='button' class='list-btn bt_view' onclick='yc_addChild(" + rowdata.id + ",\"" + rowdata.name + "\")'/>";
+                            h += "<input type='button' class='list-btn bt_add' onclick='yc_addChild(" + rowdata.id + ",\"" + rowdata.name + "\")'/>";
                             h += "<input type='button' class='list-btn bt_view' onclick='yc_editPermission(" + rowdata.id + ")'/>";
                         }
                         return h;

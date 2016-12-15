@@ -81,7 +81,8 @@ public class ResourceController {
 			}
 		}*/
 		
-		model.addAttribute("fileType", DataDictionary.getObject("file_type"));
+		model.addAttribute("fileType", DataDictionary.getObject("arc_file_type"));
+		model.addAttribute("resourceType", DataDictionary.getObject("resource_type"));
 		model.addAttribute("resourceTypeId", resourceTypeId); //用于设置默认的下拉值
 		model.addAttribute("resourceTypeLists", lists);
 		model.addAttribute("clusterNames", ClusterUtils.lists());
@@ -129,7 +130,7 @@ public class ResourceController {
 			String fileType = resource.getFileType();
 			String tempFileName = fileName.substring(fileName.lastIndexOf(".") + 1);
 			//得到数字字典的文件类型
-			Map<String, Object> mFileType = DataDictionary.getObject("file_type");
+			Map<String, Object> mFileType = DataDictionary.getObject("arc_file_type");
 			DictionaryItem dt = (DictionaryItem) mFileType.get(fileType);
 			if(!dt.getName().equals(tempFileName)) {
 				map.put("flag", "1");
@@ -309,7 +310,8 @@ public class ResourceController {
 			// 没有数据，在页面显示新增按钮
 			model.addAttribute("emptyTreeFlag", "1");
 		}
-		model.addAttribute("fileType", DataDictionary.getObject("file_type"));
+		model.addAttribute("fileType", DataDictionary.getObject("arc_file_type"));
+		model.addAttribute("resourceType", DataDictionary.getObject("resource_type"));
 		return "/resource/resource_list";
 	}
 
@@ -427,7 +429,8 @@ public class ResourceController {
 			 * { model.addAttribute("orgs", sb.substring(0, sb.length() - 1 ));
 			 * }
 			 */
-			model.addAttribute("fileType", DataDictionary.getObject("file_type"));
+			model.addAttribute("fileType", DataDictionary.getObject("arc_file_type"));
+			model.addAttribute("resourceType", DataDictionary.getObject("resource_type"));
 			model.addAttribute("lists", lists);
 			model.addAttribute("clusterNames", ClusterUtils.lists());
 		}

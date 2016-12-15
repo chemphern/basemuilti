@@ -64,7 +64,7 @@ import com.ycsys.smartmap.sys.util.DataDictionary;
 /**
  * 服务器引擎配置 controller
  * 
- * @author linrongren
+ * @author lrr
  * @date 2016年11月16日
  */
 @Controller
@@ -377,7 +377,7 @@ public class ConfigServerEngineController extends BaseController{
 		// 保存数据到xml文档中，并且临时保存在临时文件夹中，之后会删除
 		try {
 			String realPath = request.getSession().getServletContext()
-					.getRealPath("backup");
+					.getRealPath("temp");
 			File targetFile = new File(realPath);
 			if (!targetFile.exists()) {
 				targetFile.mkdirs();

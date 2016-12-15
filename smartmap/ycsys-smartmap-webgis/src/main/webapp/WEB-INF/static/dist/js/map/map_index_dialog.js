@@ -34,37 +34,10 @@
                     height: 300
                 });
         });         
-        /******书签定位******/
-        //添加
-         $("#Sqdwtoolbar").on('click','.btn_add', function (e) { 
-            e.preventDefault();  
-            var url=path+'/locateService/toAdd.do';
-            var dialog = $.Layer.iframe(
-                {
-                    title: '添加书签',
-                    id:'bookmarkadd',
-                    url:url,
-                    width: 400,
-                    height: 300
-                });
-        });
-         //编辑
-        $("#Sqdwtoolbar").on('click','.btn_edit', function (e) { 
-            e.preventDefault();  
-            var bookmarkId=$('#tableSqdw').bootstrapTable('getSelections')[0].id;
-            var dialog = $.Layer.iframe(
-                {
-                    title: '编辑书签',
-                    id:'bookmarkedit',
-                    url:path+'/locateService/toEdit.do?id='+bookmarkId,
-                    width: 400,
-                    height: 300
-                });
-        });
-
+        
         /******三维漫游 路径管理******/
         //添加
-         $(".pathbox").on('click','.btn_add,btn_edit', function () { 
+         $(".pathbox").on('click','.btn_add', function () { 
             if ($('.pathbox').is(":visible")) {
                 $('.pathbox').hide();
                 $('.pathbox-add').show();

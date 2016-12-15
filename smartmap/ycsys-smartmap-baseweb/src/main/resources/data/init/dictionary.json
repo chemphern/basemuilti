@@ -464,6 +464,75 @@
         "sort":"3"
       }
     ]
+  },
+   {
+  	"name":"arc文件类型",
+  	"code":"arc_file_type",
+    "memo":"",
+    "dictionaryItems":[
+      {
+        "name":"sd",
+        "value":"0",
+        "memo":"",
+        "sort":"1"
+      },
+      {
+        "name":"msd",
+        "value":"1",
+        "memo":"",
+        "sort":"2"
+      },
+      {
+        "name":"mxd",
+        "value":"2",
+        "memo":"",
+        "sort":"3"
+      }
+    ]
+  },
+  {
+  	"name":"服务资源",
+  	"code":"service_resource",
+    "memo":"",
+    "dictionaryItems":[
+        {
+        "name":"SD文件",
+        "value":"0",
+        "memo":"",
+        "sort":"1"
+      },
+      {
+        "name":"非SD文件",
+        "value":"1",
+        "memo":"",
+        "sort":"2"
+      }
+    ]
+  },
+  {
+  	"name":"资源类型",
+  	"code":"resource_type",
+    "memo":"",
+    "dictionaryItems":[
+        {
+        "name":"文档资料",
+        "value":"0",
+        "memo":"",
+        "sort":"1"
+      },
+      {
+        "name":"专题地图",
+        "value":"1",
+        "memo":"",
+        "sort":"2"
+      },
+      {
+        "name":"网络图集",
+        "value":"2",
+        "memo":"",
+        "sort":"3"
+      }
+    ]
   }
   
 ]

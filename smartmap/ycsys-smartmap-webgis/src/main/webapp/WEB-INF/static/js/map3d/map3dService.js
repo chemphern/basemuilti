@@ -38,6 +38,18 @@ function initMapLayer(){
     		addWFSServiceToMap(node.address,node.name);
     	}
     }
+    //初始化POI图层
+    initPOILayer();
+}
+
+function initPOILayer() {
+    var sConnectionString = "TEPlugName=WFS;WFSVersion=1.0.0;Server=" + configration.POIUrl + ";LayerName=" + configration.POILayer + ";";
+    var POIFolderID = findItemByName(configration.POIFolder);
+    var wfsLayer = YcMap3D.Creator.CreateFeatureLayer(configration.POILayer,sConnectionString,POIFolderID);
+    wfsLayer.Streaming=false;
+    wfsLayer.DataSourceInfo.Attributes.ImportAll=true;
+    wfsLayer.Load();
+    wfsLayer.Visibility.Show = false;
 }
 
 function addWMSServiceToMap(address,name){
@@ -58,7 +70,7 @@ function addWFSServiceToMap(address,name){
 		wfsLayer.Streaming=false;
 		wfsLayer.DataSourceInfo.Attributes.ImportAll=true;
 		wfsLayer.Load();
-		YcMap3D.ProjectTree.SetVisibility(wfsLayer.ID,false);
+        wfsLayer.Visibility.Show = false;
 	}
 }
 

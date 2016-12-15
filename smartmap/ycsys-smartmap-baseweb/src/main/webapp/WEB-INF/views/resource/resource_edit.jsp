@@ -74,12 +74,12 @@
 				<!--  0:文档资料;1:专题地图;2:网络图集 -->
 				<td class="t_r">资源类型：</td>
 				<td><select type="text" name="type" id="type" class="text">
-						<%-- <option value="0" selected="${resource.type eq '0' ? 'selected':''}">文档资料</option>
-						<option value="1" selected="${resource.type eq '1' ? 'selected':''}">专题地图</option>
-						<option value="2" selected="${resource.type eq '2' ? 'selected':''}">网络图集</option> --%>
-						<option value="0">文档资料</option>
+						<!-- <option value="0">文档资料</option>
 						<option value="1">专题地图</option>
-						<option value="2">网络图集</option>
+						<option value="2">网络图集</option> -->
+						<c:forEach var="map" items="${resourceType }">
+							<option value="${map.key }">${map.value.name }</option>	
+						</c:forEach>
 				</select></td>
 			</tr>
 			<tr>
@@ -125,10 +125,13 @@
 	$(function() {
 		//修改时则 回显下拉的值
 		if("${resource.id}"){
-			var type = "${resource.type}";
-			var fileType = "${resource.fileType}";
-			$("#type option[value="+type+"]").attr("selected",true);
-			$("#fileType option[value="+fileType+"]").attr("selected",true);
+			if("${resource.type}") {
+				$("#type option[value=${resource.type}]").attr("selected",true);
+			}
+			
+			if("${resource.fileType}") {
+				$("#fileType option[value=${resource.fileType}]").attr("selected",true);
+			}
 			
 			//如果是修改则去除文件域的验证属性 removeAttr
 			$("#fileToUpload").removeAttr("validate");

@@ -23,7 +23,7 @@ import com.ycsys.smartmap.sys.entity.User;
 import com.ycsys.smartmap.sys.service.ConfigServiceExtendPropertyService;
 /**
  * 服务扩展属性配置 controller
- * @author linrongren
+ * @author lrr
  * @date   2016年11月17日
  */
 @Controller

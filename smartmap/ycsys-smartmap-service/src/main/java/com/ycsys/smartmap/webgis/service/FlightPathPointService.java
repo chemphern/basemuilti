@@ -20,8 +20,8 @@ public interface FlightPathPointService {
 	void addFlightPointToPath(FlightPathPoint pathPoint);
 	
 	/**更新飞行路径点**/
-	void updateFlightPathToPath(FlightPathPoint pathPoint);
+	void updateFlightPointToPath(FlightPathPoint pathPoint);
 	
 	/**删除飞行路径点**/
-	void deleteFlightPathToPath(FlightPathPoint pathPoint);
+	void deleteFlightPointToPath(FlightPathPoint pathPoint);
 }

@@ -143,16 +143,16 @@
                             <font style="margin-left:10px;">显示顺序</font>
                         </td>
                         <td>
-                            <font style="margin-left:50px;">字典项名称</font>
+                            <font style="margin-left:40px;">字典项名称</font>
                         </td>
                         <td>
-                            <font style="margin-left:90px;">字典项值</font>
+                            <font style="margin-left:40px;">字典项值</font>
                         </td>
                         <td>
-                            <font style="margin-left:60px;">是否显示</font>
+                            <font style="margin-left:20px;">是否显示</font>
                         </td>
                         <td>
-                            <font style="margin-left:40px;">操作</font>
+                            <font style="margin-left:30px;">操作</font>
                         </td>
                     </tr>
                     <tr id="dic_item">
@@ -177,7 +177,7 @@
                             </select>
                         </td>
                         <td id="buttontd" width="130">
-                            <input id="addstation" onclick="addStationDiv(this)" class="l-button-submit-search " value="添加" type="button">
+                            <input id="addstation" onclick="addStationDiv(this)" class="l-button-submit-search btn" value="添加" type="button">
                         </td>
                     </tr><tr>
                     </tr></tbody></table>

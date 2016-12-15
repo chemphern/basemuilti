@@ -29,11 +29,11 @@ public class BookMark implements java.io.Serializable {
 	
 	@Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    @Column(name = "ID", unique = true, nullable = false)
+    @Column(name = "id", unique = true, nullable = false)
     private Integer id;
 	
 	//书签名称
-	@Column(name = "name", nullable = false, length=100)
+	@Column(name = "name",length=100)
 	private String name;
 	
 	//书签描述
@@ -41,40 +41,56 @@ public class BookMark implements java.io.Serializable {
 	private String description;
 	
 	//书签范围最小X坐标
-	@Column(name = "xmin", nullable = false)
+	@Column(name = "xmin")
 	private Double xmin;
 	
 	//书签范围最小Y坐标
-	@Column(name = "ymin", nullable = false)
+	@Column(name = "ymin")
 	private Double ymin;
 	
 	//书签范围最大X坐标
-	@Column(name = "xmax", nullable = false)
+	@Column(name = "xmax")
 	private Double xmax;
 	
 	//书签范围最大Y坐标
-	@Column(name = "ymax", nullable = false)
+	@Column(name = "ymax")
 	private Double ymax;
 	
 	//书签范围最小Yaw坐标（三维）
-	@Column(name = "yaw", nullable = false)
+	@Column(name = "yaw")
 	private Double yaw;
 	
 	//书签范围最大Pitch坐标（三维）
-	@Column(name = "pitch", nullable = false)
+	@Column(name = "pitch")
 	private Double pitch;
 	
 	//书签范围最大Roll坐标（三维）
-	@Column(name = "roll", nullable = false)
+	@Column(name = "roll")
 	private Double roll;
 	
 	//书签创建者
-	@Column(name = "creator",length=100, nullable = false)
+	@Column(name = "creator",length=100)
 	private String creator;
 	
 	//书签创建时间
-	@Column(name = "createtime", nullable = false)
+	@Column(name = "createtime")
 	private Date createTime;
+
+	public BookMark(){}
+
+	public BookMark(Date createTime,String creator,String bookName,String bookDes,Double bookXMin,Double bookXMax,Double bookYMin,Double bookYMax,Double bookYaw,Double bookPitch,Double bookRoll){
+		this.createTime = createTime;
+		this.creator = creator;
+		this.name = bookName;
+		this.description = bookDes;
+		this.xmin = bookXMin;
+		this.xmax = bookXMax;
+		this.ymin = bookYMin;
+		this.ymax = bookYMax;
+		this.yaw = bookYaw;
+		this.pitch = bookPitch;
+		this.roll = bookRoll;
+	}
 
 	public Integer getId() {
 		return id;

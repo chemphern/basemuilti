@@ -48,9 +48,6 @@ public class Service implements java.io.Serializable {
 	@Column(name = "arc_gis_service_name")
 	private String arcGisServiceName; //在arcGisserver上面的服务名字，它可能跟注册到平台的名字不同
 
-	@Column(name = "publish_directory", length = 200)
-	private String publishDirectory; // 发布目录
-
 	@Column(name = "service_extend", length = 200)
 	private String serviceExtend;// 服务扩展(KmlServer;FeatureServer;NAServer;WCSServer;WMSServer;MobileServer;JPIPServer)
 
@@ -58,13 +55,26 @@ public class Service implements java.io.Serializable {
 	private String registerType; // 注册类型(0:gis服务注册;1:OneMap服务注册)
 
 	@Column(name = "service_status", nullable = false, length = 1)
-	private String serviceStatus = "0";	//服务状态（0：停止；1：启动）
+	private String serviceStatus;	//服务状态（0：停止；1：启动）
+	
+	@Column(name = "audit_status", length = 1)
+	private String auditStatus; //服务审核状态（0：未审核；1：审核通过；2：审核不通过）
+	
+	@Column(name = "audit_date")
+	private Date auditDate; // 审核日期
+
+	@ManyToOne
+	@JoinColumn(name = "auditor_id")
+	private User auditor; // 审核人
+
+	@Column(name = "audit_option")
+	private String auditOption;// 审核意见
 
 	@Column(name = "permission_status", length = 1)
 	private String permissionStatus;// 0：自由服务；1：安全服务
 
 	@Column(name = "max_version_num")
-	private Integer maxVersionNum = 1; // 最大版本号
+	private Integer maxVersionNum; // 最大版本号
 
 	@Column(name = "version_remarks")
 	private String versiomnRemarks; // 更新版本备注
@@ -76,7 +86,7 @@ public class Service implements java.io.Serializable {
 	private String functionType; //功能类型（GlobeServer；MapServer；GeocodeServer；GPServer；GeometryServer；ImageServer；GeoDataServer；SearchServer）
 	
 	@Column(name = "folder_name")
-	private String folderName;
+	private String folderName; //服务的发布目录
 	
 	@Column(name = "cluster_name")
 	private String clusterName;
@@ -142,14 +152,6 @@ public class Service implements java.io.Serializable {
 
 	public void setShowName(String showName) {
 		this.showName = showName;
-	}
-
-	public String getPublishDirectory() {
-		return publishDirectory;
-	}
-
-	public void setPublishDirectory(String publishDirectory) {
-		this.publishDirectory = publishDirectory;
 	}
 
 	public String getServiceExtend() {
@@ -335,7 +337,37 @@ public class Service implements java.io.Serializable {
 	public void setArcGisServiceName(String arcGisServiceName) {
 		this.arcGisServiceName = arcGisServiceName;
 	}
-	
-	
 
+	public String getAuditStatus() {
+		return auditStatus;
+	}
+
+	public void setAuditStatus(String auditStatus) {
+		this.auditStatus = auditStatus;
+	}
+
+	public Date getAuditDate() {
+		return auditDate;
+	}
+
+	public void setAuditDate(Date auditDate) {
+		this.auditDate = auditDate;
+	}
+
+	public User getAuditor() {
+		return auditor;
+	}
+
+	public void setAuditor(User auditor) {
+		this.auditor = auditor;
+	}
+
+	public String getAuditOption() {
+		return auditOption;
+	}
+
+	public void setAuditOption(String auditOption) {
+		this.auditOption = auditOption;
+	}
+	
 }

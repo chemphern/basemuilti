@@ -31,7 +31,7 @@ public class Layer implements Serializable{
 	private Integer id;
 	
 	@Column(name = "pid")
-	private Integer pId;//父节点
+	private Integer pId ;//父节点
 	
 	@ManyToOne
 	@JoinColumn(name = "parent_id")
@@ -66,7 +66,38 @@ public class Layer implements Serializable{
 	@Column(name="type")
 	private String type;
 	
+	/**
+	 * 名字字段，标识名称的字段
+	 */
+	@Column(name="name_field")
+	private String nameField;
 	
+	/**
+	 * 配置用于简略显示的主显示字段，逗号分隔
+	 */
+	@Column(name="summary_fields")
+	private String summaryFields;
+	
+	/**
+	 * 属性表中要用于地图上显示的字段，多字段逗号分隔
+	 */
+	@Column(name="display_fields")
+	private String displayFields;
+	
+	public Layer(){}
+	
+	public Layer(Integer id,String name,String address,String geometryType,Integer pId,String type,String nameField,String summaryFields,String displayFields){
+		this.id=id;
+		this.name=name;
+		this.address=address;
+		this.geometryType=geometryType;
+		this.pId=pId;
+		this.type=type;
+		this.open=true;
+		this.nameField=nameField;
+		this.summaryFields=summaryFields;
+		this.displayFields=displayFields;
+	}
 	
 	public Integer getId() {
 		return id;
@@ -142,6 +173,29 @@ public class Layer implements Serializable{
 		this.type = type;
 	}
 
-	
+	public String getNameField() {
+		return nameField;
+	}
+
+	public void setNameField(String nameField) {
+		this.nameField = nameField;
+	}
+
+	public String getSummaryFields() {
+		return summaryFields;
+	}
+
+	public void setSummaryFields(String summaryFields) {
+		this.summaryFields = summaryFields;
+	}
+
+	public String getDisplayFields() {
+		return displayFields;
+	}
+
+	public void setDisplayFields(String displayFields) {
+		this.displayFields = displayFields;
+	}
+
 	
 }

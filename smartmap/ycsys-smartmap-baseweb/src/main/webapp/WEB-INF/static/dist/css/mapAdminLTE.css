@@ -1,0 +1,213 @@
+.bg-red,
+.bg-yellow,
+.bg-aqua,
+.bg-blue,
+.bg-light-blue,
+.bg-green,
+.bg-navy,
+.bg-teal,
+.bg-olive,
+.bg-lime,
+.bg-orange,
+.bg-fuchsia,
+.bg-purple,
+.bg-maroon,
+.bg-black,
+.bg-red-active,
+.bg-yellow-active,
+.bg-aqua-active,
+.bg-blue-active,
+.bg-light-blue-active,
+.bg-green-active,
+.bg-navy-active,
+.bg-teal-active,
+.bg-olive-active,
+.bg-lime-active,
+.bg-orange-active,
+.bg-fuchsia-active,
+.bg-purple-active,
+.bg-maroon-active,
+.bg-black-active,
+.callout.callout-danger,
+.callout.callout-warning,
+.callout.callout-info,
+.callout.callout-success,
+.alert-success,
+.alert-danger,
+.alert-error,
+.alert-warning,
+.alert-info,
+.label-danger,
+.label-info,
+.label-warning,
+.label-primary,
+.label-success,
+.modal-primary .modal-body,
+.modal-primary .modal-header,
+.modal-primary .modal-footer,
+.modal-warning .modal-body,
+.modal-warning .modal-header,
+.modal-warning .modal-footer,
+.modal-info .modal-body,
+.modal-info .modal-header,
+.modal-info .modal-footer,
+.modal-success .modal-body,
+.modal-success .modal-header,
+.modal-success .modal-footer,
+.modal-danger .modal-body,
+.modal-danger .modal-header,
+.modal-danger .modal-footer {
+  color: #fff !important;
+}
+
+.bg-cyan{
+  background-color: #27bf8c ;
+}
+.bg-blue {
+  background-color: #1d8bf2 ;
+}
+
+.bg-green {
+  background-color: #19b957;
+}
+.bg-cyan:hover {background: #21a67a;}
+.bg-blue:hover {background: #1a7dd9;}
+.bg-green:hover {background: #16a14b;}
+.color-name{color:#7f7e7e;font-size: 12px;line-height: 20px;margin:0;}
+.list-unstyled li{float:left; width: 68px; margin: 1px;position:relative;}
+.skin-select-active{position:absolute;top:0;bottom:0;left:0;display:none !important;width:100%;height:45px;border:1px solid #21e47e;background:url(../../dist/img/map/icon-skin-select-active.png) center center no-repeat;}
+.list-unstyled li.active span{display:block !important;}
+.list-unstyled li.active p{color:#26bf8c;}
+/*
+ * Component: Control sidebar. By default, this is the right sidebar.
+ */
+.control-sidebar-bg {
+  position: fixed;
+  z-index: 1000;
+  bottom: 0;
+}
+.control-sidebar-bg,
+.control-sidebar {
+  top: 55px;
+  right: -230px;
+  width: 230px;
+  -webkit-transition: right 0.3s ease-in-out;
+  -o-transition: right 0.3s ease-in-out;
+  transition: right 0.3s ease-in-out;
+}
+.control-sidebar {
+  position: absolute;
+  z-index: 1010;
+}
+
+.control-sidebar > .tab-content {
+  padding: 10px;
+}
+.control-sidebar.control-sidebar-open,
+.control-sidebar.control-sidebar-open + .control-sidebar-bg {
+  right: 0;
+}
+.control-sidebar-open .control-sidebar-bg,
+.control-sidebar-open .control-sidebar {
+  right: 0;
+}
+@media (min-width: 768px) {
+  .control-sidebar-open .content-wrapper,
+  .control-sidebar-open .right-side,
+  .control-sidebar-open .main-footer {
+    margin-right: 230px;
+  }
+}
+
+.control-sidebar-dark {
+  color: #b8c7ce;
+}
+.control-sidebar-dark,
+.control-sidebar-dark + .control-sidebar-bg {
+  background: #fff;
+  height:80px !important;
+}
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs {
+  border-bottom: #1c2529;
+}
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs > li > a {
+  background: #181f23;
+  color: #b8c7ce;
+}
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs > li > a,
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs > li > a:hover,
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs > li > a:focus {
+  border-left-color: #141a1d;
+  border-bottom-color: #141a1d;
+}
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs > li > a:hover,
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs > li > a:focus,
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs > li > a:active {
+  background: #1c2529;
+}
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs > li > a:hover {
+  color: #fff;
+}
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs > li.active > a,
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs > li.active > a:hover,
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs > li.active > a:focus,
+.control-sidebar-dark .nav-tabs.control-sidebar-tabs > li.active > a:active {
+  background: #222d32;
+  color: #fff;
+}
+.control-sidebar-dark .control-sidebar-heading,
+.control-sidebar-dark .control-sidebar-subheading {
+  color: #fff;
+}
+.control-sidebar-dark .control-sidebar-menu > li > a:hover {
+  background: #1e282c;
+}
+.control-sidebar-dark .control-sidebar-menu > li > a .menu-info > p {
+  color: #b8c7ce;
+}
+.control-sidebar-light {
+  color: #5e5e5e;
+}
+.control-sidebar-light,
+.control-sidebar-light + .control-sidebar-bg {
+  background: #f9fafc;
+  border-left: 1px solid #d2d6de;
+}
+.control-sidebar-light .nav-tabs.control-sidebar-tabs {
+  border-bottom: #d2d6de;
+}
+.control-sidebar-light .nav-tabs.control-sidebar-tabs > li > a {
+  background: #e8ecf4;
+  color: #444444;
+}
+.control-sidebar-light .nav-tabs.control-sidebar-tabs > li > a,
+.control-sidebar-light .nav-tabs.control-sidebar-tabs > li > a:hover,
+.control-sidebar-light .nav-tabs.control-sidebar-tabs > li > a:focus {
+  border-left-color: #d2d6de;
+  border-bottom-color: #d2d6de;
+}
+.control-sidebar-light .nav-tabs.control-sidebar-tabs > li > a:hover,
+.control-sidebar-light .nav-tabs.control-sidebar-tabs > li > a:focus,
+.control-sidebar-light .nav-tabs.control-sidebar-tabs > li > a:active {
+  background: #eff1f7;
+}
+.control-sidebar-light .nav-tabs.control-sidebar-tabs > li.active > a,
+.control-sidebar-light .nav-tabs.control-sidebar-tabs > li.active > a:hover,
+.control-sidebar-light .nav-tabs.control-sidebar-tabs > li.active > a:focus,
+.control-sidebar-light .nav-tabs.control-sidebar-tabs > li.active > a:active {
+  background: #f9fafc;
+  color: #111;
+}
+.control-sidebar-light .control-sidebar-heading,
+.control-sidebar-light .control-sidebar-subheading {
+  color: #111;
+}
+.control-sidebar-light .control-sidebar-menu {
+  margin-left: -14px;
+}
+.control-sidebar-light .control-sidebar-menu > li > a:hover {
+  background: #f4f4f5;
+}
+.control-sidebar-light .control-sidebar-menu > li > a .menu-info > p {
+  color: #5e5e5e;
+}

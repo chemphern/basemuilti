@@ -136,7 +136,7 @@ body {
 	                <select type="text" name="functionType" id="functionType"
 							class="text">
 	                  <c:forEach var="map" items="${serviceFunctionType }">
-							<option value="${map.key }">${map.value.name }</option>
+							<option value="${map.value.name }">${map.value.name }</option>
 						</c:forEach>
 	                </select>
                </td>

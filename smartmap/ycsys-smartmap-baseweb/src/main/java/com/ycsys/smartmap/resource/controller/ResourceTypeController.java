@@ -243,7 +243,7 @@ public class ResourceTypeController {
 			//复制
 			boolean flag = FileUtils.copyDirectoryCover(srcPath, destPath,true);
 			if(flag) {
-				map.put("msg", "成功备份了【"+name+"】分类下的资源到路径（" + destPath + "中");
+				map.put("msg", "成功备份了【"+name+"】分类下的资源到路径（" + destPath + "）中");
 				//设置备份时间和标记
 				resourceType.setBackupDate(new Date());
 				resourceType.setBackupsFlag("1");

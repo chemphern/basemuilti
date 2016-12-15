@@ -50,7 +50,7 @@ body {
 </head>
 <body>
 <body class="hold-transition skin-blue sidebar-mini">
-<form method="post" action="${ctx }/service/registerGis" id="form_id" enctype="multipart/form-data">
+<form method="post" action="${ctx }/service/updateService" id="form_id" enctype="multipart/form-data">
 	<input type="hidden" name="managerServiceUrl" id="managerServiceUrl">
 	<input type="hidden" name="id" id="id" value="${service.id }">
 	<div id="wizard" class="swMain">
@@ -78,7 +78,7 @@ body {
 				class="date_add_table">
 				<tr>
 					<td class="t_r">请选择服务引擎：</td>
-					<td><select type="text" name="serverEngine1" id="serverEngine1" onchange="serverEngineChange(this);"
+					<td><select type="text" name="serverEngine.id" id="serverEngine" onchange="serverEngineChange(this);"
 						class="text">
 							<option value="">-请选择-</option>
 							<c:forEach var="list" items="${serverEngineList }">
@@ -403,7 +403,7 @@ body {
 					
 					//设置下拉的值
 					if("${service.serverEngine.id}") {
-						$("#serverEngine1 option[value=${service.serverEngine.id}]").attr("selected",true);
+						$("#serverEngine option[value=${service.serverEngine.id}]").attr("selected",true);
 						listService("${service.serverEngine.id}");
 						/* console.log("gridManager==========");
 						console.log(gridManager);

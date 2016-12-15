@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.ycsys.smartmap.sys.common.result.ResponseEx;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,24 +42,53 @@ public class FlightRoamController {
 	
 	@ResponseBody
 	@RequestMapping("/addRoamPath")
-	public void addRoamPath(String pathName,String creator){
-		Date currentTime = new Date();
-		FlightPath path = new FlightPath(pathName,creator,currentTime);
-		flightPathService.addFlightPath(path);
+	public ResponseEx addRoamPath(String pathName){
+		ResponseEx ex = new ResponseEx();
+		try {
+			Date currentTime = new Date();
+			String creator = "admin";
+			FlightPath path = new FlightPath(pathName, creator, currentTime);
+			flightPathService.addFlightPath(path);
+			ex.setSuccess("增加飞行路径成功！");
+		}catch (Exception e){
+			ex.setFail("增加飞行路径失败！");
+		}
+		return ex;
 	}
 	
 	@ResponseBody
 	@RequestMapping("/deleteRoamPath")
-	public void deleteRoamPath(String pathName){
-		FlightPath path = this.findRoamPath(pathName);
-		flightPathService.deleteFlightPath(path);
+	public ResponseEx deleteRoamPath(String pathName){
+		ResponseEx ex = new ResponseEx();
+		try {
+			FlightPath path = this.findRoamPath(pathName);
+			List<FlightPathPoint> pathPoints = this.getRoamPathPoints(path.getPathName());
+			for (int i = 0; i < pathPoints.size(); i++) {
+				flightPathPointService.deleteFlightPointToPath(pathPoints.get(i));
+			}
+			flightPathService.deleteFlightPath(path);
+			ex.setSuccess("删除飞行路径成功！");
+		}catch (Exception e){
+			ex.setFail("删除飞行路径失败！");
+		}
+		return ex;
 	}
 	
 	@ResponseBody
 	@RequestMapping("/updateRoamPath")
-	public void updateRoamPath(String pathName){
-		FlightPath path = this.findRoamPath(pathName);
-		flightPathService.updateFlightPath(path);
+	public ResponseEx updateRoamPath(String oldPathName,String newPathName){
+		ResponseEx ex = new ResponseEx();
+		try {
+			FlightPath path = flightPathService.getFlightPathFromName(oldPathName);
+			if(path!=null){
+				path.setPathName(newPathName);
+				flightPathService.updateFlightPath(path);
+			}
+			ex.setSuccess("更新飞行路径成功！");
+		}catch (Exception e){
+			ex.setFail("更新飞行路径失败！");
+		}
+		return ex;
 	}
 	
 	////////////////////////////////////////////////////////飞行路径点//////////////////////////////////////////////////////////////////////
@@ -83,25 +113,72 @@ public class FlightRoamController {
 	
 	@ResponseBody
 	@RequestMapping("/addRoamPathPoint")
-	public void addRoamPathPoint(String pathName,Integer pointIndex){
-		FlightPath path = this.findRoamPath(pathName);
-		FlightPathPoint pathPoint = new FlightPathPoint();
-		pathPoint.setFlightPath(path);
-		pathPoint.setPointIndex(pointIndex);
-		flightPathPointService.getFlightPointFromPathName(path,pointIndex);
+	public ResponseEx addRoamPathPoint(String pathName,String pointName,Double x,Double y,Double z,Double yaw,Double pitch,Double roll,Float stopTime){
+		ResponseEx ex = new ResponseEx();
+		try {
+			FlightPath path = this.findRoamPath(pathName);
+			if(path==null){
+				this.addRoamPath(pathName);
+				path = this.findRoamPath(pathName);
+			}
+			Integer pointIndex = flightPathPointService.getFlightPointsFromPathName(path).size() + 1;
+			FlightPathPoint newPathPoint = new FlightPathPoint(path,pointName,pointIndex,x,y,z,yaw,pitch,roll,stopTime);
+			flightPathPointService.addFlightPointToPath(newPathPoint);
+			ex.setSuccess("增加飞行路径点成功！");
+		}catch (Exception e){
+			ex.setFail("增加飞行路径点失败！");
+		}
+		return ex;
 	}
 	
 	@ResponseBody
 	@RequestMapping("/deleteRoamPathPoint")
-	public void deleteRoamPathPoint(String pathName,Integer pointIndex){
-		FlightPath path = this.findRoamPath(pathName);
-		flightPathPointService.getFlightPointFromPathName(path,pointIndex);
+	public ResponseEx deleteRoamPathPoint(String pathName,Integer pointIndex){
+		ResponseEx ex = new ResponseEx();
+		try {
+			List<FlightPathPoint> pathPoints = this.getRoamPathPoints(pathName);
+			if(pathPoints!=null&&pathPoints.size()>0){
+				for(int i=0;i<pathPoints.size();i++){
+					FlightPathPoint point = pathPoints.get(i);
+					if(point.getPointIndex()==pointIndex){
+						flightPathPointService.deleteFlightPointToPath(point);
+					}
+					if(i>pointIndex-1){
+						point.setPointIndex(i);
+						flightPathPointService.updateFlightPointToPath(point);
+					}
+				}
+			}
+			ex.setSuccess("删除飞行路径点成功！");
+		}catch (Exception e){
+			ex.setFail("删除飞行路径点失败！");
+		}
+		return ex;
 	}
 	
 	@ResponseBody
 	@RequestMapping("/updateRoamPathPoint")
-	public void updateRoamPathPoint(String pathName,Integer pointIndex){
-		FlightPath path = this.findRoamPath(pathName);
-		flightPathPointService.getFlightPointFromPathName(path,pointIndex);
+	public ResponseEx updateRoamPathPoint(String pathName,String pointName,Integer pointIndex,Double x,Double y,Double z,Double yaw,Double pitch,Double roll,Float stopTime){
+		ResponseEx ex = new ResponseEx();
+		try {
+			FlightPath path = this.findRoamPath(pathName);
+			FlightPathPoint point = flightPathPointService.getFlightPointFromPathName(path,pointIndex);
+			if(point!=null){
+				point.setPointName(pointName);
+				point.setPointX(x);
+				point.setPointY(y);
+				point.setPointZ(z);
+				point.setPointYaw(yaw);
+				point.setPointPitch(pitch);
+				point.setPointRoll(roll);
+				point.setStopTime(stopTime);
+				flightPathPointService.updateFlightPointToPath(point);
+				ex.setSuccess("更新飞行路径点成功！");
+			}
+			ex.setFail("没有找到匹配的飞行路径点！");
+		}catch (Exception e){
+			ex.setFail("更新飞行路径点失败！");
+		}
+		return ex;
 	}
 }
