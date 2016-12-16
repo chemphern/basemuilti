@@ -79,11 +79,18 @@ public class MapLocateController {
 
 	@ResponseBody
 	@RequestMapping("/addBookMark")
-	public void addBookMark(String bookName,String bookDes,Double bookXMin,Double bookXMax,Double bookYMin,Double bookYMax,Double bookYaw,Double bookPitch,Double bookRoll){
-		Date currentTime = new Date();
-		String currentUser = "admin";
-		BookMark bookMark = new BookMark(currentTime,currentUser,bookName,bookDes,bookXMin,bookXMax,bookYMin,bookYMax,bookYaw,bookPitch,bookRoll);
-		bookMarkService.save(bookMark);
+	public ResponseEx addBookMark(String bookName,String bookDes,Double bookXMin,Double bookXMax,Double bookYMin,Double bookYMax,Double bookYaw,Double bookPitch,Double bookRoll){
+		ResponseEx ex = new ResponseEx();
+		try {
+			Date currentTime = new Date();
+			String currentUser = "admin";
+			BookMark bookMark = new BookMark(currentTime,currentUser,bookName,bookDes,bookXMin,bookXMax,bookYMin,bookYMax,bookYaw,bookPitch,bookRoll);
+			bookMarkService.save(bookMark);
+			ex.setSuccess("添加书签成功！");
+		}catch (Exception e){
+			ex.setFail("添加书签失败！");
+		}
+		return ex;
 	}
 	
 	@RequestMapping("/delete")
@@ -103,12 +110,19 @@ public class MapLocateController {
 
 	@ResponseBody
 	@RequestMapping("/deleteBookMark")
-	public void deleteBookMark(Integer bookID){
-		Object[] p = { bookID };
-		List<BookMark> bookMarks = bookMarkService.find("from BookMark t where t.id=?",p);
-		if(bookMarks.size()==1){
-			bookMarkService.delete(bookMarks.get(0));
+	public ResponseEx deleteBookMark(Integer bookID){
+		ResponseEx ex = new ResponseEx();
+		try {
+			Object[] p = { bookID };
+			List<BookMark> bookMarks = bookMarkService.find("from BookMark t where t.id=?",p);
+			if(bookMarks.size()==1){
+				bookMarkService.delete(bookMarks.get(0));
+			}
+			ex.setSuccess("删除书签成功！");
+		}catch (Exception e){
+			ex.setFail("删除书签失败！");
 		}
+		return ex;
 	}
 	
 	@RequestMapping(value="/edit")
@@ -128,11 +142,18 @@ public class MapLocateController {
 
 	@ResponseBody
 	@RequestMapping("/editBookMark")
-	public void editBookMark(Integer bookID,String bookName,String bookDes,Double bookXMin,Double bookXMax,Double bookYMin,Double bookYMax,Double bookYaw,Double bookPitch,Double bookRoll){
-		Date currentTime = new Date();
-		String currentUser = "admin";
-		BookMark bookMark = new BookMark(currentTime,currentUser,bookName,bookDes,bookXMin,bookXMax,bookYMin,bookYMax,bookYaw,bookPitch,bookRoll);
-		bookMark.setId(bookID);
-		bookMarkService.update(bookMark);
+	public ResponseEx editBookMark(Integer bookID,String bookName,String bookDes,Double bookXMin,Double bookXMax,Double bookYMin,Double bookYMax,Double bookYaw,Double bookPitch,Double bookRoll){
+		ResponseEx ex = new ResponseEx();
+		try {
+			Date currentTime = new Date();
+			String currentUser = "admin";
+			BookMark bookMark = new BookMark(currentTime,currentUser,bookName,bookDes,bookXMin,bookXMax,bookYMin,bookYMax,bookYaw,bookPitch,bookRoll);
+			bookMark.setId(bookID);
+			bookMarkService.update(bookMark);
+			ex.setSuccess("编辑书签成功！");
+		}catch (Exception e){
+			ex.setFail("编辑书签失败！");
+		}
+		return ex;
 	}
 }

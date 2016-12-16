@@ -72,6 +72,8 @@ function OnProjectLoadFinished() {
     initMapLayer();
     //初始化相关操作标识
     initOperationFlag();
+    //关闭OnLoadFinish事件
+    YcMap3D.DetachEvent("OnLoadFinished", OnProjectLoadFinished);
     //开启侦听全局更改事件OnInputModeChanged
     YcMap3D.AttachEvent("OnInputModeChanged", OnInputModeChangedListening);
 }

@@ -85,4 +85,16 @@ public class ResourceServiceImpl implements ResourceService {
 		return resourceDao.getMaxSort(hql);
 	}
 
+	@Override
+	public List<Resource> find(String hql, List<Object> param, PageHelper page) {
+		// TODO Auto-generated method stub
+		return resourceDao.find(hql, param, page);
+	}
+
+	@Override
+	public Long count(String hql, List<Object> param) {
+		// TODO Auto-generated method stub
+		return resourceDao.count(hql, param);
+	}
+
 }

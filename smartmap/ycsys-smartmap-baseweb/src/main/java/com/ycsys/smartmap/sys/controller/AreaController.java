@@ -132,7 +132,7 @@ public class AreaController extends BaseController{
         try {
             //读取xls
             String file = "广东省行政区划及其行政代码.xls";
-            InputStream is = AreaController.class.getResource("/" + file).openStream();
+            InputStream is = AreaController.class.getResource("/data/init/" + file).openStream();
             BaseController b = new BaseController();
             List<ArrayList<String>> datas =  b.getFileDatas(is,file);
             System.out.println(datas);

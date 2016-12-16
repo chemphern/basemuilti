@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ycsys.smartmap.resource.entity.Resource;
 import com.ycsys.smartmap.service.dao.ServiceDao;
 import com.ycsys.smartmap.service.entity.Service;
 import com.ycsys.smartmap.service.service.ServiceService;
@@ -76,6 +77,17 @@ public class ServiceServiceImpl implements ServiceService {
 	public List<Service> find(String hql, Object[] param, PageHelper page) {
 		// TODO Auto-generated method stub
 		return serviceDao.find(hql, param, page);
+	}
+
+	@Override
+	public List<Service> find(String hql, List<Object> param, PageHelper page) {
+		// TODO Auto-generated method stub
+		return serviceDao.find(hql, param, page);
+	}
+
+	@Override
+	public Long count(String hql, List<Object> param) {
+		return serviceDao.count(hql, param);
 	}
 
 }

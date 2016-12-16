@@ -23,14 +23,14 @@
   <!-- 表格 -->
   <link href="${res}/plugins/table/bootstrap-table.min.css" rel="stylesheet">
   <!-- 弹出框 -->
-  <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
-
-<%--   <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script> --%>
-<!--   <script src="${res}/plugins/jQueryUI/jquery-ui.min.js"></script>  -->
-  <script src="${res}/plugins/mCustomScrollbar/jquery.mousewheel.js"></script>
-
-  <link rel="stylesheet" href="${res}/bootstrap/css/bootstrap.css">
-  <script src="${res}/bootstrap/js/bootstrap.min.js"></script>
+  <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css"> 
+  <%--   <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script> --%>
+   <%--  <script src="${res}/plugins/jQueryUI/jquery-ui.min.js"></script>  --%>
+<script src="${res}/plugins/mCustomScrollbar/jquery.mousewheel.js"></script>
+<!-- jQuery 修改浏览器默认滚动条 -->
+<script src="${res}/plugins/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
+<link rel="stylesheet" href="${res}/bootstrap/css/bootstrap.css">
+<script src="${res}/bootstrap/js/bootstrap.min.js"></script>  
    <!-- HTML5 IE8 support of HTML5 elements and media queries -->
   <!--[if lt IE 9]>
   <script src="${res}dist/js/html5shiv.min.js"></script>
@@ -38,9 +38,6 @@
   <![endif]-->
     <!-- jQuery Easyui js-->
   <script src="${res}/plugins/jeasyui/jquery.easyui.min.js"></script>
-  <!-- jQuery 修改浏览器默认滚动条 -->
-  <script src="${res}/plugins/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
-
   <!-- index js  -->
   <script src="${res}/dist/js/map/map_index.js"></script>
   <script src="${res}/dist/js/map/map_index_dialog.js"></script>
@@ -74,7 +71,7 @@
 <script src="${res}/plugins/dialog/iframeTools.source.js"></script>
 <script src="${res}/plugins/dialog/unit.js"></script>
 
-<script src="${res}/bootstrap/js/bootstrap-switch.min.js"></script>
+<%-- <script src="${res}/bootstrap/js/bootstrap-switch.min.js"></script> --%>
 <link href="${res}/bootstrap/css/bootstrap-switch.min.css">
 </head>
 <body role="document" cz-shortcut-listen="true" class="hold-transition  sidebar-mini skin-cyan">
@@ -252,7 +249,7 @@
                       </div>
                     </div>
                     <div class="searchBtn">
-                      <button type="button" class="btn btn-success btn_add" id="btnQueryAttr"  onclick="queryAttr()">查 询</button>
+                      <button type="button" class="btn btn-success btn_add" id="btnQueryAttr">查 询</button>
 <!--                       <button type="button" class="btn btn-success btn_add" onclick="queryAttr();">查 询</button> -->
                       <button type="reset" class="btn btn-warning">重 置</button>
                     </div>
@@ -262,7 +259,7 @@
                 <div id="Sxcxbox-result" style="display:none">                  
                   <form action="" method="get" class="form-inline search-form" role="form">                   
                     <div class="Sxcxlist">
-                      <p>共有<span class="red" id='queryNum'></span>条结果<a href="#" class="btn_back" id='btnBack'>返回<i class="arrow-back"></i></a></p>
+                      <p>共有<span class="red" id='queryNum'></span>条结果<a href="#" class="btn_back" id='btnBack' onclick="clearQueryFeature()">返回<i class="arrow-back"></i></a></p>
                       <div id="Searchresult">
                         <ul class="result" id="queryItem">
                         </ul>
@@ -574,285 +571,334 @@
             <div class="panelBox-heading"><i class="icon iconfont icon_map">&#xe601;</i><h3 class="panelBox-title">标绘类型</h3><span class="arrow iconfont"></span></div>
             <div  class="panelBox-body">
               <div class="row submenu">
-                <a href="#fore-2d3d-menu-bz-dbh" class="col-sm-3 active" data-toggle="tab">
+                <a href="#fore-2d3d-menu-bz-xzbh" class="col-sm-3 active" data-toggle="tab">
                   <i class="icon iconfont mapSearch">&#xe659;</i>
-                  <h2>点标绘</h2>
+                  <h2>形状标绘</h2>
                 </a>
-                <a href="#fore-2d3d-menu-bz-xbh" class="col-sm-3" data-toggle="tab">
+                <a href="#fore-2d3d-menu-bz-twbh" class="col-sm-3" data-toggle="tab">
                   <i class="icon iconfont mapSearch">&#xe629;</i>
-                  <h2>线标绘</h2>
-                </a>
-                <a href="#fore-2d3d-menu-bz-mbh" class="col-sm-3" data-toggle="tab">
-                  <i class="icon iconfont mapSearch">&#xe660;</i>
-                  <h2>面标绘</h2>
+                  <h2>图文标绘</h2>
                 </a>
                 <a href="#fore-2d3d-menu-bz-tsbh" class="col-sm-3" data-toggle="tab">
-                  <i class="icon iconfont mapSearch">&#xe618;</i>
+                  <i class="icon iconfont mapSearch">&#xe660;</i>
                   <h2>特殊标绘</h2>
+                </a>
+                <a href="#fore-2d3d-menu-bz-3dbh" class="col-sm-3" data-toggle="tab">
+                  <i class="icon iconfont mapSearch">&#xe618;</i>
+                  <h2>三维标绘</h2>
                 </a>
               </div>
             </div>
           </div>
           <!-- 当前操作 -->
           <div class="subTabs">
-            <div class="panelBox active" id="fore-2d3d-menu-bz-dbh">
+            <div class="panelBox active" id="fore-2d3d-menu-bz-xzbh">
               <div class="panelBox-heading">
-                <h3 class="panelBox-title">点标绘</h3><span class="arrow arrowUp"></span>
+                <h3 class="panelBox-title">形状标绘</h3><span class="arrow arrowUp"></span>
               </div>
               <div  class="panelBox-body">
-                <form class="form-horizontal search-form" role="form">
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">字体：</label>
-                    <div class="col-sm-8 select-item">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">字体尺寸：</label>
-                    <div class="col-sm-8 select-item">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">字体颜色：</label>
-                    <div class="col-sm-8">
-                      <div class="input-group-btn">
-                        <input type="text" class="form-control input-in color">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">图形颜色：</label>
-                    <div class="col-sm-8">
-                      <div class="input-group-btn">
-                        <input type="text" class="form-control input-in color">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">填充颜色：</label>
-                    <div class="col-sm-8">
-                      <div class="input-group-btn">
-                        <input type="text" class="form-control input-in color">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">透明度：</label>
-                    <div class="col-sm-8 select-item">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">线宽：</label>
-                    <div class="col-sm-8 select-item">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
-                  </div>                                   
-                  <div class="searchBtn">
-                    <button type="submit" class="btn btn-success">应用</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-            <div class="panelBox" id="fore-2d3d-menu-bz-xbh">
-              <div class="panelBox-heading">
-                <h3 class="panelBox-title">线标绘</h3><span class="arrow arrowUp"></span>
-              </div>
-              <div  class="panelBox-body">
-                <form class="form-horizontal search-form" role="form">
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">字体：</label>
-                    <div class="col-sm-8 select-item">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">字体尺寸：</label>
-                    <div class="col-sm-8 select-item">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">字体颜色：</label>
-                    <div class="col-sm-8">
-                      <div class="input-group-btn">
-                        <input type="text" class="form-control input-in color">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">图形颜色：</label>
-                    <div class="col-sm-8">
-                      <div class="input-group-btn">
-                        <input type="text" class="form-control input-in color">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">填充颜色：</label>
-                    <div class="col-sm-8">
-                      <div class="input-group-btn">
-                        <input type="text" class="form-control input-in color">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">透明度：</label>
-                    <div class="col-sm-8 select-item">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">线宽：</label>
-                    <div class="col-sm-8 select-item">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
-                  </div>                                   
-                  <div class="searchBtn">
-                    <button type="submit" class="btn btn-success">应用</button>
-                  </div>
-                </form>
-              </div>
-            </div>
-            <div class="panelBox" id="fore-2d3d-menu-bz-mbh">
-              <div class="panelBox-heading">
-                <h3 class="panelBox-title">面标绘</h3><span class="arrow arrowUp"></span>
-              </div>
-              <div  class="panelBox-body">
-                <form class="form-horizontal search-form" role="form">
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">字体：</label>
-                    <div class="col-sm-8 select-item">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">字体尺寸：</label>
-                    <div class="col-sm-8 select-item">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">字体颜色：</label>
-                    <div class="col-sm-8">
-                      <div class="input-group-btn">
-                        <input type="text" class="form-control input-in color">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">图形颜色：</label>
-                    <div class="col-sm-8">
-                      <div class="input-group-btn">
-                        <input type="text" class="form-control input-in color">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">填充颜色：</label>
-                    <div class="col-sm-8">
-                      <div class="input-group-btn">
-                        <input type="text" class="form-control input-in color">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">透明度：</label>
-                    <div class="col-sm-8 select-item">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-4">线宽：</label>
-                    <div class="col-sm-8 select-item">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
-                  </div>                                   
-                  <div class="searchBtn">
-                    <button type="submit" class="btn btn-success">应用</button>
-                  </div>
-                </form>
-              </div>
-            </div>                         
-            <div class="panelBox" id="fore-2d3d-menu-bz-tsbh">
-              <div class="panelBox-heading">
-                <h3 class="panelBox-title">特殊标绘</h3><span class="arrow arrowUp"></span>
-              </div>
-              <div  class="panelBox-body">
-                <ul id="myTabPlot" class="nav nav-tabs">
-                  <li class="active"><a href="#planePlot" data-toggle="tab" >平面标绘</a></li>
-                  <li><a href="#3dPlot" data-toggle="tab" >三维标绘</a></li>
+                <ul id="myTabShape" class="nav nav-tabs">
+                  <li class="active"><a href="#planePlot" data-toggle="tab" >点标绘</a><i class="triangle-up"></i></li>
+                  <li><a href="#planeLine" data-toggle="tab" >线标绘</a><i class="triangle-up"></i></li>
+                  <li><a href="#planeFace" data-toggle="tab" >面标绘</a><i class="triangle-up"></i></li>
                 </ul>
-                <div id="myTabContentPlot" class="tab-content">                
-                  <div class="tab-pane side-plot active" id="planePlot">
-                     <a href="javascript:;" class="active"><span class="icon iconfont">&#xe639;</span></a>
-                     <a href="javascript:;" ><span class="icon iconfont">&#xe63a;</span></a>
-                     <a href="javascript:;" ><span class="icon iconfont">&#xe652;</span></a>
-                     <a href="javascript:;" ><span class="icon iconfont">&#xe653;</span></a>
-                     <a href="javascript:;" ><span class="icon iconfont">&#xe654;</span></a>
-                     <a href="javascript:;" ><span class="icon iconfont">&#xe655;</span></a>       
+                <div class="tab-content">
+                  <div class="tab-pane  active" id="planePlot">
+                    <ul class="bs-icon-list clearfix">
+                      <li class="active">
+                        <span class="icon iconfont">&#xe66b;</span>
+                        <span class="icon-class">点</span>
+                      </li>
+                      <li>
+                        <span class="icon iconfont">&#xe66d;</span>
+                        <span class="icon-class">多点</span>
+                      </li>
+                    </ul>
+                    <p class="mt15 text-right"><button type="button" class="btn btn_set">高级选项</button></p>
+                    <div class="advanced-box">
+                      <form class="form-horizontal search-form" role="form">
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">字体：</label>
+                          <div class="col-sm-8 select-item">
+                            <select class="form-control input-sm">
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">字体尺寸：</label>
+                          <div class="col-sm-8 select-item">
+                            <select class="form-control input-sm">
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">字体颜色：</label>
+                          <div class="col-sm-8">
+                            <div class="input-group-btn">
+                              <input type="text" class="form-control  input-in color">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">图形颜色：</label>
+                          <div class="col-sm-8">
+                            <div class="input-group-btn">
+                              <input type="text" class="form-control input-in color">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">填充颜色：</label>
+                          <div class="col-sm-8">
+                            <div class="input-group-btn">
+                              <input type="text" class="form-control  input-in color">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">透明度：</label>
+                          <div class="col-sm-8 select-item">
+                            <select class="form-control input-sm">
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">线宽：</label>
+                          <div class="col-sm-8 select-item">
+                            <select class="form-control input-sm">
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                          </div>
+                        </div>                                   
+                        <div class="searchBtn">
+                          <button type="submit" class="btn btn-success">应用</button>
+                        </div>
+                      </form>
+                    </div>
                   </div>
-                  <div class="tab-pane side-plot" id="3dPlot">
-                     <a href="javascript:;" class="active"><span class="icon iconfont">&#xe661;</span></a>
-                     <a href="javascript:;" ><span class="icon iconfont">&#xe65c;</span></a>
-                     <a href="javascript:;" ><span class="icon iconfont">&#xe657;</span></a>
-                     <a href="javascript:;" ><span class="icon iconfont">&#xe65e;</span></a>
-                     <a href="javascript:;" ><span class="icon iconfont">&#xe662;</span></a>
-                     <a href="javascript:;" ><span class="icon iconfont">&#xe665;</span></a>
-                  </div>               
-                </div>                
+                  <div class="tab-pane " id="planeLine">
+                    <ul class="bs-icon-list clearfix">
+                      <li class="active">
+                        <span class="icon iconfont">&#xe670;</span>
+                        <span class="icon-class">折线</span>
+                      </li>
+                      <li>
+                        <span class="icon iconfont">&#xe66e;</span>
+                        <span class="icon-class">圆弧</span>
+                      </li>
+                      <li>
+                        <span class="icon iconfont">&#xe674;</span>
+                        <span class="icon-class">曲线</span>
+                      </li>
+                      <li>
+                        <span class="icon iconfont">&#xe673;</span>
+                        <span class="icon-class">自由线</span>
+                      </li>
+                    </ul>
+                    <p class="mt15 text-right"><button type="button" class="btn btn_set">高级选项</button></p>
+                    <div class="advanced-box">
+                      <form class="form-horizontal search-form" role="form">
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">字体：</label>
+                          <div class="col-sm-8 select-item">
+                            <select class="form-control input-sm">
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">字体尺寸：</label>
+                          <div class="col-sm-8 select-item">
+                            <select class="form-control input-sm">
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">字体颜色：</label>
+                          <div class="col-sm-8">
+                            <div class="input-group-btn">
+                              <input type="text" class="form-control  input-in color">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">图形颜色：</label>
+                          <div class="col-sm-8">
+                            <div class="input-group-btn">
+                              <input type="text" class="form-control input-in color">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">填充颜色：</label>
+                          <div class="col-sm-8">
+                            <div class="input-group-btn">
+                              <input type="text" class="form-control  input-in color">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">透明度：</label>
+                          <div class="col-sm-8 select-item">
+                            <select class="form-control input-sm">
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">线宽：</label>
+                          <div class="col-sm-8 select-item">
+                            <select class="form-control input-sm">
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                          </div>
+                        </div>                                   
+                        <div class="searchBtn">
+                          <button type="submit" class="btn btn-success">应用</button>
+                        </div>
+                      </form>
+                    </div> 
+                  </div>
+                  <div class="tab-pane " id="planeFace">
+                    <ul class="bs-icon-list clearfix">
+                      <li class="active">
+                        <span class="icon iconfont">&#xe639;</span>
+                        <span class="icon-class">圆</span>
+                      </li>
+                      <li>
+                        <span class="icon iconfont">&#xe639;</span>
+                        <span class="icon-class">椭圆</span>
+                      </li>
+                      <li>
+                        <span class="icon iconfont">&#xe639;</span>
+                        <span class="icon-class">伞形</span>
+                      </li>
+                      <li>
+                        <span class="icon iconfont">&#xe639;</span>
+                        <span class="icon-class">弓形</span>
+                      </li>
+                      <li>
+                        <span class="icon iconfont">&#xe639;</span>
+                        <span class="icon-class">矩形</span>
+                      </li>
+                      <li>
+                        <span class="icon iconfont">&#xe639;</span>
+                        <span class="icon-class">多边形</span>
+                      </li>
+                      <li>
+                        <span class="icon iconfont">&#xe639;</span>
+                        <span class="icon-class">手绘面</span>
+                      </li>
+                      <li>
+                        <span class="icon iconfont">&#xe639;</span>
+                        <span class="icon-class">圆角矩形</span>
+                      </li>
+                      <li>
+                        <span class="icon iconfont">&#xe639;</span>
+                        <span class="icon-class">闭合曲线</span>
+                      </li>
+                      <li>
+                        <span class="icon iconfont">&#xe639;</span>
+                        <span class="icon-class">聚集区</span>
+                      </li>
+                    </ul>
+                    <p class="mt15 text-right"><button type="button" class="btn btn_set">高级选项</button></p>
+                    <div class="advanced-box">
+                      <form class="form-horizontal search-form" role="form">
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">字体：</label>
+                          <div class="col-sm-8 select-item">
+                            <select class="form-control input-sm">
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">字体尺寸：</label>
+                          <div class="col-sm-8 select-item">
+                            <select class="form-control input-sm">
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">字体颜色：</label>
+                          <div class="col-sm-8">
+                            <div class="input-group-btn">
+                              <input type="text" class="form-control  input-in color">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">图形颜色：</label>
+                          <div class="col-sm-8">
+                            <div class="input-group-btn">
+                              <input type="text" class="form-control input-in color">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">填充颜色：</label>
+                          <div class="col-sm-8">
+                            <div class="input-group-btn">
+                              <input type="text" class="form-control  input-in color">
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">透明度：</label>
+                          <div class="col-sm-8 select-item">
+                            <select class="form-control input-sm">
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">线宽：</label>
+                          <div class="col-sm-8 select-item">
+                            <select class="form-control input-sm">
+                              <option>1</option>
+                              <option>2</option>
+                              <option>3</option>
+                            </select>
+                          </div>
+                        </div>                                   
+                        <div class="searchBtn">
+                          <button type="submit" class="btn btn-success">应用</button>
+                        </div>
+                      </form>
+                    </div> 
+                  </div>
+                </div> 
               </div>
-              
             </div>
+
           </div>
         </div>
         <div id="fore-2d3d-menu-zt" >
@@ -1383,7 +1429,7 @@
       <div class="l_icon"></div>
     </div>
     <!-- content start -->
-    <div class="content" id="mapContent">
+    <div class="mapcontent" id="mapContent">
       <!-- 地图工具条 start-->
       <div class="toolbar" id="measureDiv">
       	  <a href="javascript:;" id="printDiv" onclick="print()"><i class="icon iconfont">&#xe63f;</i><h3>打印</h3></a>
@@ -1490,20 +1536,21 @@
         <div class="tab-mapCon-pane mapCon-resizable resizable-left active" id="map2d" style="width:100%;"></div>
         <div class="handler" ></div>
         <div class="tab-mapCon-pane mapCon-resizable resizable-right" id="map3d"   style="width:100%;">
+            <%--<object style="position: absolute;width: 100px;height: 500px" ID="YcMap3DInformationWindow" classid="CLSID:3a4f9193-65a8-11d5-85c1-0001023952c1"></object>--%>
         	<!--定义一个TerraExplorer 3D窗口对象-->
 			<object ID="YcMap3DWindow" classid="CLSID:3a4f9192-65a8-11d5-85c1-0001023952c1" style="width:100%;height:100%"></object>
 			<!--定义TerraExplorer对象-->
 			<object ID="YcMap3D" classid="CLSID:3A4F9199-65A8-11D5-85C1-0001023952C1" style="display: none;"></object>
-        </div>        
+        </div>
       </div>
       <!-- tab-content end-->
     </div>
     <!-- content end -->
   </div>
-  </div>
-  <!-- main end -->
-  <div class="select-skin">
-    <!-- 下面一行为添加的标签 -->
+</div>
+<!-- main end -->
+<div class="select-skin">
+  <!-- 下面一行为添加的标签 -->
     <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
      <!-- Control Sidebar 换肤弹窗-->
     <aside class="control-sidebar control-sidebar-dark" style="display:none;">

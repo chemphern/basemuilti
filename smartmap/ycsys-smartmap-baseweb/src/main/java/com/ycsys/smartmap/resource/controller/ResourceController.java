@@ -2,8 +2,8 @@ package com.ycsys.smartmap.resource.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -34,7 +34,6 @@ import com.ycsys.smartmap.resource.service.ResourceService;
 import com.ycsys.smartmap.resource.service.ResourceTypeService;
 import com.ycsys.smartmap.sys.common.config.Global;
 import com.ycsys.smartmap.sys.common.result.Grid;
-import com.ycsys.smartmap.sys.common.utils.ArrayUtil;
 import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
 import com.ycsys.smartmap.sys.common.utils.FileUtils;
 import com.ycsys.smartmap.sys.common.utils.JsonMapper;
@@ -318,29 +317,46 @@ public class ResourceController {
 	@ResponseBody
 	@RequestMapping("/listData")
 	@RequiresPermissions(value = "resource-list-data")
-	public Grid<Resource> listData(String resourceTypeId, PageHelper page) {
-		//System.out.println("resourceTypeId=" + resourceTypeId);
+	public Grid<Resource> listData(String resourceTypeId,String fullName,String name,String type,String fileType, PageHelper page) {
 		List<Resource> list = null;
 		ResourceType rt = null;
+		StringBuffer hql = new StringBuffer();
+		hql.append("from Resource t where 1 = 1 ");
+		List<Object> params = new ArrayList<Object>();
+		if(StringUtils.isNotBlank(fullName)) {
+			hql.append("and t.fullName like ? ");
+			params.add('%' + fullName + '%');
+		}
+		if(StringUtils.isNotBlank(name)) {
+			hql.append("and t.name like ? ");
+			params.add('%' + name + '%');
+		}
+		
+		if(StringUtils.isNotBlank(type)) {
+			hql.append("and t.type = ? ");
+			params.add(type);
+		}
+		if(StringUtils.isNotBlank(fileType)) {
+			hql.append("and t.fileType = ? ");
+			params.add(fileType);
+		}
+		
 		if (StringUtils.isNotBlank(resourceTypeId)) {
 			Integer id = Integer.parseInt(resourceTypeId);
 			rt = resourceTypeService.get(ResourceType.class, id);
-			//如果是根结点则查所有
-			if(rt.getParent() == null) {
-				list = resourceService.find("from Resource r order by r.sort desc",
-						null, page);
+			if(rt.getParent() != null) {
+				hql.append("and t.resourceType.id = ?");
+				params.add(id);
 			}
-			else {
-				list = resourceService
-						.find("from Resource r where r.resourceType.id = ? order by r.sort desc",
-								new Object[] { id }, page);
-			}
-		} else {
-			list = resourceService.find("from Resource r order by r.sort desc",
-					null, page);
-		}
-
-		return new Grid<Resource>(list);
+			
+		} 
+		
+		hql.append(" order by t.sort desc");
+		list = resourceService.find(hql.toString(),params, page);
+		long count = resourceService.count(hql.toString(), params);
+		Grid<Resource> g = new Grid<Resource>(list);
+		g.setTotal(count);
+		return g;
 	}
 	
 	/**

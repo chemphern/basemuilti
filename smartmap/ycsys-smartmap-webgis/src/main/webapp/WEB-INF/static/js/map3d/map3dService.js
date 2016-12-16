@@ -23,7 +23,7 @@ function changeVisibleInMap3D(treeNode){
 	}
 	if(!ifAdd){
 		addWMSServiceToMap(treeNode.address,treeNode.name);
-		addWFSServiceToMap(treeNode.address,treeNode.name);
+		addWFSServiceToMap(decodeURI(treeNode.address),treeNode.name);
 	}
 }
 
@@ -35,11 +35,11 @@ function initMapLayer(){
     	var node = nodes[i];
     	if(node.isParent==false){
     		addWMSServiceToMap(node.address,node.name);
-    		addWFSServiceToMap(node.address,node.name);
+    		addWFSServiceToMap(decodeURI(node.address),node.name);
     	}
     }
     //初始化POI图层
-    initPOILayer();
+    // initPOILayer();
 }
 
 function initPOILayer() {

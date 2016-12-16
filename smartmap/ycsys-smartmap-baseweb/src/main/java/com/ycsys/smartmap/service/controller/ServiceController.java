@@ -11,18 +11,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,15 +48,12 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.ycsys.smartmap.cluster.utils.ClusterUtils;
 import com.ycsys.smartmap.resource.entity.Resource;
-import com.ycsys.smartmap.resource.entity.ResourceType;
 import com.ycsys.smartmap.resource.service.ResourceService;
 import com.ycsys.smartmap.service.entity.Service;
-import com.ycsys.smartmap.service.entity.ServiceApply;
 import com.ycsys.smartmap.service.service.ServiceService;
 import com.ycsys.smartmap.service.utils.ServiceUtils;
 import com.ycsys.smartmap.sys.common.config.Global;
 import com.ycsys.smartmap.sys.common.result.Grid;
-import com.ycsys.smartmap.sys.common.result.ResponseEx;
 import com.ycsys.smartmap.sys.common.utils.ArcGisServerUtils;
 import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
 import com.ycsys.smartmap.sys.common.utils.FileUtils;
@@ -89,6 +83,8 @@ public class ServiceController extends BaseController {
 	private ResourceService resourceService;
 	@Autowired
 	private ConfigServerEngineService configServerEngineService;
+	//服务导入模版地址
+	private static final String DOWNLOADURL = "/data/init/服务导入模版.zip";
 
 	/**
 	 * 准备发布服务
@@ -169,7 +165,7 @@ public class ServiceController extends BaseController {
 	public Map<String, String> publish(HttpServletRequest request, Model model) {
 		Map<String, String> map = new HashMap<String, String>();
 		String serviceName = request.getParameter("serviceName");
-		String serviceResource = request.getParameter("serviceResource");
+		//String serviceResource = request.getParameter("serviceResource");
 		String serviceType = request.getParameter("serviceType");
 		// String resourceFile = request.getParameter("resourceFile");
 		String resourceFileId = request.getParameter("resourceFileId");
@@ -611,7 +607,7 @@ public class ServiceController extends BaseController {
 						s.getServerEngine().getId());
 				s.setServerEngine(se);
 				s.setRegisterType("0");
-
+				s.setRemoteServicesType("0");
 				// 设置服务状态
 				boolean seviceStatus = ServiceUtils.getStatus(
 						s.getManagerServiceUrl(), se.getIntranetIp(),
@@ -675,17 +671,37 @@ public class ServiceController extends BaseController {
 	@ResponseBody
 	@RequestMapping("/listService")
 	@RequiresPermissions(value = "service-list")
-	public Grid<Service> listService(String registerServerType, PageHelper page) {
+	public Grid<Service> listService(String registerServerType,String registerName,String showName,String serviceStatus,String permissionStatus, PageHelper page) {
 		List<Service> list = null;
+		List<Object> params = new ArrayList<Object>();
+		StringBuffer hql = new StringBuffer();
+		hql.append("from Service t where 1 = 1 ");
 		if (StringUtils.isNotBlank(registerServerType)) {
-			list = serviceService
-					.find("from Service r where r.registerType = ? order by r.createDate desc",
-							new Object[] { registerServerType }, page);
-		} else {
-			list = serviceService.find(
-					"from Service r order by r.createDate desc", null, page);
+			hql.append("and t.registerType = ?");
+			params.add(registerServerType);
+		} 
+		if (StringUtils.isNotBlank(registerName)) {
+			hql.append("and t.registerName like ?");
+			params.add('%' + registerName + '%');
 		}
-		return new Grid<Service>(list);
+		if (StringUtils.isNotBlank(showName)) {
+			hql.append("and t.showName = ?");
+			params.add('%' + showName + '%');
+		} 
+		if (StringUtils.isNotBlank(serviceStatus)) {
+			hql.append("and t.serviceStatus = ?");
+			params.add(serviceStatus);
+		} 
+		if (StringUtils.isNotBlank(permissionStatus)) {
+			hql.append("and t.permissionStatus = ?");
+			params.add(permissionStatus);
+		} 
+		list = serviceService.find(hql.toString(),params, page);
+		long count = serviceService.count(hql.toString(), params);
+		hql.append(" order by r.createDate desc");
+		Grid<Service> g = new Grid<Service>(list);
+		g.setTotal(count);
+		return g;
 	}
 
 	@ResponseBody
@@ -1206,6 +1222,49 @@ public class ServiceController extends BaseController {
 		return "/service/service_audit_register_list";
 	}
 	
+	@ResponseBody
+	@RequestMapping("/listAuditService")
+	@RequiresPermissions(value = "service-auditRegister")
+	public Grid<Service> listAuditService(String registerServerType,String registerName,String showName,String auditStatus,String serviceStatus,String permissionStatus, PageHelper page) {
+		List<Service> list = null;
+		List<Object> params = new ArrayList<Object>();
+		StringBuffer hql = new StringBuffer();
+		hql.append("from Service t where 1 = 1 ");
+		if (StringUtils.isNotBlank(registerServerType)) {
+			hql.append("and t.registerType = ?");
+			params.add(registerServerType);
+		} 
+		if (StringUtils.isNotBlank(registerName)) {
+			hql.append("and t.registerName like ?");
+			params.add('%' + registerName + '%');
+		}
+		if (StringUtils.isNotBlank(showName)) {
+			hql.append("and t.showName = ?");
+			params.add('%' + showName + '%');
+		} 
+		
+		if (StringUtils.isNotBlank(serviceStatus)) {
+			hql.append("and t.serviceStatus = ?");
+			params.add(serviceStatus);
+		} 
+		
+		if (StringUtils.isNotBlank(auditStatus)) {
+			hql.append("and t.auditStatus = ?");
+			params.add(auditStatus);
+		} 
+		
+		if (StringUtils.isNotBlank(permissionStatus)) {
+			hql.append("and t.permissionStatus = ?");
+			params.add(permissionStatus);
+		} 
+		list = serviceService.find(hql.toString(),params, page);
+		long count = serviceService.count(hql.toString(), params);
+		hql.append(" order by r.createDate desc");
+		Grid<Service> g = new Grid<Service>(list);
+		g.setTotal(count);
+		return g;
+	}
+	
 	@RequestMapping("toAuditRegister")
 	public String toAuditRegister(Service service,Model model) {
 		if(null != service.getId()) {
@@ -1250,7 +1309,53 @@ public class ServiceController extends BaseController {
 	public String toImportFile() {
 		return "/service/service_import";
 	}
-
+	
+	/*
+	 * 下载模版
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+    @ResponseBody
+    @RequestMapping("/downLoadTemplate")
+    public String downLoadTemplate(HttpServletRequest request,HttpServletResponse response){
+		try {
+			//文件名称
+			String fileName = "服务导入模版";
+			//防止乱码
+			if (request.getHeader("USER-AGENT").toLowerCase().indexOf("msie") > 0){
+				fileName = URLEncoder.encode(fileName,"UTF-8");
+				fileName = fileName.replace(".", "%2e");
+			}else if(request.getHeader("USER-AGENT").toLowerCase().indexOf("firefox") > 0){
+				fileName="=?UTF-8?B?"+(new String(Base64.encodeBase64(fileName.getBytes("UTF-8"))))+"?=";
+			}else{
+				fileName = URLEncoder.encode(fileName,"UTF-8");
+			}
+			InputStream in = ServiceController.class.getResourceAsStream(DOWNLOADURL);
+			//InputStream in = ServiceController.class.getResource(DOWNLOADURL).openStream();
+			DataInputStream din = new DataInputStream(new BufferedInputStream(in));
+			OutputStream out = response.getOutputStream();
+			DataOutputStream dout = new DataOutputStream(new BufferedOutputStream(out));
+			response.reset();
+			response.setContentType("application/zip"); //zip格式的压缩包
+			response.setContentType("application/x-download");
+			response.setHeader("Content-Disposition", "attachment;filename=" +fileName+".zip");
+			
+			int n;
+			byte buf[] = new byte[8192];
+			while ((n = din.read(buf)) != -1) {
+				dout.write(buf, 0, n);
+			}
+			dout.flush();
+			dout.close();
+			din.close();
+			in.close();
+		} catch (Exception e) {
+			return "文件下载出错";
+		}
+		return "success";
+	}
+	
 	/**
 	 * 导入服务
 	 * 
@@ -1298,12 +1403,14 @@ public class ServiceController extends BaseController {
 							InputStream in = new FileInputStream(fileArr[i]);
 							List<ArrayList<String>> datas = getFileDatas(in,
 									fileArr[i].getName());
-							System.out.println("datas size=" + datas.size());
+							//System.out.println("datas size=" + datas.size());
 							sum = datas.size();
 							for (int j = 0; j < datas.size(); j++) {
 								Service s = new Service();
-								ArrayList<String> serviceInfo = datas.get(j);
-								String engineName = serviceInfo.get(0);
+								ArrayList<String> serviceInfo = datas.get(j);								
+								String registerName = serviceInfo.get(0);
+								String showName = serviceInfo.get(1);
+								String engineName = serviceInfo.get(2);
 								List<ConfigServerEngine> list = configServerEngineService
 										.find("from ConfigServerEngine t where t.configName = ?",
 												new Object[] { engineName });
@@ -1313,8 +1420,6 @@ public class ServiceController extends BaseController {
 									//String cName = list.get(0).getConfigName();
 									s.setServerEngine(list.get(0));
 								}
-								String registerName = serviceInfo.get(1);
-								String showName = serviceInfo.get(2);
 								String folderName = serviceInfo.get(3);
 								String remarks = serviceInfo.get(4);
 								String functionType = serviceInfo.get(5);
@@ -1323,9 +1428,23 @@ public class ServiceController extends BaseController {
 								String permissionStatus = serviceInfo.get(8);
 								String serviceVisitAddress = serviceInfo.get(9);
 								String imageName = serviceInfo.get(10);
-								String metadataVisitAddress = serviceInfo
-										.get(11);
+								String metadataVisitAddress = serviceInfo.get(11);
 								String registerType = serviceInfo.get(12);
+								String remoteType = serviceInfo.get(13);
+								
+								if(StringUtils.isNotBlank(registerName) && registerName.replaceAll("[\u4e00-\u9fa5]", "xx").length()>30) {
+									continue;
+								}
+								if(StringUtils.isBlank(registerName)) {
+									continue;
+								}
+								
+								if(StringUtils.isNotBlank(showName) && showName.replaceAll("[\u4e00-\u9fa5]", "xx").length()>50) {
+									continue;
+								}
+								if(StringUtils.isBlank(showName)) {
+									continue;
+								}
 								s.setRegisterName(registerName);
 								s.setShowName(showName);
 								String managerServiceUrl = "";
@@ -1424,11 +1543,26 @@ public class ServiceController extends BaseController {
 									DictionaryItem value = (DictionaryItem) h
 											.getValue();
 									if (value.getName().equals(registerType)) {
-										s.setRegisterType(value.getValue());
+										s.setRegisterType(value.getValue());										
 										break;
 									}
 
 								}
+								
+								//设置远程服务类型
+								Map<String, Object> remoteTypeMap = DataDictionary
+										.getObject("remote_services_type");
+								for (Entry<String, Object> h : remoteTypeMap
+										.entrySet()) {
+									DictionaryItem value = (DictionaryItem) h
+											.getValue();
+									if (value.getName().equals(remoteType)) {
+										s.setRemoteServicesType(value.getValue());
+										break;
+									}
+
+								}
+								
 								s.setMaxVersionNum(1);
 								s.setAuditStatus("0");
 								s.setServiceStatus("0");
@@ -1483,9 +1617,9 @@ public class ServiceController extends BaseController {
 					list.add(service);
 				}
 			}
-			String[] head = { "序号", "服务引擎名字", "服务注册名称", "服务显示名称", "服务所有目录",
+			String[] head = { "序号", "服务注册名称", "服务显示名称","服务引擎名字", "服务所有目录",
 					"服务描述", "服务功能类型", "拓展功能类型", "服务缓存", "服务权限类型", "服务访问地址",
-					"服务缩略图名字", "元数据访问地址", "服务注册类型" };
+					"服务缩略图名字", "元数据访问地址", "服务注册类型","远程服务类型" };
 			createExcel(list, head, request, response);
 			map.put("msg", "删除成功！");
 			//return map;
@@ -1544,9 +1678,9 @@ public class ServiceController extends BaseController {
 		dataStyle.setTopBorderColor(HSSFColor.BLACK.index);
 
 		sheet.setColumnWidth(0, 1500);// 序号
-		sheet.setColumnWidth(1, 5000);// 服务引擎名字
-		sheet.setColumnWidth(2, 5000);// 服务注册名称
-		sheet.setColumnWidth(3, 8000);// 服务显示名称
+		sheet.setColumnWidth(1, 5000);// 服务注册名称
+		sheet.setColumnWidth(2, 8000);// 服务显示名称
+		sheet.setColumnWidth(3, 5000);// 服务引擎名字
 		sheet.setColumnWidth(4, 5000);// 服务所有目录
 		sheet.setColumnWidth(5, 8000);// 服务描述
 		sheet.setColumnWidth(6, 4000);// 服务功能类型
@@ -1557,6 +1691,7 @@ public class ServiceController extends BaseController {
 		sheet.setColumnWidth(11, 3500);// 服务缩略图名字
 		sheet.setColumnWidth(12, 3500);// 元数据访问地址
 		sheet.setColumnWidth(13, 3500);// 服务注册类型
+		sheet.setColumnWidth(14, 3500);// 远程服务类型
 
 		// 标题
 		for (int i = 0; i < head.length; i++) {
@@ -1575,9 +1710,9 @@ public class ServiceController extends BaseController {
 				sheet = wb.createSheet("sheet" + sheetCount);
 
 				sheet.setColumnWidth(0, 1500);// 序号
-				sheet.setColumnWidth(1, 5000);// 服务引擎名字
-				sheet.setColumnWidth(2, 5000);// 服务注册名称
-				sheet.setColumnWidth(3, 8000);// 服务显示名称
+				sheet.setColumnWidth(1, 5000);// 服务注册名称
+				sheet.setColumnWidth(2, 8000);// 服务显示名称
+				sheet.setColumnWidth(3, 5000);// 服务引擎名字
 				sheet.setColumnWidth(4, 5000);// 服务所有目录
 				sheet.setColumnWidth(5, 8000);// 服务描述
 				sheet.setColumnWidth(6, 4000);// 服务功能类型
@@ -1588,6 +1723,7 @@ public class ServiceController extends BaseController {
 				sheet.setColumnWidth(11, 3500);// 服务缩略图名字
 				sheet.setColumnWidth(12, 3500);// 元数据访问地址
 				sheet.setColumnWidth(13, 3500);// 服务注册类型
+				sheet.setColumnWidth(14, 3500);// 远程服务类型
 				
 				HSSFRow row1 = sheet.createRow((short) 0);
 				row1.setHeight((short) 400);
@@ -1603,12 +1739,12 @@ public class ServiceController extends BaseController {
 			Service s = list.get(i);
 			HSSFRow row1 = sheet.createRow((short) rowIndex);
 
-			String[] rowValues = new String[14];
-			rowValues[0] = (i + 1) + "";
-			rowValues[1] = s.getServerEngine() != null ? s.getServerEngine()
+			String[] rowValues = new String[15];
+			rowValues[0] = (i + 1) + "";			
+			rowValues[1] = s.getRegisterName();
+			rowValues[2] = s.getShowName();
+			rowValues[3] = s.getServerEngine() != null ? s.getServerEngine()
 					.getConfigName() : "";
-			rowValues[2] = s.getRegisterName();
-			rowValues[3] = s.getShowName();
 			rowValues[4] = s.getFolderName();
 			rowValues[5] = s.getRemarks();
 			rowValues[6] = s.getFunctionType();
@@ -1674,6 +1810,22 @@ public class ServiceController extends BaseController {
 
 			}
 
+			rowValues[14] = "";
+			// 设置远程服务类型
+			Map<String, Object> remoteTypeMap = DataDictionary
+					.getObject("remote_services_type");
+			for (Entry<String, Object> h : remoteTypeMap
+					.entrySet()) {
+				DictionaryItem value = (DictionaryItem) h
+						.getValue();
+				if (value.getValue()
+						.equals(s.getRemoteServicesType())) {
+					rowValues[14] = value.getName();
+					break;
+				}
+
+			}
+			
 			// 写数据
 			for (int j = 0; j < rowValues.length; j++) {
 				HSSFCell cell = row1.createCell(j);

@@ -23,7 +23,7 @@ jQuery(function($){
                                  // {image : 'images/backgrounds/0.jpg'},
                                  // {image : 'images/backgrounds/1.jpg'},
                                  // {image : 'images/backgrounds/2.jpg'},
-								 {image : '/ycsys-smartmap-webgis/static/dist/img/map/bg_maplogin.jpg'}
+								 {image : './static/dist/img/map/bg_maplogin.jpg'}
                        ]
 
     });

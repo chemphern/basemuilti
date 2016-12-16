@@ -24,20 +24,31 @@
   <!-- 弹出框 -->
   <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
 
-<script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
-<script src="${res}/plugins/jquery-validation-1.15.1/dist/jquery.validate.min.js"></script>
-<script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
-<script src="${res}/js/common/form.js"></script>
-
+	<script src="${res}/js/common/form.js"></script>
+    <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
+	<script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
+ 	<script src="${res}/plugins/jquery-validation-1.15.1/dist/jquery.validate.min.js"></script>
+	<!-- 封装弹出框dialog -->
+	<script type="text/javascript" src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>
+	<script type="text/javascript" src="${res}/plugins/dialog/iframeTools.source.js"></script>
+	<script type="text/javascript" src="${res}/plugins/dialog/unit.js"></script>
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 <!--[if lt IE 9]>
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+  <style>
+        html,body{
+            background-color: #ecf0f5
+        }
+        body{
+            overflow-y: hidden;
+        }
+        </style>
 </head>
 <body>
-	<form method="post" id="form_id">
+	<%-- <form method="post" id="form_id">
 		<input type="hidden" name="id" value="${layer.id}">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="date_add_table">
 			<tr>
@@ -57,17 +68,21 @@
 					validate="{required:true,maxlength:15,messages:{required:'必填',maxlength:'结点名称 的字符长度大于15个字符！'}}" /></td>
 			</tr>
 		</table>
-	</form>
-	<%-- <form method="post" id="form_id">
+	</form> --%>
+	<form method="post" id="form_id">
 		<input type="hidden" name="id" value="${layer.id}">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="date_add_table">
 			<tr>
 				<td width="120" class="t_r">上级节点：</td>
 				<td>
-				<input type="text" name="pId" id="layerPid"
+				<%-- <input type="text" name="pId" id="layerPid"
 					disabled="disabled" class="text validate[required]"
-					value="${layer.pId}" />
+					value="${layer.parentId}" /> --%>
+					<input type="text" name="pid" id="layerPid"
+					disabled="disabled" class="text validate[required]"
+					value="${pid}" />
 				</td>
+				
 				<input type="hidden" name="pId" id="pId"
 					value="${layer.pId}">
 			</tr>
@@ -78,9 +93,9 @@
 					validate="{required:true,maxlength:15,messages:{required:'必填',maxlength:'结点名称 的字符长度大于15个字符！'}}" /></td>
 			</tr>
 		</table>
-	</form> --%>
+	</form>
 </body>
-<script>
+<script type="text/javascript">
 	$(function() {
 		var form = $("#form_id");
 		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
@@ -103,19 +118,51 @@
 						alert("Connection error");
 					},
 					success : function(ret) {
-						alert(ret.msg);
-						if(ret.flag=="1" ||ret.flag=="3" ) {
-							parentWin.treeManager.reload();
-							dialog.close();
+						dialog.close();
+						if(ret.msg=="新增成功！"){
+							$.Layer.confirm({
+            	                msg:"保存成功！",
+            	                fn:function(){
+            	                 //treeManager.reload();
+            	                 //dialog.close();
+            	                 parentWin.treeManager.reload();
+            	                 parentWin.gridManager.reload();
+            	                }
+            	            });
 						}
-						parentWin.layer.hideBtn(); //隐藏新增按钮
+						if(ret.msg=="修改成功！"){
+							$.Layer.confirm({
+            	                msg:"修改成功！",
+            	                fn:function(){
+            	                 parentWin.treeManager.reload();
+            	                 parentWin.gridManager.reload();
+            	                }
+            	            });
+							
+						}
+						if(ret.msg=="图层节点不能再新增节点！"){
+							$.Layer.confirm({
+            	                msg:"图层节点不能再新增节点！",
+            	            });
+						}
+							//parentWin.treeManager.reload();
+						/* if(ret.flag=="1" ||ret.flag=="3" ) {
+							$.Layer.confirm({
+            	                msg:"保存成功！",
+            	                fn:function(){
+            	                 treeManager.reload();
+            	                 gridManager.reload();
+            	                }
+            	            });
+							parentWin.treeManager.reload();
+						} */
+						//parentWin.layer.hideBtn(); //隐藏新增按钮
 					}
-				});
+				}); 
 			}
 			else {
 				alert("请重新填写那些有误的信息！");
 			}
-
 		});
 	});
 </script>

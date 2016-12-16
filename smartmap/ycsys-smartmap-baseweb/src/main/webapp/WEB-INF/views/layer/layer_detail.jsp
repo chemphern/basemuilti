@@ -64,10 +64,31 @@
 		<input type="hidden" name="id" value="${layer.id}">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="date_add_table">
 			<tr>
-				<td width="120" class="t_r">上级图层节点：</td>
+				<td class="t_r">服务注册类型：</td>
 				<td>
-				<input type="text" name="parent.name" id="pName" value="${layer.parent.name}" class="text validate[required]" />
-				<input type="hidden" name="parent.id" id="pid" value="${layer.parent.id}" />
+					<select type="text" name="registerType" id="registerType" class="text">
+						<option value="0">gis服务注册</option>
+						<option value="1">OneMap服务注册</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="t_r">上级图层目录：</td>
+				<td>
+					<select type="text" name="pId" id="layerPid" class="text">
+						<c:forEach var="list" items="${lists }">
+							<c:if test="${ not empty list }">
+								<c:if test="${layer.id eq list.id }">
+									<option value="${list.id }" selected="selected">${list.name }</option>
+								</c:if>
+								<c:if test="${layer.id ne list.id }">
+									<option value="${list.id }">${list.name }</option>
+								</c:if>
+							</c:if>
+						</c:forEach>
+					</select>
+					<input type="hidden" name="pId" id="pId"
+					value="${layer.pId}">
 				</td>
 			</tr>
 			<tr>
@@ -141,6 +162,21 @@ var gridManager = null;
 	})(jQuery);
 
 	$(function() {
+		//设置下拉的值
+		if("${layer.id}"){
+			var geometryType = "${layer.geometryType}";
+			if(geometryType) {
+				$("#geometryType option[value="+geometryType+"]").attr("selected",true);
+			}
+			var layerPid = "${layer.pId}";
+			if(layerPid) {
+				$("#layerPid option[value="+layerPid+"]").attr("selected",true);
+			}
+			var registerType = "${layer.service.registerType}";
+			if(registerType) {
+				$("#registerType option[value="+registerType+"]").attr("selected",true);
+			}
+		}
 		var form = $("#form_id");
 		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
 		form.validate(val_obj);

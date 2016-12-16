@@ -178,7 +178,8 @@ public class BaseDaoImpl<T,PK> extends HibernateDaoSupport implements BaseDao<T,
 				q.setParameter(i, param.get(i));
 			}
 		}
-		return (Long) q.uniqueResult();
+		return (long) q.list().size();
+		//return (Long) q.uniqueResult();
 	}
 
 	public Integer executeHql(String hql) {
@@ -269,6 +270,19 @@ public class BaseDaoImpl<T,PK> extends HibernateDaoSupport implements BaseDao<T,
 		if (param != null && param.length > 0) {
 			for (int i = 0; i < param.length; i++) {
 				q.setParameter(i, param[i]);
+			}
+		}
+		q.setFirstResult(page.getFirstResult());
+		q.setMaxResults(page.getMaxResults());
+		return q.list();
+	}
+
+	@Override
+	public List<T> find(String hql, List<Object> param, PageHelper page) {
+		Query q = this.getCurrentSession().createQuery(hql);
+		if (param != null && param.size() > 0) {
+			for (int i = 0; i < param.size(); i++) {
+				q.setParameter(i, param.get(i));
 			}
 		}
 		q.setFirstResult(page.getFirstResult());

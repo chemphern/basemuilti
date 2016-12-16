@@ -126,7 +126,7 @@
 	        var menu;
 	        var actionNodeID;
 	        var actionNodeName;
-	        var layerId;
+	        var pId;
 	        
 	      //树右键处理
 	        $(function () {
@@ -163,9 +163,9 @@
 	                });
 	        }
 	    	function onSelectLayer(obj) {
-	    		layerId = obj.data.id;
-	    		window.tempLayerId = layerId;
-				gridManager.setParm("layerId",layerId);
+	    		pId = obj.data.id;
+	    		window.tempLayerId = pId;
+				gridManager.setParm("pId",pId);
 	        	window.gridManager.reload();
 	        }
 	    	
@@ -190,19 +190,35 @@
 	            			         }
 	            				}
 	            				else if(result["result"]=="1"){
-	            					alert("该结点下有子结点,不能删除");
+	            					//alert("该结点下有子结点,不能删除");
+	            					$.Layer.confirm({
+	                	                msg:"该结点下有子结点,不能删除!",
+	                	                fn:function(){
+	                	                 gridManager.reload();
+	                	                }
+	                	            });
+	            				}
+	            				else if(result["result"]=="3"){
+	            					//alert("删除成功！");
+	            					$.Layer.confirm({
+	                	                msg:"删除成功",
+	                	                fn:function(){
+	                	                 treeManager.reload();
+	                	                 gridManager.reload();
+	                	                }
+	                	            });
 	            				}
 	            				else {
-	            					alert("请选择需要删除的图层!");
+	            					//alert("请选择需要删除的图层!");
+	            					$.Layer.confirm({
+	                	                msg:"请选择需要删除的图层!",
+	                	            });
 	            				}
 	                        },error:function(){
 	                            alert("删除失败！");
 	                        }
 	                    });
 	                },
-	                fn2:function(){
-	                }
-	                
 	            });
 	    		
 	    	}
@@ -216,14 +232,14 @@
 							{ display: '图层名称', name: 'name', align: 'left', minWidth: 100},
 							{ display: '几何类型', name: 'geometryType', minWidth: 60,
 								render: function (item) {
-	 	                    	     var obj = parseInt(item.geometryType);
-	 	                    	    if (obj == 0) {
+	 	                    	     var obj = item.geometryType;
+	 	                    	    if (obj == 'esriGeometryPoint') {
 	   	                            	 return '点图层';
 	   	                             }
-	   	                             else if(obj == 1) {
+	   	                             else if(obj == 'esriGeometryPolyline') {
 	   	                            	 return '线图层';
 	   	                             }
-	   	                          	 else if(obj == 2) {
+	   	                          	 else if(obj == 'esriGeometryPolygon') {
 	   	                            	 return '面图层';
 	   	                             }
 	 	                    	     /* alert(obj);
@@ -326,7 +342,10 @@
 			    	else {
 				    	var selectedRows = gridManager.getSelecteds();
 				    	if(selectedRows.length != 1) {
-				    		alert("请选择一条记录进行修改！");
+				    		//alert("请选择一条记录进行修改！");
+				    		$.Layer.confirm({
+		                		msg:"请选择一条记录进行修改！",
+		            		});
 				    		return false;
 				    	}
 				    	else {
@@ -358,18 +377,34 @@
 		                        success:function(result){
 		                        	if(result["result"]=="0") {
 		            			         treeManager.reload();
-		            			         //成功则删除这个树结点
-		            			         //resource_type.removeTreeItem(actionNodeID);
-		            			         //把所有结点都删除了，这时需要把新增按钮显示
-		            			         if(result["showBtnFlag"] == "1") {
+		            			         /* if(result["showBtnFlag"] == "1") {
 		            			        	 window.layer.showBtn();
-		            			         }
+		            			         } */
 		            				}
 		            				else if(result["result"]=="1"){
-		            					alert("该结点下有子结点，不能删除");
+		            					//alert("该结点下有子结点，不能删除");
+		            					$.Layer.confirm({
+		                	                msg:"该结点下有子结点，不能删除!",
+		                	                fn:function(){
+		                	                 gridManager.reload();
+		                	                }
+		                	            });
+		            				}
+		            				else if(result["result"]=="3"){
+		            					//alert("删除成功！");
+		            					$.Layer.confirm({
+		                	                msg:"删除成功",
+		                	                fn:function(){
+		                	                 treeManager.reload();
+		                	                 gridManager.reload();
+		                	                }
+		                	            });
 		            				}
 		            				else {
-		            					alert("请选择行进行删除!");
+		            					//alert("请选择行进行删除!");
+		            					$.Layer.confirm({
+		                	                msg:"请选择记录进行删除!",
+		                	            });
 		            				}
 		                        	gridManager.reload();
 		                        },error:function(){
@@ -411,9 +446,23 @@
 			            			         }
 			            				}
 			            				else if(result["result"]=="1"){
-			            					alert("该结点下有子结点，不能删除");
+			            					//alert("该结点下有子结点，不能删除");
+			            					$.Layer.confirm({
+			                	                msg:"该结点下有子结点，不能删除!",
+			                	                fn:function(){
+			                	                 gridManager.reload();
+			                	                }
+			                	            });
 			            				}
-			            				
+			            				else if(result["result"]=="3"){
+			            					$.Layer.confirm({
+			                	                msg:"删除成功",
+			                	                fn:function(){
+			                	                 treeManager.reload();
+			                	                 gridManager.reload();
+			                	                }
+			                	            });
+			            				}
 			                        	gridManager.reload();
 			                        },error:function(){
 			                            alert("删除失败！");
@@ -423,11 +472,13 @@
 			                fn2:function(){
 			                	gridManager.reload();
 			                }
-			                
 			            });
 			    	} 
 			    	else{
-			    		alert("请选择数据！");
+			    		//alert("请选择数据！");
+			    		$.Layer.confirm({
+        	                msg:"请选择记录进行删除!",
+        	            });
 			    		return false;
 			    	}
 		    	}

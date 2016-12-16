@@ -64,14 +64,35 @@
 		<input type="hidden" name="id" value="${layerTheme.id}">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="date_add_table">
 			<tr>
-				<td width="120" class="t_r">上级专题图节点：</td>
+				<td class="t_r">服务注册类型：</td>
 				<td>
-				<input type="text" name="parent.name" id="pName" value="${layerTheme.parent.name}" class="text validate[required]" />
-				<input type="hidden" name="parent.id" id="pid" value="${layerTheme.parent.id}" />
+					<select type="text" name="registerType" id="registerType" class="text">
+						<option value="0">gis服务注册</option>
+						<option value="1">OneMap服务注册</option>
+					</select>
 				</td>
 			</tr>
 			<tr>
-				<td class="t_r">专题图名称：</td>
+				<td class="t_r">上级图层目录：</td>
+				<td>
+					<select type="text" name="pId" id="layerThemePid" class="text">
+						<c:forEach var="list" items="${lists }">
+							<c:if test="${ not empty list }">
+								<c:if test="${layerTheme.id eq list.id }">
+									<option value="${list.id }" selected="selected">${list.name }</option>
+								</c:if>
+								<c:if test="${layerTheme.id ne list.id }">
+									<option value="${list.id }">${list.name }</option>
+								</c:if>
+							</c:if>
+						</c:forEach>
+					</select>
+					<input type="hidden" name="pId" id="pId"
+					value="${layerTheme.pId}">
+				</td>
+			</tr>
+			<tr>
+				<td class="t_r">图层名称：</td>
 				<td><input type="text" name="name" id="name" size="15"
 					value="${layerTheme.name }" class="text validate[required]"
 					validate="{required:true,maxlength:15,messages:{required:'必填',maxlength:'结点名称 的字符长度大于15个字符！'}}" /></td>
@@ -127,6 +148,17 @@ var gridManager = null;
 	})(jQuery);
 
 	$(function() {
+		//设置下拉的值
+		if("${layerTheme.id}"){
+			var layerThemePid = "${layerTheme.pId}";
+			if(layerThemePid) {
+				$("#layerThemePid option[value="+layerThemePid+"]").attr("selected",true);
+			}
+			var registerType = "${layerTheme.service.registerType}";
+			if(registerType) {
+				$("#registerType option[value="+registerType+"]").attr("selected",true);
+			}
+		}
 		var form = $("#form_id");
 		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
 		form.validate(val_obj);

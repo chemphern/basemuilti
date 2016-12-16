@@ -45,7 +45,6 @@
 <script type="text/javascript" src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>
 <script type="text/javascript" src="${res}/plugins/dialog/iframeTools.source.js"></script>
 <script type="text/javascript" src="${res}/plugins/dialog/unit.js"></script>
-<script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script src="${res}/js/common/multiselect.js"></script>
 <script src="${res}/plugins/jquery-validation-1.15.1/dist/jquery.validate.min.js"></script>
 <script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
@@ -64,10 +63,31 @@
 		<input type="hidden" name="id" value="${layer.id}">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="date_add_table">
 			<tr>
-				<td width="120" class="t_r">上级图层节点：</td>
+				<td class="t_r">服务注册类型：</td>
 				<td>
-				<input type="text" name="parent.name" id="pName" value="${layer.parent.name}" class="text validate[required]" />
-				<input type="hidden" name="parent.id" id="pid" value="${layer.parent.id}" />
+					<select type="text" name="registerType" id="registerType" class="text">
+						<!-- <option>...请选择...</option> -->
+						<option value="0">GIS服务注册</option>
+						<option value="1">OneMap服务注册</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td class="t_r">上级图层目录：</td>
+				<td>
+					<select type="text" name="pId" id="layerPid" class="text">
+						<c:forEach var="list" items="${lists }">
+							<c:if test="${ not empty list }">
+								<c:if test="${layer.id eq list.id }">
+									<option value="${list.id }" selected="selected">${list.name }</option>
+								</c:if>
+								<c:if test="${layer.id ne list.id }">
+									<option value="${list.id }">${list.name }</option>
+								</c:if>
+							</c:if>
+						</c:forEach>
+					</select>
+					<input type="hidden" name="pId" id="pId" value="${layer.pId}">
 				</td>
 			</tr>
 			<tr>
@@ -141,6 +161,21 @@ var gridManager = null;
 	})(jQuery);
 
 	$(function() {
+		//设置下拉的值
+		if("${layer.id}"){
+			var geometryType = "${layer.geometryType}";
+			if(geometryType) {
+				$("#geometryType option[value="+geometryType+"]").attr("selected",true);
+			}
+			var layerPid = "${layer.pId}";
+			if(layerPid) {
+				$("#layerPid option[value="+layerPid+"]").attr("selected",true);
+			}
+			var registerType = "${layer.service.registerType}";
+			if(registerType) {
+				$("#registerType option[value="+registerType+"]").attr("selected",true);
+			}
+		}
 		var form = $("#form_id");
 		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
 		form.validate(val_obj);
@@ -162,12 +197,34 @@ var gridManager = null;
 						alert("Connection error");
 					},
 					success : function(ret) {
-						alert(ret.msg);
+						dialog.close();
+						if(ret.msg=="新增成功！"){
+							$.Layer.confirm({
+            	                msg:"保存成功！",
+            	                fn:function(){
+            	                 //treeManager.reload();
+            	                 //dialog.close();
+            	                 parentWin.treeManager.reload();
+            	                 parentWin.gridManager.reload();
+            	                }
+            	            });
+						}
+						if(ret.msg=="修改成功！"){
+							$.Layer.confirm({
+            	                msg:"修改成功！",
+            	                fn:function(){
+            	                 parentWin.treeManager.reload();
+            	                 parentWin.gridManager.reload();
+            	                }
+            	            });
+						}	
+						/* alert(ret.msg);
 						if(ret.flag=="1" || ret.flag=="3") {
 							parentWin.treeManager.reload();
 							dialog.close();
 						}
-						parentWin.layer.hideBtn(); //隐藏新增按钮
+						parentWin.gridManager.reload(); */
+						//parentWin.layer.hideBtn(); //隐藏新增按钮
 					}
 				});
 			}

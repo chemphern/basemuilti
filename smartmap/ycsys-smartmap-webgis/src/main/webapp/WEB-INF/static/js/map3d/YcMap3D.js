@@ -338,6 +338,26 @@ function clearMap3D(){
 			endMeasureOperation();
 		deleteItemsByName(MeasureToolGlobe.MeasureFolder);
 	}
+    deleteFolderObjects(configration.QueryIcoFolder);
+}
+
+//删除文件夹下的所有对象
+function deleteFolderObjects(folderName) {
+    var rootID = YcMap3D.ProjectTree.FindItem(folderName);
+    if(rootID!=""&&YcMap3D.ProjectTree.IsGroup(rootID)){
+        var arr = [];
+        var childID = YcMap3D.ProjectTree.GetNextItem(rootID, 11);
+        while (childID) {
+            arr.push(childID);
+            if (YcMap3D.ProjectTree.GetNextItem(childID, 11)) {
+                getChilds(childID,arr);
+            }
+            childID = YcMap3D.ProjectTree.GetNextItem(childID, 13);
+        }
+        for(var i=0;i<arr.length;i++){
+            YcMap3D.ProjectTree.DeleteItem(arr[i]);
+        }
+    }
 }
 
 //确认删除对话框

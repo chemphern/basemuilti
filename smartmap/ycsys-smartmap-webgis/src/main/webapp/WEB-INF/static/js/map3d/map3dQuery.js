@@ -4,7 +4,7 @@
  * version: 1.0.0
  */
 //声明查询展示字段
-var descriptionFields=["Name_CHN","Code","StationNum"];
+var descriptionFields=["Name_CHN","Name_ENG"];
 var arrQueryInfoItem;
 
 //要素图层查询入口
@@ -14,8 +14,8 @@ function queryAttr3d(layerName,fieldName,fieldValue){
 	if(wfsServices!=null&&wfsServices!=undefined&&wfsServices.length>0){
 		for(var i=0;i<wfsServices.length;i++){
 			var wfs = YcMap3D.ProjectTree.GetObject(wfsServices[i]);
-			if(wfs.ObjectType==36 && wfs.TreeItem.Name==layerName){
-				searchFeatureLayer(wfs,layerName,fieldName,fieldValue);
+			if(wfs != null && wfs.ObjectType==36 && $.trim(wfs.TreeItem.Name)==$.trim(layerName)){
+				searchFeatureLayer(wfs,$.trim(layerName),fieldName,fieldValue);
 				ifAdd = true;
 				break;
 			}
@@ -30,9 +30,6 @@ function queryAttr3d(layerName,fieldName,fieldValue){
 function searchFeatureLayer(wfsLayer,layerName,fieldName,fieldValue){
 	// wfsLayer.Filter = fieldName + " = '" + fieldValue +"'";
 	// wfsLayer.Refresh();
-	// var features = wfsLayer.SelectedFeatures;
-	// if(features!=null)
-	// 	alert(features.Count);
     wfsLayer.Visibility.Show = false;
     var features = getFeatuesFromName(wfsLayer,layerName,fieldName,fieldValue);
     if(features!=null&&features.length>0){
@@ -56,12 +53,14 @@ function getFeatuesFromName(featureLayers,layerName,fieldName,fieldValue) {
 		for(var i=0;i<featureLayer.GetCurrentFeatures().Count;i++){
 			var feature = featureLayer.GetCurrentFeatures().Item(i);
 			var featureAttr = feature.FeatureAttributes.GetFeatureAttribute(fieldName);
-			if(featureAttr!=null&&featureAttr!=undefined&&featureAttr.Value == fieldValue) {
+			console.log(featureAttr.Value);
+            console.log(featureAttr.Value.indexOf(fieldValue));
+			if(featureAttr!=null&&featureAttr!=undefined&&featureAttr.Value.indexOf(fieldValue)>=0) {
                 features.push(feature);
                 if(features.length<6){
                     addFeatureImage(feature,features.length);
 				}
-                var li=createResultList(feature,fieldName,features.length);
+                var li=createPropotyResultList(feature,fieldName,features.length);
                 arrQueryInfoItem.push(li);
 			}
 		}
@@ -69,8 +68,8 @@ function getFeatuesFromName(featureLayers,layerName,fieldName,fieldValue) {
 	return features;
 }
 
-//动态创建查询结果列表
-function createResultList(feature,fieldName,num) {
+//动态创建属性查询结果列表
+function createPropotyResultList(feature,fieldName,num) {
 	//名称信息
 	var title=feature.FeatureAttributes.GetFeatureAttribute(fieldName).Value;
 	//简略显示的字段数组
@@ -82,20 +81,23 @@ function createResultList(feature,fieldName,num) {
 			summary.push(fieldName + ":" + fieldValue);
 		}
 	}
+	//组合查询信息
 	summary=summary.join("—");
-	var html="<li><i class='no-"+num+"'></i><a href='#' onclick='navigateToFeature("+feature.ID+")'>"+title+"</a><span>"+summary+"</span></li>";
+	//获取FeatureID用来点击定位
+	var featureID = feature.ID;
+	//创建列表html对象
+	var html="<li onclick='navigateToFeature(" + '"' + featureID + '"' + ")'><i class='no-" + num + "'></i><a href='#'>" + title +"</a><span>" + summary + "</span></li>";
 	return html;
 }
 
 //结果列表点击飞行到要素方法
 function navigateToFeature(featureID) {
-	alert(123);
-	YcMap3D.Navigate.FlyTo(featureID,0);
+    FlyToByID(featureID);
 }
 
+//清除场景中Feature标识
 function clearQueryFeature() {
-    alert(234);
-    deleteItemsByName(configration.QueryIcoFolder);
+    deleteFolderObjects(configration.QueryIcoFolder);
 }
 
 //为查询出来的要素在场景中添加图片
@@ -117,4 +119,108 @@ function getFeaturePosition(feature) {
 	}else{
         return YcMap3D.Creator.CreatePosition(geometry.Envelope.Centroid.X,geometry.Envelope.Centroid.Y,geometry.Envelope.Centroid.Z,3);
 	}
+}
+
+var spatialReserchType;
+//空间点查询
+function queryPoint3d() {
+    spatialReserchType = "point"
+    spatialFeatureReserch();
+}
+
+//空间线查询
+function queryPolyline3d() {
+    spatialReserchType = "line"
+    spatialFeatureReserch();
+}
+
+//空间面查询
+function queryPolygon3d() {
+    spatialReserchType = "area"
+    spatialFeatureReserch();
+}
+
+//空间查询主函数
+function spatialFeatureReserch() {
+	if(spatialReserchType == "point"){
+        YcMap3D.Window.SetInputMode(1);
+        YcMap3D.AttachEvent("OnLButtonUp", SpatialPointReserchOnLButtonUp);
+	}else if(spatialReserchType == "line"){
+        //空间查询线查询绘制操作
+        DrawTool.activate(DrawTool.DrawType.TERRAPOLYLINE);
+        //空间查询线查询结果处理
+        DrawTool.drawEndHandler = function(polyline) {
+            featureSpatialQuery(polyline.Geometry);
+        };
+	}else if(spatialReserchType == "area"){
+        //空间查询面查询绘制操作
+        DrawTool.activate(DrawTool.DrawType.TERRAPOLYGON);
+        //空间查询面查询结果处理
+        DrawTool.drawEndHandler = function (polygon) {
+            featureSpatialQuery(polygon.Geometry);
+        };
+	}
+}
+
+//左键点击选择要素事件(空间查询点查询绘制操作及结果处理)
+function SpatialPointReserchOnLButtonUp(Flags,X,Y) {
+	var pointGeometry = YcMap3D.Creator.GeometryCreator.CreatePointGeometry([X,Y,0]);
+    featureSpatialQuery(pointGeometry);
+    YcMap3D.Window.SetInputMode(0);
+    YcMap3D.DetachEvent("OnLButtonUp", SpatialPointReserchOnLButtonUp);
+}
+
+//空间查询要素空间分析
+function featureSpatialQuery(geometry) {
+    var wfsServices = getFolderObjects(configration.WFSServiceFolder);
+    if(wfsServices!=null&&wfsServices!=undefined&&wfsServices.length>0){
+        for(var i=0;i<wfsServices.length;i++){
+            var featureLayer = YcMap3D.ProjectTree.GetObject(wfsServices[i]);
+            var intersectFeatures = featureLayer.ExecuteSpatialQuery(geometry,1);
+            if(intersectFeatures!=null&&intersectFeatures.length>0){
+				for(var j=0;j<intersectFeatures.length;j++){
+					var feature = intersectFeatures.Item(j);
+                    if(intersectFeatures.length<6){
+                        addFeatureImage(feature,intersectFeatures.length);
+                    }
+                    var li=createSpatialResultList(feature,fieldName,features.length);
+                    arrQueryInfoItem.push(li);
+				}
+			}
+		}
+    }
+}
+
+//动态创建空间查询结果列表
+function createSpatialResultList(feature,num) {
+    //名称信息
+    var title=feature.FeatureAttributes.GetFeatureAttribute(fieldName).Value;
+    //简略显示的字段数组
+    var summary=[];
+    if(descriptionFields){
+        for(var i=0;i<descriptionFields.length;i++){
+            var fieldName=descriptionFields[i];
+            var fieldValue = feature.FeatureAttributes.GetFeatureAttribute(fieldName).Value;
+            summary.push(fieldName + ":" + fieldValue);
+        }
+    }
+    //组合查询信息
+    summary=summary.join("—");
+    //获取FeatureID用来点击定位
+    var featureID = feature.ID;
+    //创建列表html对象
+    var html="<li onclick='navigateToFeature(" + '"' + featureID + '"' + ")'><i class='no-" + num + "'></i><a href='#'>" + title +"</a><span>" + summary + "</span></li>";
+    return html;
+}
+
+//ArcGIS查询结果转变添加到三维场景中
+function fromArcgisTo3dScene(featureSet) {
+    var displayFieldName=featureSet.displayFieldName;
+    alert(displayFieldName);
+    var fieldAliases=featureSet.fieldAliases;
+    alert(fieldAliases);
+    var geometryType=featureSet.geometryType;
+    alert(geometryType);
+    var features=featureSet.features;
+    alert(features.length);
 }

@@ -36,7 +36,7 @@
 .skin-blue .search-form .btn_list button.active{background-color:#1e8bf2;border-color:#1e8bf2;color:#fff;}
 .skin-blue .search-form .btn_list button:hover{background-color:rgba(30,139,242,0.75);border-color:rgba(30,139,242,0.75);color:#fff;}
 .skin-blue .search-form .pagination > li > a:hover, .pagination > li > span:hover{color:#1e8bf2;}
-.skin-blue .content .toolbar .icon{color: #1e8bf2; }
+.skin-blue .mapcontent .toolbar .icon{color: #1e8bf2; }
 .skin-blue .tab-mapBtn .mapBtn button.active {background-color: #1e8bf2; border: 1px solid #1e8bf2; color: #fff; }
 .skin-blue .bootstrap-table .pagination > .active > a, .bootstrap-table  .pagination > .active > span, .bootstrap-table  .pagination > .active > a:hover, .bootstrap-table  .pagination > .active > span:hover, .bootstrap-table  .pagination > .active > a:focus, .bootstrap-table  .pagination > .active > span:focus{background-color: #1e8bf2; border: 1px solid #1e8bf2; color: #fff; }
 .skin-blue .msg-box-bd> li > a > div >i.iconfont{color: #1e8bf2;}
@@ -92,7 +92,7 @@
 .skin-green .search-form .btn_list button.active{background-color:#19b957;border-color:#19b957;color:#fff;}
 .skin-green .search-form .btn_list button:hover{background-color:rgba(25,185,87,0.75);border-color:rgba(25,185,87,0.75);color:#fff;}
 .skin-green .search-form .pagination > li > a:hover, .pagination > li > span:hover{color:#19b957;}
-.skin-green .content .toolbar .icon{color: #19b957; }
+.skin-green .mapcontent .toolbar .icon{color: #19b957; }
 .skin-green .tab-mapBtn .mapBtn button.active {background-color: #19b957; border: 1px solid #19b957; color: #fff; }
 .skin-green .bootstrap-table .pagination > .active > a, .bootstrap-table  .pagination > .active > span, .bootstrap-table  .pagination > .active > a:hover, .bootstrap-table  .pagination > .active > span:hover, .bootstrap-table  .pagination > .active > a:focus, .bootstrap-table  .pagination > .active > span:focus{background-color: #19b957; border: 1px solid #19b957; color: #fff; }
 .skin-green  .msg-box-bd> li > a > div >i.iconfont{color: #19b957;}
@@ -148,7 +148,7 @@
 .skin-cyan .search-form .btn_list button.active{background-color:#55cc85;border-color:#55cc85;color:#fff;}
 .skin-cyan .search-form .btn_list button:hover{background-color:rgba(25,185,87,0.75);border-color:rgba(25,185,87,0.75);color:#fff;}
 .skin-cyan .search-form .pagination > li > a:hover, .pagination > li > span:hover{color:#26bf8c;}
-.skin-cyan .content .toolbar .icon{color: #26bf8c; }
+.skin-cyan .mapcontent .toolbar .icon{color: #26bf8c; }
 .skin-cyan .tab-mapBtn .mapBtn button.active {background-color: #26bf8c; border: 1px solid #26bf8c; color: #fff; }
 .skin-cyan .bootstrap-table .pagination > .active > a, .bootstrap-table  .pagination > .active > span, .bootstrap-table  .pagination > .active > a:hover, .bootstrap-table  .pagination > .active > span:hover, .bootstrap-table  .pagination > .active > a:focus, .bootstrap-table  .pagination > .active > span:focus{background-color: #26bf8c; border: 1px solid #26bf8c; color: #fff; }
 .skin-cyan  .msg-box-bd> li > a > div >i.iconfont{color: #26bf8c;}

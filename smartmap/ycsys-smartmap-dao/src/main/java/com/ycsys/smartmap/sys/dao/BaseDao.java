@@ -41,6 +41,8 @@ public interface BaseDao<T,PK> {
     public List<T> find(String hql, List<Object> param, Integer page, Integer rows);
     
     public List<T> find(String hql, Object[] param, PageHelper page);
+    
+    public List<T> find(String hql, List<Object> param, PageHelper page);
 
     public T get(Class<T> c, Serializable id);
 

@@ -81,6 +81,6 @@ function measureArea(){
 	if(mapOpt==2){
 		measureArea2d();
 	}else if(mapOpt==3){
-		MeasureTool.activate(MeasureTool.MeasureType.AREA)
+		MeasureTool.activate(MeasureTool.MeasureType.GROUNDAREA)
 	}
 }

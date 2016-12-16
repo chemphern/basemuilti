@@ -60,25 +60,32 @@ function queryAttr(){
 	var layerUrl=layerItem.url;//图层url
 	var fieldName=fieldItem.value;//字段名（非别名）
 	var fieldType=fieldItem.type;//字段类型
-	if(mapOpt==2){
-		queryAttr2d(layerItem,fieldName,fieldType,fieldValue);
-	}else if(mapOpt==3){
-        queryAttr3d(layerItem.text,fieldName,fieldValue);
-	}
+    queryAttr2d(layerItem,fieldName,fieldType,fieldValue);
+	// if(mapOpt==2){
+	// 	queryAttr2d(layerItem,fieldName,fieldType,fieldValue);
+	// }else if(mapOpt==3){
+     //    queryAttr3d(layerItem.text,fieldName,fieldValue);
+	// }
 }
 
 function queryPoint(){
 	if(mapOpt==2){
 		queryPoint2d();
+	}else if(mapOpt==3){
+        queryPoint3d();
 	}
 }
 function queryPolyline(){
 	if(mapOpt==2){
 		queryPolyline2d();
-	}
+	}else if(mapOpt==3){
+        queryPolyline3d();
+    }
 }
 function queryPolygon(){
 	if(mapOpt==2){
 		queryPolygon2d();
-	}
+	}else if(mapOpt==3){
+        queryPolygon3d();
+    }
 }

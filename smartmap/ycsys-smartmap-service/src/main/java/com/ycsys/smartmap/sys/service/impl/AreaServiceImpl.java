@@ -60,7 +60,7 @@ public class AreaServiceImpl implements AreaService{
         if(count < 1) {
             //读取xls
             String file = "广东省行政区划及其行政代码.xls";
-            InputStream is = AreaServiceImpl.class.getResource("/" + file).openStream();
+            InputStream is = AreaServiceImpl.class.getResource("/data/init/" + file).openStream();
             List<ArrayList<String>> datas = getFileDatas(is, file);
             //读取配置文件
             Properties properties = new Properties();

@@ -78,6 +78,25 @@ body {
 						<div class="box-header with-border">
 							<h4 class="box-title">服务列表</h4>
 							<div class="btn_box">
+								服务注册名称：<input name="registerName" id="registerName" class="text">
+								服务状态：<select type="text" name="serviceStatus" id="serviceStatus" class="text">
+											<option value="">请选择</option>
+											<c:forEach var="map" items="${serviceStatus }">
+												<option value="${map.key }">${map.value.name }</option>	
+											</c:forEach>
+									  </select>
+								审核状态：<select type="text" name="auditStatus" id="auditStatus" class="text">
+											<option value="">请选择</option>
+											<c:forEach var="map" items="${auditStatus }">
+												<option value="${map.key }">${map.value.name }</option>	
+											</c:forEach>
+										</select>
+								权限状态：<select type="text" name="permissionStatus" id="permissionStatus" class="text">
+											<option value="">请选择</option>
+											<c:forEach var="map" items="${permissionStatus }">
+												<option value="${map.key }">${map.value.name }</option>	
+											</c:forEach>
+									  </select>
 								<shiro:hasPermission name="service-auditRegister">
 									<button class="current" id="serviceAudit">
 										<i class="glyphicon glyphicon-play"></i> 审核
@@ -151,6 +170,10 @@ body {
 						serverEngineId = obj.data.id
 					}
 					gridManager.setParm("registerServerType",serverEngineId);
+					gridManager.setParm("registerName",$("#registerName").val());
+					gridManager.setParm("auditStatus",$("#auditStatus").val());
+					gridManager.setParm("serviceStatus",$("#serviceStatus").val());
+					gridManager.setParm("permissionStatus",$("#permissionStatus").val());
 		        	window.gridManager.reload();
 		        }
 				
@@ -167,6 +190,13 @@ body {
 			    	}
 				});
 				
+				$("#seriveQuery").on("click",function(e) {
+					gridManager.setParm("registerName",$("#registerName").val());
+					gridManager.setParm("auditStatus",$("#auditStatus").val());
+					gridManager.setParm("serviceStatus",$("#serviceStatus").val());
+					gridManager.setParm("permissionStatus",$("#permissionStatus").val());
+					window.gridManager.reload();
+				});
 				//表格列表
 				$(function() {
 					gridManager = $("#maingrid4").ligerGrid({

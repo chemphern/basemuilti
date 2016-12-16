@@ -18,7 +18,7 @@ public class LoginController {
     public String login() {
         Subject subject = SecurityUtils.getSubject();
         if(subject.isAuthenticated()||subject.isRemembered()){
-            return "redirect:/index";
+            return "redirect:/";
         }
         return "/login";
     }

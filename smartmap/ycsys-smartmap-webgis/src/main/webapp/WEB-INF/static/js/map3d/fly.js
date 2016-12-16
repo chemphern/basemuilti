@@ -87,8 +87,9 @@ function bookmarkDel3d() {
                     bookID:bookmarkId
                 },
                 complete:function () {
-                    var storage=window.localStorage;
-                    storage.setItem("BookMarkEdit","true");
+                    $('#tableSqdw').bootstrapTable('refresh', {
+                        url: path + "/locateService/toList.do"
+                    });
                 },
                 error: function(textStatus){
                     alert("删除书签出错！详细：" + textStatus);

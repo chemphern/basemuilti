@@ -72,6 +72,25 @@ body {
 				<div class="box-header with-border">
 					<h4 class="box-title">资源列表</h4>
 					<div class="btn_box">
+						资源全称：<input name="fullName" id="fullName" class="text">
+						资源名称：<input name="name" id="name" class="text">
+						资源类型：<select type="text" name="type" id="type" class="text">
+									<option value="">请选择</option>
+									<c:forEach var="map" items="${resourceType }">
+										<option value="${map.key }">${map.value.name }</option>	
+									</c:forEach>
+							  </select>
+					          详细分类：<select type="text" name="fileType" id="fileType" class="text">
+									<option value="">请选择</option>
+									<c:forEach var="map" items="${fileType }">
+										<option value="${map.key }">${map.value.name }</option>	
+									</c:forEach>
+							  </select>
+						<shiro:hasPermission name="resource-list">
+							<button class="current" onclick="resource_list.query();">
+								<i class="iconfont icon-plus"></i>查询
+							</button>
+						</shiro:hasPermission>
 						<shiro:hasPermission name="resource-create">
 							<button class="current" onclick="resource_list.editResource('1');">
 								<i class="iconfont icon-plus"></i>新增
@@ -209,6 +228,10 @@ var tempResourceTypeId = null;
         	//console.log(gridManager);
         	window.tempResourceTypeId = resourceTypeId;
         	gridManager.setParm("resourceTypeId",resourceTypeId);
+        	gridManager.setParm("fullName",$("#fullName").val());
+			gridManager.setParm("name",$("#name").val());
+			gridManager.setParm("type",$("#type").val());
+			gridManager.setParm("fileType",$("#fileType").val());
         	window.gridManager.reload();
         }
         //删除资源分类
@@ -441,6 +464,14 @@ var tempResourceTypeId = null;
 		    		alert("请选择一条记录进行操作！");
 		    		return false;
 		    	}
+			},
+			query:function() {
+	        	gridManager.setParm("resourceTypeId",tempResourceTypeId);
+				gridManager.setParm("fullName",$("#fullName").val());
+				gridManager.setParm("name",$("#name").val());
+				gridManager.setParm("type",$("#type").val());
+				gridManager.setParm("fileType",$("#fileType").val());
+	        	window.gridManager.reload();
 			},
 			viewResource: function(id) {
 				if(id) {

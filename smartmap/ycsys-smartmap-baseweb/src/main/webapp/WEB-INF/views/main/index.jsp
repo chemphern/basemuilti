@@ -80,24 +80,10 @@
 //            else {
 //                iframe.height = 560;
 //            }
-            //父窗口window对象，即index.jsp的window对象
             var parent = iframe.contentWindow.parent;
-            //左边菜单栏的高度
             var aside = parent.$(".main-sidebar");
-            //头部的高度
             var header = parent.$(".main-header");
-            //头部以下的div
-            var content_wrapper = parent.$(".content-wrapper");
-            //内容标题的高度
-            var content_header = parent.$(content_wrapper.find(".content-header")[0]).outerHeight();
-            //iframe所在的块
-            var content = parent.$(content_wrapper.find(".content")[0]);
-            //iframe的外边框和补白的高度/2
-            var outer = (content.outerHeight() - content.height())/2;
-            //内容标题的高度 + iframe的上边补白及外边框高度
-            var temp = content_header + outer;
-            //最终Iframe的高度为 左边菜单栏高度 - 头部高度 - 内容标题高度 - iframe的上边框及补白高度
-            var ih = aside.height() - header.height() - temp;
+            var ih = aside.height() - header.height();
             iframe.height = ih;
         }
         catch (e) {

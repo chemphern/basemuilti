@@ -1,6 +1,9 @@
 package com.ycsys.smartmap.resource.service;
 
+import java.util.List;
+
 import com.ycsys.smartmap.resource.entity.Resource;
+import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.service.BaseService;
 /**
  * 资源 service
@@ -14,5 +17,9 @@ public interface ResourceService extends BaseService<Resource, Integer> {
 	 * @return
 	 */
 	Integer getMaxSort(String hql);
+	
+	List<Resource> find(String hql, List<Object> param, PageHelper page);
+	
+	public Long count(String hql, List<Object> param);
 
 }
