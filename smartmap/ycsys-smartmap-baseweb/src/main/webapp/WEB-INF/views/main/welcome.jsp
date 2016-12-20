@@ -13,10 +13,20 @@
     <link rel="stylesheet" href="${res}/plugins/iCheck/flat/blue.css">
     <style>
         html,body{
-            background-color: #ecf0f5
+            background-color: #f1f1f1;
         }
     </style>
 </head>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                首页
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
+                <li class="active">首页</li>
+            </ol>
+        </section>
 
     <!-- Main content -->
     <section class="content">

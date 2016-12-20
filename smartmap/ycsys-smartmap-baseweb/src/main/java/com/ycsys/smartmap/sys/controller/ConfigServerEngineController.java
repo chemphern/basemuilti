@@ -54,10 +54,8 @@ import com.ycsys.smartmap.sys.common.utils.StringUtils;
 import com.ycsys.smartmap.sys.entity.ConfigServerEngine;
 import com.ycsys.smartmap.sys.entity.DictionaryItem;
 import com.ycsys.smartmap.sys.entity.PageHelper;
-import com.ycsys.smartmap.sys.entity.Server;
 import com.ycsys.smartmap.sys.entity.User;
 import com.ycsys.smartmap.sys.service.ConfigServerEngineService;
-import com.ycsys.smartmap.sys.service.ServerService;
 import com.ycsys.smartmap.sys.service.UserService;
 import com.ycsys.smartmap.sys.util.DataDictionary;
 
@@ -77,8 +75,6 @@ public class ConfigServerEngineController extends BaseController{
 	
 	@Autowired
 	private ServiceService serviceService;
-	@Autowired
-	private ServerService serverService;
 	
 	@Autowired
 	private ConfigServerEngineService configServerEngineService;
@@ -237,8 +233,7 @@ public class ConfigServerEngineController extends BaseController{
 				ConfigServerEngine configServerEngine = configServerEngineService.get(ConfigServerEngine.class, Integer.parseInt(id));
 				if(configServerEngine != null) {
 					List<Service> list = serviceService.find("from Service t where t.serverEngine.id = ?", new Object[]{configServerEngine.getId()});
-					List<Server> serverList = serverService.find("from Server s where s.serverEngine.id =?", new Object[]{configServerEngine.getId()});
-					if((list != null && list.size() > 0) || (serverList!=null && serverList.size()>0)) {
+					if((list != null && list.size() > 0)) {
 		        		ex.setSuccess("服务引擎被引用不能删除");
 		        	}else{
 		        		configServerEngineService.delete(configServerEngine);
@@ -262,8 +257,7 @@ public class ConfigServerEngineController extends BaseController{
         ResponseEx ex = new ResponseEx();
         try{
         	List<Service> list = serviceService.find("from Service t where t.serverEngine.id = ?", new Object[]{configServerEngine.getId()});
-        	List<Server> serverList = serverService.find("from Server s where s.serverEngine.id= ?", new Object[]{configServerEngine.getId()});
-        	if((list != null && list.size() > 0) || (serverList!=null && serverList.size()>0)) {
+        	if((list != null && list.size() > 0)) {
         		ex.setSuccess("服务引擎被引用不能删除");
         	}
         	else {

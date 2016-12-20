@@ -20,18 +20,18 @@ import java.util.Vector;
 public class SnmpUtil {
     public static final int DEFAULT_VERSION = SnmpConstants.version2c;
     public static final String DEFAULT_PROTOCOL = "udp";
-    public static final int DEFAULT_PORT = 161;
-    public static final long DEFAULT_TIMEOUT = 3 * 1000L;
-    public static final int DEFAULT_RETRY = 3;
+    public static final long DEFAULT_TIMEOUT =  1500L;
+    public static final int DEFAULT_RETRY = 1;
 
     protected String ip;
     protected String community;
+    protected String port;
 
     protected static SnmpProperties props = SnmpProperties.loadProperties();
 
 
     public CommunityTarget createDefault(String ip, String community) {
-        Address targetAddress = GenericAddress.parse(DEFAULT_PROTOCOL + ":" + ip + "/" + DEFAULT_PORT);
+        Address targetAddress = GenericAddress.parse(DEFAULT_PROTOCOL + ":" + ip + "/" + port);
         CommunityTarget target = new CommunityTarget();
         target.setCommunity(new OctetString(community));
         target.setAddress(targetAddress);
@@ -41,9 +41,10 @@ public class SnmpUtil {
         return target;
     }
 
-    public SnmpUtil(String ip, String community) {
+    public SnmpUtil(String ip, String community,String port) {
         this.ip = ip;
         this.community = community;
+        this.port = port;
     }
 
     @SuppressWarnings("rawtypes")
@@ -58,7 +59,7 @@ public class SnmpUtil {
     }
 
     @SuppressWarnings("rawtypes")
-    public String readResponse(ResponseEvent respEvnt) {
+    public String readResponse(ResponseEvent respEvnt) throws IOException {
         // 解析Response
         if (respEvnt != null && respEvnt.getResponse() != null) {
             Vector recVBs = respEvnt.getResponse().getVariableBindings();
@@ -67,8 +68,7 @@ public class SnmpUtil {
                 return recVB.getVariable().toString();
             }
         }
-        return null;
-
+        throw new IOException("获取不到响应数据！");
     }
 
     @SuppressWarnings("rawtypes")

@@ -122,6 +122,11 @@ public class OrganizationServiceImpl implements OrganizationService{
         }
     }
 
+    @Override
+    public long countAll() {
+        return organizationDao.count("select count(*) from Organization");
+    }
+
     public void saveOrgXmlObject(OrgXmlObject org,short level,Integer pid){
         Organization o = new Organization();
         o.setName(org.getName());

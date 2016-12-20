@@ -533,6 +533,36 @@
         "sort":"3"
       }
     ]
-  }
+  },{
+  "name":"监控入库时间",
+  "code":"monitor_times",
+  "memo":"",
+  "dictionaryItems":[
+    {
+      "name":"服务器数据入库时间",
+      "value":"1",
+      "memo":"1800",
+      "sort":"1"
+    },
+    {
+      "name":"tomcat数据入库时间",
+      "value":"2",
+      "memo":"1800",
+      "sort":"2"
+    },
+    {
+      "name":"Oracle数据入库时间",
+      "value":"3",
+      "memo":"1800",
+      "sort":"3"
+    },
+    {
+      "name":"Arcgis数据入库时间",
+      "value":"4",
+      "memo":"1800",
+      "sort":"4"
+    }
+  ]
+}
   
 ]

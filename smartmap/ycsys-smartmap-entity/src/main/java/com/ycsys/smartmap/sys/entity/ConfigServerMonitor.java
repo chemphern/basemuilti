@@ -17,13 +17,13 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 /**
- * 服务器监控配置 实体
+ * 监控配置 实体
  * 
  * @author liweixiong
  * @date 2016年11月2日
  */
 @Entity
-@Table(name = "sys_config_server_monitor")
+@Table(name = "sys_monitor_config")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @DynamicInsert
 @DynamicUpdate
@@ -38,12 +38,9 @@ public class ConfigServerMonitor implements java.io.Serializable {
 	private String name; // 名称
 
 	@Column(name = "monitor_type", nullable = false, length = 1)
-	private String monitorType; // 监控类型(0:应用服务器；1：数据库；2：GIS服务器)
+	private String monitorType; // 监控类型(1:服务器，2：Tomcat，3：Oracle，4：Arcgis)
 
-	@Column(name = "software_type", nullable = false, length = 1)
-	private String softwareType;// 应用软件类型（0：tomcat;1:oracle;2:gisServer）
-
-	@Column(name = "url", length = 50)
+	@Column(name = "url", length = 100)
 	private String url; // 监控的URL
 
 	@Column(name = "user_name", length = 30)
@@ -55,13 +52,24 @@ public class ConfigServerMonitor implements java.io.Serializable {
 	@Column(name = "database_driver", length = 30)
 	private String databaseDriver; // 数据库驱动
 
+	@Column(name= "snmp_port",length = 10)
+	private String snmpPort;//snmp端口
+
+	@Column(name="monitor_rate")
+	private String monitorRate;//监控频率
+
+	@Column(name="last_monitor_time")
+	private Date lastMonitorTime;//最后监控时间
+
+	@Column(name="status")
+	private String status;//监控状态
+
+	@Column(name="communicate")
+	private String communicate;//社区
+
 	@ManyToOne
 	@JoinColumn(name = "server_engine_id")
 	private ConfigServerEngine serverEngineConfig; //服务引擎
-
-	@ManyToOne
-	@JoinColumn(name = "server_id")
-	private Server server;  //服务器
 
 	@Column(name = "remarks", length = 200)
 	private String remarks; // 备注
@@ -104,14 +112,6 @@ public class ConfigServerMonitor implements java.io.Serializable {
 		this.monitorType = monitorType;
 	}
 
-	public String getSoftwareType() {
-		return softwareType;
-	}
-
-	public void setSoftwareType(String softwareType) {
-		this.softwareType = softwareType;
-	}
-
 	public String getUrl() {
 		return url;
 	}
@@ -152,13 +152,6 @@ public class ConfigServerMonitor implements java.io.Serializable {
 		this.serverEngineConfig = serverEngineConfig;
 	}
 
-	public Server getServer() {
-		return server;
-	}
-
-	public void setServer(Server server) {
-		this.server = server;
-	}
 
 	public String getRemarks() {
 		return remarks;
@@ -200,4 +193,47 @@ public class ConfigServerMonitor implements java.io.Serializable {
 		this.updator = updator;
 	}
 
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
+	public String getSnmpPort() {
+		return snmpPort;
+	}
+
+	public void setSnmpPort(String snmpPort) {
+		this.snmpPort = snmpPort;
+	}
+
+	public String getMonitorRate() {
+		return monitorRate;
+	}
+
+	public void setMonitorRate(String monitorRate) {
+		this.monitorRate = monitorRate;
+	}
+
+	public Date getLastMonitorTime() {
+		return lastMonitorTime;
+	}
+
+	public void setLastMonitorTime(Date lastMonitorTime) {
+		this.lastMonitorTime = lastMonitorTime;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public String getCommunicate() {
+		return communicate;
+	}
+
+	public void setCommunicate(String communicate) {
+		this.communicate = communicate;
+	}
 }

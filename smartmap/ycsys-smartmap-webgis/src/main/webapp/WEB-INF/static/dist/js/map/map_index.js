@@ -55,25 +55,9 @@ $(document).ready(function(){
           $("#navbar-collapse").slideToggle();
         }
     });
-    //三维漫游切换三维地图
-    $("#3dmy").click(function() {       
-        var index = $(this).index();
-        $(this).addClass('active').siblings().removeClass('active');
-        $('#fore-2d3d-menu-my').addClass('current').siblings().removeClass('current');
-        $('#mapView-btn-3dmy').addClass('active').siblings().removeClass('active');
-        $(".resizable-right").addClass('active');
-        $(".resizable-left").removeClass('active');
-    });
 
-    //主页切换二维
-    // $('.homemenu li').click(function(){
-    //     $(this).toggleClass('active');
-    //     $('#mapView-btn-3dmy').removeClass('active').siblings('.mapView-btn').addClass('active');
-    //     $('.resizable-left').addClass('active').siblings('div.resizable-right').removeClass('active');
-    //     $('.resizable-left').css('display','block');
-    //     $('.resizable-right').css('display','none');
-    //     return false;
-    // })
+
+
     //左菜单切换效果
      $('.submenu').on('click','a',function(){
         $(this).addClass('active').siblings().removeClass('active');
@@ -191,54 +175,44 @@ $(document).ready(function(){
             }
         }
     }
+    //三维漫游切换三维地图
+    $("#3dmy").click(function() {       
+        var index = $(this).index();
+        $(this).addClass('active').siblings().removeClass('active');
+        $('#fore-2d3d-menu-my').addClass('current').siblings().removeClass('current');
+        $('#mapView-btn-3dmy').addClass('active').siblings().removeClass('active');
+        $(".resizable-right").css('display','block');
+        $(".resizable-left").css('display','none'); 
+        $(".resizable-right").css('width','100%'); 
+    });
     //地图切换按钮
 
     var $lir = $('.mapBtn-sel li');
     var $check = $lir.find("input[name='2d3dcheckbox']");
 
-    $('.mapView').on('click','.mapView-btn',function(){
-        //event.preventDefault();
-        var index = $(this).index();
+    //切换3d
+    $('#mapView-btn-3dmy').click(function(){
         $(this).addClass('active').siblings().removeClass('active');
-        $('.tab-mapCon').children('div.mapCon-resizable').removeClass('active').eq(index/2).addClass('active');
-        if($(".resizable-left").hasClass('active')){
+        if ($(this).hasClass('active')) {
+            $(".resizable-right").css('display','block');
+            $(".resizable-left").css('display','none'); 
+            $(".resizable-right").css('width','100%'); 
+            $check.removeAttr('checked');  
+            $(".handler").css('display','none');
+        };
+    });
+  //切换2d
+    $('.mapView').on('click','#mapView-btn-2dmap,#mapView-btn-2dwx',function(){
+        $(this).addClass('active').siblings().removeClass('active');
+        if ($(this).hasClass('active')) {
             $(".resizable-left").css('display','block');
             $(".resizable-right").css('display','none'); 
             $(".resizable-left").css('width','100%');
             $check.removeAttr('checked');  
             $(".handler").css('display','none');
-        }else if($(".resizable-right").hasClass('active')){
-            $(".resizable-left").css('display','none');
-            $(".resizable-right").css('display','block');
-            $(".resizable-right").css('width','100%');
-            $check.removeAttr('checked'); 
-            $(".handler").css('display','none');          
-        }
-    });
-
-    $('#mapView-btn-2dwx').click(function(){
-        if ($(this).hasClass('active')) {
-            $(".resizable-left").css('display','block');
-            $(".resizable-right").css('display','none'); 
-            $(".resizable-left").css('width','100%');          
         };
     });
-    // $('#mapView-btn-2dwx').click(function(event){
-    //     $(this).addClass('active').siblings().removeClass('active');
-    //     if($(".resizable-left").hasClass('active')){
-    //         $(".resizable-left").css('display','block');
-    //         $(".resizable-right").css('display','none'); 
-    //         $(".resizable-left").css('width','100%');
-    //         $check.removeAttr('checked');  
-    //     }else if($(".resizable-right").hasClass('active')){
-    //         $(".resizable-left").css('display','none');
-    //         $(".resizable-right").css('display','block');
-    //         $(".resizable-right").css('width','100%');
-    //         $check.removeAttr('checked');            
-    //     }
-    //     /*阻止向上冒泡，以防再次触发点击操作*/  
-    //     event.stopPropagation(); 
-    // });
+
 
     $check.click(function(event){
             $lir.find("input[name='2d3dcheckbox']").prop('checked',$(this).prop('checked'));

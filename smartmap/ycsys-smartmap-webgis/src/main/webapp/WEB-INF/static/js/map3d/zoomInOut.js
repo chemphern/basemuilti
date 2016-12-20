@@ -128,11 +128,6 @@ function zoomInOutRBUpHandler(){
 
 //拉框放大算法
 function ZoomInWithRectangle(Rectabgle){
-	//判断是球面左边还是平面坐标
-	var type = "meter";
-	var isPlaner = YcMap3D.CoordServices.SourceCoordinateSystem.IsPlanar();
-	if(!isPlaner)
-		type = "globe";
 	//获取左上、右下坐标
 	var extent={"xmin":Math.min(Rectabgle.Left,Rectabgle.Right),"xmax":Math.max(Rectabgle.Left,Rectabgle.Right),"ymin":Math.min(Rectabgle.Bottom,Rectabgle.Top),"ymax":Math.max(Rectabgle.Bottom,Rectabgle.Top)};
 	//设置到地图范围

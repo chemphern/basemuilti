@@ -236,4 +236,6 @@ public class ConfigServerEngine implements java.io.Serializable {
 	public void setUpdator(User updator) {
 		this.updator = updator;
 	}
+
+
 }

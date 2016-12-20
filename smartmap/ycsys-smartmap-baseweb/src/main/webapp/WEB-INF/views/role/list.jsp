@@ -24,8 +24,27 @@
     <link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
     <!-- 弹出框 -->
     <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
+        <style>
+        html,body{
+            background-color: #f1f1f1
+        }
+        body{
+            overflow-y: hidden;
+        }
+        </style>
 </head>
-<body class="hold-transition skin-blue sidebar-mini">
+<body>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                角色管理
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
+                <li class="active">角色管理</li>
+            </ol>
+        </section>
+		<section class="content">
             <div class="row">
                 <div class="col-md-12">
                     <div class="box box-solid">
@@ -33,10 +52,6 @@
                             <h4 class="box-title">角色列表</h4>
                             <div class="btn_box">
                                 <button class="current"><i class="iconfont icon-plus"></i>新增</button>
-                                <%--<button><i class="iconfont icon-trash"></i>删除</button>--%>
-                                <%--<button><i class="iconfont icon-edit"></i>编辑</button>--%>
-                                <%--<button><i class="iconfont icon-angle-double-up"></i>上移</button>--%>
-                                <%--<button><i class="iconfont icon-angle-double-down"></i>下移</button>--%>
                             </div>
                         </div>
                         <div class="box_l">
@@ -46,6 +61,8 @@
                 </div>
                 <!-- /.col -->
             </div>
+		</section>
+</body>
 <!-- jQuery 2.2.3 -->
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 
@@ -67,7 +84,6 @@
 <script type="text/javascript" src="${res}/plugins/dialog/iframeTools.source.js"></script>
 <script type="text/javascript" src="${res}/plugins/dialog/unit.js"></script>
 
-</body>
 <script type="text/javascript">
     ;(function($){
             //表格列表

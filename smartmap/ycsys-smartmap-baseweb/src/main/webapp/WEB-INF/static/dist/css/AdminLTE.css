@@ -24,11 +24,11 @@ body {
   font-family: "微软雅黑", "宋体", Arial, sans-serif;
   font-weight: 400;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   font-size: 14px;
 }
 /*表格页*/
-.box_l{min-height: 550px; padding:0 10px;}
+.box_l{min-height: 600px; padding:0 10px;}
 .btn_box{float: right;}
 .btn_box input{border:1px solid #aaa;border-radius: 2px;}
 .btn_box button{background-color: #fff; border:1px solid #ececec; border-radius: 2px; margin-left: 5px; padding: 2px 5px; color:#7f7e7e; outline:none;}
@@ -772,7 +772,7 @@ a:focus {
 }
 .control-sidebar {
   position: absolute;
-  padding-top: 50px;
+  padding-top: 60px;
   z-index: 1010;
 }
 @media (max-width: 768px) {
@@ -890,7 +890,7 @@ a:focus {
 }
 .control-sidebar-dark,
 .control-sidebar-dark + .control-sidebar-bg {
-  background: #222d32;
+  background: #fff;
 }
 .control-sidebar-dark .nav-tabs.control-sidebar-tabs {
   border-bottom: #1c2529;

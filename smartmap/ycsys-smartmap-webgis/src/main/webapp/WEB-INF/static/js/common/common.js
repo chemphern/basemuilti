@@ -73,7 +73,7 @@ function measureDistance(){
 	if(mapOpt==2){
 		measureDistance2d();
 	}else if(mapOpt==3){
-		MeasureTool.activate(MeasureTool.MeasureType.AERICAL);
+		MeasureTool.activate(MeasureTool.MeasureType.HORIZONTAL);
 	}
 }
 

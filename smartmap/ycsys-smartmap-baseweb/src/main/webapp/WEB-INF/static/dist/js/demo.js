@@ -56,24 +56,23 @@
           .append("<a href='javascript:void(0);' data-skin='skin-blue' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.8)' class='clearfix full-opacity-hover'>"
           + "<div><span style='display:block; width: 100%; float: left; height: 27px; background: #26bf8c;'></span></div>"
           + "</a>"
-          + "<p class='text-center no-margin'>极简青</p>");
+          + "<p class='text-center no-margin'>极简.青</p>");
   skins_list.append(skin_blue);
   var skin_purple =
       $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
           .append("<a href='javascript:void(0);' data-skin='skin-purple' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.8)' class='clearfix full-opacity-hover'>"
           + "<div><span style='display:block; width: 100%; float: left; height: 27px; background: #1e8bf2;' ></span></div>"
           + "</a>"
-          + "<p class='text-center no-margin'>科技蓝</p>");
+          + "<p class='text-center no-margin'>科技.蓝</p>");
   skins_list.append(skin_purple);
   var skin_green =
       $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
           .append("<a href='javascript:void(0);' data-skin='skin-green' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.8)' class='clearfix full-opacity-hover'>"
           + "<div><span style='display:block; width: 100%; float: left; height: 27px; background: #00a65a;'></span></div>"
           + "</a>"
-          + "<p class='text-center no-margin'>生命绿</p>");
+          + "<p class='text-center no-margin'>生命.绿</p>");
   skins_list.append(skin_green);
 
-  demo_settings.append("<h4 class='control-sidebar-heading'>皮肤选项</h4>");
   demo_settings.append(skins_list);
 
   tab_pane.append(demo_settings);

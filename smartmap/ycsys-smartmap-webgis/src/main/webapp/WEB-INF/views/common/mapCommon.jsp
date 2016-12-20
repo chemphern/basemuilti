@@ -23,10 +23,12 @@
 <script type="text/javascript">
         var dojoConfig = {
             async: true,
-            packages: [{
-                "name": "layerjs",
-                "location": "${res}/js/map2d"
-            }]
+            packages: ["layerjs","Extension","ExtensionDraw"],
+            paths:{
+            	layerjs:"${res}/js/map2d",
+            	Extension:"${res}/dist/js/map/plot/drawExtension/Extension",
+            	ExtensionDraw:"${res}/dist/js/map/plot/drawExtension/plotDraw"
+            }
         };			
 </script>
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
@@ -48,6 +50,7 @@
 	var NAVI,bookmarks,ArcGISTiledMapServiceLayerLocal;
 	var minx,miny,maxx,maxy;
 	var lyrList=[];
+	var DrawEx,DrawExt;
 	
 	require([
 		  "dojo/parser",
@@ -85,6 +88,8 @@
 		  "esri/tasks/query",
 		  "esri/InfoTemplate",
 		  "esri/geometry/Point",
+		  "ExtensionDraw/DrawExt",
+		  "Extension/DrawEx",
 	      "esri/tasks/locationproviders/QueryTaskLocationProvider",
 		  "esri/graphic","esri/dijit/Search",
 	      "esri/symbols/PictureMarkerSymbol",
@@ -94,9 +99,12 @@
 	      "esri/tasks/IdentifyTask",
 		  "esri/tasks/IdentifyParameters",
 		  "dojo/promise/all",
+		  "esri/symbols/PictureMarkerSymbol",
+		  "esri/dijit/InfoWindow",
 		  "dojo/domReady!"
 		], function(parser,Map,ArcGISTiledMapServiceLayer,GeometryService,Navigation,dom,Draw,OverviewMap,MeasureTools,Print,PrintTask,PrintParameters,PrintTemplate,Scalebar,LocateButton,Legend,
-					FeatureLayer,Extent,SpatialReference,Color,SimpleMarkerSymbol,SimpleLineSymbol,SimpleFillSymbol,Editor,TemplatePicker,esriConfig,jsapiBundle,arrayUtils,keys) {
+					FeatureLayer,Extent,SpatialReference,Color,SimpleMarkerSymbol,SimpleLineSymbol,SimpleFillSymbol,Editor,TemplatePicker,esriConfig,jsapiBundle,arrayUtils,keys,SimpleRenderer,
+					ArcGISImageServiceLayer,QueryTask,Query,InfoTemplate,Point,drawExt,drawEx) {
 			parser.parse();
 
 			// snapping is enabled for this sample - change the tooltip to reflect this
@@ -107,6 +115,8 @@
 			//This service is for development and testing purposes only. We recommend that you create your own geometry service for use within your applications.
 			esriConfig.defaults.geometryService = new GeometryService("http://172.16.10.52:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer");
 			NAVI=Navigation;
+			DrawExt=drawExt;
+			DrawEx=drawEx;
             ArcGISTiledMapServiceLayerLocal =ArcGISTiledMapServiceLayer;
             map = new Map("map2d",{
 			    logo:false,
@@ -126,20 +136,20 @@
             imgLyr = new  ArcGISTiledMapServiceLayerLocal("http://172.16.10.52:6080/arcgis/rest/services/%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%BD%B1%E5%83%8F%E5%9C%B0%E5%9B%BE/MapServer");
 
             map.on("load",init);
-			map.on("layers-add-result", initEditor);
+// 			map.on("layers-add-result", initEditor);
             //add boundaries and place names
-            var responsePoints = new FeatureLayer("https://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/0", {
-                mode: FeatureLayer.MODE_ONDEMAND,
-                outFields: ['*']
-            });
-            var responsePolys = new FeatureLayer("https://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/2", {
-                mode: FeatureLayer.MODE_ONDEMAND,
-                outFields: ['*']
-            });
-            map.addLayers([responsePolys, responsePoints]);
+//             var responsePoints = new FeatureLayer("https://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/0", {
+//                 mode: FeatureLayer.MODE_ONDEMAND,
+//                 outFields: ['*']
+//             });
+//             var responsePolys = new FeatureLayer("https://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/2", {
+//                 mode: FeatureLayer.MODE_ONDEMAND,
+//                 outFields: ['*']
+//             });
+//             map.addLayers([responsePolys, responsePoints]);
 			function init(){
 				map.on("onMouseMove",showCoordinate);
-	  			
+				
 				naviBar=new Navigation(map);
 				locator=new LocateButton({map:map,visible:false},dom.byId("curPos"));
 				locator.startup();
@@ -167,9 +177,9 @@
 //   				addLayersFromMap:true,
   					zoomScale:2308574,
   					visible:false,
-  					enableInfoWindow:true,
+  					enableInfoWindow:false,
   					highlightSymbol:symbol,
-  					enableLabel:true,
+  					enableLabel:false,
   					map:map
   				},dom.byId("search"));
   				var sources = search.get("sources");
@@ -178,9 +188,9 @@
   			         searchFields: ["NAME_CHN"],
   			         displayField: "NAME_CHN",
   			         exactMatch: false,
-  			         outFields: ["NAME_CHN"],
+  			         outFields: ["NAME_CHN","OBJECTID"],
   			         name: "兴趣点",
-  			       	 enableSuggestions: true,
+  			       	 enableSuggestions: false,
   			         maxResults: 6,
   			         maxSuggestions: 6
   			      });
@@ -189,9 +199,9 @@
   					 searchFields: ["NAME_CHN"],
   					 displayField: "NAME_CHN",
   					 exactMatch: false,
-  					 outFields: ["NAME_CHN"],
+  					 outFields: ["NAME_CHN","OBJECTID"],
   					 name: "自然地名",
-  					 enableSuggestions: true,
+  					 enableSuggestions: false,
   					 maxResults: 6,
   					 maxSuggestions: 6
   				 });
@@ -327,6 +337,7 @@
 	function clear2dMap() {
 		console.log(map.graphicsLayerIds);
 		console.log(map.graphics);
+		map.infoWindow.hide();
 		if (measure) {
 			measure._measureLayer.clear();
 		}
@@ -339,7 +350,21 @@
 		if(iPolylineLyr) map.removeLayer(iPolylineLyr);
 		if(iPolygonLyr) map.removeLayer(iPolygonLyr);
 		if(queryLyr) map.removeLayer(queryLyr);
-// 		map.graphics.clear();
+		//清除标绘图层
+		if(DCI.Plot.graphicslayer){
+			DCI.Plot.graphicslayer.clear();
+		}
+ 		// map.graphics.clear();
+	}
+	function clearResult(){
+		var iPointLyr=map.getLayer("iPointLyr");
+		var iPolylineLyr=map.getLayer("iPolylineLyr");
+		var iPolygonLyr=map.getLayer("iPolygonLyr");
+		var queryLyr=map.getLayer("queryLyr");
+		if(iPointLyr) iPointLyr.clear();
+		if(iPolylineLyr) iPolylineLyr.clear();
+		if(iPolygonLyr) iPolygonLyr.clear();
+		if(queryLyr) queryLyr.clear();
 	}
 	function pan2dMap() {
 		map.showPanArrows();
@@ -379,27 +404,71 @@
 	 * @returns
 	 */
 	function getSymbol(type,highlightShow){
-		var symbol,lineSmb,color;
 		type=type.toLowerCase();
+		var symbol,lineSmb;
+		var pointColor;//点颜色
+		var polylineColor;//线颜色
+		var polygonColor;//面颜色
+		var outline=new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,new esri.Color([255,80,0,0.5]), 2);//轮廓线
 		if(highlightShow){
-			color=new esri.Color([0, 255, 255, 0.5 ]);
-			lineSmb=new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,color, 3);
+			pointColor=new esri.Color([0, 255, 255, 0.5 ]);
+			polylineColor=new esri.Color([255, 0, 0, 1 ]);
+			polygonColor=new esri.Color([89,132,7,0.4]);
 		}else{//默认样式
-			color=new esri.Color([222, 22, 22, 0.5 ]);
-			lineSmb=new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,color, 1);
+			pointColor=new esri.Color([222, 22, 22, 0.5 ]);
+			polylineColor=new esri.Color([222, 22, 22, 1 ]);
+			polygonColor=new esri.Color([103,152,7,0.2]);
 		}
 		if(type.indexOf("point")>-1){
-			symbol = new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_DIAMOND, 10,lineSmb,color);
+			symbol = new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_DIAMOND, 10,
+					new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,pointColor, 1),pointColor);
 		}else if(type.indexOf("polyline")>-1){
-			symbol = lineSmb;
+			symbol =new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,polylineColor, 2);
+
 		}else if(type.indexOf("polygon")>-1){
-			symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, lineSmb, color);
+			symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, outline, polygonColor);
 		}
 		return symbol;
+	}
+	
+	function getPicSymbol(url,width,height){
+		if(!width){//默认定位图标大小
+			width=25;
+			height=45;
+		}
+		var smb=esri.symbol.PictureMarkerSymbol(url,width,height);
+		smb.setOffset(0,20);
+		return smb;
+	}
+	
+	function graphicsConvertor(arrGraphics,isToMercato){
+		if($.isArray(arrGraphics)){
+			for(var i=0;i<arrGraphics.length;i++){
+				var geo=arrGraphics[i].geometry;
+				if(isToMercato){//经纬度转web墨卡托
+					if(geo.spatialReference.wkid==3857) continue;
+					arrGraphics[i].geometry=esri.geometry.geographicToWebMercator(geo);
+				}else{//web转经纬度
+					if(geo.spatialReference.wkid==4326) continue;
+					arrGraphics[i].geometry=esri.geometry.webMercatorToGeographic(geo);
+				}
+			}
+		}else{
+			var geo=arrGraphics.geometry;
+			if(isToMercato){
+				if(geo.spatialReference.wkid==3857) return;
+				arrGraphics.geometry=esri.geometry.geographicToWebMercator(geo);
+			}else{
+				if(geo.spatialReference.wkid==4326) return;
+				arrGraphics.geometry=esri.geometry.webMercatorToGeographic(geo);
+			}
+		}
 	}
 </script>
 <script type="text/javascript" src="${res }/js/map2d/mapLocate.js"></script>
 <script type="text/javascript" src="${res }/js/map2d/mapQuery.js"></script>
+<script type="text/javascript" src="${res}/dist/js/map/plot/plot.js"></script>
+<script type="text/javascript" src="${res }/js/map2d/mapPlot.js"></script>
 </head>
 <body>
 </body>

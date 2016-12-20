@@ -31,7 +31,7 @@
   <![endif]-->
     <style>
         html,body{
-            background-color: #ecf0f5
+            background-color: #f1f1f1;
         }
         body{
             overflow-y: hidden;
@@ -39,6 +39,17 @@
         </style>
 </head>
 <body>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                专题图层管理
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
+                <li class="active">专题图层管理</li>
+            </ol>
+        </section>
+		<section class="content">
 <div class="row">
     <div class="col-md-3">
         <div class="box box-solid">
@@ -77,6 +88,7 @@
         <!-- /.col -->
     </div>
     </div>
+        </section>
 </body>
 
 <!-- jQuery 2.2.3 -->

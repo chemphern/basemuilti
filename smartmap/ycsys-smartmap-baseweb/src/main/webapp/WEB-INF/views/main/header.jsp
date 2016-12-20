@@ -17,6 +17,17 @@
 
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
+          		<!-- user -->
+          		<li id="navbar" class="navbar-user">
+            		<div class="user dropdown">           
+                		<a href="#" class="user_box dropdown-toggle" data-toggle="dropdown" id="dLabel" ><img src="${res}/dist/img/photo1.png" alt="头像" /><span class="user_name">admin</span> <span class="caret"></span></a>
+                		<ul class="dropdown-menu memu-list"  role="menu" aria-labelledby="dLabel">
+                  		<li class="personal"><a href="#"><i class="iconfont icon-user"></i><span>个人信息</span></a></li>
+                  		<li class="password"><a href="#"><i class="glyphicon glyphicon-lock"></i><span>修改密码</span></a></li>
+                  		<li><a href="login.html"><i class="glyphicon glyphicon-off"></i><span>退出系统</span></a></li>
+                		</ul>              
+              		</div>
+          		</li>
                 <!-- Messages: style can be found in dropdown.less-->
                 <li class="dropdown messages-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -94,17 +105,59 @@
                         <li class="footer"><a href="#">查看全部消息</a></li>
                     </ul>
                 </li>
-          		<!-- user -->
-          		<li id="navbar" class="navbar-user">
-            		<div class="user dropdown">           
-                		<a href="#" class="user_box dropdown-toggle" data-toggle="dropdown" id="dLabel" ><img src="${res}/dist/img/photo1.png" alt="头像" /><span class="user_name">admin</span> <span class="caret"></span></a>
-                		<ul class="dropdown-menu memu-list"  role="menu" aria-labelledby="dLabel">
-                  		<li class="personal"><a href="#"><i class="iconfont icon-user"></i><span>个人信息</span></a></li>
-                  		<li class="password"><a href="#"><i class="glyphicon glyphicon-lock"></i><span>修改密码</span></a></li>
-                  		<li><a href="login.html"><i class="glyphicon glyphicon-off"></i><span>退出系统</span></a></li>
-                		</ul>              
-              		</div>
-          		</li>
+                <!-- Messages: style can be found in dropdown.less-->
+                <li class="dropdown messages-menu">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="glyphicon glyphicon-bell"></i>
+                        <span class="label label-success" style="color:red;">3</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li class="header">你有3个消息待查看</li>
+                        <li>
+                            <!-- inner menu: contains the actual data -->
+                            <ul class="menu">
+                                <li><!-- start message -->
+                                    <a href="#">
+                                        <div class="pull-left">
+                                           <i class="iconfont icon-commenting-o"></i>
+                                        </div>
+                                        <h4>
+                                            支持团队
+                                            <small><i class="iconfont iconfont-clock-o"></i> 5分钟</small>
+                                        </h4>
+                                        <p>Why not buy a new awesome theme?</p>
+                                    </a>
+                                </li>
+                                <!-- end message -->
+                                <li>
+                                    <a href="#">
+                                        <div class="pull-left">
+                                            <i class="iconfont icon-commenting-o"></i>
+                                        </div>
+                                        <h4>
+                                            AdminLTE 设计团队
+                                            <small><i class="iconfont iconfont-clock-o"></i> 2小时</small>
+                                        </h4>
+                                        <p>Why not buy a new awesome theme?</p>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <div class="pull-left">
+                                            <i class="iconfont icon-commenting-o"></i>
+                                        </div>
+                                        <h4>
+                                            开发商
+                                            <small><i class="iconfont iconfont-clock-o"></i> 今天</small>
+                                        </h4>
+                                        <p>Why not buy a new awesome theme?</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="footer"><a href="#">查看全部消息</a></li>
+                    </ul>
+                </li>                          		
                 <li>
                     <a href="#" data-toggle="control-sidebar"><i class="iconfont icon-icon-huanfu"></i></a>
                 </li>

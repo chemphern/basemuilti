@@ -46,6 +46,7 @@ public class UserController extends BaseController{
     @RequestMapping("/listData")
     public Grid<User> listData(String orgId,PageHelper page){
         Grid<User> g = new Grid<>(userService.findAllUsers(orgId,page));
+        g.setTotal(userService.countAll(orgId));
         return g;
     }
 

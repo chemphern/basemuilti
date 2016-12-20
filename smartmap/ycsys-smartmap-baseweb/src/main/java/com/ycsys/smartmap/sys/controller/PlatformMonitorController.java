@@ -3,11 +3,14 @@ package com.ycsys.smartmap.sys.controller;
 import com.alibaba.druid.stat.DruidStatManagerFacade;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.ycsys.smartmap.sys.common.jmx.JavaInformations;
+import com.ycsys.smartmap.sys.common.schedule.JobTaskManager;
+import com.ycsys.smartmap.sys.common.schedule.ScheduleJob;
+import org.quartz.SchedulerException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.management.MBeanServer;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
@@ -20,6 +23,9 @@ import java.util.*;
 public class PlatformMonitorController {
 
     final DruidStatManagerFacade facade = DruidStatManagerFacade.getInstance();
+
+    @Autowired
+    private JobTaskManager jobTaskManager;
 
     @RequestMapping("/list")
     public String list(){
@@ -67,9 +73,28 @@ public class PlatformMonitorController {
 
     @RequestMapping("/getMBeans")
     @ResponseBody
-    public Map<String,Object> getMBeans(HttpServletRequest request){
+    public JavaInformations getMBeans(HttpServletRequest request){
+        Map<String,Object> res = new HashMap<String,Object>();
         JavaInformations javaInformations = new JavaInformations(request.getSession().getServletContext(),true);
+        res.put("res",javaInformations);
         System.out.println(javaInformations);
+        return javaInformations;
+    }
+
+    @RequestMapping("/addJob")
+    @ResponseBody
+    public Map<String,Object> addJob() throws SchedulerException {
+        ScheduleJob job = new ScheduleJob();
+        job.setJobName("snmpTask");
+        job.setJobGroup("snmp");
+        job.setJobStatus(ScheduleJob.STATUS_NOT_RUNNING);
+        job.setCronExpression("0/3 * * * * ? *");
+        job.setDescription("snmp收集系统信息定时器");
+        job.setBeanClass("com.ycsys.smartmap.sys.task.MonitorTask");
+        job.setMethodName("cpuAndNetTask");
+        job.setIsConcurrent(ScheduleJob.CONCURRENT_IS);
+        job.setCreateTime(new Date());
+        jobTaskManager.addJob(job);
         return null;
     }
 

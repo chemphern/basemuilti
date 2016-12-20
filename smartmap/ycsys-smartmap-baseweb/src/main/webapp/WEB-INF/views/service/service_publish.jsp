@@ -4,7 +4,6 @@
 <html>
 <head>
 <meta charset="utf-8">
-<meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>羽辰智慧林业综合管理平台-资源管理</title>
 <!-- Tell the browser to be responsive to screen width -->
@@ -40,7 +39,7 @@
   <![endif]-->
 <style>
 html,body {
-	background-color: #ecf0f5
+	background-color: #f1f1f1;
 }
 
 body {
@@ -59,6 +58,7 @@ body {
 	height: 50px;
 	border:solid #D5E2E6; 
 	border-width:0px 1px 1px 0px; 
+	line-height: 50px;
 }
 
 .td {
@@ -66,12 +66,12 @@ body {
 	height: 50px;
 	border:solid #D5E2E6;
 	border-width:0px 1px 1px 0px; 
+	line-height: 50px;
 }
 
 </style>
 </head>
 <body>
-<div>
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>服务发布</h1>
@@ -164,15 +164,19 @@ body {
 							<tr>
 								<td class="t_r">资源文件：</td>
 								<td>
-									<input type="text" disabled="disabled" id="resourceFile" name="resourceFile">
+									<input type="text" disabled="disabled" id="resourceFile" name="resourceFile" 
+										validate="{required:true,messages:{required:'必填',maxlength:'字符长度不能超过15个!'}}">
 									<input type="hidden" id="resourceFileId" name="resourceFileId">
 									<input type="button" value="浏览" id="viewResourceFile">
+									<span style="color: red">*</span>
 								</td>
 							</tr>
 							<tr>
 								<td class="t_r">服务名称：</td>
-								<td><input type="text" name="serviceName" id="serviceName"
-									class="text validate[required]" /></td>
+								<td><input type="text" name="serviceName" id="serviceName" class="text validate[required]" 
+									validate="{required:true,maxlength : 15,messages:{required:'必填',maxlength:'字符长度不能超过15个!'}}"/>
+									<span style="color: red">*</span>
+									</td>
 							</tr>
 							<tr>
 								<td class="t_r">GIS Services集群：</td>
@@ -254,12 +258,13 @@ body {
 	</section>
 	</form>
 
-</div>
 <!-- /.content-wrapper -->
 
 <!-- jQuery 2.2.3 -->
-<script src="${res }/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<script src="${res}/js/common/form.js"></script>
+<script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
+<script src="${res}/plugins/jquery-validation-1.15.1/dist/jquery.validate.min.js" type="text/javascript"></script>
 <!--grid-->
 <script src="${res }/plugins/ligerUI/js/core/base.js"
 	type="text/javascript"></script>
@@ -300,6 +305,29 @@ body {
         
      	//设置单选择第一个值
 		$("input[name='serviceResource']:radio").eq(0).attr('checked','true');
+		var form = $("#form_id");
+		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
+		val_obj.submitHandler = function(){
+			$('.actionBar a.buttonFinish').addClass("buttonDisabled");//完成按钮变灰
+			$('.actionBar a.buttonPrevious').addClass("buttonDisabled");//上一步按钮变灰 
+			//支持文件上传的ajax提交方式
+			form.ajaxSubmit({
+				dataType:"json",
+                success:function(result){
+                	alert(result.msg);
+            		if(result.flag == "0") {
+            			//form.reset();
+            			//$('#wizard').smartWizard('skipTo',1);  
+            			//dialog.close();
+            		}
+            		else {
+            			$('.actionBar a.buttonFinish').removeClass("buttonDisabled");//完成按钮可用
+            			$('.actionBar a.buttonPrevious').removeClass("buttonDisabled");//上一步按钮可用  
+            		}
+                }
+             });
+	    };
+	    form.validate(val_obj);
 		// Smart Wizard     
 		$('#wizard').smartWizard({ 
 			onLeaveStep:onLeaveStepCallback,
@@ -334,14 +362,15 @@ body {
 					return true;
 				  	break;
 				case '2':
-					if($("#serviceName").val() == '') {
-						alert("服务名不能为空");
-						return false;
-					}
 					if($("#resourceFile").val() == '') {
-						alert("请选择资源！");
+						//alert("请选择资源！");
 						return false;
 					}
+					if($("#serviceName").val() == '') {
+						//alert("服务名不能为空");
+						return false;
+					}
+					
 					return true;
 				  	break;
 				case '3':
@@ -410,8 +439,7 @@ body {
 		});
 		//完成触发的方法
 		function onFinishCallback() {
-			//$('#form_id').submit();
-			$('.actionBar a.buttonFinish').addClass("buttonDisabled");//完成按钮变灰
+			/* $('.actionBar a.buttonFinish').addClass("buttonDisabled");//完成按钮变灰
 			$("#form_id").ajaxSubmit({
 				url : "${ctx }/service/publish",
 				dataType:"json",
@@ -422,59 +450,19 @@ body {
                 		$('.actionBar a.buttonFinish').removeClass("buttonDisabled");//完成按钮可用  
                 	}
                 }
-             });
-			//$('#wizard').smartWizard('showMessage', 'Finish Clicked');
+             }); */
+             var counts = $('div.l-exclamation'); //填的不对的记录数
+				if(counts.length < 1) {
+					$('#form_id').submit();
+				}
+				else {
+					$("#wizard").smartWizard("showMessage","请重新填写有误的信息！");
+					return false;
+				}
 		}
+		
 	});
 </script>
-<script type="text/javascript">
-	;
-	(function($) { //避免全局依赖,避免第三方破坏
-		$(document).ready(function() {
-			//表格列表
-			$(function() {
-				$("#maingrid4").ligerGrid({
-					checkbox : true,
-					columns : [ {
-						display : '节点名称',
-						name : 'CustomerID',
-						align : 'left',
-						width : 100
-					}, {
-						display : '节点主机',
-						name : 'CompanyName',
-						minWidth : 60
-					}, {
-						display : '状态',
-						name : 'ContactName',
-						minWidth : 100,
-						align : 'left'
-					}, {
-						display : '验证信息',
-						name : 'ContactName',
-						minWidth : 100
-					} ],
-					pageSize : 10,
-					data : CustomersData,
-					width : '100%',
-					height : '97%'
-				});
-				$("#pageloading").hide();
-			});
-			
-			//新增弹窗
-			$(".current").on('click', function(e) { //添加/编辑解析规则
-				e.preventDefault();
-				var dialog = $.Layer.iframe({
-					title : '新增角色',
-					url : 'add_jsgl.html',
-					width : 900,
-					height : 600
-				});
-				dialog.hGrid = table;
-			});
-		});
-	})(jQuery);
-</script>
+
 </body>
 </html>

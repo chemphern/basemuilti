@@ -37,7 +37,18 @@ public class TaskUtils {
 		clazz = object.getClass();
 		Method method = null;
 		try {
-			method = clazz.getDeclaredMethod(scheduleJob.getMethodName());
+			//根据方法名称和方法参数找到该方法
+			Object [] methodParameter = scheduleJob.getMethodParameter();
+			if(methodParameter == null) {
+				method = clazz.getDeclaredMethod(scheduleJob.getMethodName());
+			}else {
+				Class [] paramClass = new Class[methodParameter.length];
+				for(int x = 0 ;x<methodParameter.length;x++){
+					Class c = (Class) methodParameter[x];
+					paramClass[x] = c;
+				}
+				method = clazz.getDeclaredMethod(scheduleJob.getMethodName(),paramClass);
+			}
 		} catch (NoSuchMethodException e) {
 			log.error("任务名称 = [" + scheduleJob.getJobName() + "]---------------未启动成功，方法名设置错误！！！");
 		} catch (SecurityException e) {
@@ -46,7 +57,7 @@ public class TaskUtils {
 		}
 		if (method != null) {
 			try {
-				method.invoke(object);
+				method.invoke(object,scheduleJob.getArgs());
 			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -58,6 +69,5 @@ public class TaskUtils {
 				e.printStackTrace();
 			}
 		}
-		System.out.println("任务名称 = [" + scheduleJob.getJobName() + "]----------启动成功");
 	}
 }

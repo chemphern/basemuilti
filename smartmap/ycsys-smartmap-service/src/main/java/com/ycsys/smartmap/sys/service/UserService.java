@@ -33,4 +33,8 @@ public interface UserService {
     void saveOrUpdate(User user, String orgId,String roleIds);
     
     public List<User> findAllUsers(String hql);
+
+    /**所有用户总条数
+     * @param orgId**/
+    long countAll(String orgId);
 }

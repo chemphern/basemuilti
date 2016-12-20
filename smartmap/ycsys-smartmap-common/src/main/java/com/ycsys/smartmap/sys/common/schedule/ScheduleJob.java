@@ -61,6 +61,16 @@ public class ScheduleJob {
      */  
     private String methodName;
 
+    /**
+     * 调用的方法的参数(里面传Class<T> </>)
+     * **/
+    private Object[] methodParameter;
+
+    /**
+     * 调用方法的参数
+     * **/
+    private Object[] args;
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -147,5 +157,21 @@ public class ScheduleJob {
 
     public void setMethodName(String methodName) {
         this.methodName = methodName;
+    }
+
+    public Object[] getMethodParameter() {
+        return methodParameter;
+    }
+
+    public void setMethodParameter(Object[] methodParameter) {
+        this.methodParameter = methodParameter;
+    }
+
+    public Object[] getArgs() {
+        return args;
+    }
+
+    public void setArgs(Object[] args) {
+        this.args = args;
     }
 }

@@ -83,10 +83,12 @@ function creatCacheFolder(){
 		createFolder(configration.WMSServiceFolder);
 	if(configration.WFSServiceFolder!="")
 		createFolder(configration.WFSServiceFolder);
-	if(configration.POIFolder != "")
-        createFolder(configration.POIFolder);
-	if(configration.QueryIcoFolder !="" )
+//	if(configration.POIFolder != "")
+//        createFolder(configration.POIFolder);
+	if(configration.QueryIcoFolder!="")
         createFolder(configration.QueryIcoFolder);
+	if(configration.QueryDrawFolder!="")
+        createFolder(configration.QueryDrawFolder);
 }
 
 /**

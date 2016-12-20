@@ -36,7 +36,7 @@
   <![endif]-->
 <style>
 html,body {
-	background-color: #ecf0f5
+	background-color: #f1f1f1;
 }
 
 body {
@@ -45,6 +45,17 @@ body {
 </style>
 </head>
 <body>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                资源管理
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
+                <li class="active">资源管理</li>
+            </ol>
+        </section>
+		<section class="content">
 	<div class="row">
 		<div class="col-md-3">
 			<div class="box box-solid">
@@ -88,11 +99,11 @@ body {
 							  </select>
 						<shiro:hasPermission name="resource-list">
 							<button class="current" onclick="resource_list.query();">
-								<i class="iconfont icon-plus"></i>查询
+								<i class="glyphicon glyphicon-search"></i>查询
 							</button>
 						</shiro:hasPermission>
 						<shiro:hasPermission name="resource-create">
-							<button class="current" onclick="resource_list.editResource('1');">
+							<button class="" onclick="resource_list.editResource('1');">
 								<i class="iconfont icon-plus"></i>新增
 							</button>
 						</shiro:hasPermission>
@@ -123,6 +134,7 @@ body {
 			<!-- /.col -->
 		</div>
 	</div>
+        </section>
 </body>
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script src="${res}/plugins/ligerUI/js/core/base.js"

@@ -133,4 +133,9 @@ public class DictServiceImpl implements DictService {
 		inputStream.close();
 	}
 
+	@Override
+	public long countAll() {
+		return dictDao.count("select count(*) from Dictionary");
+	}
+
 }

@@ -212,11 +212,11 @@
                     </code>
                 </func>
             </url>
-            <url name="平台监控配置" sort="6" href="/server/list" funcs="sys-server-list">
+            <url name="平台监控配置" sort="6" href="/platMonitorConfig/list" funcs="sys-platMonitorConfig-list">
                 <func name="平台监控配置" sort="1">
                     <code>
-                        sys-server-list,
-                        sys-server-listData
+                        sys-platMonitorConfig-list,
+                        sys-platMonitorConfig-listData
                     </code>
                 </func>
             </url>

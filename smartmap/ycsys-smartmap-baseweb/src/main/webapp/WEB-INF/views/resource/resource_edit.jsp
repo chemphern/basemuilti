@@ -42,14 +42,7 @@
 				<td><select type="text" name="resourceType.id"
 					id="resourceTypeId" class="text">
 						<c:forEach var="list" items="${resourceTypeLists }">
-							<c:if test="${ not empty list.parent }">
-								<c:if test="${resource.resourceType.id eq list.id }">
-									<option value="${list.id }" selected="selected">${list.name }</option>
-								</c:if>
-								<c:if test="${resource.resourceType.id ne list.id }">
-									<option value="${list.id }">${list.name }</option>
-								</c:if>
-							</c:if>
+							<option value="${list.id }">${list.name }</option>
 						</c:forEach>
 				</select></td>
 			</tr>

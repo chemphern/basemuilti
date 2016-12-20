@@ -81,18 +81,22 @@ body {
 				class="date_add_table">
             <tr>
               <td class="t_r">服务注册名称：</td>
-              <td><input type="text" name="registerName"
-						id="registerName" class="text validate[required]" /></td>
+              <td><input type="text" name="registerName" placeholder="请输入英文"
+						id="registerName" class="text validate[required]" validate="{required:true,maxlength : 15,english:true,messages:{required:'必填',maxlength:'字符长度不能超过15个!'}}"/>
+						<span style="color: red">*</span>
+						</td>
             </tr>
             <tr>
               <td class="t_r">服务显示名称：</td>
               <td><input type="text" name="showName"
-						id="showName" class="text validate[required]" /></td>
+						id="showName" class="text validate[required]" validate="{required:true,maxlength : 15,messages:{required:'必填',maxlength:'字符长度不能超过15个!'}}"/>
+						<span style="color: red">*</span>
+						</td>
             </tr>
             <tr>
               <td class="t_r">服务描述：</td>
               <td><textarea name="remarks" id="remarks" clos="20" rows="5"
-							class="text_area"></textarea></td>
+							class="text_area" validate="{maxlength : 100,messages:{maxlength:'备注 的字符长度大于100个字符！'}}"></textarea></td>
             </tr>
           </table>         
         </div>
@@ -115,8 +119,10 @@ body {
               
               <tr>
                 <td class="t_r">服务访问地址：</td>
-                <td><input type="text" name="serviceVisitAddress"
-						id="serviceVisitAddress" class="text validate[required]" /></td>
+                <td><input type="text" name="serviceVisitAddress" id="serviceVisitAddress" class="text validate[required]"
+						validate="{required:true,maxlength : 100,messages:{required:'必填',maxlength:'字符长度不能超过100个!'}}"/>
+						<span style="color: red">*</span>
+						</td>
               </tr>
               
               <tr>
@@ -234,10 +240,12 @@ body {
         </div>
     </div>
    </form>
-  <!-- /.content-wrapper --><!-- jQuery 2.2.3 -->
-	<script src="${res }/plugins/jQuery/jquery-2.2.3.min.js"></script>
-	<script
-		src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
+  <!-- /.content-wrapper -->
+  	<!-- jQuery 2.2.3 -->
+	<script src="${res}/js/common/form.js"></script>
+	<script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
+	<script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
+	<script src="${res}/plugins/jquery-validation-1.15.1/dist/jquery.validate.min.js" type="text/javascript"></script>
 	<!--grid-->
 	<script src="${res }/plugins/ligerUI/js/core/base.js"
 		type="text/javascript"></script>
@@ -259,23 +267,37 @@ body {
 	<script type="text/javascript"
 		src="${res }/plugins/wizard-master/jquery.smartWizard.js"></script>
 	<script type="text/javascript">
+		//只能输入英文
+	    jQuery.validator.addMethod("english", function(value, element) {
+	        var reg = /^([a-zA-Z]+)$/;
+	        return this.optional(element) || (reg.test(value));
+	    	}, "只能输入英文字母");
+		
 		$(document).ready(function() {
 			var parentWin = window.parent;
 			var dialog = parentWin.art.dialog.list["registerOtherDialog"];
-			
-			$('#form_id').on('submit', function(e) {
-	            e.preventDefault(); // <-- important
-	            $(this).ajaxSubmit({
-	            	dataType:"json",
-	            	success:function(result){
-	            		alert(result.msg);
+			var form = $("#form_id");
+			var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
+			val_obj.submitHandler = function(){
+				$('.actionBar a.buttonFinish').addClass("buttonDisabled");//完成按钮变灰
+				$('.actionBar a.buttonPrevious').addClass("buttonDisabled");//上一步按钮变灰 
+				//支持文件上传的ajax提交方式
+				form.ajaxSubmit({
+					dataType:"json",
+	                success:function(result){
+	                	alert(result.msg);
 	            		if(result.flag == "0") {
 	            			dialog.close();
 	            		}
-	            		
-	                 }
-	            });
-	        });
+	            		else {
+	            			$('.actionBar a.buttonFinish').removeClass("buttonDisabled");//完成按钮可用
+	            			$('.actionBar a.buttonPrevious').removeClass("buttonDisabled");//上一步按钮可用  
+	            		}
+	                }
+	             });
+		    };
+		    form.validate(val_obj);
+			
 			// Smart Wizard     
 			$('#wizard').smartWizard({
 				onLeaveStep:onLeaveStepCallback,
@@ -283,9 +305,14 @@ body {
 			});
 
 			function onFinishCallback() {
-				$('#form_id').submit();
-				//$('#wizard').smartWizard('showMessage', 'Finish Clicked');
-				//alert('Finish Clicked');
+				var counts = $('div.l-exclamation'); //填的不对的记录数
+				if(counts.length < 1) {
+					$('#form_id').submit();
+				}
+				else {
+					$("#wizard").smartWizard("showMessage","请重新填写有误的信息！");
+					return false;
+				}
 			}
 			
 			//上一步和下一步触发的方法
@@ -296,11 +323,11 @@ body {
 				switch(stepNum) {
 				case '1':
 					if($("#registerName").val() == '') {
-						alert("服务注册名称不能为空");
+						//alert("服务注册名称不能为空");
 						return false;
 					}
 					if($("#showName").val() == '') {
-						alert("服务显示名称不能为空！");
+						//alert("服务显示名称不能为空！");
 						return false;
 					}
 					return true;

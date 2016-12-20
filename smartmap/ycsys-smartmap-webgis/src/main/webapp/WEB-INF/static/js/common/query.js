@@ -47,9 +47,9 @@ function addLogicItem(){
 	var lyrItem=lyrSelect.options[lyrSelect.selectedIndex];
 	var fildItem=fildSelect.options[fildSelect.selectedIndex];
 	var logicItem=logicSelect.options[logicSelect.selectedIndex];
-	if(mapOpt==2){
+	//if(mapOpt==2){
 		addLogicItem2d(lyrItem,fildItem,logicItem,fildValue);
-	}
+	//}
 }
 
 function queryAttr(){

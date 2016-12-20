@@ -29,4 +29,7 @@ public interface RoleService {
 
     /**初始化角色**/
     void initRole(RoleRootXmlObject roles);
+
+    /**获取所有角色总条数**/
+    long countAll();
 }

@@ -34,8 +34,53 @@ function locateAddress2d(address){
 }
 function searchBack(result){
 	console.log(result);
+	clear2dMap();
 	if(result.numResults<1){
 		showAlertDialog("没有搜索到结果");
+	}else{
+		var pointLyr=new esri.layers.GraphicsLayer({id:"iPointLyr"});
+		var polylineLyr=new esri.layers.GraphicsLayer({id:"iPolylineLyr"});
+		var polygonLyr=new esri.layers.GraphicsLayer({id:"iPolygonLyr"});
+		map.addLayers([polygonLyr,polylineLyr,pointLyr]);
+		arrFeaturesTemp=[];
+		$.each(result.results,function(k,arr){
+			$.each(arr,function(indx,val){
+				var feature=val.feature;
+				var infoTemplate=new esri.InfoTemplate("属性","${name}");
+				feature.setInfoTemplate(infoTemplate);
+				feature.attributes.name=val.name;
+				arrFeaturesTemp.push(feature);
+			})
+		})
+		//构造属性页数组
+		listLocateInfos(arrFeaturesTemp);
+		//初始化分页
+		var opt={
+				pageId:"#PaginationLocate",
+				queryNumId:"#locateNum",
+				backId:"#btnLocateBack",
+				headerId:"#locateHeader",
+				resultId:"#locateResult"
+		}
+		$(opt.headerId).css('display','none');
+		$(opt.resultId).css('display','block');
+		initPager(arrQueryInfoItem,opt,function(page_index){
+			var new_content=createPageContentSpatial(page_index);
+			$("#locateItem").empty().append(new_content);
+		});
+	}
+}
+function listLocateInfos(arrFeatures){
+	nameField="name";
+	summaryFields="";
+	arrQueryInfoItem=[];
+	for(var i=0,p=1;i<arrFeatures.length;i++,p++){
+		var feature=arrFeatures[i];
+		var li=createItemSpatial(feature,p);
+		arrQueryInfoItem.push(li);
+		if(p >= pageSize){
+			p=0;
+		}
 	}
 }
 function renderPoint(point){

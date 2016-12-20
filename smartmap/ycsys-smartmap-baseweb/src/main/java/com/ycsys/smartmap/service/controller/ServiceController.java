@@ -13,12 +13,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Map.Entry;
 import java.util.UUID;
 
@@ -26,6 +30,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.dbutils.handlers.MapHandler;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -60,6 +65,7 @@ import com.ycsys.smartmap.sys.common.utils.FileUtils;
 import com.ycsys.smartmap.sys.common.utils.HttpClientUtils;
 import com.ycsys.smartmap.sys.common.utils.JsonMapper;
 import com.ycsys.smartmap.sys.common.utils.StringUtils;
+import com.ycsys.smartmap.sys.controller.AreaController;
 import com.ycsys.smartmap.sys.controller.BaseController;
 import com.ycsys.smartmap.sys.entity.ConfigServerEngine;
 import com.ycsys.smartmap.sys.entity.DictionaryItem;
@@ -67,6 +73,7 @@ import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.User;
 import com.ycsys.smartmap.sys.service.ConfigServerEngineService;
 import com.ycsys.smartmap.sys.util.DataDictionary;
+import com.ycsys.smartmap.sys.util.DbUtils;
 
 /**
  * service controller
@@ -85,7 +92,48 @@ public class ServiceController extends BaseController {
 	private ConfigServerEngineService configServerEngineService;
 	//服务导入模版地址
 	private static final String DOWNLOADURL = "/data/init/服务导入模版.zip";
-
+	
+	//服务引擎的数据插入
+    public static void main(String [] args){
+        try {
+			//读取配置文件
+			Properties properties = new Properties();
+			String profile = "db.properties";
+			InputStream pis = AreaController.class.getResource("/" + profile).openStream();
+			properties.load(pis);
+			//创建数据库连接
+			DbUtils db = new DbUtils();
+			String driver = properties.getProperty("jdbc.driver");
+			//如果是oracle，则sql需要特殊处理
+			boolean isOracle = driver.indexOf("oracle") > -1;
+			String insertSql = "";
+			if(isOracle){
+			    String sequence = "HIBERNATE_SEQUENCE";
+			    insertSql = "insert into sys_config_server_engine (id,config_name,engineType_type,integration_model,machine_name,intranet_ip,intranet_port,running_status,engine_manager,manager_password) values (" +sequence +  ".nextval,?,?,?,?,?,?,?,?,?)";
+			}else {
+			    insertSql = "insert into sys_config_server_engine (config_name,engineType_type,integration_model,machine_name,intranet_ip,intranet_port,running_status,engine_manager,manager_password) values (?,?,?,?,?,?,?,?,?)";
+			}
+			Class.forName(driver);
+			Connection conn = DriverManager.getConnection(properties.getProperty("jdbc.url"), properties.getProperty("jdbc.username"), properties.getProperty("jdbc.password"));
+			conn.setAutoCommit(false);
+			Object obj [] = new Object[]{"arcGisServer10.3","0","0","arcGisServer10.3","172.16.10.52",6080,"0","siteadmin","ld@yc2016"};
+			db.execute(conn, insertSql, obj);
+			db.commit(conn);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+         
+    }
 	/**
 	 * 准备发布服务
 	 * 
@@ -211,13 +259,9 @@ public class ServiceController extends BaseController {
 				while ((len = in.read(bs)) != -1) {
 					out.write(bs, 0, len);
 				}
-
-			} catch (FileNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (Exception e) {
+				map.put("msg", "发布失败！");
+				return map;
 			} finally {
 				try {
 					out.close();
@@ -492,6 +536,15 @@ public class ServiceController extends BaseController {
 			resource.setStatus("1");
 			map.put("flag", "1");
 			map.put("msg", "发布成功！");
+			String managerServiceUrl = "http://" + ip + ":" + port
+					+ "/arcgis/admin/services/";
+			if (StringUtils.isNotBlank(folderName)) {
+				managerServiceUrl = managerServiceUrl + folderName + "/";
+			}
+			managerServiceUrl = managerServiceUrl + serviceName + "."
+					+ serviceType;
+			boolean f = ServiceUtils.startService(ip, port, userName, password, managerServiceUrl);
+			System.out.println("启动服务是否成功=" + f);
 			//资源发布成服务的日志记录
 			
 		} else {
@@ -616,6 +669,9 @@ public class ServiceController extends BaseController {
 				if (seviceStatus) {
 					s.setServiceStatus("1");
 				}
+				else {
+					s.setServiceStatus("0");
+				}
 				s.setCreateDate(new Date());
 				s.setCreator(user);
 				s.setMaxVersionNum(1);
@@ -677,30 +733,29 @@ public class ServiceController extends BaseController {
 		StringBuffer hql = new StringBuffer();
 		hql.append("from Service t where 1 = 1 ");
 		if (StringUtils.isNotBlank(registerServerType)) {
-			hql.append("and t.registerType = ?");
+			hql.append("and t.registerType = ? ");
 			params.add(registerServerType);
 		} 
 		if (StringUtils.isNotBlank(registerName)) {
-			hql.append("and t.registerName like ?");
+			hql.append("and t.registerName like ? ");
 			params.add('%' + registerName + '%');
 		}
 		if (StringUtils.isNotBlank(showName)) {
-			hql.append("and t.showName = ?");
+			hql.append("and t.showName = ? ");
 			params.add('%' + showName + '%');
 		} 
 		if (StringUtils.isNotBlank(serviceStatus)) {
-			hql.append("and t.serviceStatus = ?");
+			hql.append("and t.serviceStatus = ? ");
 			params.add(serviceStatus);
 		} 
 		if (StringUtils.isNotBlank(permissionStatus)) {
-			hql.append("and t.permissionStatus = ?");
+			hql.append("and t.permissionStatus = ? ");
 			params.add(permissionStatus);
 		} 
 		list = serviceService.find(hql.toString(),params, page);
 		long count = serviceService.count(hql.toString(), params);
 		hql.append(" order by r.createDate desc");
-		Grid<Service> g = new Grid<Service>(list);
-		g.setTotal(count);
+		Grid<Service> g = new Grid<Service>(count,list);
 		return g;
 	}
 
@@ -1231,37 +1286,36 @@ public class ServiceController extends BaseController {
 		StringBuffer hql = new StringBuffer();
 		hql.append("from Service t where 1 = 1 ");
 		if (StringUtils.isNotBlank(registerServerType)) {
-			hql.append("and t.registerType = ?");
+			hql.append("and t.registerType = ? ");
 			params.add(registerServerType);
 		} 
 		if (StringUtils.isNotBlank(registerName)) {
-			hql.append("and t.registerName like ?");
+			hql.append("and t.registerName like ? ");
 			params.add('%' + registerName + '%');
 		}
 		if (StringUtils.isNotBlank(showName)) {
-			hql.append("and t.showName = ?");
+			hql.append("and t.showName = ? ");
 			params.add('%' + showName + '%');
 		} 
 		
 		if (StringUtils.isNotBlank(serviceStatus)) {
-			hql.append("and t.serviceStatus = ?");
+			hql.append("and t.serviceStatus = ? ");
 			params.add(serviceStatus);
 		} 
 		
 		if (StringUtils.isNotBlank(auditStatus)) {
-			hql.append("and t.auditStatus = ?");
+			hql.append("and t.auditStatus = ? ");
 			params.add(auditStatus);
 		} 
 		
 		if (StringUtils.isNotBlank(permissionStatus)) {
-			hql.append("and t.permissionStatus = ?");
+			hql.append("and t.permissionStatus = ? ");
 			params.add(permissionStatus);
 		} 
 		list = serviceService.find(hql.toString(),params, page);
 		long count = serviceService.count(hql.toString(), params);
-		hql.append(" order by r.createDate desc");
-		Grid<Service> g = new Grid<Service>(list);
-		g.setTotal(count);
+		hql.append(" order by r.createDate desc ");
+		Grid<Service> g = new Grid<Service>(count,list);
 		return g;
 	}
 	

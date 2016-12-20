@@ -3,7 +3,7 @@ var summaryFields;//概要组合字段
 var displayFields;//用于地图上属性表显示的字段
 var arrFeaturesTemp=[];//保存几何要素的数组
 var arrQueryInfoItem;//属性查询结果条目
-
+var pageSize=10;//查询结果每页显示条数
 var queryCatalog=0;//查询类别：0,1,2分别代表属性查询、空间查询、逻辑查询
 
 $(function(argument){
@@ -103,7 +103,6 @@ function setLogic(index){
 	var indx=sel.selectedIndex;
 	var row=$('#tableLogic').bootstrapTable('getOptions').data[index];
 	row.fieldLogic=sel.options[indx].value;
-	console.log(row);
 }
 function delLogic2d(e){
 	var row=$('#tableLogic').bootstrapTable('getSelections')[0];
@@ -137,7 +136,6 @@ function queryAttrLogic2d(layerItem){
 		return;
 	}
 	var sqlWhere=sqls.join("");
-	console.log(sqlWhere);
 	query(layerItem.url,sqlWhere);
 }
 
@@ -194,35 +192,55 @@ function okCall(featureSet){
 	var geometryType=featureSet.geometryType;
 	var features=featureSet.features;
 	arrFeaturesTemp=features;
-	console.log(arrFeaturesTemp);
 	
-	//构建弹出内容
+	//弹出内容
 	var info=createTemplateContent(displayFields,fieldAliases);
-	//符号样式
-	var symbol=getSymbol(geometryType);
 	//显示查询结果图层
 	var tempLayer=new esri.layers.GraphicsLayer({id:'queryLyr'});
-	for(var i=0;i<features.length;i++){
+//	tempLayer.on('click',onGraphicClick);
+	for(var i=0,n=1;i<features.length;i++,n++){
 		var feature=features[i];
-		feature.setSymbol(symbol);
-		feature.setInfoTemplate(new esri.InfoTemplate("Info",info));
-		tempLayer.add(feature);
+		feature.setInfoTemplate(new esri.InfoTemplate("属性",info));
 		//分页条目信息
-		var li=createItem(feature,i+1);
+		var li=createItem(feature,n,fieldAliases);
 		arrQueryInfoItem.push(li);
+		if(n >= pageSize){
+			n=0;
+		}
 	}
 	map.addLayer(tempLayer);
 	//显示属性查询页
 	//initPager(arrQueryInfoItem,pageDiv,resultNumDiv,backDiv,mainDiv)
 	if(queryCatalog==0){
-		$('#Sxcxbox-result').css('display','block');
-		initPager(arrQueryInfoItem,"#Pagination","#queryNum","#btnBack","#Sxcxbox-result");
+		var opt={
+				pageId:"#Pagination",
+				queryNumId:"#queryNum",
+				backId:"#btnBack",
+				headerId:"#Sxcxbox",
+				resultId:"#Sxcxbox-result"
+		}
+		$(opt.headerId).css('display','none');
+		$(opt.resultId).css('display','block');
+		initPager(arrQueryInfoItem,opt);
 	}else if(queryCatalog==2){
-		$('#Sxcxbox-logic').css('display','block');
-		initPager(arrQueryInfoItem,"#PaginationLogic","#queryLogicNum","#btnLogicBack","#Sxcxbox-logic");
+		var opt={
+				pageId:"#PaginationLogic",
+				queryNumId:"#queryLogicNum",
+				backId:"#btnLogicBack",
+				headerId:"#logicBody",
+				resultId:"#Sxcxbox-logic"
+		}
+		$(opt.headerId).css('display','none');
+		$(opt.resultId).css('display','block');
+		initPager(arrQueryInfoItem,opt);
 	}
 }
 
+function onGraphicClick(evt){
+	evt.preventDefault();
+	var graphic=evt.graphic;
+	popupWindow(graphic);
+}
 /**
  * 构建弹窗内容
  * @param displayFieldsStr 属性字段字符串，分号相隔
@@ -231,14 +249,14 @@ function okCall(featureSet){
  */
 function createTemplateContent(displayFieldsStr,fieldAliasesObj){
 	//别名和字段名数组
-	var arrDisplayFields=[],html;
+	var arrDisplayFieldsAlias=[],html;
 	if(displayFieldsStr){
-		arrDisplayFields=displayFieldsStr.split(";");
-		var arrDisplayFieldsAlias=[];
-		for(var p=0;p<arrDisplayFields.length;p++){
-			$.each(fieldAliasesObj,function(o,v){
-				if(o==arrDisplayFields[p]){
-					arrDisplayFieldsAlias.push(v);
+		arrDisplayFieldsAlias=displayFieldsStr.split(";");
+		var arrDisplayFields=[];
+		for(var p=0;p<arrDisplayFieldsAlias.length;p++){
+			$.each(fieldAliasesObj,function(o,v){//o为字段名,v为别名
+				if(v==arrDisplayFieldsAlias[p]){
+					arrDisplayFields.push(o);
 				}
 			})
 		}
@@ -256,26 +274,34 @@ function createTemplateContent(displayFieldsStr,fieldAliasesObj){
 }
 
 /**
- * 创建分页条目内容
+ * 创建分页条目内容.属性查询中attributes没有采用别名，需转换
  * @param feature
  * @param index
+ * @param fieldAliases
  * @returns
  */
-function createItem(feature,index){
+function createItem(feature,index,fieldAliasesObj){//
 	//名称信息
-	var title=feature.attributes[nameField];
-	var layerName=feature.attributes.layerName;
-	if(layerName){
-		summaryFields="layerName;"+summaryFields;
-	}
+	var title;
+	$.each(fieldAliasesObj,function(o,v){//o为字段名,v为别名
+		if(v==nameField){
+			title=feature.attributes[o];
+		}
+	});
+	
 	//简略显示的字段数组
 	var arrSummaryFields=[];
 	var summary=[];
 	if(summaryFields){
 		arrSummaryFields=summaryFields.split(";");
 		for(var j=0;j<arrSummaryFields.length;j++){
-			var name=arrSummaryFields[j];
-			summary.push(feature.attributes[name]);
+			var name=arrSummaryFields[j];//别名
+			$.each(fieldAliasesObj,function(o,v){//o为字段名,v为别名
+				if(v==name){
+					summary.push(feature.attributes[o]);
+				}
+			})
+			
 		}
 	}
 	summary=summary.join("—");
@@ -292,27 +318,35 @@ function createItem(feature,index){
  * @param mainContainerDiv 最外层#id
  * @returns
  */
-function initPager(arrQueryInfoItem,pageDiv,resultNumDiv,backDiv,mainContainerDiv){
+function initPager(arrQueryInfoItem,opt,callback){
+	var fnCallback=callback?callback:pageCallback;
 	var initPagination = function() {
         var num_entries = arrQueryInfoItem.length;
         // 创建分页
-        $(pageDiv).pagination(num_entries, {
+        $(opt.pageId).pagination(num_entries, {
           num_edge_entries: 1, //边缘页数
           num_display_entries: 4, //主体页数
-          callback: pageCallback,
+          callback: fnCallback,
           items_per_page:5 //每页显示1项
         });
        }();
        //初始化第一页
-       pageCallback(0);
-       $(resultNumDiv).text(arrQueryInfoItem.length);
-       $(backDiv).on('click',function(){
-    	   $(mainContainerDiv).css('display','none');
+       fnCallback(0);
+       $(opt.queryNumId).text(arrQueryInfoItem.length);
+       $(opt.backId).on('click',function(){
+    	   $(opt.resultId).css('display','none');
+    	   $(opt.headerId).css('display','block');
        });
 }
 
 function pageCallback(page_index, jq){
-    var new_content = createPageContent(page_index);
+	clearResult();
+    var new_content;
+    if(queryCatalog==1){
+    	new_content = createPageContentSpatial(page_index);
+    }else{
+    	new_content = createPageContent(page_index);
+    }
     if(queryCatalog==0){
     	$("#queryItem").empty().append(new_content);
     }else if(queryCatalog==2){
@@ -330,14 +364,90 @@ function pageCallback(page_index, jq){
  * @returns
  */
 function createPageContent(pageIndex){
-	var pageSize=5;//每页显示5条
+	if(!pageSize) pageSize=10;//每页显示5条
 	var _start=pageIndex*pageSize;
 	var _end=_start+(pageSize-1);
+	
+	//图标代号
+	var pIndx=1;
+	var http=path+"/static/dist/img/map/icon_features_";
+	var resultLyr=map.getLayer("queryLyr");
 	var arrTemp=[];
+	var arrFeaturePerPage=[];
 	for(var i=_start;i<=_end;i++){
-		arrTemp.push(arrQueryInfoItem[i]);
+		if(i<arrQueryInfoItem.length){
+			arrTemp.push(arrQueryInfoItem[i]);
+			var url=http+pIndx+".png";
+			var symbol=getPicSymbol(url);
+			//显示一页中的要素对象.
+			var feature=arrFeaturesTemp[i];
+			var geoType=feature.geometry.type;
+			var center=getGeomoetryCenter(feature);
+			var graphic=new esri.Graphic(center,symbol);
+			var style=getSymbol(geoType,true);
+			feature.setSymbol(style);
+			resultLyr.add(feature)
+			graphic.setAttributes(feature.attributes);
+			graphic.setInfoTemplate(feature.infoTemplate);
+			resultLyr.add(graphic);
+			arrFeaturePerPage.push(feature);
+			pIndx++;
+		}
+		
 	}
-	return arrTemp.join("");
+	//传递要素给3纬处理
+	graphicsConvertor(arrFeaturePerPage,false)
+	fromArcgisTo3dScene(arrFeaturePerPage)
+	return arrTemp.join("<br>");
+}
+
+function createPageContentSpatial(pageIndex){
+	if(!pageSize) pageSize=10;//每页显示5条
+	var _start=pageIndex*pageSize;
+	var _end=_start+(pageSize-1);
+	
+	//图标代号
+	var pIndx=1;
+	var http=path+"/static/dist/img/map/icon_features_";
+//	var resultLyr=map.getLayer("queryLyr");
+	var pointLyr=map.getLayer("iPointLyr");
+	var polylineLyr=map.getLayer("iPolylineLyr");
+	var polygonLyr=map.getLayer("iPolygonLyr");
+	var arrTemp=[];
+	var arrFeaturePerPage=[];
+	for(var i=_start;i<=_end;i++){
+		if(i<arrQueryInfoItem.length){
+			arrTemp.push(arrQueryInfoItem[i]);
+			var url=http+pIndx+".png";
+			var symbol=getPicSymbol(url);
+			//显示一页中的要素对象.
+			var feature=arrFeaturesTemp[i];
+			var geoType=feature.geometry.type;
+			var center=getGeomoetryCenter(feature);
+			var graphic=new esri.Graphic(center,symbol);
+			var style=getSymbol(geoType,true);
+			if(geoType.indexOf("point")>-1){
+				feature.setSymbol(style);
+				pointLyr.add(feature)
+			}else if(geoType.indexOf("polyline")>-1){
+				feature.setSymbol(style);
+				polylineLyr.add(feature);
+			}else{
+				feature.setSymbol(style);
+				polygonLyr.add(feature);
+			}
+			graphic.setAttributes(feature.attributes);
+			graphic.setInfoTemplate(feature.infoTemplate);
+			pointLyr.add(graphic);
+			arrFeaturePerPage.push(feature);
+			pIndx++;
+		}
+		
+	}
+	//传递要素给3纬处理
+	graphicsConvertor(arrFeaturePerPage)
+	fromArcgisTo3dScene(arrFeaturePerPage)
+	return arrTemp.join("<br>");
 }
 /**
  * 导航到地图中对应的要素
@@ -345,20 +455,58 @@ function createPageContent(pageIndex){
  * @returns
  */
 function toFeature(featureObjId){
+	var targetFeature;
 	for(var i=0;i<arrFeaturesTemp.length;i++){
 		var feature=arrFeaturesTemp[i];
 		if(feature.attributes.OBJECTID==featureObjId){
-			highlightView(feature);
+			targetFeature=feature;
+			break;
 		}
 	}
+	popupWindow(targetFeature,true);
+	//三维点击定位
+    navigateToSceneFeature(featureObjId);
 }
 
-function highlightView(feature){
-	var type=feature.geometry.type;
-	var symbol=getSymbol(type,true);
-	feature.setSymbol(symbol);
-//	map.setExtent(feature._extent,true);
-	map.centerAndZoom(feature._extent.getCenter(),10);
+function getGeomoetryCenter(feature){
+	var geoType=feature.geometry.type;
+	var point;
+	if(geoType.indexOf("point")>-1){
+		point=feature.geometry;
+	}else if(geoType.indexOf("polygon")>-1){
+		point=feature.geometry.getExtent().getCenter();
+	}else{
+		var len=feature.geometry.paths.length;
+		var pathIndex,pointIndex;
+		if(len%2==0){
+			pathIndex=len/2-1;
+			pointIndex=feature.geometry.paths[pathIndex].length-1;
+		}else{
+			pathIndex=(len/2).toFixed()-1;
+			pointIndex=((feature.geometry.paths[pathIndex].length)/2).toFixed();
+		}
+		point=feature.geometry.getPoint(pathIndex,pointIndex);
+	}
+	return point;
+}
+function popupWindow(graphic,isAtCenter){
+	var type=graphic.geometry.type;
+	var point=getGeomoetryCenter(graphic);
+	var deferred;
+	if(isAtCenter){
+		if(type!="point"){
+			var _extent=graphic.geometry.getExtent();
+			deferred =map.setExtent(_extent);
+		}else{
+			deferred =map.centerAndZoom(point,14);
+
+		}
+	}
+	deferred.then(function(){
+		map.infoWindow.setTitle("属性");
+		map.infoWindow.setContent(graphic.getContent());
+		map.infoWindow.show(point,esri.dijit.InfoWindow.ANCHOR_UPPERRIGHT);
+	});
 }
 
 function failCall(){
@@ -385,35 +533,6 @@ function queryPolygon2d(){
 	toDraw(draw);
 }
 function getQueryServiceArr(){
-//	var zTree = $.fn.zTree.getZTreeObj("treeMaptcgl"),
-//    nodes = zTree.getCheckedNodes();
-//	if(nodes.length<1)return null;
-//	var urls=[];
-//	var serviceObj;
-//	for(var i=0;i<nodes.length;i++){
-//		var node=nodes[i];
-//		if(node.type=='r'){
-//			continue;
-//		}
-//		var url=node.address;
-//		if(url.indexOf("MapServer")>-1){
-//			url=url.substring(0,url.lastIndexOf("MapServer")+9);
-//		}
-//		if($.inArray(url, urls)<0){
-//			urls.push(url);
-//			
-//		}
-//		var fieldObj={//图层级别的展示字段对象
-//				nameFidld:node.nameField,
-//				summaryFields:node.summaryFields,
-//				displayFields:node.displayFields
-//		}
-//		arrNameField.push(node.nameField);
-//		arrSummaryFields.push(node.summaryFields);
-//		arrDisplayFields.push(node.displayFields);
-//	}
-//	return urls;
-	
 	var zTree = $.fn.zTree.getZTreeObj("treeMaptcgl"),
 	nodes = zTree.getCheckedNodes();
 	if(nodes.length<1)return null;
@@ -481,18 +600,20 @@ function doQueryGeometry(serviceUrl,geometry){
 	return task.execute(params);
 }
 function toDraw(draw){
-	queryCatalog=1;//空间查询
 	clear2dMap();
 	map.setMapCursor("crosshair");
-	draw.on('draw-complete',function(geo1,geo2){
-		map.graphics.add(geo1.geometry);
-		var deferredList=getQueryDefereds(geo1.geometry);
-		if(deferredList){
-			deferredList.then(dealResults);
-		}
-		map.setMapCursor("default");
-		draw.deactivate();
-	});
+	draw.on('draw-complete',onDrawEnd);
+}
+
+function onDrawEnd(geometryObj){//geometryObj对象含geometry属性
+	queryCatalog=1;//空间查询
+	map.graphics.add(geometryObj.geometry);
+	var deferredList=getQueryDefereds(geometryObj.geometry);
+	if(deferredList){
+		deferredList.then(dealResults);
+	}
+	map.setMapCursor("default");
+	draw.deactivate();
 }
 
 /**
@@ -501,16 +622,20 @@ function toDraw(draw){
  * @returns
  */
 function dealResults(results){
-	console.log(results);
+	arrFeaturesTemp=[];
 	arrQueryInfoItem=[];
-	var pointLyr,polylineLyr,polygonLyr;
+	var pointLyr=new esri.layers.GraphicsLayer({id:"iPointLyr"});
+	var polylineLyr=new esri.layers.GraphicsLayer({id:"iPolylineLyr"});
+	var polygonLyr=new esri.layers.GraphicsLayer({id:"iPolygonLyr"});
+//	var tempLayer=new esri.layers.GraphicsLayer({id:'queryLyr'});
+	map.addLayers([polygonLyr,polylineLyr,pointLyr]);
+	var p=1;
 	for(var i=0;i<results.length;i++){//服务级别
 		var result=results[i];
 		if(!result[0]) continue;
 		var featureSet=result[1];
 		var layerArr=arrService[i].layerLevel;
-		console.log(featureSet);
-		for(var n=0;n<featureSet.length;n++){//图层级别:所有图层
+		for(var n=0;n<featureSet.length;n++,p++){//图层级别:所有图层
 			var featureObj=featureSet[n];//图层下的要素级别
 			var feature=featureObj.feature;
 			var geoType=feature.geometry.type
@@ -531,36 +656,56 @@ function dealResults(results){
 			}
 			
 			//查询列表展示
-			var li=createItem(feature,n+1);
+			var li=createItemSpatial(feature,p);
 			arrQueryInfoItem.push(li);
+			if(p >= pageSize){
+				p=0;
+			}
 
 			var plateInfo=createTemplateInfo(displayFields);
 			var template = new esri.InfoTemplate("<b>属性</b>",plateInfo);
 			feature.setInfoTemplate(template);
 			feature.setSymbol(getSymbol(geoType,true));
-			if(geoType=="point" || geoType=="multipoint"){
-				if(!pointLyr){
-					pointLyr=new esri.layers.GraphicsLayer({id:"iPointLyr"});
-				}
-				pointLyr.add(feature);
-			}else if(geoType=="polyline"){
-				if(!polylineLyr){
-					polylineLyr=new esri.layers.GraphicsLayer({id:"iPolylineLyr"})
-				}
-				polylineLyr.add(feature);
-			}else{
-				if(!polygonLyr){
-					polygonLyr=new esri.layers.GraphicsLayer({id:"iPolygonLyr"})
-				}
-				polygonLyr.add(feature);
-			}
 		}
 	}
-	$('#Sxcxbox-geometry').css('display','block');
-	initPager(arrQueryInfoItem,"#PaginationGeo","#queryGeoNum","#btnGeoBack","#Sxcxbox-geometry");
-	map.addLayers([polygonLyr,polylineLyr,pointLyr]);
+	var opt={
+			pageId:"#PaginationGeo",
+			queryNumId:"#queryGeoNum",
+			backId:"#btnGeoBack",
+			headerId:"#spatialBody",
+			resultId:"#Sxcxbox-geometry"
+	}
+	$(opt.headerId).css('display','none');
+	$(opt.resultId).css('display','block');
+//	map.addLayers([polygonLyr,polylineLyr,pointLyr]);
+	initPager(arrQueryInfoItem,opt);
 }
-//没有别名的情况
+
+function createItemSpatial(feature,index){
+	//名称信息
+	var title=feature.attributes[nameField];
+	var layerName=feature.attributes.layerName;
+	if(layerName){
+		summaryFields="layerName;"+summaryFields;
+	}
+	//简略显示的字段数组
+	var arrSummaryFields=[];
+	var summary=[];
+	if(summaryFields){
+		arrSummaryFields=summaryFields.split(";");
+		for(var j=0;j<arrSummaryFields.length;j++){
+			var name=arrSummaryFields[j];
+			summary.push(feature.attributes[name]);
+		}
+		summary=summary.join("—");
+	}else{
+		summary="";
+	}
+	var html="<li><i class='no-"+index+"'></i><a href='#' onclick='toFeature("+feature.attributes.OBJECTID+")'>"+title+"</a><span>"+summary+"</span></li>";
+	return html;
+}
+
+//没有别名对象的情况(空间查询的属性键采用别名)
 function createTemplateInfo(displayFieldsStr){
 	//构建模板内容
 	var arrDisplayFields=displayFieldsStr.split(";");

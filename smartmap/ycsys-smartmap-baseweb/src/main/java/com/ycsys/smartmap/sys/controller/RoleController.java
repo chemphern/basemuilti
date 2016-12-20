@@ -43,6 +43,7 @@ public class RoleController {
     public Grid<Role> listData(PageHelper page){
         Grid<Role> g = new Grid<>();
         g.setRows(roleService.findAll(page));
+        g.setTotal(roleService.countAll());
         return g;
     }
 

@@ -56,6 +56,7 @@ public class DictionaryController extends BaseController{
     public Grid<Dictionary> listData(PageHelper page){
         Grid<Dictionary> g = new Grid<>();
         g.setRows(dictService.findAll(page));
+        g.setTotal(dictService.countAll());
         return g;
     }
 

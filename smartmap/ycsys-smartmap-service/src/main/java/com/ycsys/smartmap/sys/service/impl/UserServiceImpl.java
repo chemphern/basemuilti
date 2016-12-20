@@ -18,10 +18,10 @@ import org.hibernate.service.spi.ServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
+import java.lang.System;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -268,5 +268,20 @@ public class UserServiceImpl implements UserService {
 		return userDao.find(hql);
 	}
 
+	@Override
+	public long countAll(String orgId) {
+		return userDao.count("select count(*) from User where organization.id = ?",new Object[]{orgId});
+	}
+
+	public static void main(String [] args){
+		String pwd = "ycsys123456";
+		byte[] salt = Digests.generateSalt(SALT_SIZE);
+		String s = Encodes.encodeHex(salt);
+
+		byte[] hashPassword = Digests.sha1(pwd.getBytes(),salt, Global.HASH_INTERATIONS);
+		String last = Encodes.encodeHex(hashPassword);
+		System.out.println(s);
+		System.out.println(last);
+	}
 
 }

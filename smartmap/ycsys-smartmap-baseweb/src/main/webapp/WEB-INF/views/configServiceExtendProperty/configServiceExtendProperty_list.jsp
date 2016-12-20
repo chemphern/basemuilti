@@ -31,7 +31,7 @@
   <![endif]-->
     <style>
         html,body{
-            background-color: #ecf0f5
+            background-color: #f1f1f1;
         }
         body{
             overflow-y: hidden;
@@ -39,11 +39,22 @@
         </style>
 </head>
 <body>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                服务拓展属性配置
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
+                <li class="active">服务拓展属性配置</li>
+            </ol>
+        </section>
+		<section class="content">
 <div class="row">
     <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header with-border">
-                <h4 class="box-title">服务扩展属性定义</h4>
+                <h4 class="box-title">服务扩展列表</h4>
                 <div class="btn_box">
                     <button class="current" onclick="addConfigServiceExtendProperty('1');"><i class="iconfont icon-plus"></i>创建</button>
                 	<button onclick="addConfigServiceExtendProperty('2');"><i class="iconfont icon-edit"></i>编辑</button>
@@ -57,6 +68,7 @@
         <!-- /.col -->
     </div>
     </div>
+        </section>
 </body>
 
 <!-- jQuery 2.2.3 -->

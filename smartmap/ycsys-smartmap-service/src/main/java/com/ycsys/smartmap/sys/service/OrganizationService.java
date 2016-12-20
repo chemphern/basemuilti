@@ -35,4 +35,7 @@ public interface OrganizationService {
 
     /**初始化机构**/
     void initOrg(OrgRootXmlObject orgs);
+
+    /***获取所有机构总条数*/
+    long countAll();
 }

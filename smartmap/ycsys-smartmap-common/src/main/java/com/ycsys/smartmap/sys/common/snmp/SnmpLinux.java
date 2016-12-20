@@ -4,8 +4,8 @@ package com.ycsys.smartmap.sys.common.snmp;
  * Created by lixiaoxin on 16-12-14.
  */  
 public class SnmpLinux extends SnmpBase {  
-    public SnmpLinux(String ip, String community) {
-        super(ip, community);  
+    public SnmpLinux(String ip,String port, String community) {
+        super(ip, port,community);
     }  
   
     public CpuInfo getCpuInfo() throws Exception {

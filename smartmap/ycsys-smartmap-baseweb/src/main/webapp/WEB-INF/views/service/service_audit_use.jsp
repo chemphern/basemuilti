@@ -64,7 +64,7 @@
 				<td width="120" class="t_r">审核结果</td>
 				<td>
 					<c:forEach var="map" items="${auditStatus }" begin="1">
-						${map.value.name }<input type="radio" name="auditStastus" value="${map.key }">
+						${map.value.name }<input type="radio" name="auditStatus" value="${map.key }">
 					</c:forEach>
 					
 					</td>
@@ -82,7 +82,7 @@
 <script>
 	$(function() {
 		//设置单选择第一个值
-		$("input[name='auditStastus']:radio").eq(0).attr('checked','true');
+		$("input[name='auditStatus']:radio").eq(0).attr('checked','true');
 		
 		var form = $("#form_id");
 		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js

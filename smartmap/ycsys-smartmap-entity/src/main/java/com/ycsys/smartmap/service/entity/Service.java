@@ -100,7 +100,7 @@ public class Service implements java.io.Serializable {
 	@Column(name = "service_visit_address", length = 100)
 	private String serviceVisitAddress;// 服务访问地址
 	
-	@Column(name = "manager_service_rl", length = 100)
+	@Column(name = "manager_service_url", length = 100)
 	private String managerServiceUrl;// 服务管理url(用于启动、停止、删除服务操作)
 	
 	@Column(name = "imagePath")

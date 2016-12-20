@@ -65,6 +65,20 @@ body {
             <div class="box-header with-border">
               <h4 class="box-title">服务列表</h4>
                 <div class="btn_box">
+               					标题：<input name="title" id="title" class="text">
+               					服务名称：<input name="showName" id="showName" class="text">
+								审核状态：<select type="text" name="auditStatus" id="auditStatus" class="text">
+											<option value="">请选择</option>
+											<c:forEach var="map" items="${auditStatus }">
+												<option value="${map.key }">${map.value.name }</option>	
+											</c:forEach>
+										</select>
+								有效期  ：<select type="text" name="validDate" id="validDate" class="text">
+											<option value="">请选择</option>
+											<c:forEach var="map" items="${validDate }">
+												<option value="${map.key }">${map.value.name }</option>	
+											</c:forEach>
+									  </select>
                   <button class="current"><i class="glyphicon glyphicon-search"></i> 查询</button>
                   <button id="serviceApplyDelete"><i class="iconfont icon-trash"></i> 删除</button>
                 </div>
@@ -197,9 +211,9 @@ body {
 					gridManager = $("#maingrid4").ligerGrid({
 						checkbox: true,
 		                columns: [
-		                { display: '审批状态', name: 'auditStastus', align: 'center', width: 100,
+		                { display: '审批状态', name: 'auditStatus', align: 'center', width: 100,
 		                	render: function (item) {
-  	                    	     var obj = parseInt(item.auditStastus);
+  	                    	     var obj = parseInt(item.auditStatus);
       	                    	  <c:forEach var="map" items="${auditStatus }">
       	                    	  		if(obj == "${map.key }") {
       	                    	  			return "${map.value.name }";
@@ -218,7 +232,7 @@ body {
  	       						  </c:forEach>
   	                     }    
 		                },
-		                { display: '服务', name: 'service.showName', minWidth: 100 },
+		                { display: '服务名称', name: 'service.showName', minWidth: 100 },
 		               /*  { display: '通过服务', name: 'ContactName', minWidth: 60 },
 		                { display: '拒绝服务', name: 'ContactName', minWidth: 100 }, */
 		                { display: '申请人', name: 'applyUser.name', minWidth: 100 },
@@ -271,6 +285,14 @@ body {
 				                  button:[]
 				               });
 					}
+				},
+				query: function() {
+					gridManager.setParm("showName",$("#showName").val());
+					gridManager.setParm("auditStatus",$("#auditStatus").val());
+					gridManager.setParm("title",$("#title").val());
+					gridManager.setParm("validDate",$("#validDate").val());
+					gridManager.reload();
+					
 				}
 		}
 	</script>

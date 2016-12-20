@@ -80,6 +80,11 @@ public class  RoleServiceImpl implements RoleService{
     }
 
     @Override
+    public long countAll() {
+        return roleDao.count("select count(*) from Role");
+    }
+
+    @Override
     public void delete(Role role) {
         Role r = roleDao.get(Role.class,role.getId());
         if(r.getUserRoles() == null || r.getUserRoles().size() <1){

@@ -1,5 +1,6 @@
 package com.ycsys.smartmap.service.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import com.ycsys.smartmap.service.service.ServiceService;
 import com.ycsys.smartmap.sys.common.config.Global;
 import com.ycsys.smartmap.sys.common.result.Grid;
 import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
+import com.ycsys.smartmap.sys.common.utils.StringUtils;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.User;
 import com.ycsys.smartmap.sys.util.DataDictionary;
@@ -58,12 +60,44 @@ public class ServiceApplyController {
 	
 	@ResponseBody
 	@RequestMapping("/listData")
-	public Grid<ServiceApply> listData(PageHelper page) {
-		//System.out.println("resourceTypeId=" + resourceTypeId);
-		List<ServiceApply> list = serviceApplyService.find("from ServiceApply r order by r.createDate desc",
-					null, page);
-
-		return new Grid<ServiceApply>(list);
+	public Grid<ServiceApply> listData(String showName,String registerName,String auditStatus,String title,String validDate,PageHelper page) {
+		/*List<ServiceApply> list = serviceApplyService.find("from ServiceApply r order by r.createDate desc",
+					null, page);*/
+		
+		List<ServiceApply> list = null;
+		List<Object> params = new ArrayList<Object>();
+		StringBuffer hql = new StringBuffer();
+		hql.append("from ServiceApply t where 1 = 1 ");
+		
+		if (StringUtils.isNotBlank(showName)) {
+			hql.append("and t.showName like ? ");
+			params.add('%' + showName + '%');
+		}
+		
+		if (StringUtils.isNotBlank(registerName)) {
+			hql.append("and t.registerName like ? ");
+			params.add('%' + registerName + '%');
+		}
+		if (StringUtils.isNotBlank(auditStatus)) {
+			hql.append("and t.auditStatus = ? ");
+			params.add(auditStatus);
+		} 
+		
+		if (StringUtils.isNotBlank(title)) {
+			hql.append("and t.title like ? ");
+			params.add('%' + title + '%');
+		}
+		
+		if (StringUtils.isNotBlank(validDate)) {
+			hql.append("and t.validDate = ? ");
+			params.add(validDate);
+		} 
+		
+		hql.append("order by t.createDate desc ");
+		list = serviceApplyService.find(hql.toString(), params, page);
+		long count= serviceApplyService.count(hql.toString(), params);
+		Grid<ServiceApply> g = new Grid<ServiceApply>(count,list);
+		return g;
 	}
 	
 	

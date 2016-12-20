@@ -7,11 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ycsys.smartmap.service.dao.ServiceApplyDao;
-import com.ycsys.smartmap.service.dao.ServiceDao;
-import com.ycsys.smartmap.service.entity.Service;
 import com.ycsys.smartmap.service.entity.ServiceApply;
 import com.ycsys.smartmap.service.service.ServiceApplyService;
-import com.ycsys.smartmap.service.service.ServiceService;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 
 /**
@@ -79,6 +76,19 @@ public class ServiceApplyServiceImpl implements ServiceApplyService {
 	public List<ServiceApply> find(String hql, Object[] param, PageHelper page) {
 		// TODO Auto-generated method stub
 		return serviceApplyDao.find(hql, param, page);
+	}
+
+	@Override
+	public List<ServiceApply> find(String hql, List<Object> param,
+			PageHelper page) {
+		// TODO Auto-generated method stub
+		return serviceApplyDao.find(hql, param, page);
+	}
+
+	@Override
+	public Long count(String hql, List<Object> param) {
+		// TODO Auto-generated method stub
+		return serviceApplyDao.count(hql, param);
 	}
 
 }

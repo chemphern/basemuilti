@@ -58,7 +58,7 @@ public class ServiceApply implements java.io.Serializable {
 	private String reason; // 申请理由
 
 	@Column(name = "audit_status", length = 1)
-	private String auditStastus = "0"; // 审核状态（0:未审核；1：不通过；2：通过）
+	private String auditStatus = "0"; // 审核状态（0:未审核；1：不通过；2：通过）
 
 	@Column(name = "audit_date")
 	private Date auditDate; // 审核日期
@@ -135,12 +135,12 @@ public class ServiceApply implements java.io.Serializable {
 		this.reason = reason;
 	}
 
-	public String getAuditStastus() {
-		return auditStastus;
+	public String getAuditStatus() {
+		return auditStatus;
 	}
 
-	public void setAuditStastus(String auditStastus) {
-		this.auditStastus = auditStastus;
+	public void setAuditStatus(String auditStatus) {
+		this.auditStatus = auditStatus;
 	}
 
 	public Date getAuditDate() {

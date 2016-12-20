@@ -48,11 +48,12 @@ function locateXY(){
 
 function locateAddress(){
 	var pos=$("#address").val();
-	if(mapOpt==2){
-		locateAddress2d(pos);
-	}else if(mapOpt==3){
-        locateAddress3d(pos);
-	}
+    locateAddress2d(pos);
+	// if(mapOpt==2){
+	// 	locateAddress2d(pos);
+	// }else if(mapOpt==3){
+     //    locateAddress3d(pos);
+	// }
 }
 function bookmarkSearch(){
 	if(mapOpt==2){

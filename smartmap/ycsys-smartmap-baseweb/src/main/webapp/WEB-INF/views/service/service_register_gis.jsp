@@ -80,8 +80,8 @@ body {
 				class="date_add_table">
 				<tr>
 					<td class="t_r">请选择服务引擎：</td>
-					<td><select type="text" name="serverEngine.id" id="serverEngine" onchange="serverEngineChange(this);"
-						class="text">
+					<td><select name="serverEngine.id" id="serverEngine" onchange="serverEngineChange(this);"
+						class="text" validate="{required:true,messages:{required:'必填'}}">
 							<option value="">-请选择-</option>
 							<c:forEach var="list" items="${serverEngineList }">
 								<option value="${list.id }">${list.configName }</option>
@@ -98,17 +98,22 @@ body {
 				class="date_add_table">
 				<tr>
 					<td class="t_r">服务注册名称：</td>
-					<td><input type="text" name="registerName" id="registerName"
-						class="text validate[required]" /></td>
+					<td><input type="text" name="registerName" id="registerName" placeholder="请输入英文"
+						class="text validate[required]" validate="{required:true,maxlength : 15,english:true,messages:{required:'必填',maxlength:'字符长度不能超过15个!'}}"/>
+						<span style="color: red">*</span>
+						</td>
 				</tr>
 				<tr>
 					<td class="t_r">服务显示名称：</td>
 					<td><input type="text" name="showName" id="showName"
-						class="text validate[required]" /></td>
+						class="text validate[required]" validate="{required:true,maxlength : 15,messages:{required:'必填',maxlength:'字符长度不能超过15个!'}}"/>
+						<span style="color: red">*</span>
+						</td>
 				</tr>
 				<tr>
 					<td class="t_r">服务描述：</td>
-					<td><textarea name="remarks" id="remarks" clos="20" rows="5" class="text_area"></textarea></td>
+					<td><textarea name="remarks" id="remarks" clos="20" rows="5" class="text_area" 
+						validate="{maxlength : 100,messages:{maxlength:'备注 的字符长度大于100个字符！'}}"></textarea></td>
 				</tr>
 			</table>
 		</div>
@@ -218,9 +223,10 @@ body {
 	<!-- /.content-wrapper -->
 
 	<!-- jQuery 2.2.3 -->
-	<script src="${res }/plugins/jQuery/jquery-2.2.3.min.js"></script>
-	<script
-		src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
+	<script src="${res}/js/common/form.js"></script>
+	<script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
+	<script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
+	<script src="${res}/plugins/jquery-validation-1.15.1/dist/jquery.validate.min.js" type="text/javascript"></script>
 	<!--grid-->
 	<script src="${res }/plugins/ligerUI/js/core/base.js"
 		type="text/javascript"></script>
@@ -252,11 +258,40 @@ body {
 		var folderName = null;	
 		var showName = null;
 		var functionType = null;
+		var gridManager = null;
+		
+		//只能输入英文
+	    jQuery.validator.addMethod("english", function(value, element) {
+	        var reg = /^([a-zA-Z]+)$/;
+	        return this.optional(element) || (reg.test(value));
+	    	}, "只能输入英文字母");
+		
 		$(document).ready(function() {
 			var parentWin = window.parent;
 			var dialog = parentWin.art.dialog.list["registerGisDialog"];
-			
-			$('#form_id').on('submit', function(e) {
+			var form = $("#form_id");
+			var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
+			val_obj.submitHandler = function(){
+				$('.actionBar a.buttonFinish').addClass("buttonDisabled");//完成按钮变灰
+				$('.actionBar a.buttonPrevious').addClass("buttonDisabled");//上一步按钮变灰 
+				//支持文件上传的ajax提交方式
+				form.ajaxSubmit({
+					//url : "${ctx }/resource/save",
+					dataType:"json",
+	                success:function(result){
+	                	alert(result.msg);
+	            		if(result.flag == "0") {
+	            			dialog.close();
+	            		}
+	            		else {
+	            			$('.actionBar a.buttonFinish').removeClass("buttonDisabled");//完成按钮可用
+	            			$('.actionBar a.buttonPrevious').removeClass("buttonDisabled");//上一步按钮可用  
+	            		}
+	                }
+	             });
+		    };
+		    form.validate(val_obj);
+		/* 	$('#form_id').on('submit', function(e) {
 	            e.preventDefault(); // <-- important
 	            $('.actionBar a.buttonFinish').addClass("buttonDisabled");//完成按钮变灰
 	            $(this).ajaxSubmit({
@@ -272,7 +307,7 @@ body {
 	            		
 	                 }
 	            });
-	        });
+	        }); */
 			// Smart Wizard     
 			$('#wizard').smartWizard({
 				onLeaveStep:onLeaveStepCallback,
@@ -281,7 +316,15 @@ body {
 			
 			//完成触发的方法
 			function onFinishCallback() {
-				$('#form_id').submit();
+				//$('#form_id').submit();
+				var counts = $('div.l-exclamation'); //填的不对的记录数
+				if(counts.length < 1) {
+					form.submit();
+				}
+				else {
+					$("#wizard").smartWizard("showMessage","请重新填写有误的信息！");
+					return false;
+				}
 			}
 			
 			//上一步和下一步触发的方法
@@ -293,7 +336,8 @@ body {
 					case '1':
 						var selectedRows = gridManager.getSelecteds();
 						if(selectedRows.length != 1) {
-							alert("请选择一条服务记录！");
+							//alert("请选择一条服务记录！");
+							$("#wizard").smartWizard("showMessage","请选择服务引擎！");
 							return false;
 						}
 						folderName = selectedRows[0].folderName;
@@ -309,11 +353,11 @@ body {
 					  	break;
 					case '2':
 						if($("#registerName").val() == '') {
-							alert("服务注册名称不能为空");
+							//alert("服务注册名称不能为空");
 							return false;
 						}
 						if($("#showName").val() == '') {
-							alert("服务显示名称不能为空！");
+							//alert("服务显示名称不能为空！");
 							return false;
 						}
 						//找服务相关的信息
@@ -372,14 +416,11 @@ body {
 				
 			}
 		});
-	</script>
-	<script type="text/javascript">
-		var gridManager = null;
+		
+		
 		function serverEngineChange(obj) {
 			gridManager.setParm("serverEngineId",obj.value);
 			serverEngineId = obj.value;
-			//console.log("gridManager");
-			//console.log(gridManager);
         	gridManager.reload();
 		}
 		
@@ -399,7 +440,7 @@ body {
 							name : 'functionType',
 							minWidth : 60
 						} ],
-						pageSize : 10,
+						pageSize : 30,
 						url:"${ctx}/service/listData",
 						width : '100%',
 						height : '80%'
@@ -409,5 +450,40 @@ body {
 			});
 		})(jQuery);
 	</script>
+	<script type="text/javascript">
+	/* 	var gridManager = null;
+		function serverEngineChange(obj) {
+			gridManager.setParm("serverEngineId",obj.value);
+			serverEngineId = obj.value;
+        	gridManager.reload();
+		}
+		
+		;(function($) { //避免全局依赖,避免第三方破坏
+			$(document).ready(function() {
+				//表格列表
+				$(function() {
+					gridManager = $("#maingrid4").ligerGrid({
+						checkbox : true,
+						columns : [ {
+							display : '服务名',
+							name : 'showName',
+							align : 'left',
+							width : 100
+						}, {
+							display : '服务类型',
+							name : 'functionType',
+							minWidth : 60
+						} ],
+						pageSize : 30,
+						url:"${ctx}/service/listData",
+						width : '100%',
+						height : '80%'
+					});
+					$("#pageloading").hide();
+				});
+			});
+		})(jQuery); */
+	</script>
+	
 </body>
 </html>

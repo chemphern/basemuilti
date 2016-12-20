@@ -345,17 +345,16 @@ public class ResourceController {
 			Integer id = Integer.parseInt(resourceTypeId);
 			rt = resourceTypeService.get(ResourceType.class, id);
 			if(rt.getParent() != null) {
-				hql.append("and t.resourceType.id = ?");
+				hql.append("and t.resourceType.id = ? ");
 				params.add(id);
 			}
 			
 		} 
 		
-		hql.append(" order by t.sort desc");
+		hql.append(" order by t.sort desc ");
 		list = resourceService.find(hql.toString(),params, page);
 		long count = resourceService.count(hql.toString(), params);
-		Grid<Resource> g = new Grid<Resource>(list);
-		g.setTotal(count);
+		Grid<Resource> g = new Grid<Resource>(count,list);
 		return g;
 	}
 	

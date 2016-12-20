@@ -36,4 +36,7 @@ public interface DictService {
 
     /**初始化数据字典**/
     void initDictionary ()throws Exception;
+
+    /**获取所有字典的数目**/
+    long countAll();
 }

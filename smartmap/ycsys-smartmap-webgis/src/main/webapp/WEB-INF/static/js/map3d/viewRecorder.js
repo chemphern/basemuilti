@@ -23,12 +23,25 @@ function beginRecordView(){
 		views.push(YcMap3D.Navigate.GetPosition(3));
 	}
 	//开始鼠标左键、中键弹起事件和滑轮滚动事件
-	YcMap3D.AttachEvent("OnLButtonUp", viewMovedHandler);
+    YcMap3D.AttachEvent("OnLButtonUp", onLeftButtonUpHandler);
 	YcMap3D.AttachEvent("OnMButtonUp", viewMovedHandler);
 	YcMap3D.AttachEvent("OnMouseWheel", viewMovedHandler);
 }
 
-//监听鼠标左键、中键弹起事件和滑轮滚动事件并记录改变后视图
+//处理左键点击事件
+function onLeftButtonUpHandler(Flag,X,Y) {
+    //监听鼠标左键事件并记录改变后视图
+    viewMovedHandler();
+	//判断是否点击到Feature图标，如果有则替换成高亮图标
+    var objid = YcMap3D.Window.PixelToWorld(X, Y, -1).ObjectID;
+    if (objid) {
+        if (YcMap3D.ProjectTree.GetObject(objid).ObjectType == 24) {
+            navigateToSceneFeature("",objid);
+        }
+    }
+}
+
+//中键弹起事件和滑轮滚动事件并记录改变后视图
 function viewMovedHandler(){
 	var currentPosition = YcMap3D.Navigate.GetPosition(3);
 	if(views.length >= viewNum){

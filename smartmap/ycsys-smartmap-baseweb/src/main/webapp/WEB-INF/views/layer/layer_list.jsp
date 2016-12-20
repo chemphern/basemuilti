@@ -31,7 +31,7 @@
   <![endif]-->
     <style>
         html,body{
-            background-color: #ecf0f5
+            background-color: #f1f1f1;
         }
         body{
             overflow-y: hidden;
@@ -39,6 +39,17 @@
         </style>
 </head>
 <body>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+               图层管理
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
+                <li class="active">图层管理</li>
+            </ol>
+        </section>
+		<section class="content">
 <div class="row">
     <div class="col-md-3">
         <div class="box box-solid">
@@ -65,7 +76,7 @@
             <div class="box-header with-border">
                 <h4 class="box-title">图层列表</h4>
                 <div class="btn_box">
-                    <button class="current" onclick="layer_list.editLayer('1');"><i class="iconfont icon-plus"></i>新增</button>
+                    <button class="current" onclick="layer_list.addLayer();"><i class="iconfont icon-plus"></i>新增</button>
                 	<button onclick="layer_list.editLayer('2');"><i class="iconfont icon-edit"></i>编辑</button>
                 	<button onclick="layer_list.deleteLayer();"><i class="iconfont icon-trash"></i>删除</button>
                 </div>
@@ -77,6 +88,7 @@
         <!-- /.col -->
     </div>
     </div>
+		</section>
 </body>
 
 <!-- jQuery 2.2.3 -->
@@ -107,7 +119,6 @@
 	;(function($){//避免全局依赖,避免第三方破坏
 		$(document).ready(function() {
 			//树 start
-				
 	    	$("#tree1").ligerTree(
 		            {
 		                url: "${ctx}/layer/listAll",
@@ -153,11 +164,15 @@
 	      //添加或修改图层管理节点
 	        function operate(item){
 	        	var flag = item.text=='增加'?1:0;
+	        	var layerId = "";
+	        	if(flag == 0) {
+	        		layerId = actionNodeID;
+	        	}
 	            var dialog = $.Layer.iframe(
 	                {
 	                  id:"editLayerDialog",
 	                  title: item.text+'图层管理',
-	                  url:'${ctx}/layer/toEdit?flag='+flag+'&actionNodeID='+actionNodeID,
+	                  url:"${ctx}/layer/toEditLayerType?id="+layerId+"&actionNodeID="+actionNodeID,
 	                  width: 400,
 	                  height: 300
 	                });
@@ -304,7 +319,7 @@
                    {
                      id:"editLayerDialog",
                      title: '增加图层管理',
-                     url:'${ctx}/layer/toEdit?flag=1',
+                     url:"${ctx}/layer/toEditLayerType",
                      width: 400,
                      height: 300
                    });
@@ -331,6 +346,16 @@
 			               });
 				}
 				
+			},
+			addLayer:function(){
+				$.Layer.iframe(
+	                { 
+	                  id:"editLayerDialog",
+	                  title: "增加图层管理",
+	                  url:'${ctx}/layer/toAddLayer?actionNodeID='+tempLayerId,
+	                  width: 400,
+	                  height: 400
+	               });
 			},
 			//增加或修改图层管理
 			editLayer: function(flag,rowId) {

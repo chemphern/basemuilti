@@ -31,7 +31,7 @@
   <![endif]-->
     <style>
         html,body{
-            background-color: #ecf0f5
+            background-color: #f1f1f1;
         }
         body{
             overflow-y: hidden;
@@ -39,7 +39,17 @@
         </style>
 </head>
 <body>
-<div class="row">
+		<!-- Content Header (Page header) -->
+		<section class="content-header">
+			<h1>服务管理</h1>
+			<ol class="breadcrumb">
+				<li><a href="list_fwgl.html"><i
+						class="iconfont iconfont-bars"></i> 首页</a></li>
+				<li class="active">服务管理</li>
+			</ol>
+		</section>
+<section class="content">
+ <div class="row">
     <div class="col-md-3">
         <div class="box box-solid">
             <div class="box-header with-border">
@@ -72,7 +82,8 @@
         </div>
         <!-- /.col -->
     </div>
-    </div>
+ </div>
+ </section>
 </body>
 
 <!-- jQuery 2.2.3 -->

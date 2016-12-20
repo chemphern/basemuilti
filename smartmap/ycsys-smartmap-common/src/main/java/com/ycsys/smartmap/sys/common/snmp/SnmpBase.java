@@ -10,8 +10,8 @@ import java.util.List;
  * SNMP公用信息采集类   基本都是OID为1.3.6.1.2.1.25下的信息  
  */  
 public class SnmpBase extends SnmpUtil {  
-    public SnmpBase(String ip, String community) {
-        super(ip, community);  
+    public SnmpBase(String ip,String port, String community) {
+        super(ip, community,port);
     }  
 
     /**
@@ -271,22 +271,17 @@ public class SnmpBase extends SnmpUtil {
   
   
     public static void main(String[] args) {
-        SnmpBase snmp = new SnmpBase("127.0.0.1","public");
+        long prev = System.currentTimeMillis();
+        SnmpBase snmp = new SnmpBase("172.16.10.52","161","public");
       //  SnmpBase snmp = new SnmpBase("172.16.10.50","public");
-        try {  
-          SystemInfo sysInfo = snmp.getSysInfo();
-          MemoryInfo memoryInfo = snmp.getMemoryInfo();
-          ArrayList<DiskInfo> diskInfo = snmp.getDiskInfo();
-          CpuInfo cpuInfo = snmp.getCpuInfo();
-          sysInfo.setCpuInfo(cpuInfo);
-          sysInfo.setDiskInfos(diskInfo);
-          sysInfo.setMemoryInfo(memoryInfo);
-          System.out.println(sysInfo);
-            NetInfo netInfo = snmp.getNetInfo();
-            System.out.println(netInfo);
+        try {
+            snmp.snmpGet(".1.3.6.1.2.1.1.1.0");
         }catch (Exception e) {
+            System.out.println("test");
             e.printStackTrace();  
-        }  
+        }finally {
+            System.out.println(System.currentTimeMillis() - prev);
+        }
     }
 
 

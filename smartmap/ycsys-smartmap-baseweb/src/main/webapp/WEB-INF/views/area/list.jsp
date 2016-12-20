@@ -17,7 +17,7 @@
     <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
     <style>
         html,body{
-            background-color: #ecf0f5
+            background-color: #f1f1f1;
         }
         body{
             overflow-y: hidden;
@@ -25,6 +25,19 @@
     </style>
 </head>
 <body>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                地区管理
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
+                <li class="active">地区管理</li>
+            </ol>
+        </section>
+<section class="content">
+    <div class="row">
+        <div class="col-md-12">
 <div class="box box-solid">
     <div class="box-header with-border">
         <h4 class="box-title">地区列表</h4>
@@ -36,6 +49,10 @@
         <div class="list" id="maingrid4"></div>
     </div>
 </div>
+        </div>
+        <!-- /.col -->
+    </div>
+</section>
 <!-- /.col -->
 </body>
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>

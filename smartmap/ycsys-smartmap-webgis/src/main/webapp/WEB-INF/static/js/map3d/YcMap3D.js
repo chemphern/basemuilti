@@ -152,12 +152,12 @@ function getQueryString(name) {
 
 
 //获得三维地图范围
-function get3DMapExtent(type) {
+function get3DMapExtent() {
         var cp = YcMap3D.Window.CenterPixelToWorld(0).Position;
         var distance = YcMap3D.Navigate.getPosition().DistanceTo(cp);     
         var radius = Math.tan(26.5 / 180 * Math.PI) * distance;//18 26
         var xmax,xmin,ymax,ymin;
-        if(type=="meter"){     
+        if(getRefernceType()=="meter"){
             xmax = parseFloat(cp.X) + parseFloat(radius);
             xmin = parseFloat(cp.X) - parseFloat(radius);
             ymax = parseFloat(cp.Y) + parseFloat(radius);
@@ -170,23 +170,6 @@ function get3DMapExtent(type) {
         }         
         var extent={"xmin":xmin,"xmax":xmax,"ymin":ymin,"ymax":ymax};
         return extent;
-}
-
-//设置三维地图范围
-function set3DMapExtent(extent, type) {
-    var centerx = (extent.xmax + extent.xmin) * 0.5;
-    var centery = (extent.ymax + extent.ymin) * 0.5;
-    var distanceY, distanceX;
-    if (type == "meter") {
-        distanceY = (extent.ymax - extent.ymin) * 0.5 / (Math.tan(26 / 180 * Math.PI));
-        distanceX = (extent.xmax - extent.xmin) * 0.5 / (Math.tan(26 / 180 * Math.PI));
-    } else {
-        distanceY = (extent.ymax - extent.ymin) * 0.5 * 111111 / (Math.tan(26 / 180 * Math.PI));
-        distanceX = (extent.xmax - extent.xmin) * 0.5 * 111111 / (Math.tan(26 / 180 * Math.PI));
-    }
-    var pos = YcMap3D.Creator.CreatePosition(centerx, centery, 0, 0, 0, -90, 0, 0);
-    pos.distance = Math.max(distanceX, distanceY);
-    YcMap3D.Navigate.FlyTo(pos, 14);
 }
 
 //默认的LabelStyle
@@ -224,9 +207,11 @@ function getFolderObjects(path) {
 	        childID = YcMap3D.ProjectTree.GetNextItem(childID, 13);
 	    }
     }
-    var rootID = findItemByName(path);
     var arr = [];
-    getChilds(rootID, arr);
+    if(path!=null&&path!=undefined){
+        var rootID = findItemByName(path);
+        getChilds(rootID, arr);
+    }
     return arr;
 }
 
@@ -325,6 +310,25 @@ function findItemByName(name) {
     }
 }
 
+//从文件夹查找对象
+function findItemByNameInFolder(folderPath,objectName) {
+    if (YcMap3D.ProjectTree.FindItem(folderPath) != "") {
+        var groupID = YcMap3D.ProjectTree.FindItem(folderPath);
+        var firstChild = YcMap3D.ProjectTree.GetNextItem(groupID,11);
+        if(firstChild!=null&&firstChild!=""&&YcMap3D.ProjectTree.GetItemName(firstChild)==objectName)
+            return firstChild;
+        else{
+            var childID = YcMap3D.ProjectTree.GetNextItem(firstChild,13);
+            while(childID!=""){
+                if(YcMap3D.ProjectTree.GetItemName(childID)==objectName){
+                    return childID;
+                }
+                childID = YcMap3D.ProjectTree.GetNextItem(childID,13);
+            }
+        }
+    }
+}
+
 //三维场景全局清除
 function clearMap3D(){
 	if(ZoomInOutToolGlobe.ZoomInOutType!=""){
@@ -339,6 +343,7 @@ function clearMap3D(){
 		deleteItemsByName(MeasureToolGlobe.MeasureFolder);
 	}
     deleteFolderObjects(configration.QueryIcoFolder);
+    deleteFolderObjects(configration.QueryDrawFolder);
 }
 
 //删除文件夹下的所有对象
@@ -361,8 +366,7 @@ function deleteFolderObjects(folderName) {
 }
 
 //确认删除对话框
-function deleteConfirm(mes)
-{
+function deleteConfirm(mes) {
     return confirm(mes);
 }
 

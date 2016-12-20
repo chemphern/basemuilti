@@ -133,6 +133,14 @@ public class Layer implements Serializable{
 		this.pId = pId;
 	}
 
+	public Integer getpId() {
+		return pId;
+	}
+
+	public void setpId(Integer pId) {
+		this.pId = pId;
+	}
+	
 	public String getName() {
 		return name;
 	}

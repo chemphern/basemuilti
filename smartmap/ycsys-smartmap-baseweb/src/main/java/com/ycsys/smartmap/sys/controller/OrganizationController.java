@@ -46,6 +46,7 @@ public class OrganizationController {
     public Grid<Organization> listData(PageHelper page,String pid){
         Grid<Organization> g = new Grid<>();
         g.setRows(organizationService.findOrgNotChild(pid,page));
+        g.setTotal(organizationService.countAll());
         return g;
     }
 

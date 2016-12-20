@@ -24,8 +24,27 @@
     <link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
     <!-- 弹出框 -->
     <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
+        <style>
+        html,body{
+            background-color: #f1f1f1
+        }
+        body{
+            overflow-y: hidden;
+        }
+        </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+               权限管理
+            </h1>
+            <ol class="breadcrumb">
+                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
+                <li class="active">权限管理</li>
+            </ol>
+        </section>
+		<section class="content">
 <div class="row">
     <div class="col-md-12">
         <div class="box box-solid">
@@ -43,6 +62,7 @@
     </div>
     <!-- /.col -->
 </div>
+		</section>
 <!-- jQuery 2.2.3 -->
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 
