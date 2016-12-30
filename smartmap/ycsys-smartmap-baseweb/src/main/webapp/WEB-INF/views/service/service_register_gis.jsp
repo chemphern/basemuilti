@@ -40,7 +40,7 @@
   <![endif]-->
 <style>
 html,body {
-	background-color: #ecf0f5
+	background-color: #f1f1f1;
 }
 
 body {
@@ -52,6 +52,7 @@ body {
 <body class="hold-transition skin-blue sidebar-mini">
 <form method="post" action="${ctx }/service/registerGis" id="form_id" enctype="multipart/form-data">
 	<input type="hidden" name="managerServiceUrl" id="managerServiceUrl">
+	<input type="hidden" name="serviceVisitAddressOpen" id="serviceVisitAddressOpen">
 	<input type="hidden" name="folderName" id="folderName">
 	<input type="hidden" name="arcGisServiceName" id="arcGisServiceName">
 	
@@ -113,7 +114,7 @@ body {
 				<tr>
 					<td class="t_r">服务描述：</td>
 					<td><textarea name="remarks" id="remarks" clos="20" rows="5" class="text_area" 
-						validate="{maxlength : 100,messages:{maxlength:'备注 的字符长度大于100个字符！'}}"></textarea></td>
+						validate="{maxlength : 100,messages:{maxlength:'服务描述 的字符长度大于100个字符！'}}"></textarea></td>
 				</tr>
 			</table>
 		</div>
@@ -166,12 +167,20 @@ body {
 				<tr>
 					<td class="t_r">元数据访问地址：</td>
 					<td><input type="text" name="metadataVisitAddress" id="metadataVisitAddress"
-						class="text validate[required]" /></td>
+						class="text validate[required]" 
+						validate="{maxlength : 100,messages:{maxlength:'字符长度不能超过100个!'}}"
+						/></td>
 				</tr>
 				<tr>
 					<td class="t_r">服务分类：</td>
-					<td><input type="text" name="registerType" id="registerType" value="GIS服务" di
+					<td><input type="text" name="registerType" id="registerType" value="GIS服务" disabled="disabled"
 						class="text validate[required]" /></td>
+				</tr>
+				<tr>
+					<td class="t_r">更多属性信息：</td>
+					<td>
+					<input type="checkbox" name="moreProperty" value="1"/>
+					</td>
 				</tr>
 			</table>
 		</div>
@@ -266,8 +275,19 @@ body {
 	        return this.optional(element) || (reg.test(value));
 	    	}, "只能输入英文字母");
 		
+		function morePropertySelect() {
+			$.Layer.iframe(
+	                { 
+	                  id:"morePropertyDialog",
+	                  title: "更多属性",
+	                  url:"${ctx}/service/morePropertySelect",
+	                  width: 400,
+	                  height: 500
+	               });
+		}
+		
 		$(document).ready(function() {
-			var parentWin = window.parent;
+			var parentWin = window.parent[0];
 			var dialog = parentWin.art.dialog.list["registerGisDialog"];
 			var form = $("#form_id");
 			var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
@@ -383,6 +403,7 @@ body {
 		    					//console.log("serviceVisitAddress="+result.serviceVisitAddress);
 		    					//console.log("managerServiceUrl="+result.managerServiceUrl);
 		    					$("#managerServiceUrl").val(result.managerServiceUrl);
+		    					$("#serviceVisitAddressOpen").val(result.serviceVisitAddressOpen);
 		    					$("#functionType").val(result.functionType);
 		    				},
 		    				error: function(result) {
@@ -430,6 +451,7 @@ body {
 				$(function() {
 					gridManager = $("#maingrid4").ligerGrid({
 						checkbox : true,
+						isSingleCheck: true,
 						columns : [ {
 							display : '服务名',
 							name : 'showName',
@@ -449,40 +471,6 @@ body {
 				});
 			});
 		})(jQuery);
-	</script>
-	<script type="text/javascript">
-	/* 	var gridManager = null;
-		function serverEngineChange(obj) {
-			gridManager.setParm("serverEngineId",obj.value);
-			serverEngineId = obj.value;
-        	gridManager.reload();
-		}
-		
-		;(function($) { //避免全局依赖,避免第三方破坏
-			$(document).ready(function() {
-				//表格列表
-				$(function() {
-					gridManager = $("#maingrid4").ligerGrid({
-						checkbox : true,
-						columns : [ {
-							display : '服务名',
-							name : 'showName',
-							align : 'left',
-							width : 100
-						}, {
-							display : '服务类型',
-							name : 'functionType',
-							minWidth : 60
-						} ],
-						pageSize : 30,
-						url:"${ctx}/service/listData",
-						width : '100%',
-						height : '80%'
-					});
-					$("#pageloading").hide();
-				});
-			});
-		})(jQuery); */
 	</script>
 	
 </body>

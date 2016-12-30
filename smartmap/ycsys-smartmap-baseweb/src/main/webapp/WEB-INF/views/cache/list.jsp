@@ -30,12 +30,7 @@
             <h1>
                缓存管理
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
-                <li class="active">缓存管理</li>
-            </ol>
         </section>
-<section class="content">
 <div class="row">
     <div class="col-md-12">
         <div class="box box-solid">
@@ -51,7 +46,6 @@
     </div>
     <!-- /.col -->
 </div>
-</section>
 </body>
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script src="${res}/plugins/ligerUI/js/core/base.js" type="text/javascript"></script>
@@ -75,7 +69,7 @@
                     checkbox: false,
                    rownumbers:true,
                     columns: [
-                        { display: '缓存名称', name: 'name', width: 600 },
+                        { display: '缓存名称', name: 'name', minWidth: 600 },
                         { display: '缓存数量', name: 'count', width: 100},
                         { display: '操作',width:60,
                             render: function (rowdata, rowindex, value)

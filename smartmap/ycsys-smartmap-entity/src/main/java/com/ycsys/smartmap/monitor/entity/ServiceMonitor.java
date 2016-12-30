@@ -41,32 +41,18 @@ public class ServiceMonitor implements java.io.Serializable {
 	@JoinColumn(name = "service_id")
 	private Service service; // 服务
 
-	@Column(name = "status", length = 1)
-	private String status; // 状态
+	@Column(name = "status",length = 10)
+	private String status; // 响应状态
 
-	@Column(name = "monitor_status", length = 1)
-	private String monitorStatus; // 监控状态
-
-	@Column(name = "monitor_address", length = 50)
+	@Column(name = "monitor_address", length = 3999)
 	private String monitorAddress; // 监控地址
 
-	@Column(name = "type", length = 1)
-	private String type; // 监控类型(0:http)
-
-	@Column(name = "frequency")
-	private Float frequency; // 监控频率
-
-	@Column(name = "available_rate")
-	private Float avalibleRate; // 可用率
-
-	@Column(name = "Average_response_time")
-	private Float averageResponseTime; // 平均响应时间
+	@Column(name = "respTime",length = 10)
+	private String respTime; // 响应时间
 
 	@Column(name = "monitor_date")
 	private Date monitorDate; // 监控时间
-	
-	@Column(name = "create_date")
-	private Date createDate; // 创建时间
+
 
 	public Integer getId() {
 		return id;
@@ -92,14 +78,6 @@ public class ServiceMonitor implements java.io.Serializable {
 		this.status = status;
 	}
 
-	public String getMonitorStatus() {
-		return monitorStatus;
-	}
-
-	public void setMonitorStatus(String monitorStatus) {
-		this.monitorStatus = monitorStatus;
-	}
-
 	public String getMonitorAddress() {
 		return monitorAddress;
 	}
@@ -108,36 +86,12 @@ public class ServiceMonitor implements java.io.Serializable {
 		this.monitorAddress = monitorAddress;
 	}
 
-	public String getType() {
-		return type;
+	public String getRespTime() {
+		return respTime;
 	}
 
-	public void setType(String type) {
-		this.type = type;
-	}
-
-	public Float getFrequency() {
-		return frequency;
-	}
-
-	public void setFrequency(Float frequency) {
-		this.frequency = frequency;
-	}
-
-	public Float getAvalibleRate() {
-		return avalibleRate;
-	}
-
-	public void setAvalibleRate(Float avalibleRate) {
-		this.avalibleRate = avalibleRate;
-	}
-
-	public Float getAverageResponseTime() {
-		return averageResponseTime;
-	}
-
-	public void setAverageResponseTime(Float averageResponseTime) {
-		this.averageResponseTime = averageResponseTime;
+	public void setRespTime(String respTime) {
+		this.respTime = respTime;
 	}
 
 	public Date getMonitorDate() {
@@ -147,13 +101,4 @@ public class ServiceMonitor implements java.io.Serializable {
 	public void setMonitorDate(Date monitorDate) {
 		this.monitorDate = monitorDate;
 	}
-
-	public Date getCreateDate() {
-		return createDate;
-	}
-
-	public void setCreateDate(Date createDate) {
-		this.createDate = createDate;
-	}
-
 }

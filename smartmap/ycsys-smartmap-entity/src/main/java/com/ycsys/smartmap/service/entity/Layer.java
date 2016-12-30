@@ -1,6 +1,7 @@
 package com.ycsys.smartmap.service.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +18,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.ycsys.smartmap.sys.entity.User;
+
 @Entity
 @Table(name = "map_layer_manager")
 @DynamicInsert
@@ -29,6 +32,15 @@ public class Layer implements Serializable{
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id;
+	
+	@Transient
+	private String ids;//用于存储服务上面的图层id，多个用逗号分隔
+	
+	@Transient
+	private String names;//用于存储服务上面的图层名称，多个用逗号分隔
+	
+	@Transient
+	private String filed;//用于存储图层的域
 	
 	@Column(name = "pid")
 	private Integer pId ;//父节点
@@ -84,6 +96,21 @@ public class Layer implements Serializable{
 	@Column(name="display_fields")
 	private String displayFields;
 	
+	
+	@Column(name = "create_date")
+	private Date createDate; // 创建时间
+
+	@ManyToOne
+	@JoinColumn(name = "creator_id")
+	private User creator; // 创建者
+
+	@Column(name = "update_date")
+	private Date updateDate; // 更新时间
+
+	@ManyToOne
+	@JoinColumn(name = "updator_id")
+	private User updator; // 更新者
+	
 	public Layer(){}
 	
 	public Layer(Integer id,String name,String address,String geometryType,Integer pId,String type,String nameField,String summaryFields,String displayFields){
@@ -133,14 +160,6 @@ public class Layer implements Serializable{
 		this.pId = pId;
 	}
 
-	public Integer getpId() {
-		return pId;
-	}
-
-	public void setpId(Integer pId) {
-		this.pId = pId;
-	}
-	
 	public String getName() {
 		return name;
 	}
@@ -205,5 +224,60 @@ public class Layer implements Serializable{
 		this.displayFields = displayFields;
 	}
 
+	public String getIds() {
+		return ids;
+	}
+
+	public void setIds(String ids) {
+		this.ids = ids;
+	}
+
+	public String getNames() {
+		return names;
+	}
+
+	public void setNames(String names) {
+		this.names = names;
+	}
+
+	public String getFiled() {
+		return filed;
+	}
+
+	public void setFiled(String filed) {
+		this.filed = filed;
+	}
+
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public User getCreator() {
+		return creator;
+	}
+
+	public void setCreator(User creator) {
+		this.creator = creator;
+	}
+
+	public Date getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(Date updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	public User getUpdator() {
+		return updator;
+	}
+
+	public void setUpdator(User updator) {
+		this.updator = updator;
+	}
 	
 }

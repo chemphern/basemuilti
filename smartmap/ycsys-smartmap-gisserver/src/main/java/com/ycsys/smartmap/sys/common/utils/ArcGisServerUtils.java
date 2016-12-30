@@ -125,6 +125,42 @@ public class ArcGisServerUtils {
 	 * @param params
 	 * @return
 	 */
+	public static Map excute(String url, Map<String, String> params) {
+		if (StringUtils.isNotBlank(url)) {
+			params.put("f", "pjson");// 指定返回json格式的数据
+			String result = HttpClientUtils.post(url, params);
+			log.debug("调用arcServer的响应结果：" + result);
+			try {
+				if(StringUtils.isNotBlank(result)) {
+					Map map = JsonMapper.getInstance().readValue(result, Map.class);
+					log.debug("调用arcServer的响应结果：" + map);
+					return map;
+				}
+			} catch (JsonParseException e) {
+				// TODO Auto-generated catch block
+				log.warn("JsonParseException=" + e.getMessage());
+				e.printStackTrace();
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				log.warn("JsonMappingException=" + e.getMessage());
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				log.warn("IOException=" + e.getMessage());
+				e.printStackTrace();
+			}
+
+		}
+		return null;
+	}
+	
+	/**
+	 * 调用接口
+	 * 
+	 * @param url
+	 * @param params
+	 * @return
+	 */
 	public static String excute2(String url, Map<String, String> params) {
 		if (StringUtils.isNotBlank(url)) {
 			params.put("f", "pjson");// 指定返回json格式的数据

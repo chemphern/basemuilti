@@ -6,13 +6,13 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URL;
+import java.net.InetAddress;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -30,7 +30,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.dbutils.handlers.MapHandler;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
@@ -39,6 +38,7 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,10 +54,17 @@ import com.google.common.collect.Maps;
 import com.ycsys.smartmap.cluster.utils.ClusterUtils;
 import com.ycsys.smartmap.resource.entity.Resource;
 import com.ycsys.smartmap.resource.service.ResourceService;
+import com.ycsys.smartmap.service.entity.Layer;
+import com.ycsys.smartmap.service.entity.LayerTheme;
 import com.ycsys.smartmap.service.entity.Service;
+import com.ycsys.smartmap.service.service.LayerService;
 import com.ycsys.smartmap.service.service.ServiceService;
+import com.ycsys.smartmap.service.service.ThemeService;
 import com.ycsys.smartmap.service.utils.ServiceUtils;
 import com.ycsys.smartmap.sys.common.config.Global;
+import com.ycsys.smartmap.sys.common.enums.ExceptionLevel;
+import com.ycsys.smartmap.sys.common.exception.GisServerException;
+import com.ycsys.smartmap.sys.common.exception.ServiceException;
 import com.ycsys.smartmap.sys.common.result.Grid;
 import com.ycsys.smartmap.sys.common.utils.ArcGisServerUtils;
 import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
@@ -89,9 +96,14 @@ public class ServiceController extends BaseController {
 	@Autowired
 	private ResourceService resourceService;
 	@Autowired
+	private LayerService layerService;
+	@Autowired
+	private ThemeService themeService;
+	@Autowired
 	private ConfigServerEngineService configServerEngineService;
+	
 	//服务导入模版地址
-	private static final String DOWNLOADURL = "/data/init/服务导入模版.zip";
+	private static final String DOWNLOADURL = "/data/服务导入模版.zip";
 	
 	//服务引擎的数据插入
     public static void main(String [] args){
@@ -260,8 +272,11 @@ public class ServiceController extends BaseController {
 					out.write(bs, 0, len);
 				}
 			} catch (Exception e) {
+				map.put("flag", "0");
 				map.put("msg", "发布失败！");
-				return map;
+				//return map;
+				throw new GisServerException("上传服务资源到arcServer上失败", "上传服务资源到arcServer上失败", ExceptionLevel.SERIOUS.getValue(), "上传服务资源到arcServer上失败");
+				
 			} finally {
 				try {
 					out.close();
@@ -538,7 +553,7 @@ public class ServiceController extends BaseController {
 			map.put("msg", "发布成功！");
 			String managerServiceUrl = "http://" + ip + ":" + port
 					+ "/arcgis/admin/services/";
-			if (StringUtils.isNotBlank(folderName)) {
+			if (StringUtils.isNotBlank(folderName) && !("/".equals(folderName))) {
 				managerServiceUrl = managerServiceUrl + folderName + "/";
 			}
 			managerServiceUrl = managerServiceUrl + serviceName + "."
@@ -548,11 +563,37 @@ public class ServiceController extends BaseController {
 			//资源发布成服务的日志记录
 			
 		} else {
+			map.put("flag", "0");
 			map.put("msg", "发布失败！");
 		}
 		return map;
 	}
-
+	
+	/**
+	 * 验证服务引擎连接情况
+	 * 
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/getServerEngineInfo")
+	@RequiresPermissions(value = "service-publish")
+	public Map<String, String> getServerEngineInfo(Integer id) {
+		Map<String, String> map = new HashMap<String, String>();
+		if (id != null) {
+			try {
+				ConfigServerEngine serverEngine = configServerEngineService
+						.get(ConfigServerEngine.class, id);
+				map.put("configName", serverEngine.getConfigName());
+				map.put("intranetIp", serverEngine.getIntranetIp());
+				map.put("runningStatus", serverEngine.getRunningStatus()
+						.equals("0") ? "启用" : "禁用");
+			} catch (Exception e) {
+				
+			}
+		}
+		return map;
+	}
+	
 	/**
 	 * 验证服务引擎连接情况
 	 * 
@@ -620,6 +661,12 @@ public class ServiceController extends BaseController {
 				DataDictionary.getObject("service_extend_type"));
 		model.addAttribute("serverEngineList", serverEngineList);
 		return "/service/service_register_gis";
+	}
+	
+	@RequestMapping("morePropertySelect")
+	@RequiresPermissions(value = "service-register")
+	public String morePropertySelect(Model model) {
+		return "/service/service_more_property";
 	}
 
 	@ResponseBody
@@ -697,6 +744,7 @@ public class ServiceController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping("/listData")
+	@RequiresPermissions(value = "service-listData")
 	public Grid<Service> listData(Integer serverEngineId, PageHelper page) {
 		// System.out.println("serverEngineId=" + serverEngineId);
 		List<Service> list = null;
@@ -761,42 +809,48 @@ public class ServiceController extends BaseController {
 
 	@ResponseBody
 	@RequestMapping("/getServiceInfo")
-	public Map<String, String> getServiceInfo(Integer serverEngineId,
+	public Map<String, String> getServiceInfo(HttpServletRequest request,Integer serverEngineId,
 			String folderName, String showName, String functionType) {
 		Map<String, String> map = new HashMap<String, String>();
-		ConfigServerEngine severEngine = configServerEngineService.get(
-				ConfigServerEngine.class, serverEngineId);
-		// http://172.16.10.52:6080/arcgis/admin/services/
-		String ip = "";
-		String port = "";
-		String userName = "";
-		String password = "";
-		if (severEngine != null) {
-			ip = severEngine.getIntranetIp();
-			port = severEngine.getIntranetPort() + "";
-			userName = severEngine.getEngineManager();
-			password = severEngine.getManagerPassword();
-			Service s = ServiceUtils.getServiceInfo(ip, port, userName,
-					password, folderName, showName, functionType);
-			if (s != null) {
-				map.put("functionType", functionType);
-				map.put("serviceExtend", s.getServiceExtend());
-				String managerServiceUrl = "http://" + ip + ":" + port
-						+ "/arcgis/admin/services/";
-				String serviceVisitAddress = "http://" + ip + ":" + port
-						+ "/arcgis/rest/services/";
-				if (StringUtils.isNotBlank(folderName)) {
-					managerServiceUrl = managerServiceUrl + folderName + "/";
-					serviceVisitAddress = serviceVisitAddress + folderName
-							+ "/";
+		try {
+			String hostAddress = InetAddress.getLocalHost().getHostAddress();
+			String contextPath = request.getContextPath();
+			String serverPort = request.getServerPort() + "";
+			ConfigServerEngine severEngine = configServerEngineService.get(
+					ConfigServerEngine.class, serverEngineId);
+			// http://172.16.10.52:6080/arcgis/admin/services/
+			String ip = "";
+			String port = "";
+			String userName = "";
+			String password = "";
+			if (severEngine != null) {
+				ip = severEngine.getIntranetIp();
+				port = severEngine.getIntranetPort() + "";
+				userName = severEngine.getEngineManager();
+				password = severEngine.getManagerPassword();
+				Service s = ServiceUtils.getServiceInfo(ip, port, userName,
+						password, folderName, showName, functionType);
+				if (s != null) {
+					map.put("functionType", functionType);
+					map.put("serviceExtend", s.getServiceExtend());
+					String managerServiceUrl = "http://" + ip + ":" + port + "/arcgis/admin/services/";
+					String serviceVisitAddress = "http://" + ip + ":" + port + "/arcgis/rest/services/";
+					String serviceVisitAddressOpen = "http://" + hostAddress + ":" + serverPort + contextPath + "/arcgis/rest/services/";
+					if (StringUtils.isNotBlank(folderName) && !("/".equals(folderName))) {
+						managerServiceUrl = managerServiceUrl + folderName + "/";
+						serviceVisitAddress = serviceVisitAddress + folderName + "/";
+						serviceVisitAddressOpen = serviceVisitAddressOpen + folderName + "/";
+					}
+					managerServiceUrl = managerServiceUrl + showName + "." + functionType;
+					serviceVisitAddress = serviceVisitAddress + showName + "/" + functionType;
+					serviceVisitAddressOpen = serviceVisitAddressOpen +  showName + "/" + functionType;
+					map.put("managerServiceUrl", managerServiceUrl);
+					map.put("serviceVisitAddress", serviceVisitAddress);
+					map.put("serviceVisitAddressOpen", serviceVisitAddressOpen);
 				}
-				managerServiceUrl = managerServiceUrl + showName + "."
-						+ functionType;
-				serviceVisitAddress = serviceVisitAddress + showName + "/"
-						+ functionType;
-				map.put("managerServiceUrl", managerServiceUrl);
-				map.put("serviceVisitAddress", serviceVisitAddress);
 			}
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
 		}
 		return map;
 	}
@@ -861,7 +915,6 @@ public class ServiceController extends BaseController {
 						file.transferTo(targetFile);
 						s.setImagePath(path + File.separator + fileName);
 					} catch (IllegalStateException | IOException e) {
-						// TODO Auto-generated catch block
 						map.put("msg", "上传文件失败！");
 						return map;
 					}
@@ -886,6 +939,12 @@ public class ServiceController extends BaseController {
 				else {
 					s.setServiceStatus("0");
 				}
+				String hostAddress = InetAddress.getLocalHost().getHostAddress();
+				String contextPath = request.getContextPath();
+				String serverPort = request.getServerPort() + "";
+				String serviceVisitAddressOpen = "http://" + hostAddress + ":" + serverPort + contextPath;
+				serviceVisitAddressOpen = serviceVisitAddressOpen + getUrl(s.getServiceVisitAddress());
+				s.setServiceVisitAddressOpen(serviceVisitAddressOpen);
 				s.setRegisterType("1");
 				s.setCreateDate(new Date());
 				s.setCreator(user);
@@ -901,7 +960,24 @@ public class ServiceController extends BaseController {
 		}
 		return map;
 	}
-
+	
+	/**
+	 * 得到url端口后面的内容
+	 * @param url
+	 * @return
+	 */
+	private String getUrl(String url) {
+		if(StringUtils.isNotBlank(url) && url.length() > 2) {
+			url = url.substring(url.indexOf("//") + 2);
+			boolean b = url.contains(":");
+			if(b) {
+				url = url.substring(url.indexOf(":") + 1);
+			}
+			url = url.substring(url.indexOf("/"));
+		}
+		return url;
+	}
+	
 	@RequestMapping("list")
 	@RequiresPermissions(value = "service-list")
 	public String list(Model model) {
@@ -994,12 +1070,23 @@ public class ServiceController extends BaseController {
 		Map<String, String> map = new HashMap<String, String>();
 		if (service.getId() != null) {
 			try {
+				//判断是否被引用(后面设计成捕获异常来判断是否被引用)
+				Object[] obj = new Object[] {service.getId()};
+				List<Layer> layerList = layerService.find("from Layer t where t.service.id = ?", obj);
+				List<LayerTheme> layerThemeList = themeService.find("from LayerTheme t where t.service.id = ?", obj);
+				if(layerList != null && layerList.size() > 0) {
+					map.put("msg", "服务被图层引用，不能删除！");
+					return map;
+				}
+				if(layerThemeList != null && layerThemeList.size() > 0) {
+					map.put("msg", "服务被专题图引用，不能删除！");
+					return map;
+				}
 				serviceService.delete(service);
 				map.put("msg", "删除成功！");
-			} catch (Exception e) {
+			} 
+			catch (Exception e) {
 				map.put("msg", "删除失败！");
-				// TODO Auto-generated catch block
-				// e.printStackTrace();
 			}
 		}
 		return map;
@@ -1023,6 +1110,17 @@ public class ServiceController extends BaseController {
 					Service service = serviceService.get(Service.class,
 							Integer.parseInt(id));
 					if (service != null) {
+						Object[] obj = new Object[] {service.getId()};
+						List<Layer> layerList = layerService.find("from Layer t where t.service.id = ?", obj);
+						List<LayerTheme> layerThemeList = themeService.find("from LayerTheme t where t.service.id = ?", obj);
+						if(layerList != null && layerList.size() > 0) {
+							map.put("msg", "服务被图层引用，不能删除！");
+							return map;
+						}
+						if(layerThemeList != null && layerThemeList.size() > 0) {
+							map.put("msg", "服务被专题图引用，不能删除！");
+							return map;
+						}
 						serviceService.delete(service);
 					}
 				}
@@ -1079,8 +1177,7 @@ public class ServiceController extends BaseController {
 			String path = request.getSession().getServletContext()
 					.getRealPath("upload");
 
-			if (s.getServerEngine() != null
-					&& StringUtils.isNotBlank(s.getShowName())) {
+			if (StringUtils.isNotBlank(s.getShowName())) {
 				if (file != null && file.getSize() > 0) {
 					String fileName = file.getOriginalFilename();
 					// 得到数字字典的图片类型, 再判断上传的文件是否是图片
@@ -1101,24 +1198,21 @@ public class ServiceController extends BaseController {
 						return map;
 					}
 				}
-				ConfigServerEngine se = configServerEngineService.get(
-						ConfigServerEngine.class,
-						s.getServerEngine().getId());
-				s.setServerEngine(se);
 				
 				// 修改
 				Service dbService = serviceService.get(Service.class,
 						s.getId());
 				BeanExtUtils.copyProperties(dbService, s, true, true, null);
+				dbService.setRegisterType("0"); //为gis注册
 				dbService.setUpdateDate(new Date());
 				dbService.setUpdator(user);
 				serviceService.update(dbService);
-				map.put("flag", "0");
+				map.put("flag", "1");
 				map.put("msg", "编辑成功！");
 
 			}
 		} catch (Exception e) {
-			map.put("flag", "1");
+			map.put("flag", "3");
 			map.put("msg", "编辑失败！");
 		}
 		return map;
@@ -1185,6 +1279,14 @@ public class ServiceController extends BaseController {
 				Service dbService = serviceService.get(Service.class,
 						s.getId());
 				BeanExtUtils.copyProperties(dbService, s, true, true, null);
+				
+				String hostAddress = InetAddress.getLocalHost().getHostAddress();
+				String contextPath = request.getContextPath();
+				String serverPort = request.getServerPort() + "";
+				String serviceVisitAddressOpen = "http://" + hostAddress + ":" + serverPort + contextPath;
+				serviceVisitAddressOpen = serviceVisitAddressOpen + getUrl(s.getServiceVisitAddress());
+				dbService.setServiceVisitAddressOpen(serviceVisitAddressOpen);
+				
 				dbService.setUpdateDate(new Date());
 				dbService.setUpdator(user);
 				serviceService.update(dbService);
@@ -1981,4 +2083,45 @@ public class ServiceController extends BaseController {
 		return "/service/service_view";
 	}
 	
+	/**
+	 * 选择服务
+	 * @param flag(1:图层选择服务；2：专题图选择服务)
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("toSelectService")
+	@RequiresPermissions(value = "service-select")
+	public String toSelectService(String flag,Model model) {
+		model.addAttribute("serviceStatus",
+				DataDictionary.getObject("service_status"));
+		model.addAttribute("permissionStatus",
+				DataDictionary.getObject("service_permission_status"));
+		model.addAttribute("serviceRegisterType",
+				DataDictionary.getObject("service_register_type"));
+		model.addAttribute("flag", flag);
+		return "/service/service_select";
+	}
+	
+	/**
+	 * 选择服务的图层
+	 * @param service
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("toSelectLayer")
+	@RequiresPermissions(value = "service-layer-select")
+	public String toSelectLayer(Service service, Model model) {
+		model.addAttribute("serviceVisitAddress",service.getServiceVisitAddress());
+		//List<Layer> layers = ServiceUtils.getLayers(service.getServiceVisitAddress());
+		return "/service/service_select_layer";
+	}
+	
+	@ResponseBody
+	@RequestMapping("/listLayer")
+	@RequiresPermissions(value = "service-layer-select")
+	public Grid<Layer> listLayer(Service service,String serviceVisitAddress, PageHelper page) {
+		List<Layer> layers = ServiceUtils.getLayers(service.getServiceVisitAddress());
+		Grid<Layer> g = new Grid<Layer>(layers);
+		return g;
+	}
 }

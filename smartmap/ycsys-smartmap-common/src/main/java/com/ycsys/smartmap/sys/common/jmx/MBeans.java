@@ -27,7 +27,7 @@ import java.util.*;
  * MBeans
  * @author lixiaoxin
  */
-final class MBeans {
+public final class MBeans {
 	/**
 	 * Separator between mbeans attributes in the External API.
 	 */

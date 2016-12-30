@@ -285,7 +285,7 @@ function measureAreaByLBUp(clickPosition){
     geo.EndPoint.Y=mousePosition.Y;
     geo.EndPoint.Z=mousePosition.Altitude;
     area.Geometry.EndEdit();
-     if (area.Geometry.GeometryType == 6) {       
+     if (area.Geometry.GeometryType == 6) {
             area.Geometry = geoBak;
      }
     //显示结果距离及设置结果Label位置
@@ -304,7 +304,7 @@ function addAreaPointByLUp(clickPosition){
     area.Geometry.StartEdit();
     geo.Points.AddPoint(clickPosition.X,clickPosition.Y,clickPosition.Altitude);
     area.Geometry.EndEdit();
-     if (area.Geometry.GeometryType == 6) {       
+     if (area.Geometry.GeometryType == 6) {
             area.Geometry = geoBak;
      }
     //显示结果距离及设置结果Label位置
@@ -352,7 +352,7 @@ function measureGroundAreaByLBUp(clickPosition){
     geo.EndPoint.Y=mousePosition.Y;
     geo.EndPoint.Z=mousePosition.Altitude;
     area.Geometry.EndEdit();
-     if (area.Geometry.GeometryType == 6) {       
+     if (area.Geometry.GeometryType == 6) {
             area.Geometry = geoBak;
      }
     //显示结果距离及设置结果Label位置
@@ -370,7 +370,7 @@ function addGroundAreaPointByLUp(clickPosition){
     area.Geometry.StartEdit();
     geo.Points.AddPoint(clickPosition.X,clickPosition.Y,clickPosition.Altitude);
     area.Geometry.EndEdit();
-     if (area.Geometry.GeometryType == 6) {       
+     if (area.Geometry.GeometryType == 6) {
             area.Geometry = geoBak;
      }
     //显示结果距离及设置结果Label位置

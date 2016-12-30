@@ -27,7 +27,7 @@ import java.util.List;
  * 线程相关信息收集
  * @author lixiaoxin
  */
-class ThreadInformations implements Serializable {
+public class ThreadInformations implements Serializable {
 	private static final long serialVersionUID = 3604281253550723654L;
 	@SuppressWarnings("all")
 	private static final ThreadMXBean THREAD_BEAN = ManagementFactory.getThreadMXBean();

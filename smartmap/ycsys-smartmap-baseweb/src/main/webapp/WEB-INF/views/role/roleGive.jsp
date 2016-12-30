@@ -91,7 +91,7 @@
         });
     }
     $(document).ready(function(){
-            var p = window.parent;
+            var p = window.parent[0];
             var dialog = p.art.dialog.list["editPermissionDialog"];
             var $fm = $("#form_id");
             $('#role_saveForm_sub').click(function(o,i) {

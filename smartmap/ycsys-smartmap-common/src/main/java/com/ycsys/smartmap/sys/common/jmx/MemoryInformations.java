@@ -33,7 +33,7 @@ import java.util.Set;
  * 内存相关信息收集
  * @author lixiaoxin
  */
-class MemoryInformations implements Serializable {
+public class MemoryInformations implements Serializable {
 	private static final long serialVersionUID = 3281861236369720876L;
 	private static final String NEXT = ",\n";
 	private static final String MO = " Mo";

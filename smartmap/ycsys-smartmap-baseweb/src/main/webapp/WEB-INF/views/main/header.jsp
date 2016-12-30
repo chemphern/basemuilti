@@ -22,8 +22,8 @@
             		<div class="user dropdown">           
                 		<a href="#" class="user_box dropdown-toggle" data-toggle="dropdown" id="dLabel" ><img src="${res}/dist/img/photo1.png" alt="头像" /><span class="user_name">admin</span> <span class="caret"></span></a>
                 		<ul class="dropdown-menu memu-list"  role="menu" aria-labelledby="dLabel">
-                  		<li class="personal"><a href="#"><i class="iconfont icon-user"></i><span>个人信息</span></a></li>
-                  		<li class="password"><a href="#"><i class="glyphicon glyphicon-lock"></i><span>修改密码</span></a></li>
+                  		<li class="personal"><a href="javascript:;" onclick="personalMsg()"><i class="iconfont icon-user"></i><span>个人信息</span></a></li>
+                  		<li class="password"><a href="javascript:;" onclick="updatePwd()"><i class="glyphicon glyphicon-lock"></i><span>修改密码</span></a></li>
                   		<li><a href="login.html"><i class="glyphicon glyphicon-off"></i><span>退出系统</span></a></li>
                 		</ul>              
               		</div>
@@ -158,10 +158,33 @@
                         <li class="footer"><a href="#">查看全部消息</a></li>
                     </ul>
                 </li>                          		
-                <li>
-                    <a href="#" data-toggle="control-sidebar"><i class="iconfont icon-icon-huanfu"></i></a>
+                <li class="user_info pr10 ">
+                	<a href="javascript:;" title="换肤"  id="control-sidebar-skin">
+                		<i class="iconfont icon-icon-huanfu"></i>
+                	</a>
                 </li>
             </ul>
         </div>
     </nav>
 </header>
+<script>
+    function personalMsg(){
+        art.dialog.open('${ctx}/user/showUserv?id=' + ${YCSYS_SESSION_USER.id},{
+            id:"showUserDialog",
+            title: '个人信息',
+            width: 400,
+            height: 500,
+            lock: true
+        });
+    };
+    function updatePwd(){
+        var dialog = $.Layer.iframe(
+            {
+                id:"updateUserPwd",
+                title: '修改密码',
+                url:'${ctx}/user/updateUserPwd',
+                width: 400,
+                height: 140
+            });
+    };
+</script>

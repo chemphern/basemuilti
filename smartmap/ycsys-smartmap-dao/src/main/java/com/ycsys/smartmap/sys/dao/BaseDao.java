@@ -70,4 +70,6 @@ public interface BaseDao<T,PK> {
     public Criteria createCriteria(Boolean isCache, final Criterion... criterions);
 
     public List<T> find(String s, PageHelper page);
+    
+    public Object[] findArrValue(String hql,List<Object> params);
 }

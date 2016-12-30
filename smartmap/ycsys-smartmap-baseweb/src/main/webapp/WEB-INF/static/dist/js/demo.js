@@ -1,3 +1,4 @@
+
 /**
  * AdminLTE Demo Menu
  * ------------------
@@ -15,17 +16,9 @@
    */
   var my_skins = [
     "skin-blue",
-    "skin-black",
-    "skin-red",
-    "skin-yellow",
     "skin-purple",
-    "skin-green",
-    "skin-blue-light",
-    "skin-black-light",
-    "skin-red-light",
-    "skin-yellow-light",
-    "skin-purple-light",
-    "skin-green-light"
+    "skin-green"
+    
   ];
 
   //Create the new tab
@@ -52,21 +45,21 @@
 
   //Dark sidebar skins
   var skin_blue =
-      $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
+      $("<li />", {style: "float:left; width: 32%; padding: 5px;"})
           .append("<a href='javascript:void(0);' data-skin='skin-blue' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.8)' class='clearfix full-opacity-hover'>"
           + "<div><span style='display:block; width: 100%; float: left; height: 27px; background: #26bf8c;'></span></div>"
           + "</a>"
           + "<p class='text-center no-margin'>极简.青</p>");
   skins_list.append(skin_blue);
   var skin_purple =
-      $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
+      $("<li />", {style: "float:left; width: 32%; padding: 5px;"})
           .append("<a href='javascript:void(0);' data-skin='skin-purple' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.8)' class='clearfix full-opacity-hover'>"
           + "<div><span style='display:block; width: 100%; float: left; height: 27px; background: #1e8bf2;' ></span></div>"
           + "</a>"
           + "<p class='text-center no-margin'>科技.蓝</p>");
   skins_list.append(skin_purple);
   var skin_green =
-      $("<li />", {style: "float:left; width: 33.33333%; padding: 5px;"})
+      $("<li />", {style: "float:left; width: 32%; padding: 5px;"})
           .append("<a href='javascript:void(0);' data-skin='skin-green' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.8)' class='clearfix full-opacity-hover'>"
           + "<div><span style='display:block; width: 100%; float: left; height: 27px; background: #00a65a;'></span></div>"
           + "</a>"
@@ -79,6 +72,20 @@
   $("#control-sidebar-home-tab").after(tab_pane);
 
   setup();
+
+// cookie实现记录用户状态的功能
+$(".list-unstyled").find("li").click(function(){
+  //移除li里面的样式
+  $(".list-unstyled").find("li").removeClass('active');
+  //当前选择的下标
+  var index = $(".list-unstyled").find("li").index(this);
+  //记录下标
+  $.cookie("current", index);
+  //同时添加记录样式
+  $(this).addClass("active");
+});
+
+
 
   /**
    * Toggles layout classes
@@ -107,13 +114,14 @@
    */
   function change_skin(cls) {
     $.each(my_skins, function (i) {
-      $("body").removeClass(my_skins[i]);
+      $("body").removeClass(my_skins[i]);      
     });
-
-    $("body").addClass(cls);
-    store('skin', cls);
+    
+    $("body").addClass(cls);    
+    store('skin', cls);   
     return false;
   }
+
 
   /**
    * Store a new settings in the browser
@@ -143,6 +151,19 @@
       window.alert('Please use a modern browser to properly view this template!');
     }
   }
+ /*
+ 换肤窗口显示隐藏控制
+  */
+var srTarget;   
+$("#control-sidebar-skin").click(function(e){
+     srTarget=e.target;
+     $(".control-sidebar").fadeIn();
+});
+$("html").click(function(event) {
+    if (event.target !=srTarget) {
+      $(".control-sidebar").fadeOut();
+    }
+});
 
   /**
    * Retrieve default settings and apply them to the template
@@ -156,53 +177,12 @@
 
     //Add the change skin listener
     $("[data-skin]").on('click', function (e) {
-      if($(this).hasClass('knob'))
-        return;
+      if($(this).hasClass('knob'))              
+        return;      
       e.preventDefault();
       change_skin($(this).data('skin'));
+      //$(this).parents().addClass('active').siblings().removeClass('active');
+      $('.control-sidebar').fadeOut();
     });
-
-    //Add the layout manager
-    $("[data-layout]").on('click', function () {
-      change_layout($(this).data('layout'));
-    });
-
-    $("[data-controlsidebar]").on('click', function () {
-      change_layout($(this).data('controlsidebar'));
-      var slide = !AdminLTE.options.controlSidebarOptions.slide;
-      AdminLTE.options.controlSidebarOptions.slide = slide;
-      if (!slide)
-        $('.control-sidebar').removeClass('control-sidebar-open');
-    });
-
-    $("[data-sidebarskin='toggle']").on('click', function () {
-      var sidebar = $(".control-sidebar");
-      if (sidebar.hasClass("control-sidebar-dark")) {
-        sidebar.removeClass("control-sidebar-dark")
-        sidebar.addClass("control-sidebar-light")
-      } else {
-        sidebar.removeClass("control-sidebar-light")
-        sidebar.addClass("control-sidebar-dark")
-      }
-    });
-
-    $("[data-enable='expandOnHover']").on('click', function () {
-      $(this).attr('disabled', true);
-      AdminLTE.pushMenu.expandOnHover();
-      if (!$('body').hasClass('sidebar-collapse'))
-        $("[data-layout='sidebar-collapse']").click();
-    });
-
-    // Reset options
-    if ($('body').hasClass('fixed')) {
-      $("[data-layout='fixed']").attr('checked', 'checked');
-    }
-    if ($('body').hasClass('layout-boxed')) {
-      $("[data-layout='layout-boxed']").attr('checked', 'checked');
-    }
-    if ($('body').hasClass('sidebar-collapse')) {
-      $("[data-layout='sidebar-collapse']").attr('checked', 'checked');
-    }
-
   }
 })(jQuery, $.AdminLTE);

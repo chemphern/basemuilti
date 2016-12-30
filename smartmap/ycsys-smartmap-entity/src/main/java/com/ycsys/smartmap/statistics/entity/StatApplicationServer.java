@@ -62,19 +62,19 @@ public class StatApplicationServer implements java.io.Serializable {
 	private Float busyThreadAverage; // 繁忙线程平均值
 
 	@Column(name = "have_max_memory")
-	private Integer haveMaxMemory; // 已占用内存最大值
+	private Long haveMaxMemory; // 已占用内存最大值
 
 	@Column(name = "have_min_memory")
-	private Integer haveMinMemory; // 已占用内存最小值
+	private Long haveMinMemory; // 已占用内存最小值
 
 	@Column(name = "have_average_memory")
 	private Float haveAverageMemory; // 已占用内存平均值
 
 	@Column(name = "free_max_memory")
-	private Integer freeMaxMemory; // 空闲内存最大值
+	private Long freeMaxMemory; // 空闲内存最大值
 
 	@Column(name = "free_min_memory")
-	private Integer freeMinMemory; // 空闲内存最小值
+	private Long freeMinMemory; // 空闲内存最小值
 
 	@Column(name = "free_average_memory")
 	private Float freeAverageMemory; // 空闲内存平均值
@@ -158,19 +158,19 @@ public class StatApplicationServer implements java.io.Serializable {
 		this.busyThreadAverage = busyThreadAverage;
 	}
 
-	public Integer getHaveMaxMemory() {
+	public Long getHaveMaxMemory() {
 		return haveMaxMemory;
 	}
 
-	public void setHaveMaxMemory(Integer haveMaxMemory) {
+	public void setHaveMaxMemory(Long haveMaxMemory) {
 		this.haveMaxMemory = haveMaxMemory;
 	}
 
-	public Integer getHaveMinMemory() {
+	public Long getHaveMinMemory() {
 		return haveMinMemory;
 	}
 
-	public void setHaveMinMemory(Integer haveMinMemory) {
+	public void setHaveMinMemory(Long haveMinMemory) {
 		this.haveMinMemory = haveMinMemory;
 	}
 
@@ -182,19 +182,19 @@ public class StatApplicationServer implements java.io.Serializable {
 		this.haveAverageMemory = haveAverageMemory;
 	}
 
-	public Integer getFreeMaxMemory() {
+	public Long getFreeMaxMemory() {
 		return freeMaxMemory;
 	}
 
-	public void setFreeMaxMemory(Integer freeMaxMemory) {
+	public void setFreeMaxMemory(Long freeMaxMemory) {
 		this.freeMaxMemory = freeMaxMemory;
 	}
 
-	public Integer getFreeMinMemory() {
+	public Long getFreeMinMemory() {
 		return freeMinMemory;
 	}
 
-	public void setFreeMinMemory(Integer freeMinMemory) {
+	public void setFreeMinMemory(Long freeMinMemory) {
 		this.freeMinMemory = freeMinMemory;
 	}
 

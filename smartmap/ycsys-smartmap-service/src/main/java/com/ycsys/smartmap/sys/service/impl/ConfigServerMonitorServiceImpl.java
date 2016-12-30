@@ -152,6 +152,7 @@ public class ConfigServerMonitorServiceImpl implements
                         } catch (Exception e) {
                             throw new ServiceException("启动失败！ip或者端口或者社区标识不正确，网络不通！");
                         }
+                        break;
                     }
                     case "2": {//启动tomcat监控
                         try {
@@ -179,15 +180,16 @@ public class ConfigServerMonitorServiceImpl implements
                         } catch (Exception e) {
                             throw new ServiceException("启动失败！网络不连通或者账号密码配置错误！");
                         }
+                        break;
                     }
                     case "3": {//启动oracle监控
-
+                        break;
                     }
                     case "4": {//启动arcgis监控
-
+                        break;
                     }
                     default: {
-
+                        break;
                     }
                 }
                 configServerMonitorDao.executeHql("update ConfigServerMonitor set status = ? where id = ? ", new Object[]{"1", config.getId()});
@@ -216,21 +218,23 @@ public class ConfigServerMonitorServiceImpl implements
                             saveJob.setJobName("saveServiceInfo_" + id);
                             saveJob.setJobGroup("snmp");
                             jobTaskManager.pauseJob(saveJob);
+                            break;
                         }
                         case "2": {
                             ScheduleJob job = new ScheduleJob();
                             job.setJobName("collectTomcatInfo_" + id);
                             job.setJobGroup("tomcat");
                             jobTaskManager.pauseJob(job);
+                            break;
                         }
                         case "3": {
-
+                            break;
                         }
                         case "4": {
-
+                            break;
                         }
                         default: {
-
+                            break;
                         }
                     }
                 } catch (Exception e) {
@@ -243,7 +247,13 @@ public class ConfigServerMonitorServiceImpl implements
         }
     }
 
-    private Boolean testTomcatConfig(ConfigServerMonitor config) {
+    @Override
+    public List<ConfigServerMonitor> findAll() {
+        return configServerMonitorDao.find("from ConfigServerMonitor");
+    }
+
+    @Override
+    public Boolean testTomcatConfig(ConfigServerMonitor config) {
         BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         AuthScope scope = new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM);
         UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(config.getUserName(), config.getUserPassword());
@@ -277,8 +287,8 @@ public class ConfigServerMonitorServiceImpl implements
 
     @Override
     public void saveServiceInfo(Map<String, Object> ses) {
-        List<NetAnalyzeInfo> netAnalyzeInfos = (List<NetAnalyzeInfo>) ses.get("nets");
-        List<CpuInfo> cpuInfos = (List<CpuInfo>) ses.get("cpus");
+        Map<String,List<NetAnalyzeInfo>> netAnalyzeInfos = (Map<String, List<NetAnalyzeInfo>>) ses.get("nets");
+        Map<String,List<CpuInfo>> cpuInfos = (Map<String, List<CpuInfo>>) ses.get("cpus");
         System.out.println("入库！");
     }
 

@@ -46,28 +46,7 @@ body {
 	overflow-y: hidden;
 }
 
-.table {
-	border:solid #D5E2E6; 
-	border-width:1px 1px 1px 1px;
-	font-size:small;
-}
 
-.th {
-	background-color:#BFFDE8;
-	text-align: center;
-	height: 50px;
-	border:solid #D5E2E6; 
-	border-width:0px 1px 1px 0px; 
-	line-height: 50px;
-}
-
-.td {
-	text-align: center;
-	height: 50px;
-	border:solid #D5E2E6;
-	border-width:0px 1px 1px 0px; 
-	line-height: 50px;
-}
 
 </style>
 </head>
@@ -75,14 +54,9 @@ body {
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1>服务发布</h1>
-		<ol class="breadcrumb">
-			<li><a href="#"><i class="iconfont iconfont-bars"></i> 首页</a></li>
-			<li class="active">服务发布</li>
-		</ol>
 	</section>
 	<form method="post" id="form_id" action="${ctx }/service/publish" enctype="multipart/form-data">
 	<!-- Main content -->
-	<section class="content">
 		<div class="row">
 			<div class="col-md-12">
 				<div id="wizard" class="swMain">
@@ -107,7 +81,7 @@ body {
 					
 					<div id="step-1">
 						<h2 class="StepTitle">服务引擎</h2>
-						<table width="50%" border="0" cellpadding="0" cellspacing="0"
+						<table width="80%" border="0" cellpadding="0" cellspacing="0"
 							class="date_add_table">
 							<tr>
 								<td class="t_r">请选择服务引擎：</td>
@@ -121,36 +95,38 @@ body {
 							</tr>
 						</table>
 						<!-- <div class="list02" id="maingrid4"></div> -->
-						<table width="100%" class="table" cellpadding="0" cellspacing="0">
-							<tr>
+
+						<div class="table-responsive">
+						  <table class="table table-bordered">
+						    <tr>
 								<th class="th">节点名称</th> 
 								<th class="th">节点主机</th> 
 								<th class="th">状态</th> 
 								<th class="th">验证信息</th>
 							</tr>
 							<tr>
-								<td class="td" id="configName"></td> 
-								<td class="td" id="intranetIp" ></td> 
-								<td class="td" id="runningStatus"></td> 
-								<td class="td"id="checkConnectMsg"></td>
+								<td class="td" id="configName">1</td> 
+								<td class="td" id="intranetIp" >2</td> 
+								<td class="td" id="runningStatus">3</td> 
+								<td class="td"id="checkConnectMsg">未验证</td>
 							</tr>
-						</table>
+						  </table>
+						</div>
+						
 					</div>
 
 					<div id="step-2">
 						<h2 class="StepTitle">基本信息</h2>
 						<table width="100%" border="0" cellpadding="0" cellspacing="0"
 							class="date_add_table">
-							<tr>
+							<%-- <tr>
 								<td class="t_r">服务资源：</td>
 								<td>
-									<!-- <input type="checkbox" name="serviceResource" checked="checked" value="1" />SD文件
-									<input type="checkbox" name="serviceResource" value="0"/>非SD文件 -->
 									<c:forEach var="map" items="${serviceResource }">
 										${map.value.name }<input type="radio" name="serviceResource" value="${map.key }">
 									</c:forEach>
 									</td>
-							</tr>
+							</tr> --%>
 							<tr>
 								<td class="t_r">服务类型：</td>
 								<td><select type="text" name="serviceType" id="serviceType"
@@ -165,7 +141,7 @@ body {
 								<td class="t_r">资源文件：</td>
 								<td>
 									<input type="text" disabled="disabled" id="resourceFile" name="resourceFile" 
-										validate="{required:true,messages:{required:'必填',maxlength:'字符长度不能超过15个!'}}">
+										validate="{required:true,messages:{required:'必填'}}">
 									<input type="hidden" id="resourceFileId" name="resourceFileId">
 									<input type="button" value="浏览" id="viewResourceFile">
 									<span style="color: red">*</span>
@@ -255,7 +231,6 @@ body {
 			</div>
 			<!-- /.col -->
 		</div>
-	</section>
 	</form>
 
 <!-- /.content-wrapper -->
@@ -304,7 +279,24 @@ body {
         }); */
         
      	//设置单选择第一个值
-		$("input[name='serviceResource']:radio").eq(0).attr('checked','true');
+		//$("input[name='serviceResource']:radio").eq(0).attr('checked','true');
+        
+        //得到第一个引擎的信息
+		$.ajax({
+			url:"${ctx }/service/getServerEngineInfo",
+			method:"post",
+			data:{"id":$("#serverEngine").val()},
+			dataType:"json",
+			success:function(result) {
+				$("#configName").html(result.configName);
+				$("#intranetIp").html(result.intranetIp);
+				$("#runningStatus").html(result.runningStatus);
+			},
+			error: function(result) {
+				alert("连接错误！");
+			}
+		});
+        
 		var form = $("#form_id");
 		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
 		val_obj.submitHandler = function(){
@@ -315,7 +307,7 @@ body {
 				dataType:"json",
                 success:function(result){
                 	alert(result.msg);
-            		if(result.flag == "0") {
+            		if(result.flag == "1") {
             			//form.reset();
             			//$('#wizard').smartWizard('skipTo',1);  
             			//dialog.close();
@@ -335,7 +327,7 @@ body {
 		});
 		//上一步和下一步触发的方法
 		function onLeaveStepCallback(stepObj) {
-			console.log(stepObj);
+			//console.log(stepObj);
 			var stepNum= stepObj.attr('rel');
 			//console.log("stepNum="+stepNum);
 			switch(stepNum) {

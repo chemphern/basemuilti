@@ -27,7 +27,7 @@ import java.util.List;
  * tomcat相关信息收集
  * @author lixiaoxin
  */
-final class TomcatInformations implements Serializable {
+public final class TomcatInformations implements Serializable {
 	// cette classe utilise la même technique avec les MBeans Tomcat que la webapp manager de Tomcat
 	// http://svn.apache.org/repos/asf/tomcat/trunk/java/org/apache/catalina/manager/StatusManagerServlet.java
 	// http://svn.apache.org/repos/asf/tomcat/trunk/java/org/apache/catalina/manager/StatusTransformer.java

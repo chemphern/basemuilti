@@ -45,10 +45,11 @@ public class SessionListener implements HttpSessionListener {
 		HttpSession session = event.getSession();
 		ServletContext application = session.getServletContext();
 		HashSet sessions = (HashSet) application.getAttribute("sessions");
-
-		// 销毁的session均从HashSet集中移除
-		sessions.remove(session);
-		log.info("session："+session.getId()+" remove");
+		if(sessions != null) {
+			// 销毁的session均从HashSet集中移除
+			sessions.remove(session);
+			log.info("session："+session.getId()+" remove");
+		}
 	}
   
 }

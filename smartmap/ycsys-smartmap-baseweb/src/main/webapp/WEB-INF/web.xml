@@ -82,6 +82,23 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
 
+  <servlet>
+    <servlet-name>argisrest</servlet-name>
+    <servlet-class>com.ycsys.smartmap.sys.support.ProxyServletSupport</servlet-class>
+    <init-param>
+      <param-name>targetUri</param-name>
+      <param-value>http://172.16.10.52:6080/arcgis</param-value>
+    </init-param>
+    <init-param>
+      <param-name>log</param-name>
+      <param-value>true</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>argisrest</servlet-name>
+    <url-pattern>/arcgis/*</url-pattern>
+  </servlet-mapping>
+
   <!-- spring mvc mapping -->
   <servlet-mapping>
     <servlet-name>springMvc</servlet-name>

@@ -66,16 +66,14 @@ public class FlightPath implements java.io.Serializable {
     	this.creator = creator;
     }
     
-    public Date getCreateTime(){
-    	return this.createTime;
+    public String getCreateTime(){
+        return this.createTime.toString().substring(0,this.createTime.toString().lastIndexOf('.'));
     }
     public void setCreateTime(Date createTime){
     	this.createTime = createTime;
     }
     
-    public FlightPath(){
-    	
-    }
+    public FlightPath(){}
     
     public FlightPath(String pathName,String creator,Date current){
     	this.pathName = pathName;

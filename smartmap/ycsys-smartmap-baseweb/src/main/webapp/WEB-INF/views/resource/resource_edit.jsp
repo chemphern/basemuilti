@@ -40,11 +40,13 @@
 				<td width="120" class="t_r">上传节点：</td>
 				
 				<td><select type="text" name="resourceType.id"
-					id="resourceTypeId" class="text">
+					id="resourceTypeId" class="text"
+					validate="{required:true,messages:{required:'必填'}}">
 						<c:forEach var="list" items="${resourceTypeLists }">
 							<option value="${list.id }">${list.name }</option>
 						</c:forEach>
-				</select></td>
+				</select>
+				<span style="color: red">*</span></td>
 			</tr>
 			<tr>
 				<td class="t_r">资源名称：</td>
@@ -136,7 +138,7 @@
 		}
 		
 		var form = $("#form_id");
-		var parentWin = window.parent;
+		var parentWin = window.parent[0];
 		var dialog = parentWin.art.dialog.list["editResourceDialog"];
 		var dialog_div = dialog.DOM.wrap;
 		dialog_div.on("ok", function() {

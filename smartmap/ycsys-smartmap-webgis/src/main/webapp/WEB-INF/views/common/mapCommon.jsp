@@ -101,6 +101,8 @@
 		  "dojo/promise/all",
 		  "esri/symbols/PictureMarkerSymbol",
 		  "esri/dijit/InfoWindow",
+		  "esri/symbols/TextSymbol",
+		  "esri/symbols/PictureFillSymbol",
 		  "dojo/domReady!"
 		], function(parser,Map,ArcGISTiledMapServiceLayer,GeometryService,Navigation,dom,Draw,OverviewMap,MeasureTools,Print,PrintTask,PrintParameters,PrintTemplate,Scalebar,LocateButton,Legend,
 					FeatureLayer,Extent,SpatialReference,Color,SimpleMarkerSymbol,SimpleLineSymbol,SimpleFillSymbol,Editor,TemplatePicker,esriConfig,jsapiBundle,arrayUtils,keys,SimpleRenderer,
@@ -120,7 +122,7 @@
             ArcGISTiledMapServiceLayerLocal =ArcGISTiledMapServiceLayer;
             map = new Map("map2d",{
 			    logo:false,
-	            zoom: 8,
+	            zoom: 7,
 	            autoResize:true,
 //	            basemap:"streets",
 	            displayGraphicsOnPan:false,
@@ -131,9 +133,9 @@
 //            map.addLayer(baseLyr);//天地图地图
 //            annoLyr= new TDTAnnoLayer();
 //            map.addLayer(annoLyr);//天地图注记图
-            baseLyr = new ArcGISTiledMapServiceLayer("http://172.16.10.52:6080/arcgis/rest/services/%E5%B9%BF%E5%B7%9E%E5%B8%82_%E7%9F%A2%E9%87%8F%E5%9C%B0%E5%9B%BE/MapServer");
+            baseLyr = new ArcGISTiledMapServiceLayer("http://172.16.10.52:6080/arcgis/rest/services/%E5%B9%BF%E5%B7%9E%E5%B8%82_%E7%9F%A2%E9%87%8F%E5%9C%B0%E5%9B%BE/MapServer",{id:'base0'});
             map.addLayer(baseLyr);
-            imgLyr = new  ArcGISTiledMapServiceLayerLocal("http://172.16.10.52:6080/arcgis/rest/services/%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%BD%B1%E5%83%8F%E5%9C%B0%E5%9B%BE/MapServer");
+            imgLyr = new  ArcGISTiledMapServiceLayerLocal("http://172.16.10.52:6080/arcgis/rest/services/%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%BD%B1%E5%83%8F%E5%9C%B0%E5%9B%BE/MapServer",{id:'base1'});
 
             map.on("load",init);
 // 			map.on("layers-add-result", initEditor);
@@ -147,9 +149,20 @@
 //                 outFields: ['*']
 //             });
 //             map.addLayers([responsePolys, responsePoints]);
+			
 			function init(){
 				map.on("onMouseMove",showCoordinate);
-				
+				//滑动条响应地图事件
+				ScrollBar.Initialize(map);
+            	ScrollBar.maxValue = 19;//比地图级别大1
+            	ScrollBar.minValue = 0;
+				map.on('zoom-end',function(e){
+	            	ScrollBar.SetValue(e.level);
+	            });
+				//i查询工具
+				if(!IdentifyTool.isLoaded){
+					IdentifyTool.init(map);
+				}
 				naviBar=new Navigation(map);
 				locator=new LocateButton({map:map,visible:false},dom.byId("curPos"));
 				locator.startup();
@@ -310,7 +323,7 @@
 		map.setExtent(map.extent.offset(0, -deta), true);
 	}
 	function panCenter() {
-		map.centerAt(centerPt);
+		map.centerAndZoom(centerPt,7);
 	}
 	function locateCurPos() {
 		locator.locate();
@@ -321,9 +334,9 @@
 		var template = new esri.tasks.PrintTemplate();
 // 		var dpi = document.getElementById("dpi").value ;
 		template.exportOptions = {width : 800,height : 600,
-// 		dpi: Number(dpi)
+		dpi: 96
 		};
-		template.format = "PDF";
+		template.format = "png32";
 		template.layout = "MAP_ONLY";
 		template.preserveScale = false;
 		var params = new esri.tasks.PrintParameters();
@@ -346,25 +359,32 @@
 		var iPolylineLyr=map.getLayer("iPolylineLyr");
 		var iPolygonLyr=map.getLayer("iPolygonLyr");
 		var queryLyr=map.getLayer("queryLyr");
+		var markerLyr=map.getLayer("markerLyr");
 		if(iPointLyr) map.removeLayer(iPointLyr);
 		if(iPolylineLyr) map.removeLayer(iPolylineLyr);
 		if(iPolygonLyr) map.removeLayer(iPolygonLyr);
 		if(queryLyr) map.removeLayer(queryLyr);
+		if(markerLyr) map.removeLayer(markerLyr);
 		//清除标绘图层
 		if(DCI.Plot.graphicslayer){
 			DCI.Plot.graphicslayer.clear();
 		}
+		//Identify结果
+		IdentifyTool.clear();
  		// map.graphics.clear();
 	}
 	function clearResult(){
+		map.infoWindow.hide();
 		var iPointLyr=map.getLayer("iPointLyr");
 		var iPolylineLyr=map.getLayer("iPolylineLyr");
 		var iPolygonLyr=map.getLayer("iPolygonLyr");
 		var queryLyr=map.getLayer("queryLyr");
+		var markerLyr=map.getLayer("markerLyr");
 		if(iPointLyr) iPointLyr.clear();
 		if(iPolylineLyr) iPolylineLyr.clear();
 		if(iPolygonLyr) iPolygonLyr.clear();
 		if(queryLyr) queryLyr.clear();
+		if(markerLyr) markerLyr.clear();
 	}
 	function pan2dMap() {
 		map.showPanArrows();
@@ -409,11 +429,11 @@
 		var pointColor;//点颜色
 		var polylineColor;//线颜色
 		var polygonColor;//面颜色
-		var outline=new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,new esri.Color([255,80,0,0.5]), 2);//轮廓线
+		var outline=new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SHORTDASHDOTDOT,new esri.Color([91,127,239,0.5]), 2);//轮廓线
 		if(highlightShow){
 			pointColor=new esri.Color([0, 255, 255, 0.5 ]);
 			polylineColor=new esri.Color([255, 0, 0, 1 ]);
-			polygonColor=new esri.Color([89,132,7,0.4]);
+			polygonColor=new esri.Color([176,192,240,0.4]);
 		}else{//默认样式
 			pointColor=new esri.Color([222, 22, 22, 0.5 ]);
 			polylineColor=new esri.Color([222, 22, 22, 1 ]);
@@ -467,8 +487,10 @@
 </script>
 <script type="text/javascript" src="${res }/js/map2d/mapLocate.js"></script>
 <script type="text/javascript" src="${res }/js/map2d/mapQuery.js"></script>
-<script type="text/javascript" src="${res}/dist/js/map/plot/plot.js"></script>
+<script type="text/javascript" src="${res}/dist/js/map/plot/drawExtension/tween.js"></script>
+<script type="text/javascript" src="${res}/dist/js/map/plot/_plot.js"></script>
 <script type="text/javascript" src="${res }/js/map2d/mapPlot.js"></script>
+<script type="text/javascript" src="${res }/js/map2d/identifyTool.js"></script>
 </head>
 <body>
 </body>

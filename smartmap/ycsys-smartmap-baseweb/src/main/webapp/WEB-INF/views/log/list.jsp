@@ -39,12 +39,8 @@
             <h1>
                 日志管理
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
-                <li class="active">日志管理</li>
-            </ol>
         </section>
-		<section class="content">
+
 <div class="row">
     <div class="col-md-12">
         <div class="box box-solid">
@@ -61,7 +57,7 @@
     </div>
     <!-- /.col -->
 </div>
-		</section>
+
 <!-- jQuery 2.2.3 -->
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 
@@ -109,7 +105,7 @@
                         } }
                 ], pageSize:30,
                 url:"${ctx}/log/listData",
-                width: '100%',height:'97%'
+                width: '100%',height:'94%'
             });
         });
     })(jQuery);

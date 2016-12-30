@@ -47,12 +47,14 @@
 		  <tr>
 		    <td class="t_r">属性字段名：</td>
 		    <td><input type="text" name="name" id="name" 
-		    value="${configServiceExtendProperty.name}" class="text validate[required]" /></td>
+		    value="${configServiceExtendProperty.name}" class="text validate[required]" 
+		    validate="{required:true,maxlength:15,messages:{required:'必填',maxlength:'字符长度大于15个字符！'}}" /></td>
 		  </tr>
 		  <tr>
 		    <td class="t_r">属性显示名：</td>
 		    <td><input type="text" name="showName" id="showName" 
-		    value="${configServiceExtendProperty.showName}" class="text validate[required]" /></td>
+		    value="${configServiceExtendProperty.showName}" class="text validate[required]" 
+		    validate="{required:true,maxlength:15,messages:{required:'必填',maxlength:'字符长度大于15个字符！'}}"/></td>
 		  </tr>
 		
 		  <tr>
@@ -77,12 +79,14 @@
 		  <tr>
 		    <td class="t_r">默认值：</td>
 		    <td><input type="text" name="defaultValue" id="defaultValue" 
-		    value="${configServiceExtendProperty.defaultValue}" class="text validate[required]" /></td>
+		    value="${configServiceExtendProperty.defaultValue}" class="text validate[required]" 
+		    validate="{maxlength:15,messages:{maxlength:'字符长度大于15个字符！'}}"/></td>
 		  </tr>
 		  <tr>
 		    <td class="t_r">参考值：</td>
 		    <td><input type="text" name="referenceValue" id="referenceValue" 
-		    value="${configServiceExtendProperty.referenceValue}" class="text validate[required]" /></td>
+		    value="${configServiceExtendProperty.referenceValue}" class="text validate[required]" 
+		    validate="{maxlength:15,messages:{maxlength:'字符长度大于15个字符！'}}"/></td>
 		  </tr>
 		</table>
 	</form>
@@ -98,13 +102,40 @@
 		}
 		
 		var form = $("#form_id");
-		var val_obj = exec_validate(form); //方法在 ${res}/js/common/form.js
-		form.validate(val_obj);
 		
-		var parentWin = window.parent;
+		var parentWin = window.parent[0];
 		var dialog = parentWin.art.dialog.list["editConfigServiceExtendPropertyDialog"];
 		var dialog_div = dialog.DOM.wrap;
+		
 		dialog_div.on("ok", function() {
+				form.submit();
+		});
+		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
+		val_obj.submitHandler = function(){
+			$.ajax({
+				type : "POST",
+				url : "${ctx }/configServiceExtendProperty/save",
+				data : $('#form_id').serialize(),
+				dataType:"json",
+				async : false,
+				error : function(ret) {
+					alert("connection error!");
+				},
+				success : function(ret) {
+					$.Layer.confirm({
+    	                msg:ret.msg,
+    	                fn:function(){
+    	                	if(ret.flag=="1") {
+    	                		parentWin.gridManager.reload();
+    							dialog.close();
+    						}
+    	                }
+    	            });
+				}
+			});
+	    };
+	    form.validate(val_obj);
+/* 		dialog_div.on("ok", function() {
 			var counts = $('div.l-exclamation'); //填的不对的记录数
 			if(counts.length < 1) {
 				//支持文件上传的ajax提交方式
@@ -126,7 +157,7 @@
 			else {
 				alert("请重新填写那些有误的信息！");
 			}
-		});
+		}); */
 		
 	});
 </script>

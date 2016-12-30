@@ -1,21 +1,18 @@
 package com.ycsys.smartmap.service.utils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import com.ycsys.smartmap.service.entity.Layer;
 import com.ycsys.smartmap.service.entity.Service;
 import com.ycsys.smartmap.sys.common.utils.ArcGisServerUtils;
-import com.ycsys.smartmap.sys.common.utils.HttpClientUtils;
-import com.ycsys.smartmap.sys.common.utils.JsonMapper;
 import com.ycsys.smartmap.sys.common.utils.StringUtils;
 
 /**
@@ -24,14 +21,15 @@ import com.ycsys.smartmap.sys.common.utils.StringUtils;
  * @date 2016年11月9日
  */
 public class ServiceUtils {
-	private static Logger log = Logger.getLogger(ServiceUtils.class);
-	private static final String URL = "http://172.16.10.52:6080/arcgis/admin/services/";// 后面把这个放到配置文件中维护
+	private static Logger log = LoggerFactory.getLogger(ServiceUtils.class);
+	private static final String URL = "http://172.16.10.52:6080/arcgis/admin/services/";
 	
 	//测试
 	public static void main(String[] args) {
 		//listFolder("http://172.16.10.52:6080/arcgis/admin/services","siteadmin","ld@yc2016");
 		//List<Service> d = listServices("http://172.16.10.52:6080/arcgis/admin/services","siteadmin","ld@yc2016");
-		getServiceInfo("172.16.10.52", "6080", "siteadmin", "ld@yc2016", "Skyline", "ZhouShan", "MapServer");
+		//getServiceInfo("172.16.10.52", "6080", "siteadmin", "ld@yc2016", "Skyline", "ZhouShan", "MapServer");
+		getLayers("http://172.16.10.52:6080/arcgis/rest/services/Skyline/ZhouShan/MapServer");
 	}
 	
 	/**
@@ -211,7 +209,7 @@ public class ServiceUtils {
 			String token = ArcGisServerUtils.getToken();
 			params.put("Token", token);
 			String url = URL + "createFolder";
-			Map map = excute(url, params);
+			Map map = ArcGisServerUtils.excute(url, params);
 			if (map != null && map.size() > 0) {
 				if ("success".equals(map.get("status"))) {
 					return "success";
@@ -242,7 +240,7 @@ public class ServiceUtils {
 			String token = ArcGisServerUtils.getToken();
 			params.put("Token", token);
 			String url = URL + folderName + "/editFolder";
-			Map map = excute(url, params);
+			Map map = ArcGisServerUtils.excute(url, params);
 			if (map != null && map.size() > 0) {
 				if ("success".equals(map.get("status"))) {
 					return "success";
@@ -269,7 +267,7 @@ public class ServiceUtils {
 			String token = ArcGisServerUtils.getToken();
 			params.put("Token", token);
 			String url = URL + folderName + "/deleteFolder";
-			Map map = excute(url, params);
+			Map map = ArcGisServerUtils.excute(url, params);
 			if (map != null && map.size() > 0) {
 				if ("success".equals(map.get("status"))) {
 					return "success";
@@ -310,20 +308,20 @@ public class ServiceUtils {
 				String url2 = "http://"+ip+":"+ port +"/arcgis/admin/services/" + folderName;
 				Map<String, String> param2 = new HashMap<String, String>();
 				param2.put("Token", token);
-				Map map2 = excute(url2, param2);
-				if (!exists(ip,port,userName,password,folderName, "", "", token)) {
+				Map map2 = ArcGisServerUtils.excute(url2, param2);
+				if (!exists(ip,port,userName,password,folderName, "", "")) {
 					return "folderName not exists";
 				}
 				url = "http://"+ip+":"+ port +"/arcgis/admin/services/" + folderName + "/createService";
 			}
 			// 判断服务是否存在
-			if (exists(ip,port,userName,password,folderName, serviceName, type, token)) {
+			if (exists(ip,port,userName,password,folderName, serviceName, type)) {
 				return "serviceName exists ";
 			}
 			Map<String, String> param = new HashMap<String, String>();
 			param.put("Token", token);
 			param.put("service", serviceInfo);
-			Map map = excute(url, param);
+			Map map = ArcGisServerUtils.excute(url, param);
 			if (map != null && map.size() > 0) {
 				if ("success".equals(map.get("status"))) {
 					return "success";
@@ -344,7 +342,7 @@ public class ServiceUtils {
 	 * @return true：存在；false：不存在
 	 */
 	public static boolean exists(String ip,String port,String userName,String password,String folderName, String serviceName,
-			String type,String token) {
+			String type) {
 		if (StringUtils.isBlank(folderName) && StringUtils.isBlank(serviceName)
 				&& StringUtils.isBlank(type)) {
 			return false;
@@ -355,6 +353,10 @@ public class ServiceUtils {
 		if (StringUtils.isBlank(serviceName) && StringUtils.isNotBlank(type)) {
 			return false;
 		}
+		String token = ArcGisServerUtils.getTken(ip,port, userName, password);
+		if(StringUtils.isBlank(token)) {
+			return false;
+		}
 		Map<String, String> param = new HashMap<String, String>();
 		param.put("Token", token);
 		param.put("folderName", folderName);
@@ -362,7 +364,7 @@ public class ServiceUtils {
 		param.put("type", type);
 		//URL = "http://172.16.10.52:6080/arcgis/admin/services/";// 后面把这个放到配置文件中维护
 		String url = "http://" + ip + ":" + port + "/arcgis/admin/services/exists";
-		Map map = excute(url, param);
+		Map map = ArcGisServerUtils.excute(url, param);
 		boolean result = (Boolean) map.get("exists");
 		return result;
 	}
@@ -377,15 +379,15 @@ public class ServiceUtils {
 	 * @param visitUrl
 	 * @return
 	 */
-	public static boolean startService(String ip,String port,String userName,String password,String visitUrl) {
+	public static boolean startService(String ip,String port,String userName,String password,String managerServiceUrl) {
 		String token = ArcGisServerUtils.getTken(ip,port, userName, password);
 		if(StringUtils.isBlank(token)) {
 			return false;
 		}
-		visitUrl = visitUrl + "/start";
+		managerServiceUrl = managerServiceUrl + "/start";
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("Token", token);
-		Map map = excute(visitUrl, params);
+		Map map = ArcGisServerUtils.excute(managerServiceUrl, params);
 		if (map != null && map.size() > 0) {
 			if ("success".equals(map.get("status"))) {
 				return true;
@@ -407,15 +409,15 @@ public class ServiceUtils {
 	 * @param visitUrl
 	 * @return
 	 */
-	public static boolean stopService(String ip,String port,String userName,String password,String visitUrl) {
+	public static boolean stopService(String ip,String port,String userName,String password,String managerServiceUrl) {
 		String token = ArcGisServerUtils.getTken(ip,port, userName, password);
 		if(StringUtils.isBlank(token)) {
 			return false;
 		}
-		visitUrl = visitUrl + "/stop";
+		managerServiceUrl = managerServiceUrl + "/stop";
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("Token", token);
-		Map map = excute(visitUrl, params);
+		Map map = ArcGisServerUtils.excute(managerServiceUrl, params);
 		if (map != null && map.size() > 0) {
 			if ("success".equals(map.get("status"))) {
 				return true;
@@ -447,7 +449,7 @@ public class ServiceUtils {
 			if(flag) {
 				Map<String, String> params = new HashMap<String, String>();
 				params.put("Token", token);
-				Map map = excute(url, params);
+				Map map = ArcGisServerUtils.excute(url, params);
 				if (map != null && map.size() > 0) {
 					if ("success".equals(map.get("status"))) {
 						return true;
@@ -480,7 +482,7 @@ public class ServiceUtils {
 				url = url + "/status";
 				Map<String, String> params = new HashMap<String, String>();
 				params.put("Token", token);
-				Map map = excute(url, params);
+				Map map = ArcGisServerUtils.excute(url, params);
 				if(map != null && map.size() > 0) {
 					String cState = (String) map.get("configuredState");
 					String rState = (String) map.get("realTimeState");
@@ -503,13 +505,79 @@ public class ServiceUtils {
 	}
 	
 	/**
+	 * 得到服务的图层
+	 * @param visitUrl
+	 * @return
+	 */
+	public static List<Layer> getLayers(String visitUrl) {
+		List<Layer> list = new ArrayList<Layer>();
+		if(StringUtils.isNotBlank(visitUrl)) {
+			Map<String, String> params = new HashMap<String, String>();
+			String retStr = ArcGisServerUtils.excute2(visitUrl, params);
+			if (StringUtils.isNotBlank(retStr)) {
+				Map map = (Map) JSON.parse(retStr);
+				if(map.get("layers") != null) {
+					Layer layer = null;
+					JSONArray jArray = (JSONArray) map.get("layers");
+					Integer id;
+					String name = "";
+					Integer parentLayerId;
+					for(int i = 0; i < jArray.size(); i++) {
+						layer = new Layer();
+						Map map2 = (Map) jArray.get(i);
+						id = (Integer)map2.get("id");
+						name = (String)map2.get("name");
+						parentLayerId = (Integer)map2.get("parentLayerId");
+						layer.setName(name);
+						layer.setId(id);
+						layer.setPId(parentLayerId);
+						list.add(layer);
+					}
+				}
+			}
+			return list;
+		}
+		return null;
+	}
+	
+	/**
+	 * 得到图层域
+	 * @param visitUrl
+	 * @return
+	 */
+	public static List<Layer> getFields(String visitUrl) {
+		List<Layer> list = new ArrayList<Layer>();
+		if(StringUtils.isNotBlank(visitUrl)) {
+			Map<String, String> params = new HashMap<String, String>();
+			String retStr = ArcGisServerUtils.excute2(visitUrl, params);
+			if (StringUtils.isNotBlank(retStr)) {
+				Map map = (Map) JSON.parse(retStr);
+				if(map.get("fields") != null) {
+					Layer layer = null;
+					JSONArray jArray = (JSONArray) map.get("fields");
+					String geometryType = (String) map.get("geometryType");
+					for(int i = 0; i < jArray.size(); i++) {
+						layer = new Layer();
+						Map map2 = (Map) jArray.get(i);
+						layer.setFiled((String)map2.get("alias")); //取域的别名
+						layer.setGeometryType(geometryType);
+						list.add(layer);
+					}
+				}
+			}
+			return list;
+		}
+		return null;
+	}
+	
+	/**
 	 * 调用接口
 	 * 
 	 * @param url
 	 * @param params
 	 * @return
 	 */
-	private static Map excute(String url, Map<String, String> params) {
+	/*private static Map excute(String url, Map<String, String> params) {
 		if (StringUtils.isNotBlank(url)) {
 			params.put("f", "pjson");// 指定返回json格式的数据
 			String result = HttpClientUtils.post(url, params);
@@ -536,5 +604,5 @@ public class ServiceUtils {
 
 		}
 		return null;
-	}
+	}*/
 }

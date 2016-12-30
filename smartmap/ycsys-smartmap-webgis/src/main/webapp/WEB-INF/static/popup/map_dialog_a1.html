@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>羽辰智慧林业二三维一体化应用系统</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="../dist/css/mapPublic.css">
+  <link rel="stylesheet" href="../dist/css/mapIndex.css">
+  <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
+  <script src="../js/map3d/YcMap3D.js"></script>
+</head>
+<body onload="initProperty()">
+<script type="text/javascript">
+
+    var id;
+
+    function initProperty() {
+        id = getQueryString("id");
+        var attributes = getQueryString("attributes");
+        if(attributes.substr(0,1)=="{"&&attributes.substr(attributes.length-1,1)=="}"&&attributes.lastIndexOf("}")>2){
+            var attributesStr = attributes.substr(1,attributes.length-2);
+            var attributesArr = attributesStr.split(",");
+            createPropertyHtml(attributesArr);
+        }
+    }
+
+    //创建html
+    function createPropertyHtml(attributesArr) {
+        if(attributesArr!=null&&attributesArr.length>0) {
+            for (var i = 0; i < attributesArr.length; i++) {
+                var attributeName = getFieldorValueWithoutOather(attributesArr[i].split(":")[0]);
+                var attributeValue = getFieldorValueWithoutOather(attributesArr[i].split(":")[1]);
+                $("#attrTb tbody").append("<tr><td class='attrTd'> "+ attributeName + "</td><td>" + attributeValue +"</td></tr>");
+            }
+        }
+    }
+
+    //去除引号
+    function getFieldorValueWithoutOather(text) {
+        if(text!=null&&text!=""){
+            if(text.substr(0,1)=='"') {
+                return text.substring(1, text.length - 1);
+            }else
+                return text;
+        }
+    }
+
+    function navigateToFeature() {
+        if(id!=null&&id!="")
+            YcMap3D.Navigate.FlyTo(id,0);
+    }
+
+    function closePropertyDialog() {
+        YcMap3D.Window.RemovePopupByCaption("要素属性");
+    }
+
+</script>
+<div class="tab-mapCon" style="display: block; position: absolute; margin-left:-165px; margin-top:-160px; left: 50%; top: 50%; z-index: 1994;" >
+
+<div class="esriPopup esriPopupVisible">
+  <div class="esriPopupWrapper">
+    <div class="sizer">
+      <div class="titlePane" style="-webkit-user-select: none;">
+        <div class="title">属性</div>
+        <div class="titleButton close" title="关闭" onclick="closePropertyDialog()"></div>
+      </div>
+    </div>
+    <div class="sizer content">
+      <div class="contentPane">
+        <table id="attrTb">
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="sizer">
+      <div class="actionsPane">
+        <div class="actionList" onclick="navigateToFeature()"><a title="缩放至" class="action zoomTo" href="javascript:void(0);"><span>缩放至</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="pointer bottomLeft"></div>
+  </div>
+  <div class="outerPointer"></div>
+</div>
+  <!--控件布局-->
+  <object ID="YcMap3D" classid="CLSID:3A4F9199-65A8-11D5-85C1-0001023952C1" style="display: none;"></object>
+</div>
+</body>
+</html>

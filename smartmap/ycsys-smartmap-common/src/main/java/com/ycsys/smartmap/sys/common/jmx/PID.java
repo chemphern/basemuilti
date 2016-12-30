@@ -9,7 +9,7 @@ import java.util.StringTokenizer;
 /**
  * PID du process java.
  */
-final class PID {
+public final class PID {
 	private PID() {
 		super();
 	}

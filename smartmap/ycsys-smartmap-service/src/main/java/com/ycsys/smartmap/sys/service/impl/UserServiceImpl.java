@@ -210,9 +210,12 @@ public class UserServiceImpl implements UserService {
 	/***保存机构*/
 	@Override
 	public void saveOrUpdate(User user, String orgId,String roleIds) {
-		Organization o = organizationDao.get(Organization.class,Integer.parseInt(orgId));
-		if(o == null){
-			throw new ServiceException("机构不存在！");
+		Organization o = null;
+		if(!orgId.equals("")) {
+			o = organizationDao.get(Organization.class, Integer.parseInt(orgId));
+			if(o == null){
+				throw new ServiceException("机构不存在！");
+			}
 		}
 		Set<UserRole> us = new HashSet<>();
 		for(String roleid : roleIds.split(",")){
@@ -270,7 +273,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public long countAll(String orgId) {
-		return userDao.count("select count(*) from User where organization.id = ?",new Object[]{orgId});
+		return userDao.count("select count(*) from User where organization.id = ?",new Object[]{Integer.parseInt(orgId)});
 	}
 
 	public static void main(String [] args){

@@ -15,7 +15,9 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.cglib.core.Local;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ycsys.smartmap.sys.entity.User;
 
 /**
@@ -45,12 +47,14 @@ public class StatDatabase implements java.io.Serializable {
 	private Integer sessionCount; // 会话个数
 
 	@Column(name = "session_max_date")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
 	private Date sessionMaxDate; // 当前会话数最大值发生时间
 
 	@Column(name = "session_max_count")
 	private Integer sessionMaxCount; // 当前会话数最大值
 
 	@Column(name = "session_min_date")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
 	private Date sessionMinDate; // 当前会话数最小值发生时间
 
 	@Column(name = "session_min_count")
@@ -60,6 +64,7 @@ public class StatDatabase implements java.io.Serializable {
 	private Float sessionAverage; // 当前会话平均值
 
 	@Column(name = "statistics_date")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+08:00")
 	private Date statisticsDate; // 统计时间
 
 	@ManyToOne

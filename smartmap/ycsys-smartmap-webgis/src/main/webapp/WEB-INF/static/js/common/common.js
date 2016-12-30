@@ -2,6 +2,15 @@ var mapOpt=2;//地图操作状态,默认2维操作
 var map3DInit=false;//标识三维是否初始化
 var mapExtent;//当前地图范围
 
+//一级菜单切换响应函数
+function onModelChangeHandler(i){
+	if(i==3){
+		loadThemeLayers();
+	}else{
+		unloadThemeLayers();
+	}
+}
+
 function getMapExtent(){
 	mapExtent = getMapExtentLngLat();
 	return mapExtent;

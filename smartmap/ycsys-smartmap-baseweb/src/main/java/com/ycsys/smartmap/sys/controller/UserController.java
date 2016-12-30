@@ -1,6 +1,7 @@
 package com.ycsys.smartmap.sys.controller;
 
 import com.alibaba.fastjson.JSONArray;
+import com.ycsys.smartmap.sys.common.config.Global;
 import com.ycsys.smartmap.sys.common.result.Grid;
 import com.ycsys.smartmap.sys.common.result.ResponseEx;
 import com.ycsys.smartmap.sys.common.utils.POIExcelUtil;
@@ -8,6 +9,7 @@ import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.User;
 import com.ycsys.smartmap.sys.entity.UserRole;
 import com.ycsys.smartmap.sys.service.UserService;
+import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -97,6 +100,20 @@ public class UserController extends BaseController{
         }
         model.addAttribute("roleIds", JSONArray.toJSONString(roleIds));
         return "/user/updateUser";
+    }
+
+    @RequiresPermissions(value = "sys-user-updateUserPwd")
+    @RequestMapping("/updateUserPwd")
+    public String updateUserPwd(Model model,HttpSession session){
+        User user = userService.get(User.class,((User)(session.getAttribute(Global.SESSION_USER))).getId());
+        model.addAttribute("user",user);
+        List<String> roleIds = new ArrayList<>();
+        for(UserRole ur :user.getUserRoles()){
+            roleIds.add(ur.getRole().getId().toString());
+        }
+
+        model.addAttribute("roleIds", StringUtils.join(roleIds,","));
+        return "/user/updateUserPwd";
     }
 
     @RequiresPermissions(value = "sys-user-importUserv")

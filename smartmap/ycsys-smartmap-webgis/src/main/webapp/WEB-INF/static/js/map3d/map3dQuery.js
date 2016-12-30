@@ -4,221 +4,38 @@
  * version: 1.0.0
  */
 
-// Skyline本身添加WFS服务做查询
-// {
-// //声明查询展示字段
-// var descriptionFields=["Name_CHN","Name_ENG"];
-// var arrQueryInfoItem;
-
-// //要素图层查询入口
-// function queryAttr3d(layerName,fieldName,fieldValue){
-// 	var ifAdd = false;
-// 	var wfsServices = getFolderObjects(configration.WFSServiceFolder);
-// 	if(wfsServices!=null&&wfsServices!=undefined&&wfsServices.length>0){
-// 		for(var i=0;i<wfsServices.length;i++){
-// 			var wfs = YcMap3D.ProjectTree.GetObject(wfsServices[i]);
-// 			if(wfs != null && wfs.ObjectType==36 && $.trim(wfs.TreeItem.Name)==$.trim(layerName)){
-// 				searchFeatureLayer(wfs,$.trim(layerName),fieldName,fieldValue);
-// 				ifAdd = true;
-// 				break;
-// 			}
-// 		}
-// 	}
-// 	if(!ifAdd){
-// 		alert("要素图层未加载，请先加载要素图层！");
-// 	}
-// }
-//
-// //要素图层查询主函数
-// function searchFeatureLayer(wfsLayer,layerName,fieldName,fieldValue){
-// 	// wfsLayer.Filter = fieldName + " = '" + fieldValue +"'";
-// 	// wfsLayer.Refresh();
-//     wfsLayer.Visibility.Show = false;
-//     var features = getFeatuesFromName(wfsLayer,layerName,fieldName,fieldValue);
-//     if(features!=null&&features.length>0){
-//         YcMap3D.Navigate.FlyTo(wfsLayer,0);
-// 	}
-//     if(queryCatalog==0){
-//         $('#Sxcxbox-result').css('display','block');
-//         initPager(arrQueryInfoItem,"#Pagination","#queryNum","#btnBack","#Sxcxbox-result");
-//     }else if(queryCatalog==2){
-//         $('#Sxcxbox-logic').css('display','block');
-//         initPager(arrQueryInfoItem,"#PaginationLogic","#queryLogicNum","#btnLogicBack","#Sxcxbox-logic");
-//     }
-// }
-//
-// //根据字段名称和字段值查询要素
-// function getFeatuesFromName(featureLayers,layerName,fieldName,fieldValue) {
-// 	var features = [];
-//     arrQueryInfoItem = [];
-//     for(var j=0;j<featureLayers.FeatureGroups.Count;j++){
-// 		var featureLayer = featureLayers.FeatureGroups.Item(j);
-// 		for(var i=0;i<featureLayer.GetCurrentFeatures().Count;i++){
-// 			var feature = featureLayer.GetCurrentFeatures().Item(i);
-// 			var featureAttr = feature.FeatureAttributes.GetFeatureAttribute(fieldName);
-// 			console.log(featureAttr.Value);
-//             console.log(featureAttr.Value.indexOf(fieldValue));
-// 			if(featureAttr!=null&&featureAttr!=undefined&&featureAttr.Value.indexOf(fieldValue)>=0) {
-//                 features.push(feature);
-//                 if(features.length<6){
-//                     addFeatureImage(feature,features.length);
-// 				}
-//                 var li=createPropotyResultList(feature,fieldName,features.length);
-//                 arrQueryInfoItem.push(li);
-// 			}
-// 		}
-// 	}
-// 	return features;
-// }
-//
-// //动态创建属性查询结果列表
-// function createPropotyResultList(feature,fieldName,num) {
-// 	//名称信息
-// 	var title=feature.FeatureAttributes.GetFeatureAttribute(fieldName).Value;
-// 	//简略显示的字段数组
-// 	var summary=[];
-// 	if(descriptionFields){
-// 		for(var i=0;i<descriptionFields.length;i++){
-// 			var fieldName=descriptionFields[i];
-// 			var fieldValue = feature.FeatureAttributes.GetFeatureAttribute(fieldName).Value;
-// 			summary.push(fieldName + ":" + fieldValue);
-// 		}
-// 	}
-// 	//组合查询信息
-// 	summary=summary.join("—");
-// 	//获取FeatureID用来点击定位
-// 	var featureID = feature.ID;
-// 	//创建列表html对象
-// 	var html="<li onclick='navigateToFeature(" + '"' + featureID + '"' + ")'><i class='no-" + num + "'></i><a href='#'>" + title +"</a><span>" + summary + "</span></li>";
-// 	return html;
-// }
-//
-// //清除场景中Feature标识
-// function clearQueryFeature() {
-//     deleteFolderObjects(configration.QueryIcoFolder);
-// }
-//
-// //获取要素的定位信息
-// function getFeaturePosition(feature) {
-// 	var geometry = feature.Geometry;
-// 	if(geometry.GeometryType==0){
-// 		return YcMap3D.Creator.CreatePosition(geometry.X,geometry.Y,geometry.Z,3);
-// 	}else if(geometry.GeometryType==1||geometry.GeometryType==2||geometry.GeometryType==3){
-//         return YcMap3D.Creator.CreatePosition(geometry.Centroid.X,geometry.Centroid.Y,geometry.Centroid.Z,3);
-// 	}else{
-//         return YcMap3D.Creator.CreatePosition(geometry.Envelope.Centroid.X,geometry.Envelope.Centroid.Y,geometry.Envelope.Centroid.Z,3);
-// 	}
-// }
-//
-// //空间点查询
-// function queryPoint3d() {
-//     spatialFeatureReserch("point");
-// }
-//
-// //空间线查询
-// function queryPolyline3d() {
-//     spatialFeatureReserch("line");
-// }
-//
-// //空间面查询
-// function queryPolygon3d() {
-//     spatialFeatureReserch("area");
-// }
-//
-// //空间查询主函数
-// function spatialFeatureReserch(spatialReserchType) {
-//     if(spatialReserchType == "point"){
-//         YcMap3D.Window.SetInputMode(1);
-//         YcMap3D.AttachEvent("OnLButtonUp", SpatialPointReserchOnLButtonUp);
-//     }else if(spatialReserchType == "line"){
-//         //空间查询线查询绘制操作
-//         DrawTool.activate(DrawTool.DrawType.TERRAPOLYLINE);
-//         //空间查询线查询结果处理
-//         DrawTool.drawEndHandler = function(polyline) {
-//             featureSpatialQuery(polyline.Geometry);
-//         };
-//     }else if(spatialReserchType == "area"){
-//         //空间查询面查询绘制操作
-//         DrawTool.activate(DrawTool.DrawType.TERRAPOLYGON);
-//         //空间查询面查询结果处理
-//         DrawTool.drawEndHandler = function (polygon) {
-//             featureSpatialQuery(polygon.Geometry);
-//         };
-//     }
-// }
-//
-// //左键点击选择要素事件(空间查询点查询绘制操作及结果处理)
-// function SpatialPointReserchOnLButtonUp(Flags,X,Y) {
-//     var pointGeometry = YcMap3D.Creator.GeometryCreator.CreatePointGeometry([X,Y,0]);
-//     featureSpatialQuery(pointGeometry);
-//     YcMap3D.Window.SetInputMode(0);
-//     YcMap3D.DetachEvent("OnLButtonUp", SpatialPointReserchOnLButtonUp);
-// }
-//
-// //空间查询要素空间分析
-// function featureSpatialQuery(geometry) {
-//     var wfsServices = getFolderObjects(configration.WFSServiceFolder);
-//     if(wfsServices!=null&&wfsServices!=undefined&&wfsServices.length>0){
-//         for(var i=0;i<wfsServices.length;i++){
-//             var featureLayer = YcMap3D.ProjectTree.GetObject(wfsServices[i]);
-//             var intersectFeatures = featureLayer.ExecuteSpatialQuery(geometry,1);
-//             if(intersectFeatures!=null&&intersectFeatures.length>0){
-//                 for(var j=0;j<intersectFeatures.length;j++){
-//                     var feature = intersectFeatures.Item(j);
-//                     if(intersectFeatures.length<6){
-//                         addFeatureImage(feature,intersectFeatures.length);
-//                     }
-//                     var li=createSpatialResultList(feature,fieldName,features.length);
-//                     arrQueryInfoItem.push(li);
-//                 }
-//             }
-//         }
-//     }
-// }
-//
-// //动态创建空间查询结果列表
-// function createSpatialResultList(feature,num) {
-//     //名称信息
-//     var title=feature.FeatureAttributes.GetFeatureAttribute(fieldName).Value;
-//     //简略显示的字段数组
-//     var summary=[];
-//     if(descriptionFields){
-//         for(var i=0;i<descriptionFields.length;i++){
-//             var fieldName=descriptionFields[i];
-//             var fieldValue = feature.FeatureAttributes.GetFeatureAttribute(fieldName).Value;
-//             summary.push(fieldName + ":" + fieldValue);
-//         }
-//     }
-//     //组合查询信息
-//     summary=summary.join("—");
-//     //获取FeatureID用来点击定位
-//     var featureID = feature.ID;
-//     //创建列表html对象
-//     var html="<li onclick='navigateToFeature(" + '"' + featureID + '"' + ")'><i class='no-" + num + "'></i><a href='#'>" + title +"</a><span>" + summary + "</span></li>";
-//     return html;
-// }
-// }
-
 //------------------------------------------------------------------------------空间查询------------------------------------------------------------------------//
 //声明当前点击对象
 var currentSelectFeature=null;
 
-//空间点查询
+//声明当前结果要素集范围
+var currentFeatureSetPos=null;
+
+/**
+ * 三维空间点查询
+ */
 function queryPoint3d() {
     spatialFeatureReserch("point");
 }
 
-//空间线查询
+/**
+ * 三维空间线查询
+ */
 function queryPolyline3d() {
     spatialFeatureReserch("line");
 }
 
-//空间面查询
+/**
+ * 三维空间面查询
+ */
 function queryPolygon3d() {
     spatialFeatureReserch("area");
 }
 
-//空间查询主函数
+/**
+ * 空间查询主函数
+ * @param spatialReserchType 查询类型
+ */
 function spatialFeatureReserch(spatialReserchType) {
     if(spatialReserchType == "point"){
         YcMap3D.Window.SetInputMode(1);
@@ -240,7 +57,10 @@ function spatialFeatureReserch(spatialReserchType) {
     }
 }
 
-//左键点击选择要素事件(空间查询点查询绘制操作及结果处理)
+/**
+ * 空间查询点要素空间查询
+ * @param geometry Skyline面要素转换为ArcGIS面要素，并调用二维查询
+ */
 function SpatialPointReserchOnLButtonUp(Flags,X,Y) {
     var point = new esri.geometry.Point(X,Y);
     //定义二维空间查询参数对象
@@ -249,7 +69,10 @@ function SpatialPointReserchOnLButtonUp(Flags,X,Y) {
     onDrawEnd(geometryObj);
 }
 
-//空间查询线要素空间查询
+/**
+ * 空间查询线要素空间查询
+ * @param geometry Skyline面要素转换为ArcGIS面要素，并调用二维查询
+ */
 function featureSpatialQueryLine(geometry) {
     if(geometry!=null&&geometry.Points.Count>0){
         var coords = convert3DTo2DCoord(geometry.Points);
@@ -260,7 +83,10 @@ function featureSpatialQueryLine(geometry) {
     }
 }
 
-//空间查询面要素空间查询
+/**
+ * 空间查询面要素空间查询
+ * @param geometry Skyline面要素转换为ArcGIS面要素，并调用二维查询
+ */
 function featureSpatialQueryArea(geometry) {
     if(geometry!=null&&geometry.Rings.Count>0){
         var polygon = new esri.geometry.Polygon();
@@ -276,29 +102,35 @@ function featureSpatialQueryArea(geometry) {
 }
 
 //------------------------------------------------------------------------------属性查询/逻辑查询------------------------------------------------------------------------//
-//ArcGIS查询结果转变添加到三维场景中
+/**
+ * ArcGIS查询结果转变添加到三维场景中
+ * @param featureSet ArcGIS查询结果要素集
+ */
 function fromArcgisTo3dScene(featureSet) {
     if(map3DInit==true){
         if(featureSet!=null&&featureSet.length>0){
             clearFeatureSearchFolder();
             var featureExtent3D = null;
-            var featurePointExtent = null;
+            var featurePointArr = [];
             for(var i=0;i<featureSet.length;i++){
                 var feature = featureSet[i];
                 //绘制结果图标和要素到场景中
                 var featureExtent = addFeatureToScene3D(feature,i+1);
                 //获取得到结果集区域信息
                 if(feature.geometry.type=="point"){
-                    featurePointExtent = getPointFeatureSetExtent(featureSet,feature,featurePointExtent);
+                    featurePointArr.push(feature);
                 }else if(feature.geometry.type=="polyline"||feature.geometry.type=="polygon"){
                     featureExtent3D = getPolygonPolylineFeatureSetExtent(featureExtent,featureExtent3D);
                 }
             }
             //结束场景绘制，定位到结果集区域
-            if(featureExtent3D!=null)
-                navigateSceneToFeatures(featureExtent3D);
-            else if(featurePointExtent!=null){
-                navigateSceneToFeatures(featurePointExtent.getExtent());
+            if(featureExtent3D!=null){
+                navigateSceneToFeatures(currentFeatureSetPos);
+                currentFeatureSetPos = featureExtent3D;
+            }else if(featurePointArr!=null&&featurePointArr.length>0){
+                var extent = getPointFeatureSetExtent(featurePointArr)
+                navigateSceneToFeatures(extent);
+                currentFeatureSetPos = extent;
             }
         }
     }
@@ -334,26 +166,38 @@ function getPolygonPolylineFeatureSetExtent(featureExtent,featureExtent3D) {
  * @param featureExtent 当前遍历过的要素集的范围
  * @returns
  */
-function getPointFeatureSetExtent(featureSet,feature,featurePointExtent) {
-    if(featurePointExtent==null&&featureSet.length>=3)
-        featurePointExtent = new esri.geometry.Multipoint(feature.geometry.spatialReference);
-    else if(featurePointExtent==null&&featureSet.length<3){
-        if(featureSet.length==1)
-            featurePointExtent = new esri.geometry.Extent(feature.geometry.x-0.01, feature.geometry.y-0.01, feature.geometry.x+0.01, feature.geometry.y+0.01, feature.geometry.spatialReference)
-        else if(featureSet.length==2) {
-            var xmax = Math.max(featureSet[0].geometry.x,featureSet[1].geometry.x);
-            var xmin = Math.min(featureSet[0].geometry.x,featureSet[1].geometry.x);
-            var ymax = Math.max(featureSet[0].geometry.y,featureSet[1].geometry.y);
-            var ymin = Math.min(featureSet[0].geometry.y,featureSet[1].geometry.y);
-            featurePointExtent = new esri.geometry.Extent(xmin, ymin, xmax, ymax, feature.geometry.spatialReference)
+function getPointFeatureSetExtent(featurePointArr) {
+    var pointExtent = null;
+    if(featurePointArr!=null&&featurePointArr.length<3){
+        if(featurePointArr.length==1)
+            pointExtent = new esri.geometry.Extent(featurePointArr[0].geometry.x-0.01, featurePointArr[0].geometry.y-0.01, featurePointArr[0].geometry.x+0.01, featurePointArr[0].geometry.y+0.01, featurePointArr[0].geometry.spatialReference)
+        else if(featurePointArr.length==2) {
+            var xmax = Math.max(featurePointArr[0].geometry.x,featurePointArr[1].geometry.x);
+            var xmin = Math.min(featurePointArr[0].geometry.x,featurePointArr[1].geometry.x);
+            var ymax = Math.max(featurePointArr[0].geometry.y,featurePointArr[1].geometry.y);
+            var ymin = Math.min(featurePointArr[0].geometry.y,featurePointArr[1].geometry.y);
+            pointExtent = new esri.geometry.Extent(xmin, ymin, xmax, ymax, featurePointArr[0].geometry.spatialReference)
         }
-    }else if(featurePointExtent!=null&&featureSet.length>=3){
-        featurePointExtent.addPoint(feature.geometry);
+    }else if(featurePointArr!=null&&featurePointArr.length>=3){
+        var paths = [];
+        for(var i=0;i<featurePointArr.length;i++){
+            var point = [];
+            point.push(featurePointArr[i].geometry.x);
+            point.push(featurePointArr[i].geometry.y);
+            paths.push(point);
+        }
+        var polyline = new esri.geometry.Polyline(paths);
+        pointExtent = polyline.getExtent();
     }
-    return featurePointExtent;
+    return pointExtent;
 }
 
-//将查询结果Feature展示到三维中
+/**
+ * 将ArcGIS查询结果集中一个Feature展示到三维中
+ * @param feature 查询结果要素
+ * @param num 结果序号
+ * @returns {*} 要素集范围
+ */
 function addFeatureToScene3D(feature,num) {
     var geometry = feature.geometry;
     if(geometry!=null){
@@ -371,7 +215,12 @@ function addFeatureToScene3D(feature,num) {
         return null;
 }
 
-//为查询出来的要素在场景中添加图片
+/**
+ * 为查询出来的要素在场景中添加位置图片
+ * @param position 要素位置
+ * @param feature 要素
+ * @param num 结果序号
+ */
 function addFeatureImage(position,feature,num) {
     //创建场景中要素图标
     var imgPath = getProjectPath() + "static/dist/img/map/icon_features_" + num.toString() + ".png";
@@ -379,12 +228,17 @@ function addFeatureImage(position,feature,num) {
     var groupID = YcMap3D.ProjectTree.FindItem(configration.QueryIcoFolder);
     var featureImage = YcMap3D.Creator.CreateImageLabel(position,imgPath,LabelStyle,groupID,feature.attributes.OBJECTID);
     //创建图标点击信息弹窗
-    var propotyUrl = path + "/static/popup/featureProperty.html?id=" + featureImage.ID + "&&attributes=" + JSON.stringify(feature.attributes) + "&&info=" + JSON.stringify(feature.infoTemplate);
-    var featureMessage = YcMap3D.Creator.CreateMessage(5,propotyUrl,1,true);
-    featureImage.Message.MessageID = featureMessage.ID;
+    var pagePath = path + "/static/popup/map_dialog_a1.html?id=" + featureImage.ID + "&&attributes=" + JSON.stringify(feature.attributes);
+    var manager = YcMap3D.Creator.CreatePopupMessage("要素属性",pagePath,10,10,360,350,-1);
+    manager.ShowCaption = false;
+    featureImage.Message.MessageID = manager.ID;
 }
 
-//讲查询结果面绘制到三维场景中并高亮
+/**
+ * 面查询结果绘制到三维场景中并高亮
+ * @param feature ArcGIS线要素
+ * @param num 结果序号
+ */
 function addFeaturePolygonToScene(feature,num) {
     var rings = feature.geometry.rings;
     if(rings!=null&&rings.length>0){
@@ -400,7 +254,11 @@ function addFeaturePolygonToScene(feature,num) {
     }
 }
 
-//讲查询结果线绘制到三维场景中并高亮
+/**
+ * 线查询结果绘制到三维场景中并高亮
+ * @param feature ArcGIS线要素
+ * @param num 结果序号
+ */
 function addFeaturePolylineToScene(feature,num) {
     //获取路径
     var paths = feature.geometry.paths;
@@ -418,7 +276,11 @@ function addFeaturePolylineToScene(feature,num) {
     }
 }
 
-//转换数组到三维坐标
+/**
+ * 转换二维数组到三维坐标
+ * @param coords 二维坐标数组
+ * @returns {*} 三维坐标数组
+ */
 function convert2DTo3DCoord(coords) {
     if(coords!=null&&coords.length>0){
         var points = [];
@@ -432,7 +294,11 @@ function convert2DTo3DCoord(coords) {
         return null;
 }
 
-//转换数组到二维坐标
+/**
+ * 转换三维数组到二维坐标
+ * @param points 三维坐标数组
+ * @returns {*} 二维坐标数组
+ */
 function convert3DTo2DCoord(points) {
     if(points!=null&&points.Count>0){
         var coords = [];
@@ -447,7 +313,11 @@ function convert3DTo2DCoord(points) {
         return null;
 }
 
-//获取要素点的Position
+/**
+ * 获取要素点的Position
+ * @param feature 要素
+ * @returns {*} Position
+ */
 function getPointFeaturePosition(feature) {
     var position;
     if(getRefernceType=="meter")
@@ -460,7 +330,10 @@ function getPointFeaturePosition(feature) {
     return position;
 }
 
-//定位到结果要素集区域
+/**
+ * 结果列表点击飞行到要素范围方法
+ * @param featureExtent3D 要素范围
+ */
 function navigateSceneToFeatures(featureExtent3D) {
     if(featureExtent3D!=null&&featureExtent3D!=undefined){
         var centerx = (featureExtent3D.xmax + featureExtent3D.xmin) * 0.5;
@@ -479,29 +352,64 @@ function navigateSceneToFeatures(featureExtent3D) {
     }
 }
 
-//结果列表点击飞行到要素范围方法
+/**
+ * 结果列表点击飞行到要素范围方法
+ * @param featureObjId 结果列表要素ID
+ * @param sceneObjID 场景树中要素ID
+ */
 function navigateToSceneFeature(featureObjId,sceneObjID) {
-    if((sceneObjID==null||sceneObjID=="")&&featureObjId!=undefined){
-        sceneObjID = findItemByNameInFolder(configration.QueryIcoFolder,featureObjId);
-    }
-    if(sceneObjID!=null&&sceneObjID!=""){
-        if(currentSelectFeature!=null){
+    if(map3DInit&&mapOpt==3){//判断三维是否初始化及当前窗口是否是三维模式
+        var isSceneClick = false;
+        var selectFeature = null;
+        if((sceneObjID==null||sceneObjID=="")&&featureObjId!=undefined){//判断是结果列表点击传入
+            var selectID = findItemByNameInFolder(configration.QueryIcoFolder,featureObjId);
+            selectFeature = YcMap3D.ProjectTree.GetObject(selectID);
+        }
+        else if(sceneObjID!=null&&sceneObjID!=""){//判断是场景点击传入
+            selectFeature = YcMap3D.ProjectTree.GetObject(sceneObjID);
+            isSceneClick = true;
+        }
+        //点击同一个对象直接返回
+        if(selectFeature!=null&&currentSelectFeature!=null&&currentSelectFeature.ID==selectFeature.ID)
+            return;
+        //判断是否存在已有高亮对象，去除原有高亮图标
+        if(selectFeature!=null&&currentSelectFeature!=null&&currentSelectFeature.ID!=selectFeature.ID){
             var imagePath = currentSelectFeature.ImageFileName;
             currentSelectFeature.ImageFileName = imagePath.substr(0,imagePath.lastIndexOf(".")-1) + ".png";
         }
-        var selectFeature = YcMap3D.ProjectTree.GetObject(sceneObjID);
-        if(selectFeature!=null&&selectFeature.ObjectType==24){
+        if(selectFeature!=null&&selectFeature.ObjectType==24){//高亮点击对象
             var imagePath = selectFeature.ImageFileName;
             selectFeature.ImageFileName = imagePath.substr(0,imagePath.lastIndexOf(".")) + "h.png";
+            if(isSceneClick){
+                var index = imagePath.substring(imagePath.lastIndexOf("_") + 1,imagePath.lastIndexOf("."));
+                $('.no-'+index).parent().toggleClass('active').siblings().removeClass('active');
+            }
             currentSelectFeature = selectFeature;
         }
-        //YcMap3D.Navigate.FlyTo(sceneObjID,0);
+        // flyToFeaturePositionAtHeight(selectFeature,1000);
+        navigateSceneToFeatures(currentFeatureSetPos);
         selectFeature.Message.Activate();
     }
 }
 
-//清空缓存文件夹进行下一次操作
+/**
+ * 定位到要素的某一高度
+ * @param feature 要素
+ * @param height 高度
+ */
+function flyToFeaturePositionAtHeight(feature,height) {
+    var yaw = YcMap3D.Navigate.GetPosition(0).Yaw;
+    var flyPosition = YcMap3D.Creator.CreatePosition(feature.Position.X,feature.Position.Y,height,3,yaw,-90,0);
+    YcMap3D.Navigate.FlyTo(flyPosition,14);
+}
+
+/**
+ * 清空缓存文件夹进行下一次操作
+ */
 function clearFeatureSearchFolder() {
     deleteFolderObjects(configration.QueryIcoFolder);
     deleteFolderObjects(configration.QueryDrawFolder);
+    //清除前一页要素相关记录
+    currentSelectFeature = null;
+    currentFeatureSetPos = null;
 }

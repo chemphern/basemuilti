@@ -13,7 +13,8 @@
     <link rel="stylesheet" href="${res}/iconfont/iconfont.css">
     <link rel="stylesheet" href="${res}/dist/css/AdminLTE.css">
     <link rel="stylesheet" href="${res}/dist/css/skins/_all-skins.css">
-    <link rel="stylesheet" href="${res}/plugins/iCheck/flat/blue.css">
+    <link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
+    <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -34,9 +35,9 @@
             <!-- Main row -->
             <!--主要内容-->
             <div id="yc_main">
-                <iframe style="width: 100%;" id="main_iframe" name="main_iframe" src="${ctx}/welcome" frameborder="0" align="center" onload="iframeResize(this)"></iframe>
+                <iframe class="firefoxIframeW" id="main_iframe" name="main_iframe" src="${ctx}/welcome" frameborder="0" align="center" onload="iframeResize(this)"></iframe>
             </div>
-            <!-- /.row (main row) -->
+            <!-- /.row (main row) - ->
 
         </section>
         <!-- /.content -->
@@ -57,8 +58,13 @@
 <script src="${res}/bootstrap/js/bootstrap.js"></script>
 <!-- AdminLTE App -->
 <script src="${res}/dist/js/app.js"></script>
+ <!-- cookies -->
+<script src="${res}/dist/js/jquery.cookie.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="${res}/dist/js/demo.js"></script>
+<script type="text/javascript" src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>
+<script type="text/javascript" src="${res}/plugins/dialog/iframeTools.source.js"></script>
+<script type="text/javascript" src="${res}/plugins/dialog/unit.js"></script>
 <script>
     function iframeResize(iframe) {
         try {
@@ -71,11 +77,11 @@
 //            else {
 //                iframe.height = 560;
 //            }
-            var parent = iframe.contentWindow.parent;
-            var aside = parent.$(".main-sidebar");
-            var header = parent.$(".main-header");
-            var ih = aside.height() - header.height();
-            iframe.height = ih;
+           var parent = iframe.contentWindow.parent;
+           var aside = parent.$(".main-sidebar");
+           var header = parent.$(".main-header");
+           var ih = aside.height() - header.height();
+           iframe.height = ih;
         }
         catch (e) {
             window.status = 'Error: ' + e.number + '; ' + e.description;

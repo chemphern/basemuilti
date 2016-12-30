@@ -31,4 +31,9 @@ public interface ConfigServerMonitorService {
 
     /**根据id停止一个监控**/
     void stopMonitor(String id);
+
+    /**获取所有的配置**/
+    List<ConfigServerMonitor> findAll();
+
+    Boolean testTomcatConfig(ConfigServerMonitor config);
 }

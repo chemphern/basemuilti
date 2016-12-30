@@ -35,7 +35,8 @@
         <tr>
             <td class="t_r">拥有角色：</td>
             <td>
-                <input id="roleName" readonly name="roleName" type="text">
+                <select id="roleName" readonly name="roleName" >
+                </select>
             </td>
         </tr>
         <tr>
@@ -137,7 +138,7 @@
             $sexselect.append(opt);
         }
 
-        var p = window.parent;
+        var p = window.parent[0];
         var dialog = p.art.dialog.list["addUserDialog"];
         var $fm = $("#form_id");
         var dialog_div = dialog.DOM.wrap;

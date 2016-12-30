@@ -79,7 +79,7 @@
         selectable: true,
         whenRClickToSelect: false,                //右击行时是否选中
         contentType: null,                     //Ajax contentType参数
-        checkboxColWidth: 27,                  //复选框列宽度
+        checkboxColWidth: 28,                  //复选框列宽度
         detailColWidth: 29,                     //明细列宽度
         clickToEdit: true,                      //是否点击单元格的时候就编辑
         detailToEdit: false,                     //是否点击明细的时候进入编辑
@@ -102,8 +102,8 @@
         rowDraggingRender: null,
         autoCheckChildren: true,                  //是否自动选中子节点
         onRowDragDrop: null,                    //行拖拽事件
-        rowHeight: 28,                           //行默认的高度
-        headerRowHeight: 28,                    //表头行的高度
+        rowHeight: 40,                           //行默认的高度
+        headerRowHeight: 40,                    //表头行的高度
         toolbar: null,                           //工具条,参数同 ligerToolbar的,额外参数有title、icon
         toolbarShowInLeft: true,               //工具条显示在左边
         headerImg: null,                        //表格头部图标  

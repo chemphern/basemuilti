@@ -81,5 +81,133 @@ public class StatOperatingSystem implements java.io.Serializable {
 	@ManyToOne
 	@JoinColumn(name = "statistics_user_id")
 	private User statisticsUser; // 统计者
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getServerName() {
+		return serverName;
+	}
+
+	public void setServerName(String serverName) {
+		this.serverName = serverName;
+	}
+
+	public Float getUseMax() {
+		return useMax;
+	}
+
+	public void setUseMax(Float useMax) {
+		this.useMax = useMax;
+	}
+
+	public Float getUseMin() {
+		return useMin;
+	}
+
+	public void setUseMin(Float useMin) {
+		this.useMin = useMin;
+	}
+
+	public Float getUseAverage() {
+		return useAverage;
+	}
+
+	public void setUseAverage(Float useAverage) {
+		this.useAverage = useAverage;
+	}
+
+	public Float getUserUseMax() {
+		return userUseMax;
+	}
+
+	public void setUserUseMax(Float userUseMax) {
+		this.userUseMax = userUseMax;
+	}
+
+	public Float getUserUseMin() {
+		return userUseMin;
+	}
+
+	public void setUserUseMin(Float userUseMin) {
+		this.userUseMin = userUseMin;
+	}
+
+	public Float getUserUseAverage() {
+		return userUseAverage;
+	}
+
+	public void setUserUseAverage(Float userUseAverage) {
+		this.userUseAverage = userUseAverage;
+	}
+
+	public Float getSysUseMax() {
+		return sysUseMax;
+	}
+
+	public void setSysUseMax(Float sysUseMax) {
+		this.sysUseMax = sysUseMax;
+	}
+
+	public Float getSysUseMin() {
+		return sysUseMin;
+	}
+
+	public void setSysUseMin(Float sysUseMin) {
+		this.sysUseMin = sysUseMin;
+	}
+
+	public Float getSysUseAverage() {
+		return sysUseAverage;
+	}
+
+	public void setSysUseAverage(Float sysUseAverage) {
+		this.sysUseAverage = sysUseAverage;
+	}
+
+	public Float getFreeMax() {
+		return freeMax;
+	}
+
+	public void setFreeMax(Float freeMax) {
+		this.freeMax = freeMax;
+	}
+
+	public Float getFreeMin() {
+		return freeMin;
+	}
+
+	public void setFreeMin(Float freeMin) {
+		this.freeMin = freeMin;
+	}
+
+	public Float getFreeAverage() {
+		return freeAverage;
+	}
+
+	public void setFreeAverage(Float freeAverage) {
+		this.freeAverage = freeAverage;
+	}
+
+	public Date getStatisticsDate() {
+		return statisticsDate;
+	}
+
+	public void setStatisticsDate(Date statisticsDate) {
+		this.statisticsDate = statisticsDate;
+	}
+
+	public User getStatisticsUser() {
+		return statisticsUser;
+	}
+
+	public void setStatisticsUser(User statisticsUser) {
+		this.statisticsUser = statisticsUser;
+	}
 	
 }

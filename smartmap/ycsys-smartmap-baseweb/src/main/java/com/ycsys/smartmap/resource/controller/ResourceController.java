@@ -38,9 +38,11 @@ import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
 import com.ycsys.smartmap.sys.common.utils.FileUtils;
 import com.ycsys.smartmap.sys.common.utils.JsonMapper;
 import com.ycsys.smartmap.sys.common.utils.StringUtils;
+import com.ycsys.smartmap.sys.entity.ConfigServerEngine;
 import com.ycsys.smartmap.sys.entity.DictionaryItem;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.User;
+import com.ycsys.smartmap.sys.service.ConfigServerEngineService;
 import com.ycsys.smartmap.sys.util.DataDictionary;
 
 /**
@@ -58,6 +60,9 @@ public class ResourceController {
 
 	@Autowired
 	private ResourceTypeService resourceTypeService;
+	
+	@Autowired
+	private ConfigServerEngineService configServerEngineService;
 
 	@RequestMapping("toEdit")
     @RequiresPermissions(value = "resource-edit")
@@ -84,7 +89,12 @@ public class ResourceController {
 		model.addAttribute("resourceType", DataDictionary.getObject("resource_type"));
 		model.addAttribute("resourceTypeId", resourceTypeId); //用于设置默认的下拉值
 		model.addAttribute("resourceTypeLists", lists);
-		model.addAttribute("clusterNames", ClusterUtils.lists());
+		List<ConfigServerEngine> engineList = configServerEngineService.find("from ConfigServerEngine t where t.engineType = ?", new Object[] {"0"});
+		List<String> clusterLists = new ArrayList<String>();
+		for(ConfigServerEngine engine : engineList) {
+			clusterLists.addAll(ClusterUtils.lists(engine.getIntranetIp(), engine.getIntranetPort() + "", engine.getEngineManager(), engine.getManagerPassword()));
+		}
+		model.addAttribute("clusterNames", clusterLists);
 		return "/resource/resource_edit";
 	}
 	

@@ -36,7 +36,7 @@
   <![endif]-->
 <style>
 html,body {
-	background-color: #ecf0f5
+	background-color: #f1f1f1;
 }
 
 body {
@@ -108,13 +108,13 @@ var treeManager = null;
     })(jQuery);
     
     $(function() {
-		var parentWin = window.parent;
+		var parentWin = window.parent[0];
 		var dialog = parentWin.art.dialog.list["viewResourceFileDialog"];
 		var dialog_div = dialog.DOM.wrap;
 		
 		dialog_div.on("ok", function() {
 			var obj = treeManager.getChecked();
-			console.log(treeManager.getChecked());
+			//console.log(treeManager.getChecked());
 			if(obj.length == 1) {
 				var id = obj[0].data.id;
 				var text =  obj[0].data.text;

@@ -240,7 +240,7 @@ public class SnmpBase extends SnmpUtil {
         ArrayList<DiskInfo> result = new ArrayList<DiskInfo>();
         for (int i=0;i<index.size();i++) {  
             DiskInfo obj = new DiskInfo();  
-            obj.setDiskDesc(snmpGet(props.getWindowDiskDesc() + "." + index.get(i)));  
+            obj.setDiskDesc(getChinese(snmpGet(props.getWindowDiskDesc() + "." + index.get(i))));
             double sSize = Double.parseDouble(snmpGet(props.getWindowDiskSize() + "." + index.get(i)))
                     * Double.parseDouble(snmpGet(props.getWindowDiskAmount() + "." + index.get(i)))
                     /(1024*1024 *1024);

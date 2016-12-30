@@ -116,7 +116,7 @@
         }
         $select.trigger("change");
 
-        var p = window.parent;
+        var p = window.parent[0];
         var dialog = p.art.dialog.list["addOrgDialog"];
         var $fm = $("#form_id");
         var dialog_div = dialog.DOM.wrap;
@@ -178,8 +178,8 @@
             </td>
         </tr>
         <tr>
-            <td width="120" class="t_r">上级机构</td>
-            <td ><input type="text" name="pid" id="pid" class="text validate[required]" /></td>
+            <td width="120" class="t_r">上级机构：</td>
+            <td ><input type="text" name="pid" id="pid" class="validate[required]" /></td>
         </tr>
         <tr>
             <td class="t_r">机构名称：</td>
@@ -188,7 +188,7 @@
             </td>
         </tr>
         <tr>
-            <td class="t_r">归属区域</td>
+            <td class="t_r">归属区域：</td>
             <td><div id="place"/></td>
         </tr>
 

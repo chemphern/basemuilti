@@ -69,11 +69,11 @@ public class ConfigServerEngine implements java.io.Serializable {
 	private String dataUploadPath;
 	
 	//数据上传绝对路径
-	@Column(name = "data_upload_real_path", length = 20)
+	@Column(name = "data_upload_real_path", length = 100)
 	private String dataUploadRealPath;
 	
 	//引擎管理员
-	@Column(name = "engine_manager", length = 20)
+	@Column(name = "engine_manager", length = 30)
 	private String engineManager;
 
 	@Transient

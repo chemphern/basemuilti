@@ -35,7 +35,7 @@
   <![endif]-->
 <style>
 html,body {
-	background-color: #ecf0f5
+	background-color: #f1f1f1;
 }
 
 body {
@@ -144,7 +144,8 @@ body {
 		                    title: '新增角色',
 		                    url:'${ctx}/service/toRegisterOther',
 		                    width: 1000,
-		                    height: 600
+		                    height: 600,
+		                    button:[]
 		                });
 		            //dialog.hGrid = table;
 		        });

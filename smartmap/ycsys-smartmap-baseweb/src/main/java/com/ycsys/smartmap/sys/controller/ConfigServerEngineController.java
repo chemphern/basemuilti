@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -22,7 +23,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.log4j.Logger;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -30,6 +31,8 @@ import org.dom4j.Element;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -68,8 +71,7 @@ import com.ycsys.smartmap.sys.util.DataDictionary;
 @Controller
 @RequestMapping("/configServerEngine")
 public class ConfigServerEngineController extends BaseController{
-	private static Logger log = Logger
-			.getLogger(ConfigServerEngineController.class);
+	private static Logger log = LoggerFactory.getLogger(ConfigServerEngineController.class);
 	@Autowired
 	private UserService userService;
 	
@@ -79,18 +81,15 @@ public class ConfigServerEngineController extends BaseController{
 	@Autowired
 	private ConfigServerEngineService configServerEngineService;
 	
-	//添加服务引擎方法
-	@RequestMapping("toAdd")
-	public String toAdd(Model model) {
-		/*List<EngineType> lists = engineTypeService
-				.find("from EngineType e where 1 = 1");
-		model.addAttribute("lists", lists);*/
-		model.addAttribute("engineType", DataDictionary.getObject("engineType_type"));
-		System.out.println(DataDictionary.getObject("engineType_type"));
-		return "/configServerEngine/configServerEngine_add";
-	}
-	
+	/**
+	 * 准备增加或修改
+	 * @param engineTypeId
+	 * @param configServerEngine
+	 * @param model
+	 * @return
+	 */
 	@RequestMapping("toEdit")
+	@RequiresPermissions(value = "sys-serverEngine-edit")
 	public String toEdit(String engineTypeId, ConfigServerEngine configServerEngine, Model model) {
 		// 修改
 		if (configServerEngine.getId() != null) {
@@ -99,28 +98,14 @@ public class ConfigServerEngineController extends BaseController{
 		}
 		model.addAttribute("engineTypeId", engineTypeId);//用于设置下拉框的值
 		model.addAttribute("engineType", DataDictionary.getObject("engineType_type"));
-		return "/configServerEngine/configServerEngine_add";
+		return "/configServerEngine/configServerEngine_edit";
 	}
-	//列出所有服务引擎的名称
-	/*@ResponseBody
-	@RequestMapping(value = "listAllName",produces="application/json;charset=UTF-8")
-	public String listAll(HttpServletResponse response) {
-		List<Map<String, Object>> mapList = Lists.newArrayList();
-		List<ConfigServerEngine> lists = configServerEngineService.find("from ConfigServerEngine ");
-		for (ConfigServerEngine e : lists) {
-			Map<String, Object> map = Maps.newHashMap();
-			map.put("id", e.getId());
-			map.put("name", e.getConfigName());
-			mapList.add(map);	
-		}
-		String jsonStr = JsonMapper.toJsonString(mapList);
-		return jsonStr;
-	}*/
 
 	/**
 	 * 把所有引擎类型转成json字符串
 	 */
 	@ResponseBody
+	@RequiresPermissions(value = "sys-serverEngineType-list")
 	@RequestMapping(value = "listEngineType", produces = "application/json;charset=UTF-8")
 	public String listServiceType(HttpServletResponse response) {
 		List<Map<String, Object>> mapList = Lists.newArrayList();
@@ -147,6 +132,7 @@ public class ConfigServerEngineController extends BaseController{
 	
 	//列表列出所有数据
 	@RequestMapping("list")
+	@RequiresPermissions(value = "sys-serverEngine-list")
 	public String list(Model model){
 		List<ConfigServerEngine> list = configServerEngineService.find("from ConfigServerEngine c where 1=1 ");
 		model.addAttribute("list", list);
@@ -154,25 +140,11 @@ public class ConfigServerEngineController extends BaseController{
 		return "configServerEngine/configServerEngine_list";
 	}
 	
-	//根据配置名称查询出页面表格需要的数据
-	/*@ResponseBody
-	@RequestMapping("/listData")
-	public Grid<ConfigServerEngine> listData(String configName, PageHelper page) {
-
-		List<ConfigServerEngine> list = null;
-		if (configName==null) {
-			list = configServerEngineService.find("from ConfigServerEngine c where 1 = 1",
-					null, page);
-		} else {
-			list = configServerEngineService.find("from ConfigServerEngine c where c.configName = ?",
-					new Object[] { configName }, page);
-		}
-
-		return new Grid<ConfigServerEngine>(list);
-	}*/
+	
 	//根据引擎类型查询出页面表格需要的数据
 	@ResponseBody
 	@RequestMapping("/listData")
+	@RequiresPermissions(value = "sys-serverEngine-list-data")
 	public Grid<ConfigServerEngine> listData(String engineType, PageHelper page) {
 
 		List<ConfigServerEngine> list = null;
@@ -189,15 +161,21 @@ public class ConfigServerEngineController extends BaseController{
 	
 	
 	//保存服务引擎配置方法
-	@RequestMapping("save")
 	@ResponseBody
-	public String save(ConfigServerEngine configServerEngine,Model model,HttpServletRequest request) {
+	@RequestMapping("save")
+	@RequiresPermissions(value = "sys-serverEngine-edit")
+	public Map<String,String> save(ConfigServerEngine configServerEngine,Model model,HttpServletRequest request) {
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("msg", "操作失败！");
 		User user = (User) request.getSession().getAttribute(Global.SESSION_USER);
 		//新增
 		if(configServerEngine.getId()==null){
 			configServerEngine.setCreateDate(new Date());
 			configServerEngine.setCreator(user);
 			configServerEngineService.save(configServerEngine);
+			map.put("msg", "新增成功！");
+			map.put("flag", "1");
+			return map;
 		}
 		//更新
 		else{
@@ -215,16 +193,18 @@ public class ConfigServerEngineController extends BaseController{
 			dbConfigServerEngine.setUpdateDate(new Date());
 			dbConfigServerEngine.setUpdator(user);
 			configServerEngineService.update(dbConfigServerEngine);
+			map.put("msg", "修改成功！");
+			map.put("flag", "1");
+			return map;
 		}
-		
-		return "success";
 	}
 
 	/*
 	 * 删除多条数据记录
 	 */
-	@RequestMapping("deletes")
 	@ResponseBody
+	@RequestMapping("deletes")
+	@RequiresPermissions(value = "sys-serverEngine-delete")
 	public ResponseEx delete(String idsStr) {
 		ResponseEx ex = new ResponseEx();
 		String ids[] = idsStr.split(",");
@@ -252,6 +232,7 @@ public class ConfigServerEngineController extends BaseController{
 	 * @return
 	 */
     @ResponseBody
+    @RequiresPermissions(value = "sys-serverEngine-delete")
     @RequestMapping(value="/delete",method = RequestMethod.POST)
     public ResponseEx delete(ConfigServerEngine configServerEngine){
         ResponseEx ex = new ResponseEx();
@@ -273,6 +254,7 @@ public class ConfigServerEngineController extends BaseController{
 	
 	//更新服务引擎配置
 	@RequestMapping("update")
+	@RequiresPermissions(value = "sys-serverEngine-edit")
 	public String update(ConfigServerEngine configServerEngine, Model model) {
 		configServerEngineService.update(configServerEngine);
 		return "";
@@ -286,6 +268,7 @@ public class ConfigServerEngineController extends BaseController{
 	 * @return
 	 */
 	@RequestMapping("export")
+	@RequiresPermissions(value = "sys-serverEngine-export")
 	public String export(HttpServletRequest request,
 			HttpServletResponse response) {
 		// 创建文档
@@ -325,16 +308,16 @@ public class ConfigServerEngineController extends BaseController{
 			e7.addText(engine.getRunningStatus());
 
 			Element e8 = e0.addElement("数据上传服务地址");
-			e8.addText(engine.getDataUploadPath());
+			e8.addText(engine.getDataUploadPath() == null ? "" : engine.getDataUploadPath());
 
 			Element e9 = e0.addElement("数据上传绝对路径");
-			e9.addText(engine.getDataUploadRealPath());
+			e9.addText(engine.getDataUploadRealPath() == null ? "" : engine.getDataUploadRealPath());
 
 			Element e10 = e0.addElement("引擎管理员");
-			e10.addText(engine.getEngineManager());
+			e10.addText(engine.getEngineManager() == null ? "" : engine.getEngineManager());
 
 			Element e11 = e0.addElement("管理密码");
-			e11.addText(engine.getManagerPassword());
+			e11.addText(engine.getManagerPassword() == null ? "" : engine.getManagerPassword());
 
 			Element e12 = e0.addElement("创建日期");
 			String createDate = "";
@@ -437,11 +420,13 @@ public class ConfigServerEngineController extends BaseController{
 	}
 
 	@RequestMapping("importConfigServerEngine")
+	@RequiresPermissions(value = "sys-serverEngine-import")
 	public String toImport() {
 		return "/configServerEngine/configServerEngine_import";
 	}
 	
 	@RequestMapping("outputConfigServerEngine")
+	@RequiresPermissions(value = "sys-serverEngine-import")
 	public String Output() {
 		return "/configServerEngine/configServerEngine_import";
 	}
@@ -509,8 +494,9 @@ public class ConfigServerEngineController extends BaseController{
 		}
 		return "configServerEngine/configServerEngine_list";
 	}*/
-	@RequestMapping("/importFile")
 	@ResponseBody
+	@RequestMapping("/importFile")
+	@RequiresPermissions(value = "sys-serverEngine-import")
     public ResponseEx importFile(MultipartFile file, HttpServletRequest request,
 			HttpServletResponse response){
         ResponseEx ex = new ResponseEx();

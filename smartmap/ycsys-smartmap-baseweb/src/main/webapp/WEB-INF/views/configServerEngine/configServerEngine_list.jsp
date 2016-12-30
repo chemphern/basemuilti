@@ -42,15 +42,10 @@
 		<!-- Content Header (Page header) -->
 		<section class="content-header">
 			<h1>服务管理</h1>
-			<ol class="breadcrumb">
-				<li><a href="list_fwgl.html"><i
-						class="iconfont iconfont-bars"></i> 首页</a></li>
-				<li class="active">服务管理</li>
-			</ol>
 		</section>
-<section class="content">
+
  <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-3 col-sm-4">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">服务引擎组织</h4>
@@ -64,16 +59,26 @@
         </div>
     </div>
     <!-- /.col -->
-    <div class="col-md-9">
+    <div class="col-md-9 col-sm-8">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">服务引擎列表</h4>
                 <div class="btn_box">
-                    <button class="current" onclick="editConfigServerEngine('1');"><i class="iconfont icon-plus"></i>新增</button>
-                	<button onclick="editConfigServerEngine('2');"><i class="iconfont icon-edit"></i>编辑</button>
-                	<button onclick="deleteConfigServerEngine();"><i class="iconfont icon-trash"></i>删除</button>
-                	<button onclick="yc_import()"><i class="glyphicon glyphicon-import"></i>导入</button>
-                	<button onclick="yc_output()"><i class="glyphicon glyphicon-export"></i>导出</button>
+	                <shiro:hasPermission name="sys-serverEngine-create">
+	                    <button class="current" onclick="editConfigServerEngine('1');"><i class="iconfont icon-plus"></i>新增</button>
+	                </shiro:hasPermission>
+	                <shiro:hasPermission name="sys-serverEngine-edit">
+                		<button onclick="editConfigServerEngine('2');"><i class="iconfont icon-edit"></i>编辑</button>
+                	</shiro:hasPermission>
+                	 <shiro:hasPermission name="sys-serverEngine-delete">
+                		<button onclick="deleteConfigServerEngine();"><i class="iconfont icon-trash"></i>删除</button>
+                	</shiro:hasPermission>
+                	<shiro:hasPermission name="sys-serverEngine-import">
+                		<button onclick="yc_import()"><i class="glyphicon glyphicon-import"></i>导入</button>
+                	</shiro:hasPermission>
+                	<shiro:hasPermission name="sys-serverEngine-export">
+                		<button onclick="yc_output()"><i class="glyphicon glyphicon-export"></i>导出</button>
+                	</shiro:hasPermission>
                 </div>
             </div>
             <div class="box_l">
@@ -83,7 +88,7 @@
         <!-- /.col -->
     </div>
  </div>
- </section>
+
 </body>
 
 <!-- jQuery 2.2.3 -->
@@ -110,7 +115,7 @@
 <script>
 	var treeManager = null;
 	var gridManager = null;
-	//var configName = null;
+	var tempEngineTypeId = null;
 	;(function($){//避免全局依赖,避免第三方破坏
 		$(document).ready(function() {
 			//树 start
@@ -146,8 +151,8 @@
 	    	function onSelectEngineType(obj) {
 				var engineType = "";
 				if(obj.data.text != '服务引擎组织') {
-					//alert(obj.data.id);
-					engineType = obj.data.id
+					engineType = obj.data.id;
+					window.tempEngineTypeId = obj.data.id;
 				}
 				gridManager.setParm("engineType",engineType);
 	        	window.gridManager.reload();
@@ -163,8 +168,6 @@
 		          	        	render: function (item) {
 	  	                    	     var obj = parseInt(item.engineType);
 	      	                    	  <c:forEach var="map" items="${engineType }">
-	      	                    	  		//console.log("${map.value.name }");
-	      	                    	  		//console.log("obj="+obj);
 	      	                    	  		if(obj == "${map.key }") {
 	      	                    	  			return "${map.value.name }";
 	      	                    	  		}
@@ -207,8 +210,12 @@
 		                          var h = "";
 		                          if (!rowdata._editing)
 		                          {
-		                        	  h += "<input type='button' class='list-btn bt_edit' onclick='editConfigServerEngine(2,"+ rowdata.id+ ")'/>";
-			                          h += "<input type='button' class='list-btn bt_del' onclick='deleteConfigServerEngine(" + rowdata.id + ")'/>"; 
+		                        	  <shiro:hasPermission name="sys-serverEngine-edit">
+		                        	  	h += "<input type='button' class='list-btn bt_edit' onclick='editConfigServerEngine(2,"+ rowdata.id+ ")'/>";
+		                        	  </shiro:hasPermission>
+		                        	  <shiro:hasPermission name="sys-serverEngine-delete">
+		                        	  	h += "<input type='button' class='list-btn bt_del' onclick='deleteConfigServerEngine(" + rowdata.id + ")'/>"; 
+		                        	  </shiro:hasPermission>
 		                          }
 		                          return h;
 		                        }
@@ -245,8 +252,8 @@
 	} */
 	//增加或修改资源
 	function editConfigServerEngine(flag,rowId) {
-		console.log(flag);
-		console.log(rowId);
+		//console.log(flag);
+		//console.log(rowId);
 	    var id = "";
 	    if(flag=='2') {
 	    	if(rowId) {
@@ -266,14 +273,14 @@
 		    	}
 	    	}
 	    }
-		var dialog = $.Layer.iframe(
-                { 
-                  id:"editConfigServerEngineDialog",
-                  title: flag =='1'?'增加服务引擎配置':'编辑服务引擎配置',
-                  url:'${ctx}/configServerEngine/toEdit?flag='+flag+"&id="+id,
-                  width: 400,
-                  height: 500
-               });
+		$.Layer.iframe(
+               { 
+                 id:"editConfigServerEngineDialog",
+                 title: flag =='1'?'增加服务引擎配置':'编辑服务引擎配置',
+                 url:"${ctx}/configServerEngine/toEdit?engineTypeId=" + tempEngineTypeId + "&id="+id,
+                 width: 400,
+                 height: 500
+              });
 		
 	}
 	//删除服务引擎配置
@@ -388,7 +395,7 @@
 	   $(document.body).append(fm);
 	   fm.submit();
 	   fm.remove();
-	   console.log(fm.remove());
+	   //console.log(fm.remove());
 	   /* $.Layer.confirm({
            msg:"导出成功",
            fn:function(){

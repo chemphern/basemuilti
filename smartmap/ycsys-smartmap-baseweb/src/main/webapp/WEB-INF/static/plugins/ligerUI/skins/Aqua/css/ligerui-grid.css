@@ -44,7 +44,7 @@ background: url('../images/panel/header-bg.gif') repeat-x left -1px; position:re
 
 .l-panel-body
 {
-  position:relative; overflow:hidden; width:100%;
+  position:relative; overflow:hidden; width:100%;margin-top: -1px;
 }
 
 .l-panel .l-toolbar {
@@ -88,12 +88,12 @@ background: url('../images/panel/header-bg.gif') repeat-x left -1px; position:re
 } 
 .l-grid td div
 {
-    font-size:12px;
+    font-size:14px;
 }
  .l-grid table{border-spacing:0 0;}
 .l-grid-header {
-	height: 22px;
-	line-height: 26px;
+	height: 40px;
+	line-height: 40px;
 	background: #46c99d;
 	overflow: hidden;
 	width: 100%;
@@ -310,7 +310,7 @@ padding-right: 10px;
 }
 .l-selected .l-grid-row-cell,.l-selected
 {
-    background:#DCF8A8
+    background:#E9F8F3
 }
  
 .l-grid-row-cell
@@ -342,7 +342,7 @@ padding-right: 10px;
 {
     display:block; width:13px; height:13px; background:url('../images/controls/checkbox.gif') no-repeat;
     background-position:0px 0px;
-    cursor:pointer; overflow:hidden; margin-left:7px; margin-top:7px;
+    cursor:pointer; overflow:hidden; margin-left:7px; margin-top:14px;
 }
 .l-checked .l-grid-row-cell-checkbox span,.l-checked  .l-grid-hd-cell-checkbox .l-grid-hd-cell-inner div
 {
@@ -368,16 +368,16 @@ padding-right: 10px;
 }
 .l-grid-row-cell-inner
 {
-    text-align:center;line-height:28px; min-height:22px; _height:22px;
-    margin-left:3px; margin-right:3px; overflow:hidden;
+    text-align:center;line-height:40px; min-height:28px; _height:28px;
+    margin-left:3px; margin-right:6px; overflow:hidden;
 }
 .l-grid-row-cell-inner-fixedheight
 {
-     height:22px;  
+     height:28px;  
 }
 .l-panel-bar
 {
-    height:32px;background:#c6ffec;overflow:hidden;border:0;
+    height:28px;background:#c6ffec;overflow:hidden;border:0;
     border-top:1px solid #84A0C4;
 }
 .l-panel-bbar-inner
@@ -550,7 +550,7 @@ background: url(../images/icon/icon-loading.gif) no-repeat; background-position:
     搜索栏
 */
 .l-panel-search
-{height:28px; padding-top:3px; padding-left:3px; 
+{height:40px; padding-top:3px; padding-left:3px; 
  border-left:1px solid #99BBE8; border-right:1px solid #99BBE8;
 }
 .l-panel-search-item

@@ -72,6 +72,7 @@ public class ResourceTypeController {
 	public Map<String,String> save(ResourceType resourceType, Model model,
 			HttpServletRequest request) {
 		Map<String,String> map = new HashMap<String,String>();
+		map.put("msg", "操作失败！");
 		User user = (User) request.getSession().getAttribute(
 				Global.SESSION_USER);
 		//判断是否存在相同名字的资源分类

@@ -121,7 +121,7 @@
                         } }
                 ], pageSize:30,
                 url:"${ctx}/platMonitorConfig/listMonitorConfigData?type=1",
-                width: '100%',height:'97%'
+                width: '99%',height:'92%'
             });
         });
     //启动监控

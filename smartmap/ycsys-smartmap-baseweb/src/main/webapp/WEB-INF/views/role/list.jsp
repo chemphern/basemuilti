@@ -18,8 +18,6 @@
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="${res}/dist/css/skins/_all-skins.css">
-    <!-- iCheck -->
-    <link rel="stylesheet" href="${res}/plugins/iCheck/flat/blue.css">
     <!-- list -->
     <link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
     <!-- 弹出框 -->
@@ -39,12 +37,7 @@
             <h1>
                 角色管理
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
-                <li class="active">角色管理</li>
-            </ol>
         </section>
-		<section class="content">
             <div class="row">
                 <div class="col-md-12">
                     <div class="box box-solid">
@@ -61,7 +54,6 @@
                 </div>
                 <!-- /.col -->
             </div>
-		</section>
 </body>
 <!-- jQuery 2.2.3 -->
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
@@ -94,7 +86,7 @@
                         { display: '角色名称', name: 'name', width: 100 },
                         { display: '角色编码', name: 'code', minWidth: 60 },
                         { display: '备注', name: 'remark', minWidth: 100 },
-                        { display: '操作',
+                        { display: '操作', width: 100,
                             render: function (rowdata, rowindex, value)
                             {
                                 var h = "";

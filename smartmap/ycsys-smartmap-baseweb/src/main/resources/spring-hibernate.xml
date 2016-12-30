@@ -122,11 +122,18 @@
 		<aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice" order="1"/>
 	</aop:config>
 
-	<!--日志切面-->
+	<!--日志切面（切service层）-->
 	<bean id="logAdvise" class="com.ycsys.smartmap.sys.advise.LogAdvise"></bean>
 
+	<!--异常切面(切controller层)-->
+	<bean id="exceptionAdvice" class="com.ycsys.smartmap.sys.advise.ExceptionAdvise"></bean>
+
 	<aop:config>
-		<aop:aspect ref="logAdvise" >
+		<aop:aspect ref="exceptionAdvice" order="1">
+			<aop:pointcut id="exPoint" expression="execution(* com.ycsys.smartmap..controller.*.*(..))" />
+			<aop:after-throwing method="error" pointcut-ref="exPoint" throwing="ex"/>
+		</aop:aspect>
+		<aop:aspect ref="logAdvise" order="2">
 			<aop:pointcut id="logPoint" expression="@annotation(com.ycsys.smartmap.sys.common.annotation.ToLog) and execution(* com.ycsys.smartmap..service.impl.*.*(..))" />
 			<!-- 定义前置 -->
 			<aop:before method="invokeBefore" pointcut-ref="logPoint"/>

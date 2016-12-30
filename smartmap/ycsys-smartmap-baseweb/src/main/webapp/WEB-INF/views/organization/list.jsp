@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="${res}/iconfont/iconfont.css">
     <link rel="stylesheet" href="${res}/dist/css/AdminLTE.css">
     <link rel="stylesheet" href="${res}/dist/css/skins/_all-skins.css">
-    <link rel="stylesheet" href="${res}/plugins/iCheck/flat/blue.css">
     <link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
     <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
     <style>
@@ -30,13 +29,9 @@
             <h1>
                 机构管理
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="index.html"><i class="fa fa-dashboard"></i> 系统首页</a></li>
-                <li class="active">机构管理</li>
-            </ol>
         </section>
-        <section class="content">
  		<div class="row">
+ 		<div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">组织机构列表</h4>
@@ -49,7 +44,7 @@
             </div>
         </div>
          </div>
- 		</section>
+       </div>
         <!-- /.col -->
 </body>
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
@@ -113,7 +108,7 @@
         "type":org_type
     };
     $(function(){
-        $("#maingrid4").ligerGrid({
+        var ss = $("#maingrid4").ligerGrid({
             checkbox: false,
             columns: [
                 { display: '机构名称', name: 'name',align:'left',
@@ -135,9 +130,9 @@
                         }
                      }
             },
-                { display: '归属区域', name: 'areaName', minWidth: 60 },
+                { display: '归属区域', name: 'areaName'},
                 { display: '机构编码', name: 'code', width: 100,align:'left' },
-                { display: '机构类型', name: 'type', minWidth: 100,render:function(row,rowId,value,item){
+                { display: '机构类型', name: 'type', render:function(row,rowId,value,item){
                     var text = typeof(value) == 'undefined' || value == null ? '' : value;
                     var dic = dicMappers[item.name];
                     if(dic) {
@@ -146,7 +141,7 @@
                     return text;
                 }},
                 { display: '备注', name: 'mobile', minWidth: 100 },
-                { display: '操作',
+                { display: '操作', id: 'contr', width: 140,
                     render: function (rowdata, rowindex, value)
                     {
                         var h = "";
@@ -165,8 +160,7 @@
             width: '100%',height:'96%',
             tree:{columnName:"name"},
             enabledSort:false,
-            rownumbers:true,
-            alternatingRow:true
+            rownumbers:true
         });
         $("#addOrg").click(function(e){
             e.preventDefault();
@@ -179,6 +173,8 @@
                         height: 400
                     });
         });
+        
+        
     });
     function getLigerManager(){
         return $("#maingrid4").ligerGetGridManager();

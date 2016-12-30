@@ -2,6 +2,7 @@ package com.ycsys.smartmap.service.service.impl;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,6 +89,15 @@ public class ServiceServiceImpl implements ServiceService {
 	@Override
 	public Long count(String hql, List<Object> param) {
 		return serviceDao.count(hql, param);
+	}
+
+	@Override
+	public void updateMonitor(Map<String, Object> saveParam) {
+		int id = (int) saveParam.get("id");
+		if(saveParam.get("monitorStatus")!= null){
+			String status = String.valueOf(saveParam.get("monitorStatus"));
+			serviceDao.executeHql("update Service set monitorStatus = ? where id = ?",new Object[]{status,id});
+		}
 	}
 
 }

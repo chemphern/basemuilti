@@ -14,7 +14,7 @@ var DrawTool = {
         endDrawShape();
     },
     drawClickHandler:function(){
-    
+
     },
     DrawType:{'POLYLINE':'POLYLINE','TERRAPOLYLINE':'TERRAPOLYLINE','SEGMENT':'SEGMENT',
               'TERRASEGMENT':'TERRASEGMENT','CIRCLE':'CIRCLE','TERRACIRCLE':'TERRACIRCLE',
@@ -40,7 +40,7 @@ var DrawToolGlobe={
     "PolygonHeight":0.5
 }
 
-function drawShape(type, map) {    
+function drawShape(type) {
     deleteItemsByName(DrawToolGlobe.DrawToolFolder);
     DrawToolGlobe.DrawToolFolderID=createFolder(DrawToolGlobe.DrawToolFolder);
     DrawToolGlobe.DrawOperation=type;        
@@ -61,9 +61,9 @@ function endDrawShape() {
     DrawTool.drawIngHandler = function () { }
 }
 
-function clearDrawShape(){
-	deleteItemsByName(DrawToolGlobe.DrawToolFolder);
-}
+// function clearDrawShape(){
+// 	deleteItemsByName(DrawToolGlobe.DrawToolFolder);
+// }
 
 //画图工具左击事件
 function drawToolLBUpHandler(flags, x, y) {
@@ -159,7 +159,7 @@ function drawToolFrameHandler() {
     }
     if (DrawToolGlobe.DrawOperation == "ADDPOLYGONPOINT") {
         var polygon = findItemByName(DrawToolGlobe.DrawToolFolder+"\\TempFreeHand");
-        var height = parseFloat(mousePosition.Altitude) + DrawToolGlobe.PolygonHeight;
+        // var height = parseFloat(mousePosition.Altitude) + DrawToolGlobe.PolygonHeight;
         if (typeof polygon == 'object') {
             var tempGeo = polygon.Geometry;
             polygon.Geometry.StartEdit();
@@ -201,7 +201,6 @@ function drawPolylineByLBUp(clickPosition, altitudeType, isSegment) {
 function addPolylinePointByLBUp(clickPosition) {
     var polyline = findItemByName(DrawToolGlobe.DrawToolFolder+"\\TempFreeHand");
     if (typeof polyline == 'object') {
-        var tempGeo = polyline.Geometry;
         polyline.Geometry.StartEdit();
         polyline.Geometry.Points.AddPoint(clickPosition.X, clickPosition.Y, clickPosition.Altitude);
         polyline.Geometry.EndEdit();
@@ -262,7 +261,7 @@ function drawPolygonByLBUp(clickPosition, altitudeType) {
 
 function addPolygonPointByLBUp(clickPosition) {
     var polygon = findItemByName(DrawToolGlobe.DrawToolFolder+"\\TempFreeHand");
-    var height = parseFloat(clickPosition.Altitude) + DrawToolGlobe.PolygonHeight;
+    // var height = parseFloat(clickPosition.Altitude) + DrawToolGlobe.PolygonHeight;
     if (typeof polygon == 'object') {
         var tempGeo = polygon.Geometry;
         polygon.Geometry.StartEdit();

@@ -4,20 +4,31 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.ServletContext;
 
+import com.ycsys.smartmap.service.entity.Service;
+import com.ycsys.smartmap.service.service.ServiceService;
+import com.ycsys.smartmap.sys.advise.ExceptionAdvise;
 import com.ycsys.smartmap.sys.common.config.parseobject.org.OrgRootXmlObject;
 import com.ycsys.smartmap.sys.common.config.parseobject.permission.PermissionXmlObject;
 import com.ycsys.smartmap.sys.common.config.parseobject.role.RoleRootXmlObject;
 import com.ycsys.smartmap.sys.common.config.parseobject.system.SystemRootXmlObject;
 import com.ycsys.smartmap.sys.common.config.parseobject.user.UserRootXmlObject;
+import com.ycsys.smartmap.sys.common.schedule.CronUtil;
+import com.ycsys.smartmap.sys.common.schedule.JobTaskManager;
+import com.ycsys.smartmap.sys.common.schedule.ScheduleJob;
+import com.ycsys.smartmap.sys.common.snmp.SnmpBase;
+import com.ycsys.smartmap.sys.common.utils.DbMonitorUtil;
+import com.ycsys.smartmap.sys.common.utils.HttpSocketUtil;
 import com.ycsys.smartmap.sys.service.*;
 import com.ycsys.smartmap.sys.util.XmlParseObjectUtil;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
-import java.util.Properties;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * 
@@ -51,6 +62,12 @@ public class Initialization implements ServletContextAware {
 	@Autowired
 	OrganizationService organizationService;
 
+	@Autowired
+	private ServiceService serviceService;
+
+	@Autowired
+	private JobTaskManager jobTaskManager;
+
 	@Resource(name="config")
 	private Properties config;
 
@@ -65,11 +82,9 @@ public class Initialization implements ServletContextAware {
 		logger.info("========================初始化数据库开始==================================");
 		initDatabase();
 		logger.info("========================初始化数据库完成==================================");
-		/*目前将全局变量放ehcached缓存
-		// 全局变量缓存
-		if (null != context){
-			context.setAttribute(Global.CONTEXT_SYSTEM_CONFIG, loadSystemConfig());
-		}*/
+		logger.info("========================启动定时任务开始========================");
+		initJob();
+		logger.info("========================启动定时任务结束========================");
 	}
 
 	/**
@@ -116,6 +131,158 @@ public class Initialization implements ServletContextAware {
 		}catch (Exception e){
 			e.printStackTrace();
 			logger.info("==================初始化数据库出现异常=====================");
+		}
+	}
+
+	/**初始化定时任务**/
+	public void initJob(){
+		/**启动服务监控定时器**/
+		startServiceJob();
+		/**启动本地服务器监控定时器**/
+		startNativeServerJob();
+
+		/**启动本地tomcat监控定时器**/
+		startTomcatJob();
+
+		/**启动本地数据库监控定时器**/
+		startDbJob();
+	}
+
+	public void startServiceJob(){
+		//服务监控定时任务
+		List<Service> services = serviceService.find("from Service");
+		for(Service service :services){
+			String url = service.getServiceVisitAddress();
+			Map<String, Object> saveParam = new HashMap<>();
+			saveParam.put("id", service.getId());
+			if(url != null && !url.equals("")) {
+				Map<String, Object> res = HttpSocketUtil.sendRequest(url);
+				if (String.valueOf(res.get("code")).equals("1")) {
+					ScheduleJob job = new ScheduleJob();
+					job.setJobName("serviceMonitor_" + service.getId());
+					job.setJobGroup("service");
+					job.setJobStatus(ScheduleJob.STATUS_RUNNING);
+					String rate = service.getMonitorRate();
+					//默认30秒
+					if(rate == null || rate.equals("")){
+						rate = "30";
+					}
+					job.setCronExpression(CronUtil.getCronByMillions(Long.parseLong(rate)));
+					job.setDescription("服务监控的定时器");
+					job.setBeanClass("com.ycsys.smartmap.sys.task.MonitorTask");
+					job.setMethodName("collectServiceInfo");
+					job.setMethodParameter(new Object[]{Service.class});
+					job.setArgs(new Object[]{service});
+					job.setIsConcurrent(ScheduleJob.CONCURRENT_NOT);
+					job.setCreateTime(new Date());
+					saveParam.put("monitorStatus", 1);
+					try {
+						jobTaskManager.addJob(job);
+					} catch (SchedulerException e) {
+						saveParam.put("monitorStatus", 0);
+						serviceService.updateMonitor(saveParam);
+						e.printStackTrace();
+					}
+					serviceService.updateMonitor(saveParam);
+				} else {
+					saveParam.put("monitorStatus", 0);
+					serviceService.updateMonitor(saveParam);
+				}
+			}else{
+				saveParam.put("monitorStatus", 0);
+				serviceService.updateMonitor(saveParam);
+			}
+		}
+	}
+
+	public void startNativeServerJob(){
+		try{
+			String file = "config.properties";
+			InputStream is = Initialization.class.getResource("/" + file).openStream();
+			Properties properties = new Properties();
+			properties.load(is);
+			String url = properties.getProperty("snmp.url");
+			String port = properties.getProperty("snmp.port");
+			String communicate = properties.getProperty("snmp.communicate");
+			/**测试地址是否能连通**/
+			SnmpBase base = new SnmpBase(url,port , communicate);
+			base.snmpGet(".1.3.6.1.2.1.1.1.0");
+			String rate = properties.getProperty("snmp.rate");
+			if(rate == null || rate.equals("")){
+				rate = "30";
+			}
+			String monitorkey = "nativeServerJob";
+			ScheduleJob job = new ScheduleJob();
+			job.setJobName("nativeServerJob");
+			job.setJobGroup("nativeInfoMonitor");
+			job.setJobStatus(ScheduleJob.STATUS_RUNNING);
+			job.setCronExpression(CronUtil.getCronByMillions(Long.parseLong(rate)));
+			job.setDescription("本地服务器监控的定时器");
+			job.setBeanClass("com.ycsys.smartmap.sys.task.MonitorTask");
+			job.setMethodName("collectNativeServer");
+			job.setMethodParameter(new Object[]{String.class,String.class,String.class,String.class,String.class});
+			job.setArgs(new Object[]{monitorkey,url,port,communicate,rate});
+			job.setIsConcurrent(ScheduleJob.CONCURRENT_NOT);
+			job.setCreateTime(new Date());
+			jobTaskManager.addJob(job);
+			is.close();
+		}catch (Exception e){
+			logger.error("本地服务器监控启动失败！");
+		}
+	}
+	public void startTomcatJob(){
+		try {
+			String rate = "30";
+			ScheduleJob job = new ScheduleJob();
+			job.setJobName("nativeTomcatJob");
+			job.setJobGroup("nativeInfoMonitor");
+			job.setJobStatus(ScheduleJob.STATUS_RUNNING);
+			job.setCronExpression(CronUtil.getCronByMillions(Long.parseLong(rate)));
+			job.setDescription("本地Tomcat监控的定时器");
+			job.setBeanClass("com.ycsys.smartmap.sys.task.MonitorTask");
+			job.setMethodName("collectNativeTomcat");
+			job.setMethodParameter(new Object[]{ServletContext.class});
+			job.setArgs(new Object[]{context});
+			job.setIsConcurrent(ScheduleJob.CONCURRENT_NOT);
+			job.setCreateTime(new Date());
+			jobTaskManager.addJob(job);
+		}catch (Exception e){
+			logger.error("本地tomcat监控启动失败！");
+		}
+	}
+	public void startDbJob(){
+		try {
+			String file = "db.properties";
+			InputStream is = Initialization.class.getResource("/" + file).openStream();
+			Properties properties = new Properties();
+			properties.load(is);
+			String driver = properties.getProperty("jdbc.driver");
+			String url = properties.getProperty("jdbc.url");
+			String username = properties.getProperty("jdbc.username");
+			String password = properties.getProperty("jdbc.password");
+			Map<String,Object> res = DbMonitorUtil.getDbMsg(driver,url,username,password);
+			if(String.valueOf(res.get("code")).equals("1")) {
+				String rate = "30";
+				ScheduleJob job = new ScheduleJob();
+				job.setJobName("nativeDbJob");
+				job.setJobGroup("nativeInfoMonitor");
+				job.setJobStatus(ScheduleJob.STATUS_RUNNING);
+				job.setCronExpression(CronUtil.getCronByMillions(Long.parseLong(rate)));
+				job.setDescription("本地数据库监控的定时器");
+				job.setBeanClass("com.ycsys.smartmap.sys.task.MonitorTask");
+				job.setMethodName("collectNativeDb");
+				job.setMethodParameter(new Object[]{String.class, String.class, String.class, String.class});
+				job.setArgs(new Object[]{driver, url, username, password});
+				job.setIsConcurrent(ScheduleJob.CONCURRENT_NOT);
+				job.setCreateTime(new Date());
+				jobTaskManager.addJob(job);
+			}else{
+				logger.error("本地数据库监控定时器启动失败！");
+			}
+			is.close();
+		}catch (Exception e){
+			logger.error("本地数据库监控定时器启动失败！");
+			e.printStackTrace();
 		}
 	}
 }

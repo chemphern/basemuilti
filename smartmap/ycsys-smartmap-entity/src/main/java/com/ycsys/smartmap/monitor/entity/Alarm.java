@@ -37,20 +37,23 @@ public class Alarm implements java.io.Serializable {
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id; // 唯一标识
 
-	@Column(name = "title", length = 30)
+	@Column(name = "title", length = 1000)
 	private String title;	//标题
 
-	@Column(name = "content", length = 200)
+	@Column(name = "content", length = 3000)
 	private String content;	//报警内容
 	
 	@Column(name = "grade",length = 1)
 	private String grade;	//报警等级
-	
+
 	@Column(name = "status",length = 1)
 	private String status;	//状态
 	
 	@Column(name = "happen_date")
 	private Date happenDate; //异常发生时间
+
+	@Column
+	private String type;//异常类型
 	
 	@ManyToOne
 	@JoinColumn(name = "deal_user_id")
@@ -61,9 +64,6 @@ public class Alarm implements java.io.Serializable {
 	
 	@Column(name = "deal_date")
 	private Date dealDate;//处理时间
-	
-	@Column(name = "deal_flag",length = 1)
-	private String dealFlag; //处理标志
 	
 	@Column(name = "create_date")
 	private Date createDate; // 创建时间
@@ -143,14 +143,6 @@ public class Alarm implements java.io.Serializable {
 		this.dealDate = dealDate;
 	}
 
-	public String getDealFlag() {
-		return dealFlag;
-	}
-
-	public void setDealFlag(String dealFlag) {
-		this.dealFlag = dealFlag;
-	}
-
 	public Date getCreateDate() {
 		return createDate;
 	}
@@ -166,5 +158,12 @@ public class Alarm implements java.io.Serializable {
 	public void setRemarks(String remarks) {
 		this.remarks = remarks;
 	}
-	
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 }

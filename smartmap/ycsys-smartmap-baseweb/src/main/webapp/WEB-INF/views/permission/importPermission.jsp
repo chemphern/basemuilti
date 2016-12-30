@@ -32,7 +32,7 @@
 </body>
 <script>
     $(function(){
-        var p = window.parent;
+        var p = window.parent[0];
         var dialog = p.art.dialog.list["importPermissionDialog"];
         var $fm = $("#form_id");
         var dialog_div = dialog.DOM.wrap;

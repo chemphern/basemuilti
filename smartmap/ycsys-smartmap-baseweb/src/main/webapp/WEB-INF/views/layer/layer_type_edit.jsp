@@ -57,8 +57,6 @@
 					<input type="text" name="parent.name" disabled="disabled" class="text" value="${layer.parent.name}">
 					<input type="hidden" name="parent.id" value="${layer.parent.id}">
 				</td>
-				<%-- <input type="hidden" name="pId" id="pId"
-					value="${layer.pId}"> --%>
 			</tr>
 			<tr>
 				<td class="t_r">结点名称：</td>
@@ -73,7 +71,7 @@
 	$(function() {
 		var form = $("#form_id");
 		
-		var parentWin = window.parent;
+		var parentWin = window.parent[0];
 		var dialog = parentWin.art.dialog.list["editLayerDialog"];
 		var dialog_div = dialog.DOM.wrap;
 		
@@ -84,27 +82,29 @@
 		val_obj.submitHandler = function(){
 			$.ajax({
 				type : "POST",
-				url : "${ctx }/layer/save",
+				url : "${ctx }/layer/saveLayerType",
 				data : $('#form_id').serialize(),
 				dataType:"json",
 				async : false,
 				error : function(ret) {
-					alert("connection error!");
+					$.Layer.confirm({
+    	                msg:"connection error!"
+    	            });
 				},
 				success : function(ret) {
 					dialog.close();
-					if(ret.flag == "1" || ret.flag == "3") {
+					if(ret.flag == "1") {
 						$.Layer.confirm({
         	                msg:ret.msg,
         	                fn:function(){
-        	                 parentWin.treeManager.reload();
         	                 parentWin.gridManager.reload();
+        	                 parentWin.treeManager.reload();
         	                }
         	            });
 					}
-					else if(ret.flag == "2") {
+					else{
 						$.Layer.confirm({
-        	                msg:ret.msg,
+        	                msg:ret.msg
         	            });
 					}
 				}

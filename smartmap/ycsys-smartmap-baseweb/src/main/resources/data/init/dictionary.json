@@ -385,19 +385,19 @@
     "dictionaryItems":[
         {
         "name":"点图层",
-        "value":"0",
+        "value":"esriGeometryPoint",
         "memo":"",
         "sort":"1"
       },
       {
         "name":"线图层",
-        "value":"1",
+        "value":"esriGeometryPolyline",
         "memo":"",
         "sort":"2"
       },
       {
         "name":"面图层",
-        "value":"2",
+        "value":"esriGeometryPolygon",
         "memo":"",
         "sort":"3"
       }

@@ -32,7 +32,7 @@
     <![endif]-->
     <style>
         html, body {
-            background-color: #ecf0f5
+            background-color: #f1f1f1;
         }
 
         body {
@@ -41,8 +41,14 @@
     </style>
 </head>
 <body>
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <h1>
+                平台监控配置
+            </h1>
+        </section>
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-3 col-sm-4">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">分类</h4>
@@ -56,7 +62,7 @@
         </div>
     </div>
     <!-- /.col -->
-    <div class="col-md-9">
+    <div class="col-md-9 col-sm-8">
         <div class="box box-solid">
             <div id="targetDiv"></div>
 
@@ -98,7 +104,7 @@
             onClick:function(a){
                 //能点击的
                 if(a.data.id > 0){
-                    var ifm = $('<iframe frameborder="0" align="center" onload="resizeIframe(this)" width="96%" id="right_iframe"/>').attr("src","${ctx}/platMonitorConfig/listMonitorService?type=" + a.data.id);
+                    var ifm = $('<iframe frameborder="0" align="center" onload="resizeIframe(this)" width="100%" id="right_iframe" style="overflow-y:hidden"/>').attr("src","${ctx}/platMonitorConfig/listMonitorService?type=" + a.data.id);
                     $("#targetDiv").html(ifm);
                 }
             }

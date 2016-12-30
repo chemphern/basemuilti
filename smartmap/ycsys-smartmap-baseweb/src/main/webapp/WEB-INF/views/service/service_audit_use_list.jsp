@@ -36,7 +36,7 @@
   <![endif]-->
 <style>
 html,body {
-	background-color: #ecf0f5
+	background-color: #f1f1f1;
 }
 
 body {
@@ -47,18 +47,13 @@ body {
 <body>
 <div>
     <!-- Content Header (Page header) -->
-    <!-- <section class="content-header">
+	<section class="content-header">
       <h1>
         使用服务审核
       </h1>
-      <ol class="breadcrumb">
-        <li><a href="list_fwgl.html"><i class="iconfont iconfont-bars"></i> 首页</a></li>
-        <li class="active">使用服务审核</li>
-      </ol>
-    </section> -->
+    </section>
 
     <!-- Main content -->
-    <section class="content">
       <div class="row">
         <div class="col-md-12">
           <div class="box box-solid">
@@ -90,7 +85,6 @@ body {
       </div>
         <!-- /.col -->
     </div>
-  </section>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->

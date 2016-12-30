@@ -40,7 +40,7 @@
   <![endif]-->
 <style>
 html,body {
-	background-color: #ecf0f5
+	background-color: #f1f1f1;
 }
 
 body {
@@ -50,7 +50,6 @@ body {
 </head>
 <body>
 <form method="post" action="${ctx }/service/updateServiceOther" id="form_id" enctype="multipart/form-data">
-	<input type="hidden" name="id" id="id" value="${service.id }">
 	<input type="hidden" name="id" id="id" value="${service.id }">
 	<body class="hold-transition skin-blue sidebar-mini">
 	<div id="wizard" class="swMain">
@@ -83,18 +82,20 @@ body {
 				class="date_add_table">
             <tr>
               <td class="t_r">服务注册名称：</td>
-              <td><input type="text" name="registerName" value="${service.registerName }"
+              <td><input type="text" name="registerName" value="${service.registerName }" disabled="disabled"
 						id="registerName" class="text validate[required]" /></td>
             </tr>
             <tr>
               <td class="t_r">服务显示名称：</td>
               <td><input type="text" name="showName" value="${service.showName }"
-						id="showName" class="text validate[required]" /></td>
+						id="showName" class="text validate[required]" 
+						validate="{required:true,maxlength : 15,messages:{required:'必填',maxlength:'字符长度不能超过15个!'}}"/></td>
             </tr>
             <tr>
               <td class="t_r">服务描述：</td>
               <td><textarea name="remarks" id="remarks" clos="20" rows="5"
-							class="text_area">${service.remarks }</textarea>
+							class="text_area"
+							validate="{maxlength : 100,messages:{maxlength:'备注 的字符长度大于100个字符！'}}">${service.remarks }</textarea>
 			  </td>
             </tr>
           </table>         
@@ -119,7 +120,9 @@ body {
               <tr>
                 <td class="t_r">服务访问地址：</td>
                 <td><input type="text" name="serviceVisitAddress" value="${service.serviceVisitAddress }"
-						id="serviceVisitAddress" class="text validate[required]" /></td>
+						id="serviceVisitAddress" class="text validate[required]" 
+						validate="{required:true,maxlength : 100,messages:{required:'必填',maxlength:'字符长度不能超过100个!'}}"
+						/></td>
               </tr>
               
               <tr>
@@ -183,13 +186,20 @@ body {
               <tr>
                 <td class="t_r">元数据访问地址：</td>
                 <td><input type="text" name="metadataVisitAddress" id="metadataVisitAddress"
-						 class="text validate[required]" value="${service.metadataVisitAddress }"/></td>
+						 class="text validate[required]" value="${service.metadataVisitAddress }"
+						 validate="{maxlength : 100,messages:{maxlength:'字符长度不能超过100个!'}}"/></td>
               </tr>
               <tr>
                 <td class="t_r">服务分类：</td>
                 <td><input type="text" name="registerType" value="第三方服务" disabled="disabled"
 						id="registerType" class="text validate[required]" /></td>
               </tr>
+              <tr>
+					<td class="t_r">更多属性信息：</td>
+					<td>
+					<input type="checkbox" name="moreProperty" id="moreProperty" value="1"/>
+					</td>
+			</tr>
             </table>                                     
         </div>
 
@@ -237,10 +247,13 @@ body {
         </div>
     </div>
    </form>
-  <!-- /.content-wrapper --><!-- jQuery 2.2.3 -->
-	<script src="${res }/plugins/jQuery/jquery-2.2.3.min.js"></script>
-	<script
-		src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
+  <!-- /.content-wrapper -->
+  
+	<!-- jQuery 2.2.3 -->
+	<script src="${res}/js/common/form.js"></script>
+	<script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
+	<script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
+	<script src="${res}/plugins/jquery-validation-1.15.1/dist/jquery.validate.min.js" type="text/javascript"></script>
 	<!--grid-->
 	<script src="${res }/plugins/ligerUI/js/core/base.js"
 		type="text/javascript"></script>
@@ -280,16 +293,43 @@ body {
 				$("#permissionStatus option[value=${service.permissionStatus}]").attr("selected",true);
 			}
 			
+			if("${service.moreProperty}") {
+				$("#moreProperty").attr("checked",true);
+			}
+			
 			var exNameStr ="${service.serviceExtend}";
 			$("input[name = serviceExtend]").each(function() {
 				if(exNameStr.indexOf($(this).val()) > -1) {
 					$(this).attr("checked",true);
 				}
 			});
-			var parentWin = window.parent;
+			var parentWin = window.parent[0];
 			var dialog = parentWin.art.dialog.list["editOtherServiceDialog"];
 			
-			$('#form_id').on('submit', function(e) {
+			var form = $("#form_id");
+			var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
+			val_obj.submitHandler = function(){
+				$('.actionBar a.buttonFinish').addClass("buttonDisabled");//完成按钮变灰
+				$('.actionBar a.buttonPrevious').addClass("buttonDisabled");//上一步按钮变灰 
+				//支持文件上传的ajax提交方式
+				form.ajaxSubmit({
+					dataType:"json",
+	                success:function(result){
+	                	alert(result.msg);
+	            		if(result.flag == "0") {
+	            			parentWin.gridManager.reload();
+	            			dialog.close();
+	            		}
+	            		else {
+	            			$('.actionBar a.buttonFinish').removeClass("buttonDisabled");//完成按钮可用
+	            			$('.actionBar a.buttonPrevious').removeClass("buttonDisabled");//上一步按钮可用  
+	            		}
+	                }
+	             });
+		    };
+		    form.validate(val_obj);
+			
+			/* $('#form_id').on('submit', function(e) {
 	            e.preventDefault(); // <-- important
 	            $(this).ajaxSubmit({
 	            	dataType:"json",
@@ -301,7 +341,8 @@ body {
 	            		
 	                 }
 	            });
-	        });
+	        }); */
+			
 			// Smart Wizard     
 			$('#wizard').smartWizard({
 				onLeaveStep:onLeaveStepCallback,

@@ -43,6 +43,7 @@
                         $('#bookMarkName').val(bookMark.name);
                         $('#bookMarkDes').val(bookMark.description);
                         $('#currentPosition').val("xmin:" + bookMark.xmin  + '/n' + ",ymin:" + bookMark.ymin + '/n' + ",xmax:" + bookMark.xmax + '/n' + ",ymax:" + bookMark.ymax);
+                        extent = {"xmin":bookMark.xmin,"xmax":bookMark.xmax,"ymin":bookMark.ymin,"ymax":bookMark.ymax};
                     }
                 },
                 error: function(textStatus){
@@ -58,9 +59,11 @@
         $('#currentPosition').val("xmin:" + extent.xmin  + '/n' + ",ymin:" + extent.ymin + '/n' + ",xmax:" + extent.xmax + '/n' + ",ymax:" + extent.ymax);
     }
 
-    function addBookMark() {
+    function editBookMark() {
         var bookMarkName = $('#bookMarkName').val();
         var bookMarkDes = $('#bookMarkDes').val();
+        if(currentPos==null)
+            currentPos = YcMap3D.Navigate.GetPosition(3);
         if(url!=""&&bookID!=""&&extent!=null&&bookMarkName!=""&& bookMarkDes!=""&&currentPos!=null){
             $.ajax({
                 url: url,
@@ -118,7 +121,7 @@
                             <tr>
                                 <td colspan="2" class="aui_header">
                                     <div class="aui_titleBar">
-                                        <div class="aui_title" style="cursor: move;">添加书签</div><a class="aui_close" href="javascript:/*artDialog*/;" onclick="cancelAdd()">×</a>
+                                        <div class="aui_title" style="cursor: move;">编辑书签</div><a class="aui_close" href="javascript:/*artDialog*/;" onclick="cancelAdd()">×</a>
                                     </div>
                                 </td>
                             </tr>
@@ -154,7 +157,7 @@
                             <tr>
                                 <td colspan="2" class="aui_footer">
                                     <div class="aui_buttons">
-                                        <button class="bt_sub aui_state_highlight" type="button" onclick="addBookMark()">提交</button>
+                                        <button class="bt_sub aui_state_highlight" type="button" onclick="editBookMark()">提交</button>
                                         <button type="button" onclick="cancelAdd()">取消</button>
                                     </div>
                                 </td>

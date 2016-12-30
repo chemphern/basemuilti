@@ -20,18 +20,6 @@
     <script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
     <script src="${res}/js/common/form.js"></script>
 </head>
-<style>
-    .date_add_table td{
-        padding:0;
-        margin:auto;
-    }
-    .date_add_table tr{
-        margin:auto;
-    }
-    .date_add_table{
-        margin:10px 9px 0;
-    }
-</style>
 <script>
     //提交前进行校验
     function before(){
@@ -106,81 +94,70 @@
                 <!--
                 <img src="/dxsc/mres/mres/dracodeUi/ligerUI/skins/icons/communication.gif">
                 -->
-                <span>数据字典</span>
+                <h3>数据字典</h3>
             </td>
         </tr>
-        <tr style="line-height:40px;">
-            <td style="width:70px">字典名称：</td>
-            <td style="width:160px"><div class="l-text" style="width: 180px;">
-                <input name="name" id="name" validate="{required:true,messages:{required:'必填'}}" value="" class="l-text-field" style="width: 176px;" ligeruiid="name" type="text">
-                <div class="l-text-l"></div><div class="l-text-r"></div></div></td>
-            <td style="width:40px"></td>
-            <td style="width:70px">字典编码：</td>
-            <td style="width:160px"><div class="l-text" style="width: 180px;">
-                <input name="code" id="code" validate="{required:true,maxlength:50,messages:{required:'必填',maxlength:'最大长度50'}}" value="" class="l-text-field" style="width: 176px;" ligeruiid="code" type="text">
-                <div class="l-text-l"></div><div class="l-text-r"></div></div></td>
-            <td></td>
-        </tr>
-        <tr style="border-bottom:1px solid #EBEBEB;">
-            <td>备注：</td>
-            <td colspan="4">
-                <textarea cols="80" rows="5" id="memo" name="memo" class="l-textarea"></textarea>
+        <tr>
+            <td class="t_r">字典名称：</td>
+            <td>
+                <input name="name" id="name" validate="{required:true,messages:{required:'必填'}}" value="" ligeruiid="name" type="text">
             </td>
-            <td></td>
+       	</tr>
+        <tr>
+            <td class="t_r">字典编码：</td>
+            <td>
+                <input name="code" id="code" validate="{required:true,maxlength:50,messages:{required:'必填',maxlength:'最大长度50'}}" value="" ligeruiid="code" type="text">
+            </td>
+        </tr>
+        <tr>
+            <td class="t_r">备注：</td>
+            <td>
+                <textarea id="memo" name="memo"></textarea>
+            </td>
         </tr>
         <tr style="border-bottom:1px solid #EBEBEB;line-height:40px;">
             <td colspan="6">
                 <!--
                 <img src="/dxsc/mres/mres/dracodeUi/ligerUI/skins/icons/communication.gif">
                 -->
-                <span>数据字典项</span></td>
+                <h3>数据字典项</h3></td>
         </tr>
         <tr style="line-height:33px;">
             <td colspan="6">
-                <table id="dicItem_table" style="border:1px solid #BFCFE1;margin-top:5px;width:96%">
-                    <tbody><tr style="border-bottom:1px solid #AECAF0;">
-                        <td>
-                            <font style="margin-left:10px;">显示顺序</font>
-                        </td>
-                        <td>
-                            <font style="margin-left:40px;">字典项名称</font>
-                        </td>
-                        <td>
-                            <font style="margin-left:40px;">字典项值</font>
-                        </td>
-                        <td>
-                            <font style="margin-left:20px;">是否显示</font>
-                        </td>
-                        <td>
-                            <font style="margin-left:30px;">操作</font>
-                        </td>
-                    </tr>
+            			<div class="table-responsive">
+						  <table id="dicItem_table" class="table table-bordered"  style="width:96%">
+						    <tr>
+								<th class="th">显示顺序</th> 
+								<th class="th">字典项名称</th> 
+								<th class="th">字典项值</th> 
+								<th class="th">是否显示</th>
+								<th class="th">操作</th>
+							</tr>
                     <tr id="dic_item">
-                        <td>
-                            <div class="l-text l-text-readonly" style="width: 60px;">
-                                <input readonly="readonly" id="showOrder" value="1" name="showOrder" ligerui="{width:60}" class="l-text-field" style="width: 56px;" ligeruiid="showOrder" type="text">
-                                <div class="l-text-l"></div><div class="l-text-r"></div></div>
+                        <td class="td">
+                                <input readonly="readonly" id="showOrder" value="1" name="showOrder" ligerui="{width:60}" ligeruiid="showOrder" type="text" style="width:20px; border:none; text-align: center;">
                         </td>
-                        <td>
+                        <td class="td">
                             <div class="l-text" style="width: 140px;"><input name="itemName" ligerui="width:140" class="l-text-field" style="width: 136px;" ligeruiid="TextBox1000" type="text">
                                 <div class="l-text-l"></div><div class="l-text-r"></div></div>
                         </td>
-                        <td>
+                        <td class="td">
                             <div class="l-text" style="width: 140px;"><input name="itemValue" ligerui="width:140" class="l-text-field" style="width: 136px;" ligeruiid="TextBox1001" type="text">
                                 <div class="l-text-l"></div><div class="l-text-r"></div></div>
                         </td>
-                        <td>
+                        <td class="td">
                             <select name="isShow" ligerui="slide:false" change="false">
 
                                 <option value="1">显示</option>
                                 <option value="2">不显示</option>
                             </select>
                         </td>
-                        <td id="buttontd" width="130">
-                            <input id="addstation" onclick="addStationDiv(this)" class="l-button-submit-search btn" value="添加" type="button">
+                        <td id="buttontd" width="130" class="td">
+                            <input id="addstation" onclick="addStationDiv(this)" class="l-button-submit-search btn" value="添加" type="button" style="  text-align: center;">
                         </td>
-                    </tr><tr>
-                    </tr></tbody></table>
+                    </tr>
+						  </table>
+						</div>
 
                 <script type="text/javascript">
                     $(document).ready(function() {
@@ -198,7 +175,7 @@
 </body>
 <script>
     $(function(){
-        var p = window.parent;
+        var p = window.parent[0];
         var f = $("#form_id");
         var dialog = p.art.dialog.list["addDictDialog"];
         var dialog_div = dialog.DOM.wrap;

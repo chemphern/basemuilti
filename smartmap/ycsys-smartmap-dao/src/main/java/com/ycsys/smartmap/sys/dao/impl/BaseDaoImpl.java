@@ -2,7 +2,6 @@ package com.ycsys.smartmap.sys.dao.impl;
 
 import com.ycsys.smartmap.sys.dao.BaseDao;
 import com.ycsys.smartmap.sys.entity.PageHelper;
-import com.ycsys.smartmap.sys.entity.User;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -19,7 +18,6 @@ import javax.annotation.Resource;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.List;
 
 @Repository("baseDao")
@@ -288,6 +286,21 @@ public class BaseDaoImpl<T,PK> extends HibernateDaoSupport implements BaseDao<T,
 		q.setFirstResult(page.getFirstResult());
 		q.setMaxResults(page.getMaxResults());
 		return q.list();
+	}
+
+	@Override
+	public Object[] findArrValue(String hql, List<Object> params) {
+		Query q = this.getCurrentSession().createQuery(hql);
+		if (params != null && params.size() > 0) {
+			for (int i = 0; i < params.size(); i++) {
+				q.setParameter(i, params.get(i));
+			}
+		}
+		List<Object> list = q.list();
+		if(list != null && list.size() > 0) {
+			return list.toArray();
+		}
+		return null;
 	}
 
 }

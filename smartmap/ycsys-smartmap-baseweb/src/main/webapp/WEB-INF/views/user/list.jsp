@@ -30,14 +30,10 @@
             <h1>
                 用户管理
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="index.html"><i class="fa fa-dashboard"></i> 系统首页</a></li>
-                <li class="active">用户管理</li>
-            </ol>
         </section>
-<section class="content">
+
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-3 col-sm-4">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">组织机构</h4>
@@ -49,7 +45,7 @@
         </div>
     </div>
     <!-- /.col -->
-    <div class="col-md-9">
+    <div class="col-md-9 col-sm-8">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">用户列表</h4>
@@ -73,7 +69,6 @@
         <!-- /.col -->
     </div>
     </div>
-</section>
 </body>
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script src="${res}/plugins/ligerUI/js/core/base.js" type="text/javascript"></script>

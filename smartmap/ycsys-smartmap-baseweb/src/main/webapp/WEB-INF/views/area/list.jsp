@@ -30,12 +30,8 @@
             <h1>
                 地区管理
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
-                <li class="active">地区管理</li>
-            </ol>
         </section>
-<section class="content">
+
     <div class="row">
         <div class="col-md-12">
 <div class="box box-solid">
@@ -52,7 +48,7 @@
         </div>
         <!-- /.col -->
     </div>
-</section>
+
 <!-- /.col -->
 </body>
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>

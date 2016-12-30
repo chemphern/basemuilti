@@ -136,7 +136,7 @@
         }
     };
     $(function(){
-        var p = window.parent;
+        var p = window.parent[0];
         var f = $("#form_id");
         var dialog = p.art.dialog.list["updateDictDialog"];
         var val_obj = exec_validate(f);

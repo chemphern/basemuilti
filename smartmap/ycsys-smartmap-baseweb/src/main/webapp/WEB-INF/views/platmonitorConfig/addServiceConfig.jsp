@@ -60,7 +60,7 @@
         return true;
     }
     ;(function($){
-        var p = window.parent.$("#right_iframe")[0].contentWindow;
+        var p = window.parent[0].$("#right_iframe")[0].contentWindow;
         var dialog = p.art.dialog.list["addServerDialog"];
         var $fm = $("#form_id");
         var dialog_div = dialog.DOM.wrap;

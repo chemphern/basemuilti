@@ -56,7 +56,7 @@
 <script>
 	$(function() {
 		var form = $("#form_id");
-		var parentWin = window.parent;
+		var parentWin = window.parent[0];
 		var dialog = parentWin.art.dialog.list["importServiceDialog"];
 		var dialog_div = dialog.DOM.wrap;
 		dialog_div.on("ok", function() {

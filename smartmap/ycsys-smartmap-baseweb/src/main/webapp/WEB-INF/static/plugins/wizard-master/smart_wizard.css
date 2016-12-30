@@ -38,7 +38,7 @@
   font: normal 12px Verdana, Arial, Helvetica, sans-serif; 
   color:#5A5655;   
   background-color:#F8F8F8;  
-  height:420px;
+  height:400px;
   text-align:left;
   overflow:visible;    
   z-index:88; 
@@ -105,10 +105,10 @@
   display:block;
   position:relative;
   float:left;
-  margin: 5px 0 0 0;
+  margin: 5px 5px 0 0;
   padding:3px;
   height:70px;
-  width:230px;
+  width:150px;
   text-decoration: none;
   outline-style:none;
   -moz-border-radius  : 5px;

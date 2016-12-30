@@ -10,10 +10,12 @@
     <link rel="stylesheet" href="${res}/iconfont/iconfont.css">
     <link rel="stylesheet" href="${res}/dist/css/AdminLTE.css">
     <link rel="stylesheet" href="${res}/dist/css/skins/_all-skins.css">
-    <link rel="stylesheet" href="${res}/plugins/iCheck/flat/blue.css">
     <style>
         html,body{
             background-color: #f1f1f1;
+        }
+        body{
+        	overflow-y: hidden;
         }
     </style>
 </head>
@@ -22,14 +24,10 @@
             <h1>
                 首页
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
-                <li class="active">首页</li>
-            </ol>
+
         </section>
 
     <!-- Main content -->
-    <section class="content">
       <!-- Small boxes (Stat box) -->
       <div class="row">
         <div class="col-lg-3 col-xs-6">
@@ -121,7 +119,7 @@
       </div>
       <!-- /.row (main row) -->
 
-    </section>
+
 
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <!-- jQuery UI 1.11.4 -->

@@ -20,14 +20,14 @@
         <ul class="sidebar-menu">
             <li class="header">主菜单</li>
             <li class="active treeview">
-                <a href="javascript:void(0);" onclick="left_href('${ctx}','/welcome')">
+                <a href="javascript:void(0);" onclick="left_href(this,'${ctx}','/welcome')">
                     <i class="iconfont icon-th-list"></i>
                     <span>系统首页</span>
                 </a>
             </li>
             <c:forEach var="i" items="${index_permissions}" varStatus="status">
                 <li class="treeview">
-                    <a href="javascript:void(0);" onclick="left_href('${ctx}','${i.url}')">
+                    <a href="javascript:void(0);" onclick="left_href(this,'${ctx}','${i.url}')">
                         <%--<i id="menu_icon_${status.index}"></i>--%>
                         <span>${i.name}</span>
                         <c:if test="${i.childPermission != null && fn:length(i.childPermission) > 0}">
@@ -40,7 +40,7 @@
                         <ul class="treeview-menu">
                             <c:forEach var="child" items="${i.childPermission}">
                                 <li>
-                                    <a href="javascript:void(0);" onclick="left_href('${ctx}','${child.url}')">
+                                    <a href="javascript:void(0);" onclick="left_href(this,'${ctx}','${child.url}')">
                                         <i class="iconfont icon-circle-o"></i>
                                         ${child.name}
                                         <c:if test="${child.childPermission != null && fn:length(child.childPermission) > 0}">
@@ -53,7 +53,7 @@
                                         <ul class="treeview-menu">
                                             <c:forEach var="childs" items="${child.childPermission}">
                                                 <li>
-                                                    <a href="javascript:void(0);" onclick="left_href('${ctx}','${childs.url}')">
+                                                    <a href="javascript:void(0);" onclick="left_href(this,'${ctx}','${childs.url}')">
                                                      <i class="iconfont icon-circle-o"></i> ${childs.name}
                                                     </a>
                                                 </li>
@@ -73,12 +73,14 @@
     <!-- /.sidebar -->
 </aside>
 <script>
-    function left_href(context, href) {
+    function left_href(ts,context, href) {
         if (href) {
+            $(ts).parent().parent().find("li[class='active']").removeClass("active");
+            $(ts).parent().attr("class","active");
             var i = $("<iframe />", {
-                "width": "100%",
                 "align": "center",
                 "id": "main_iframe",
+                "class": "firefoxIframeW",
                 "name": "main_iframe",
                 "frameborder": "0",
                 "src": context + href,

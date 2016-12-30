@@ -189,18 +189,71 @@
             </url>
             <url sort="2" name="日志管理" href="/log/list" funcs="sys-log-list"/>
             <url name="服务引擎配置" sort="3" href="/configServerEngine/list" funcs="sys-configServerEngine-list">
-                <func name="服务引擎配置" sort="1">
+                <func name="创建" sort="1">
                     <code>
-                        sys-configServerEngine-list,
-                        sys-configServerEngine-listData
+                        sys-serverEngine-create
+                    </code>
+                </func>
+                <func name="修改" sort="2">
+                    <code>
+                        sys-serverEngine-edit
+                    </code>
+                </func>
+                <func name="删除" sort="3">
+                    <code>
+                        sys-serverEngine-delete
+                    </code>
+                </func>
+                <func name="查看" sort="4">
+                    <code>
+                        sys-serverEngine-view,
+                        sys-serverEngine-list,
+                        sys-serverEngine-list-data,
+                        sys-serverEngineType-list
+                    </code>
+                </func>
+                <func name="导出" sort="5">
+                    <code>
+                        sys-serverEngine-export
+                    </code>
+                </func>
+                <func name="导入" sort="6">
+                    <code>
+                        sys-serverEngine-import
+                    </code>
+                </func>
+                <func name="查询" sort="7">
+                    <code>
+                        sys-serverEngine-query
                     </code>
                 </func>
             </url>
             <url name="服务扩展属性配置" sort="4" href="/configServiceExtendProperty/list" funcs="sys-configServiceExtendProperty-list">
-                <func name="服务引擎配置" sort="1">
+                <func name="创建" sort="1">
                     <code>
-                        sys-configServiceExtendProperty-list,
-                        sys-configServiceExtendProperty-listData
+                        sys-serviceExtendProperty-create
+                    </code>
+                </func>
+                <func name="修改" sort="2">
+                    <code>
+                        sys-serviceExtendProperty-edit
+                    </code>
+                </func>
+                <func name="删除" sort="3">
+                    <code>
+                        sys-serviceExtendProperty-delete
+                    </code>
+                </func>
+                <func name="查看" sort="4">
+                    <code>
+                        sys-serviceExtendProperty-view,
+                        sys-serviceExtendProperty-list,
+                        sys-serviceExtendProperty-list-data
+                    </code>
+                </func>
+                <func name="查询" sort="7">
+                    <code>
+                        sys-serviceExtendProperty-query
                     </code>
                 </func>
             </url>
@@ -229,18 +282,58 @@
                 </func>
             </url>
 			<url name="图层管理" sort="8" href="/layer/list" funcs="sys-layer-list">
-                <func name="图层管理" sort="1">
+                <func name="创建" sort="1">
                     <code>
+                        sys-layer-create,
+                        service-select,
+                        service-list,
+                        service-type-list,
+                        service-layer-select
+                    </code>
+                </func>
+                <func name="修改" sort="2">
+                    <code>
+                        sys-layer-edit,
+                        sys-select-fields
+                    </code>
+                </func>
+                <func name="删除" sort="3">
+                    <code>
+                        sys-layer-delete
+                    </code>
+                </func>
+                <func name="查看" sort="4">
+                    <code>
+                        sys-layer-view,
                         sys-layer-list,
-                        sys-layer-listData
+                        sys-layer-list-data
                     </code>
                 </func>
             </url>
 			<url name="专题图管理" sort="9" href="/layerTheme/list" funcs="sys-layerTheme-list">
-                <func name="专题图管理" sort="1">
+                <func name="创建" sort="1">
                     <code>
+                        sys-layerTheme-create,
+                        service-select,
+                        service-list,
+                        service-type-list
+                    </code>
+                </func>
+                <func name="修改" sort="2">
+                    <code>
+                        sys-layerTheme-edit
+                    </code>
+                </func>
+                <func name="删除" sort="3">
+                    <code>
+                        sys-layerTheme-delete
+                    </code>
+                </func>
+                <func name="查看" sort="4">
+                    <code>
+                        sys-layerTheme-view,
                         sys-layerTheme-list,
-                        sys-layerTheme-listData
+                        sys-layerTheme-list-data
                     </code>
                 </func>
             </url>
@@ -307,13 +400,13 @@
                     </code>
                 </func>
             </url>
-            <url name="注册服务审核" sort="4" href="/service/auditRegisterList" funcs="service-auditRegister">
+           <!--  <url name="注册服务审核" sort="4" href="/service/auditRegisterList" funcs="service-auditRegister">
                 <func name="注册服务审核" sort="1">
                     <code>
                         service-auditRegister
                     </code>
                 </func>
-            </url>
+            </url> -->
         </module>
         <module name="服务管理" sort="5">
             <url name="服务管理" sort="1" href="/service/list" funcs="service-list">
@@ -355,12 +448,60 @@
                 <func name="查看" sort="8">
                     <code>
                         service-list,
+                        service-listData,
                         service-type-list
                     </code>
                 </func>
                 <func name="编辑" sort="9">
                     <code>
                         service-edit
+                    </code>
+                </func>
+            </url>
+        </module>
+        <module name="系统监控" sort="6">
+            <url name="平台监控" sort="1" href="/platmonitor/list" funcs="sys-platmonitor-list">
+                <func name="查看" sort="1">
+                    <code>
+                        sys-platmonitor-list
+                    </code>
+                </func>
+            </url>
+        </module>
+        
+        <module name="统计分析" sort="6">
+            <url name="服务统计" sort="1" href="/statistics/seviceList" funcs="stat-database-list">
+                <func name="查看" sort="1">
+                    <code>
+                        stat-service-list
+                    </code>
+                </func>
+            </url>
+            <url name="运维系统操作统计" sort="2" href="/statistics/maintenanceOperationList" funcs="stat-maintenanceOperation-list">
+                <func name="查看" sort="1">
+                    <code>
+                        stat-maintenanceOperation-list
+                    </code>
+                </func>
+            </url>
+            <url name="平台数据库统计" sort="3" href="/statistics/databaseList" funcs="stat-database-list">
+                <func name="查看" sort="1">
+                    <code>
+                        stat-database-list
+                    </code>
+                </func>
+            </url>
+            <url name="平台操作系统统计" sort="4" href="/statistics/operatingSystemList" funcs="stat-operatingSystem-list">
+                <func name="查看" sort="1">
+                    <code>
+                        stat-operatingSystem-list
+                    </code>
+                </func>
+            </url>
+            <url name="平台应用服务器统计" sort="5" href="/statistics/applicationServerList" funcs="stat-applicationServer-list">
+                <func name="查看" sort="1">
+                    <code>
+                        stat-applicationServer-list
                     </code>
                 </func>
             </url>

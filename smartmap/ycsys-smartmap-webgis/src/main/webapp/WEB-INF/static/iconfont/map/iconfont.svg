@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
 <svg xmlns="http://www.w3.org/2000/svg">
 <metadata>
-Created by FontForge 20120731 at Tue Dec 20 09:46:07 2016
+Created by FontForge 20120731 at Tue Dec 20 16:30:50 2016
  By admin
 </metadata>
 <defs>
@@ -653,5 +653,15 @@ d="M333 669q-84 -41 -145 -111.5t-89.5 -153t-24 -175.5t45.5 -177l830 405q-41 84 -
 d="M66 644h892v-520h-892v520z" />
     <glyph glyph-name="jiantou1" unicode="&#xe68d;" 
 d="M648 675l-48 -53l209 -194h-746v-88h746l-209 -194l48 -53l313 291z" />
+    <glyph glyph-name="tuwenbiaohui" unicode="&#xe68e;" 
+d="M70 304l21 130q54 288 127 283q24 -1 57 -53t87 -184q5 -14 17.5 -32t30 -35.5t38 -16.5t36.5 27q6 10 15.5 35t19.5 42.5t23 21.5q6 2 14 0t23 -14.5t32.5 -34.5t42.5 -65.5t53 -103.5h-637v0zM510 710q0 -31 22 -52.5t53 -21.5q20 0 37 10q15 8 26 27t11 37
+q0 31 -22 53t-52.5 22t-52.5 -22t-22 -53zM359 -17h-247q-17 0 -29.5 12.5t-12.5 30t12.5 30t29.5 12.5h247q18 0 30.5 -12.5t12.5 -30t-12.5 -30t-30.5 -12.5zM912 137h-800q-17 0 -29.5 12.5t-12.5 30t12.5 30t29.5 12.5h800q17 0 29.5 -12.5t12.5 -30t-12.5 -30
+t-29.5 -12.5z" />
+    <glyph glyph-name="xingzhuang" unicode="&#xe68f;" 
+d="M517 809l-456 -324l172 -524h558l171 520l1 4zM278 15l-150 447l387 273l385 -273l-151 -447h-471zM512 441q-44 0 -75 -31t-31 -75q0 -43 31 -74t75 -31t75 31t31 74q0 44 -31 75t-75 31z" />
+    <glyph glyph-name="xiejiantou-copy" unicode="&#xe690;" 
+d="M958 389h1l-197 94v-68l-697 92v-246l697 99v-59l195 87l2 1h-1z" />
+    <glyph glyph-name="yanweixiejiantou-copy" unicode="&#xe691;" 
+d="M958 390l2 1l-212 101v-76l-684 84l220 -116l-220 -116l684 93v-65l209 93l3 1h-2z" />
   </font>
 </defs></svg>

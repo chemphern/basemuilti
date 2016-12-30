@@ -25,7 +25,7 @@ import java.util.List;
  * MBeanNode
  * @author lixiaoxin
  */
-class MBeanNode implements Serializable {
+public class MBeanNode implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private final String name;

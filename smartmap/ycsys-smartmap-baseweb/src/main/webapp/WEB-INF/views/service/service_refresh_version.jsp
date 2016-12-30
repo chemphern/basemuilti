@@ -48,7 +48,7 @@
 		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
 		form.validate(val_obj);
 		
-		var parentWin = window.parent;
+		var parentWin = window.parent[0];
 		var dialog = parentWin.art.dialog.list["refreshVersionDialog"];
 		var dialog_div = dialog.DOM.wrap;
 		

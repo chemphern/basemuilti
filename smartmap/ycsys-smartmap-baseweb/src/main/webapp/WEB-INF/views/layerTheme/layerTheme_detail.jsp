@@ -61,139 +61,44 @@
 </head>
 <body>
 	<form method="post" id="form_id">
-		<input type="hidden" name="id" value="${layerTheme.id}">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="date_add_table">
+			<tr>
+				<td class="t_r">服务名称：</td>
+				<td>
+					<input type="text" name="serviceName" id="serviceName" value="${layerTheme.service.showName }" class="text" disabled="disabled"/>
+				</td>
+			</tr>
 			<tr>
 				<td class="t_r">服务注册类型：</td>
 				<td>
-					<select type="text" name="registerType" id="registerType" class="text">
-						<option value="0">gis服务注册</option>
-						<option value="1">OneMap服务注册</option>
+					<select type="text" name="registerType" id="registerType" class="text" disabled="disabled">
+						<c:forEach var="map" items="${serviceRegisterType}">
+							<option value="${map.key }">${map.value.name }</option>
+						</c:forEach>
 					</select>
 				</td>
 			</tr>
+			
 			<tr>
 				<td class="t_r">上级图层目录：</td>
 				<td>
-					<select type="text" name="pId" id="layerThemePid" class="text">
-						<c:forEach var="list" items="${lists }">
-							<c:if test="${ not empty list }">
-								<c:if test="${layerTheme.id eq list.id }">
-									<option value="${list.id }" selected="selected">${list.name }</option>
-								</c:if>
-								<c:if test="${layerTheme.id ne list.id }">
-									<option value="${list.id }">${list.name }</option>
-								</c:if>
-							</c:if>
-						</c:forEach>
-					</select>
-					<input type="hidden" name="pId" id="pId"
-					value="${layerTheme.pId}">
+					<input type="text" name="pName" id="pName" value="${layerTheme.parent.name}" class="text" disabled="disabled">
 				</td>
 			</tr>
+			
 			<tr>
 				<td class="t_r">图层名称：</td>
-				<td><input type="text" name="name" id="name" size="15"
-					value="${layerTheme.name }" class="text validate[required]"
-					validate="{required:true,maxlength:15,messages:{required:'必填',maxlength:'结点名称 的字符长度大于15个字符！'}}" /></td>
-			</tr>
-			<tr>
-				<td class="t_r">服务注册：</td>
-				<td>
-				<select type="text" name="service.id" id="serviceId" class="text">
-						<c:forEach var="list" items="${serviceList }">
-							<c:if test="${ not empty list }">
-								<c:if test="${layerTheme.service.id eq list.id }">
-									<option value="${list.id }" selected="selected">${list.registerName }</option>
-								</c:if>
-								<c:if test="${layerTheme.service.id ne list.id }">
-									<option value="${list.id }">${list.registerName }</option>
-								</c:if>
-							</c:if>
-						</c:forEach>
-				</select>	
-				</td>
+				<td><input type="text" name="name" id="name" size="15" disabled="disabled"
+					value="${layerTheme.name }" class="text validate[required]"/></td>
 			</tr>
 		</table>
    </form> 
 </body>
 <script type="text/javascript">
-var treeManager = null;
-var gridManager = null;
-;(function($) { //避免全局依赖,避免第三方破坏
-	$(document).ready(function() {
-		//下拉树
-        var combo = $("#pName").ligerComboBox({
-            width: 200,
-            selectBoxWidth: 200,
-            selectBoxHeight: 200,
-            valueField: 'id',
-            textField:'text',
-            treeLeafOnly:false,
-            isMultiSelect:false,
-            detailPostIdField:"test",
-            //isShowCheckBox: true,
-            tree: { url: '${ctx}/layerTheme/listAll',
-                    checkbox: false,
-                ajaxType: 'get',
-                idFieldName: 'id',
-                parentIDFieldName:'pid'
-                },
-        	onSelected:function(value,text){
-        		$("#pName").val(text);
-        		$("#pid").val(value);
-        	}
-        });
-		});
-	})(jQuery);
-
 	$(function() {
-		//设置下拉的值
-		if("${layerTheme.id}"){
-			var layerThemePid = "${layerTheme.pId}";
-			if(layerThemePid) {
-				$("#layerThemePid option[value="+layerThemePid+"]").attr("selected",true);
-			}
-			var registerType = "${layerTheme.service.registerType}";
-			if(registerType) {
-				$("#registerType option[value="+registerType+"]").attr("selected",true);
-			}
+		if("${layerTheme.service.registerType}") {
+			$("#registerType option[value=${layerTheme.service.registerType}]").attr("selected",true);
 		}
-		var form = $("#form_id");
-		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
-		form.validate(val_obj);
-		
-		var parentWin = window.parent;
-		var dialog = parentWin.art.dialog.list["viewLayerThemeDialog"];
-		var dialog_div = dialog.DOM.wrap;
-		
-		dialog_div.on("ok", function() {
-            var counts = $('div.l-exclamation'); //填的不对的记录数
-			if(counts.length < 1) {
-				$.ajax({
-					type : "POST",
-					url : "${ctx }/layerTheme/save",
-					data : $('#form_id').serialize(),
-					dataType:"json",
-					async : false,
-					error : function(request) {
-						alert("Connection error");
-					},
-					success : function(ret) {
-						alert(ret.msg);
-						if(ret.flag=="1" || ret.flag=="3") {
-							parentWin.treeManager.reload();
-							dialog.close();
-						}
-						parentWin.layerTheme.hideBtn(); //隐藏新增按钮
-					}
-				});
-			}
-			else {
-				alert("请重新填写那些有误的信息！");
-			}
-
-		});
 	});
 </script>
 </html>

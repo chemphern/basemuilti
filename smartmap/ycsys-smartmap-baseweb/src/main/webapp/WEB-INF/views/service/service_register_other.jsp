@@ -40,7 +40,7 @@
   <![endif]-->
 <style>
 html,body {
-	background-color: #ecf0f5
+	background-color: #f1f1f1;
 }
 
 body {
@@ -186,13 +186,20 @@ body {
               <tr>
                 <td class="t_r">元数据访问地址：</td>
                 <td><input type="text" name="metadataVisitAddress" id="metadataVisitAddress"
-						 class="text validate[required]" /></td>
+						 class="text validate[required]" 
+						 validate="{maxlength : 100,messages:{maxlength:'字符长度不能超过100个!'}}"/></td>
               </tr>
               <tr>
                 <td class="t_r">服务分类：</td>
                 <td><input type="text" name="registerType" value="第三方服务" disabled="disabled"
 						id="registerType" class="text validate[required]" /></td>
               </tr>
+              <tr>
+				<td class="t_r">更多属性信息：</td>
+				<td>
+					<input type="checkbox" name="moreProperty" id="moreProperty" value="1"/>
+				</td>
+			 </tr>
             </table>                                     
         </div>
 
@@ -274,7 +281,7 @@ body {
 	    	}, "只能输入英文字母");
 		
 		$(document).ready(function() {
-			var parentWin = window.parent;
+			var parentWin = window.parent[0];
 			var dialog = parentWin.art.dialog.list["registerOtherDialog"];
 			var form = $("#form_id");
 			var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js

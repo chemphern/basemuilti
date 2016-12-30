@@ -39,26 +39,23 @@
         </style>
 </head>
 <body>
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <h1>
-               图层管理
-            </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
-                <li class="active">图层管理</li>
-            </ol>
-        </section>
-		<section class="content">
+<!-- Content Header (Page header) -->
+      <section class="content-header">
+          <h1>
+            	 图层管理
+          </h1>
+      </section>
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-3 col-sm-4">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">图层树</h4>
 						<div class="btn_box" id="layer_btn">
+						<shiro:hasPermission name="sys-layer-create">
 							<button class="current" onclick="layer.add();">
 							<i class="iconfont icon-plus"></i>新增
 							</button>
+						</shiro:hasPermission>
 						</div>
 				
             </div>
@@ -71,14 +68,20 @@
         </div>
     </div>
     <!-- /.col -->
-    <div class="col-md-9">
+    <div class="col-md-9 col-sm-8">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">图层列表</h4>
                 <div class="btn_box">
-                    <button class="current" onclick="layer_list.addLayer();"><i class="iconfont icon-plus"></i>新增</button>
-                	<button onclick="layer_list.editLayer('2');"><i class="iconfont icon-edit"></i>编辑</button>
-                	<button onclick="layer_list.deleteLayer();"><i class="iconfont icon-trash"></i>删除</button>
+                	<shiro:hasPermission name="sys-layer-create">
+	                    <button class="current" onclick="layer_list.addLayer();"><i class="iconfont icon-plus"></i>新增</button>
+	                </shiro:hasPermission>
+	                <shiro:hasPermission name="sys-layer-edit">
+	                	<button onclick="layer_list.editLayer();"><i class="iconfont icon-edit"></i>编辑</button>
+	                </shiro:hasPermission>
+	                <shiro:hasPermission name="sys-layer-delete">
+	                	<button onclick="layer_list.deleteLayer();"><i class="iconfont icon-trash"></i>删除</button>
+	               	</shiro:hasPermission>
                 </div>
             </div>
             <div class="box_l">
@@ -88,7 +91,6 @@
         <!-- /.col -->
     </div>
     </div>
-		</section>
 </body>
 
 <!-- jQuery 2.2.3 -->
@@ -121,17 +123,11 @@
 			//树 start
 	    	$("#tree1").ligerTree(
 		            {
-		                url: "${ctx}/layer/listAll",
+		                url: "${ctx}/layer/listLayerType",
 	                    nodeWidth : 105,
-	                    //idFieldName :'id',
-	                    //parentIDFieldName :'pid',
 	                    idFieldName :'id',
 	                    parentIDFieldName :'pid',
-	                    onSelect : onSelectLayer,
-	                    /* onContextmenu : function(node, e) {
-							actionNodeID = node.data.text;
-							return false;
-						} */
+	                    onSelect : onSelectLayer
 		             }); 
 	    	treeManager = $("#tree1").ligerGetTreeManager();
 	        var menu;
@@ -139,15 +135,20 @@
 	        var actionNodeName;
 	        var pId;
 	        
-	      //树右键处理
+	        //树右键处理
 	        $(function () {
 	            menu = $.ligerMenu({ top: 100, left: 100, width: 120, items:
 	            [
-	            { text: '增加', click: operate, icon: 'add' },
-	            { text: '修改', click: operate },
-	            { text: '删除', click: deleteLayer},
-	            { line: true },
-	            //{ text: '查看', click: see }
+				<shiro:hasPermission name="sys-layer-create">
+	            	{ text: '增加', click: operate, icon: 'add' },
+	            </shiro:hasPermission>
+	            <shiro:hasPermission name="sys-layer-edit">
+	            	{ text: '修改', click: operate },
+	            </shiro:hasPermission>
+	            <shiro:hasPermission name="sys-layer-delete">
+	           		{ text: '删除', click: deleteLayerType},
+	            </shiro:hasPermission>
+	            { line: true }
 	            ]
 	            });
 
@@ -161,7 +162,7 @@
 	            });
 	        });
 	      
-	      //添加或修改图层管理节点
+	        //添加或修改图层管理节点
 	        function operate(item){
 	        	var flag = item.text=='增加'?1:0;
 	        	var layerId = "";
@@ -185,7 +186,7 @@
 	        }
 	    	
 	    	//删除图层节点
-	    	function deleteLayer(item,i) {
+	    	function deleteLayerType(item,i) {
 	    		$.Layer.confirm({
 	                msg:"确定删除该记录吗？",
 	                fn:function(){
@@ -195,42 +196,20 @@
 	                        type:"post",
 	                        dataType:"json",
 	                        success:function(result){
-	            				if(result["result"]=="0") {
-	            			         treeManager.reload();
-	            			         //成功则删除这个树结点
-	            			         //layer_type.removeTreeItem(actionNodeID);
-	            			         //把所有结点都删除了，这时需要把新增按钮显示
-	            			         if(result["showBtnFlag"] == "1") {
-	            			        	 window.layer.showBtn();
-	            			         }
-	            				}
-	            				else if(result["result"]=="1"){
-	            					//alert("该结点下有子结点,不能删除");
-	            					$.Layer.confirm({
-	                	                msg:"该结点下有子结点,不能删除!",
-	                	                fn:function(){
-	                	                 gridManager.reload();
-	                	                }
-	                	            });
-	            				}
-	            				else if(result["result"]=="3"){
-	            					//alert("删除成功！");
-	            					$.Layer.confirm({
-	                	                msg:"删除成功",
-	                	                fn:function(){
-	                	                 treeManager.reload();
-	                	                 gridManager.reload();
-	                	                }
-	                	            });
-	            				}
-	            				else {
-	            					//alert("请选择需要删除的图层!");
-	            					$.Layer.confirm({
-	                	                msg:"请选择需要删除的图层!",
-	                	            });
-	            				}
-	                        },error:function(){
-	                            alert("删除失败！");
+	                        	$.Layer.confirm({
+                	                msg:result["msg"],
+                	                fn:function(){
+                	                	if(result["flag"]=="1"){
+	                	                	treeManager.reload();
+	                	                	gridManager.reload();
+                	                	}
+                	                }
+                	            });
+	                        },
+	                        error:function(){
+	                            $.Layer.confirm({
+                	                msg:"删除失败！"
+                	            });
 	                        }
 	                    });
 	                },
@@ -240,80 +219,69 @@
 	    	
 	    	//树 end
 	    	
-	    	//表格列表 start
-	       gridManager = $("#maingrid4").ligerGrid({
-	            checkbox: true,
-	            columns: [
-							{ display: '图层名称', name: 'name', align: 'left', minWidth: 100},
-							{ display: '几何类型', name: 'geometryType', minWidth: 60,
-								render: function (item) {
-	 	                    	     var obj = item.geometryType;
-	 	                    	    if (obj == 'esriGeometryPoint') {
-	   	                            	 return '点图层';
-	   	                             }
-	   	                             else if(obj == 'esriGeometryPolyline') {
-	   	                            	 return '线图层';
-	   	                             }
-	   	                          	 else if(obj == 'esriGeometryPolygon') {
-	   	                            	 return '面图层';
-	   	                             }
-	 	                    	     /* alert(obj);
-	     	                    	  <c:forEach var="map" items="${geometryType }">
-	     	                    	  		if(obj == "${map.key }") {
-	     	                    	  			return "${map.value.name }";
-	     	                    	  		}
-	 	       						  </c:forEach> */
-	  	                     	}     	
-							},
-		          	        { display: '服务注册名称',  name: 'service.registerName', minWidth: 100 },
-		          	        { display: '服务注册类型', name: 'service.registerType', minWidth: 60,
-		   	                    render: function (item) {
-		   	                    		if(item.service != null){
-		   	                    			var obj = parseInt(item.service.registerType);
-			   	                             if (obj == 0) {
-			   	                            	 return 'GIS服务注册';
-			   	                             }
-			   	                             else if(obj == 1) {
-			   	                            	 return 'OneMap服务注册';
-			   	                             }
-		   	                    		}else{
-		   	                            	 return "";
-		   	                             }
-			    	                 }
-		          	        },
-		          	      	{ display: '远程服务类型', name: 'service.registerName', minWidth: 60 },
-		          			{ display: '操作', 
-		          	        	isSort: false, render: function (rowdata, rowindex, value)
-		                        {
-		                          var h = "";
-		                          if (!rowdata._editing)
-		                          {
-		                        	  h += "<input type='button' class='list-btn bt_edit' onclick='layer_list.editLayer(2,"+ rowdata.id+ ")'/>";
-			                          h += "<input type='button' class='list-btn bt_del' onclick='layer_list.deleteLayer(" + rowdata.id + ")'/>";
-			                          h += "<input type='button' class='list-btn bt_view' onclick='layer_list.viewLayer(" + rowdata.id + ")'/>";
-		                          }
-		                          return h;
-		                        }
-		          			}
-	          	        ], 
-	          	pageSize:30,
-	            url:"${ctx}/layer/listData",
-	            width: '100%',height:'96%'
-	        });
-	    	//表格列表 end
-		});
+	   //表格列表 start
+       gridManager = $("#maingrid4").ligerGrid({
+            checkbox: true,
+            columns: [
+						{ display: '图层名称', name: 'name', align: 'left', minWidth: 100},
+						{ display: '几何类型', name: 'geometryType', minWidth: 60,
+							render: function (item) {
+								var obj = item.geometryType;
+      	                    	  <c:forEach var="map" items="${geometryType }">
+      	                    	  		if(obj == "${map.key }") {
+      	                    	  			return "${map.value.name }";
+      	                    	  		}
+  	       						  </c:forEach>
+  	                     	}     	
+						},
+	          	        { display: '服务名称',  name: 'service.showName', minWidth: 100 },
+	          	        { display: '服务注册类型', name: 'service.registerType', minWidth: 60,
+	   	                    render: function (item) {
+	   	                    		if(item.service != null){
+	   	                    			var obj = parseInt(item.service.registerType);
+	        	                    	  <c:forEach var="map" items="${serviceRegisterType }">
+	        	                    	  		if(obj == "${map.key }") {
+	        	                    	  			return "${map.value.name }";
+	        	                    	  		}
+	    	       						  </c:forEach>
+		   	                             
+	   	                    		}
+	   	                    		else {
+	   	                    			return "";
+	   	                    		}
+		    	                 }
+	          	        },
+	          			{ display: '操作', 
+	          	        	isSort: false, render: function (rowdata, rowindex, value)
+	                        {
+	                          var h = "";
+	                          if (!rowdata._editing)
+	                          {
+	                        	 <shiro:hasPermission name="sys-layer-edit">
+	                        	  	h += "<input type='button' class='list-btn bt_edit' onclick='layer_list.editLayer("+ rowdata.id+ ")'/>";
+	                        	 </shiro:hasPermission>
+	                        	 <shiro:hasPermission name="sys-layer-delete">
+		                         	 h += "<input type='button' class='list-btn bt_del' onclick='layer_list.deleteLayer(" + rowdata.id + ")'/>";
+		                         </shiro:hasPermission>
+		                         <shiro:hasPermission name="sys-layer-view">
+		                          	h += "<input type='button' class='list-btn bt_view' onclick='layer_list.viewLayer(" + rowdata.id + ")'/>";
+		                         </shiro:hasPermission>
+	                          }
+	                          return h;
+	                        }
+	          			}
+          	        ], 
+          	pageSize:30,
+            url:"${ctx}/layer/listData",
+            width: '100%',height:'96%'
+        });
+    	//表格列表 end
+	});
     	
     })(jQuery);	
 
 	//图层管理树操作 function
     var layer = {
-   		//删除数据结点
-   		removeTreeItem: function(actionNodeID) {
-   			var node = treeManager.getDataByID(actionNodeID);
-   			if(node) {
-   	    		treeManager.remove(node);
-   			}
-   		},
    		add:function() {
                var dialog = $.Layer.iframe(
                    {
@@ -338,54 +306,52 @@
 		    		var dialog = $.Layer.iframe(
 			                { 
 			                  id:"viewLayerDialog",
-			                  title: '查看图层管理',
-			                  url:'${ctx}/layer/detail?id='+id,
+			                  title: "查看图层",
+			                  url:"${ctx}/layer/view?id="+id,
 			                  width: 400,
-			                  height: 300,
+			                  height: 500,
 			                  button:[]
 			               });
 				}
 				
 			},
+			//增加图层
 			addLayer:function(){
 				$.Layer.iframe(
 	                { 
-	                  id:"editLayerDialog",
-	                  title: "增加图层管理",
-	                  url:'${ctx}/layer/toAddLayer?actionNodeID='+tempLayerId,
+	                  id:"addLayerDialog",
+	                  title: "增加图层",
+	                  url:"${ctx}/layer/toAddLayer?layerTypeId="+tempLayerId,
 	                  width: 400,
-	                  height: 400
+	                  height: 300
 	               });
 			},
-			//增加或修改图层管理
-			editLayer: function(flag,rowId) {
-			    var actionNodeID = "";
-			    if(flag=='2') {
-			    	if(rowId) {
-			    		actionNodeID = rowId;
+			//修改图层
+			editLayer: function(rowId) {
+				var id = "";
+		    	if(rowId) {
+		    		id = rowId;
+		    	}
+		    	else {
+			    	var selectedRows = gridManager.getSelecteds();
+			    	if(selectedRows.length != 1) {
+			    		$.Layer.confirm({
+	                		msg:"请选择一条记录进行修改！",
+	            		});
+			    		return false;
 			    	}
 			    	else {
-				    	var selectedRows = gridManager.getSelecteds();
-				    	if(selectedRows.length != 1) {
-				    		//alert("请选择一条记录进行修改！");
-				    		$.Layer.confirm({
-		                		msg:"请选择一条记录进行修改！",
-		            		});
-				    		return false;
-				    	}
-				    	else {
-				    		actionNodeID = selectedRows[0].id;
-				    	}
+			    		id = selectedRows[0].id;
 			    	}
-			    }
-				var dialog = $.Layer.iframe(
-		                { 
-		                  id:"editLayerDialog",
-		                  title: flag =='1'?'增加图层管理':'编辑图层管理',
-		                  url:'${ctx}/layer/toEditLayer?flag='+flag+'&actionNodeID='+actionNodeID,
-		                  width: 400,
-		                  height: 400
-		               });
+		    	}
+				$.Layer.iframe(
+	                { 
+	                  id:"editLayerDialog",
+	                  title:"编辑图层",
+	                  url:"${ctx}/layer/toEditLayer?id=" + id,
+	                  width: 400,
+	                  height: 450
+	               });
 				
 			},
 			//删除图层管理
@@ -400,47 +366,23 @@
 		                        type:"post",
 		                        dataType:"json",
 		                        success:function(result){
-		                        	if(result["result"]=="0") {
-		            			         treeManager.reload();
-		            			         /* if(result["showBtnFlag"] == "1") {
-		            			        	 window.layer.showBtn();
-		            			         } */
-		            				}
-		            				else if(result["result"]=="1"){
-		            					//alert("该结点下有子结点，不能删除");
-		            					$.Layer.confirm({
-		                	                msg:"该结点下有子结点，不能删除!",
-		                	                fn:function(){
-		                	                 gridManager.reload();
-		                	                }
-		                	            });
-		            				}
-		            				else if(result["result"]=="3"){
-		            					//alert("删除成功！");
-		            					$.Layer.confirm({
-		                	                msg:"删除成功",
-		                	                fn:function(){
-		                	                 treeManager.reload();
-		                	                 gridManager.reload();
-		                	                }
-		                	            });
-		            				}
-		            				else {
-		            					//alert("请选择行进行删除!");
-		            					$.Layer.confirm({
-		                	                msg:"请选择记录进行删除!",
-		                	            });
-		            				}
-		                        	gridManager.reload();
-		                        },error:function(){
-		                            alert("删除失败！");
+		                        	$.Layer.confirm({
+	                	                msg:result["msg"],
+	                	                fn:function(){
+	                	                	if(result["flag"]=="1"){
+		                	                	treeManager.reload();
+		                	                	gridManager.reload();
+	                	                	}
+	                	                }
+	                	            });
+		                        },
+		                        error:function(){
+		                            $.Layer.confirm({
+	                	                msg:"删除失败！"
+	                	            });
 		                        }
 		                    });
-		                },
-		                fn2:function(){
-		                	gridManager.reload();
 		                }
-		                
 		            });
 		    	}
 		    	else {
@@ -461,48 +403,28 @@
 			                        type:"post",
 			                        dataType:"json",
 			                        success:function(result){
-			                        	if(result["result"]=="0") {
-			            			         treeManager.reload();
-			            			         //成功则删除这个树结点
-			            			         //resource_type.removeTreeItem(actionNodeID);
-			            			         //把所有结点都删除了，这时需要把新增按钮显示
-			            			         if(result["showBtnFlag"] == "1") {
-			            			        	 window.layer.showBtn();
-			            			         }
-			            				}
-			            				else if(result["result"]=="1"){
-			            					//alert("该结点下有子结点，不能删除");
-			            					$.Layer.confirm({
-			                	                msg:"该结点下有子结点，不能删除!",
-			                	                fn:function(){
-			                	                 gridManager.reload();
-			                	                }
-			                	            });
-			            				}
-			            				else if(result["result"]=="3"){
-			            					$.Layer.confirm({
-			                	                msg:"删除成功",
-			                	                fn:function(){
-			                	                 treeManager.reload();
-			                	                 gridManager.reload();
-			                	                }
-			                	            });
-			            				}
-			                        	gridManager.reload();
-			                        },error:function(){
-			                            alert("删除失败！");
+			                        	$.Layer.confirm({
+		                	                msg:result["msg"],
+		                	                fn:function(){
+		                	                	if(result["flag"]=="1"){
+			                	                	treeManager.reload();
+			                	                	gridManager.reload();
+		                	                	}
+		                	                }
+		                	            });
+			                        },
+			                        error:function(){
+			                            $.Layer.confirm({
+		                	                msg:"删除失败！"
+		                	            });
 			                        }
 			                    });
-			                },
-			                fn2:function(){
-			                	gridManager.reload();
 			                }
 			            });
 			    	} 
 			    	else{
-			    		//alert("请选择数据！");
 			    		$.Layer.confirm({
-        	                msg:"请选择记录进行删除!",
+        	                msg:"请选择记录进行删除!"
         	            });
 			    		return false;
 			    	}

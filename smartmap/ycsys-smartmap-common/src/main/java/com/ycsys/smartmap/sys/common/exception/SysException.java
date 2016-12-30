@@ -7,7 +7,7 @@ package com.ycsys.smartmap.sys.common.exception;
  * @author lixiaoxin
  * @date 2016-11-15
  */
-public class SysException extends Exception {
+public class SysException extends RuntimeException {
 
 	private static final long serialVersionUID = -4788824259324634599L;
 

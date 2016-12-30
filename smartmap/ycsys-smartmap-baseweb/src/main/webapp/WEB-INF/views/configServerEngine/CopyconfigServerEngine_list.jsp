@@ -40,7 +40,7 @@
 </head>
 <body>
 <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-2 col-sm-3">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">服务引擎组织</h4>
@@ -54,7 +54,7 @@
         </div>
     </div>
     <!-- /.col -->
-    <div class="col-md-10">
+    <div class="col-md-10 col-sm-9">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">服务引擎列表</h4>

@@ -65,6 +65,7 @@ function searchBack(result){
 		$(opt.headerId).css('display','none');
 		$(opt.resultId).css('display','block');
 		initPager(arrQueryInfoItem,opt,function(page_index){
+			clearResult();
 			var new_content=createPageContentSpatial(page_index);
 			$("#locateItem").empty().append(new_content);
 		});

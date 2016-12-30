@@ -42,23 +42,20 @@
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <h1>
-                专题图层管理
+                专题图管理
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
-                <li class="active">专题图层管理</li>
-            </ol>
         </section>
-		<section class="content">
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-3 col-sm-4">
         <div class="box box-solid">
             <div class="box-header with-border">
-                <h4 class="box-title">图层树</h4>
+                <h4 class="box-title">专题图树</h4>
 						<div class="btn_box" id="layerTheme_btn">
-							<button class="current" onclick="layerTheme.add();">
-							<i class="iconfont icon-plus"></i>新增
-							</button>
+							<shiro:hasPermission name="sys-layerTheme-create">
+								<button class="current" onclick="layerTheme.add();">
+								<i class="iconfont icon-plus"></i>新增
+								</button>
+							</shiro:hasPermission>
 						</div>
 				
             </div>
@@ -71,14 +68,20 @@
         </div>
     </div>
     <!-- /.col -->
-    <div class="col-md-9">
+    <div class="col-md-9 col-sm-8">
         <div class="box box-solid">
             <div class="box-header with-border">
-                <h4 class="box-title">图层列表</h4>
+                <h4 class="box-title">专题图列表</h4>
                 <div class="btn_box">
-                    <button class="current" onclick="layerTheme_list.editLayerTheme('1');"><i class="iconfont icon-plus"></i>新增</button>
-                	<button onclick="layerTheme_list.editLayerTheme('2');"><i class="iconfont icon-edit"></i>编辑</button>
-                	<button onclick="layerTheme_list.deleteLayerTheme();"><i class="iconfont icon-trash"></i>删除</button>
+                	<shiro:hasPermission name="sys-layerTheme-create">
+                    	<button class="current" onclick="layerTheme_list.addLayerTheme();"><i class="iconfont icon-plus"></i>新增</button>
+                    </shiro:hasPermission>
+                	<shiro:hasPermission name="sys-layerTheme-edit">
+                		<button onclick="layerTheme_list.editLayerTheme();"><i class="iconfont icon-edit"></i>编辑</button>
+                	</shiro:hasPermission>
+                	<shiro:hasPermission name="sys-layerTheme-delete">
+                		<button onclick="layerTheme_list.deleteLayerTheme();"><i class="iconfont icon-trash"></i>删除</button>
+                	</shiro:hasPermission>
                 </div>
             </div>
             <div class="box_l">
@@ -88,7 +91,6 @@
         <!-- /.col -->
     </div>
     </div>
-        </section>
 </body>
 
 <!-- jQuery 2.2.3 -->
@@ -122,17 +124,11 @@
 				
 	    	$("#tree1").ligerTree(
 		            {
-		                url: "${ctx}/layerTheme/listAll",
+		                url: "${ctx}/layerTheme/listLayerThemeType",
 	                    nodeWidth : 105,
-	                    //idFieldName :'id',
-	                    //parentIDFieldName :'pid',
 	                    idFieldName :'id',
 	                    parentIDFieldName :'pid',
-	                    onSelect : onSelectLayerTheme,
-	                    /* onContextmenu : function(node, e) {
-							actionNodeID = node.data.text;
-							return false;
-						} */
+	                    onSelect : onSelectLayerTheme
 		             }); 
 	    	treeManager = $("#tree1").ligerGetTreeManager();
 	        var menu;
@@ -144,11 +140,16 @@
 	        $(function () {
 	            menu = $.ligerMenu({ top: 100, left: 100, width: 120, items:
 	            [
-	            { text: '增加', click: operate, icon: 'add' },
-	            { text: '修改', click: operate },
-	            { text: '删除', click: deleteLayerTheme},
-	            { line: true },
-	            //{ text: '查看', click: see }
+				<shiro:hasPermission name="sys-layerTheme-create">
+	            	{ text: '增加', click: operate, icon: 'add' },
+	            </shiro:hasPermission>
+	            <shiro:hasPermission name="sys-layerTheme-edit">
+	            	{ text: '修改', click: operate },
+	            </shiro:hasPermission>
+	            <shiro:hasPermission name="sys-layerTheme-delete">
+	            	{ text: '删除', click: deleteLayerThemeType},
+	            </shiro:hasPermission>
+	            { line: true }
 	            ]
 	            });
 
@@ -162,14 +163,18 @@
 	            });
 	        });
 	      
-	      //添加或修改图层管理节点
+	      //添加或修改专题图节点
 	        function operate(item){
 	        	var flag = item.text=='增加'?1:0;
+	        	var layerThemeId = "";
+	        	if(flag == 0) {
+	        		layerThemeId = actionNodeID;
+	        	}
 	            var dialog = $.Layer.iframe(
 	                {
 	                  id:"editLayerThemeDialog",
-	                  title: item.text+'图层管理',
-	                  url:'${ctx}/layerTheme/toEdit?flag='+flag+'&actionNodeID='+actionNodeID,
+	                  title: item.text+"专题图",
+	                  url:"${ctx}/layerTheme/toEditLayerThemeType?id="+layerThemeId+"&layerThemeTypeId="+actionNodeID,
 	                  width: 400,
 	                  height: 300
 	                });
@@ -181,8 +186,8 @@
 	        	window.gridManager.reload();
 	        }
 	    	
-	    	//删除图层节点
-	    	function deleteLayerTheme(item,i) {
+	    	//删除专题树节点
+	    	function deleteLayerThemeType(item,i) {
 	    		$.Layer.confirm({
 	                msg:"确定删除该记录吗？",
 	                fn:function(){
@@ -192,39 +197,20 @@
 	                        type:"post",
 	                        dataType:"json",
 	                        success:function(result){
-	            				if(result["result"]=="0") {
-	            			         treeManager.reload();
-	            			         if(result["showBtnFlag"] == "1") {
-	            			        	 window.layerTheme.showBtn();
-	            			         }
-	            				}
-	            				else if(result["result"]=="1"){
-	            					//alert("该结点下有子结点,不能删除");
-	            					$.Layer.confirm({
-	                	                msg:"该结点下有子结点,不能删除!",
-	                	                fn:function(){
-	                	                 gridManager.reload();
-	                	                }
+	                        	$.Layer.confirm({
+                	                msg:result["msg"],
+                	                fn:function(){
+                	                	if(result["flag"]=="1"){
+                    	                	treeManager.reload();
+                    	                	gridManager.reload();
+                	                	}
+                	                }
+                	            });
+	                        },
+	                        error:function(){
+	                        	 $.Layer.confirm({
+	                	                msg:"删除失败！"
 	                	            });
-	            				}
-	            				else if(result["result"]=="3"){
-	            					//alert("删除成功！");
-	            					$.Layer.confirm({
-	                	                msg:"删除成功",
-	                	                fn:function(){
-	                	                 treeManager.reload();
-	                	                 gridManager.reload();
-	                	                }
-	                	            });
-	            				}
-	            				else {
-	            					//alert("请选择需要删除的图层!");
-	            					$.Layer.confirm({
-	                	                msg:"请选择需要删除的图层!",
-	                	            });
-	            				}
-	                        },error:function(){
-	                            alert("删除失败！");
 	                        }
 	                    });
 	                },
@@ -239,33 +225,38 @@
 	            checkbox: true,
 	            columns: [
 							{ display: '专题图名称', name: 'name', align: 'left', minWidth: 100},
-		          	        { display: '服务注册名称',  name: 'service.registerName', align: 'left', minWidth: 100 },
-		          	        /* { display: '专题图地址', name: 'address', minWidth: 60}, */
+		          	        { display: '服务名称',  name: 'service.showName', align: 'left', minWidth: 100 },
 		          	        { display: '服务注册类型', name: 'service.registerType', minWidth: 60,
-		          	        	render: function (item) {
-	   	                    		if(item.service != null){
-	   	                    			var obj = parseInt(item.service.registerType);
-		   	                             if (obj == 0) {
-		   	                            	 return 'GIS服务注册';
-		   	                             }
-		   	                             else if(obj == 1) {
-		   	                            	 return 'OneMap服务注册';
-		   	                             }
-	   	                    		}else{
-	   	                            	 return "";
-	   	                             }
-		    	                 }	
-		          	        },
-		          	      	{ display: '远程服务类型', name: 'service.registerName', minWidth: 60 },
+		   	                    render: function (item) {
+		   	                    		if(item.service != null){
+		   	                    			var obj = parseInt(item.service.registerType);
+		        	                    	  <c:forEach var="map" items="${serviceRegisterType }">
+		        	                    	  		if(obj == "${map.key }") {
+		        	                    	  			return "${map.value.name }";
+		        	                    	  		}
+		    	       						  </c:forEach>
+			   	                             
+		   	                    		}
+		   	                    		else {
+		   	                    			return "";
+		   	                    		}
+			    	                 }
+		          	       	 },
 		          			{ display: '操作', 
 		          	        	isSort: false, render: function (rowdata, rowindex, value)
 		                        {
 		                          var h = "";
 		                          if (!rowdata._editing)
 		                          {
-		                        	  h += "<input type='button' class='list-btn bt_edit' onclick='layerTheme_list.editLayerTheme(2,"+ rowdata.id+ ")'/>";
-			                          h += "<input type='button' class='list-btn bt_del' onclick='layerTheme_list.deleteLayerTheme(" + rowdata.id + ")'/>";
-			                          h += "<input type='button' class='list-btn bt_view' onclick='layerTheme_list.viewLayerTheme(" + rowdata.id + ")'/>";
+		                        	  <shiro:hasPermission name="sys-layerTheme-edit">
+		                        	  	h += "<input type='button' class='list-btn bt_edit' onclick='layerTheme_list.editLayerTheme(" + rowdata.id+ ")'/>";
+		                        	  </shiro:hasPermission>
+		                        	  <shiro:hasPermission name="sys-layerTheme-delete">
+		                        	  	h += "<input type='button' class='list-btn bt_del' onclick='layerTheme_list.deleteLayerTheme(" + rowdata.id + ")'/>";
+		                        	  </shiro:hasPermission>
+		                        	  <shiro:hasPermission name="sys-layerTheme-view">
+		                        	  	h += "<input type='button' class='list-btn bt_view' onclick='layerTheme_list.viewLayerTheme(" + rowdata.id + ")'/>";
+		                        	  </shiro:hasPermission>
 		                          }
 		                          return h;
 		                        }
@@ -293,8 +284,8 @@
                var dialog = $.Layer.iframe(
                    {
                      id:"editLayerThemeDialog",
-                     title: '增加图层管理',
-                     url:'${ctx}/layerTheme/toEdit?flag=1',
+                     title: "专题图",
+                     url:"${ctx}/layerTheme/toEditLayerThemeType",
                      width: 400,
                      height: 300
                    });
@@ -306,51 +297,59 @@
    			$("#layerTheme_btn").show();
    		}
     }
-  //图层管理列表操作 function
+    //专题图列表操作 function
 	var layerTheme_list = {
     		viewLayerTheme: function(id) {
 				if(id) {
-		    		var dialog = $.Layer.iframe(
-			                { 
-			                  id:"viewLayerThemeDialog",
-			                  title: '查看图层管理',
-			                  url:'${ctx}/layerTheme/detail?id='+id,
-			                  width: 400,
-			                  height: 300,
-			                  button:[]
-			               });
+		    		$.Layer.iframe(
+		                { 
+		                  id:"viewLayerThemeDialog",
+		                  title: "查看专题图",
+		                  url:"${ctx}/layerTheme/view?id=" + id,
+		                  width: 400,
+		                  height: 280,
+		                  button:[]
+		               });
 				}
 				
 			},
-			//增加或修改图层管理
-			editLayerTheme: function(flag,rowId) {
-			    var actionNodeID = "";
-			    if(flag=='2') {
-			    	if(rowId) {
-			    		actionNodeID = rowId;
+			//增加专题图
+			addLayerTheme:function(){
+				$.Layer.iframe(
+	                { 
+	                  id:"addLayerThemeDialog",
+	                  title: "增加专题图",
+	                  url:"${ctx}/layerTheme/toAddLayerTheme?layerThemeTypeId="+tempLayerThemeId,
+	                  width: 400,
+	                  height: 300
+	               });
+			},
+			//修改专题图
+			editLayerTheme: function(rowId) {
+				var id = "";
+		    	if(rowId) {
+		    		id = rowId;
+		    	}
+		    	else {
+			    	var selectedRows = gridManager.getSelecteds();
+			    	if(selectedRows.length != 1) {
+			    		$.Layer.confirm({
+	                		msg:"请选择一条记录进行修改！",
+	            		});
+			    		return false;
 			    	}
 			    	else {
-				    	var selectedRows = gridManager.getSelecteds();
-				    	if(selectedRows.length != 1) {
-				    		//alert("请选择一条记录进行修改！");
-				    		$.Layer.confirm({
-		                		msg:"请选择一条记录进行修改！",
-		            		});
-				    		return false;
-				    	}
-				    	else {
-				    		actionNodeID = selectedRows[0].id;
-				    	}
+			    		id = selectedRows[0].id;
 			    	}
-			    }
-				var dialog = $.Layer.iframe(
-		                { 
-		                  id:"editLayerThemeDialog",
-		                  title: flag =='1'?'增加图层管理':'编辑图层管理',
-		                  url:'${ctx}/layerTheme/toEditLayerTheme?flag='+flag+'&actionNodeID='+actionNodeID,
-		                  width: 400,
-		                  height: 400
-		               });
+		    	}
+				$.Layer.iframe(
+	                { 
+	                  id:"editLayerThemeDialog",
+	                  title: "编辑专题图",
+	                  url:"${ctx}/layerTheme/toEditLayerTheme?id=" + id,
+	                  width: 400,
+	                  height: 400
+	               });
 				
 			},
 			//删除图层管理
@@ -365,45 +364,23 @@
 		                        type:"post",
 		                        dataType:"json",
 		                        success:function(result){
-		                        	if(result["result"]=="0") {
-		            			         treeManager.reload();
-		            			         /* if(result["showBtnFlag"] == "1") {
-		            			        	 window.layerTheme.showBtn();
-		            			         } */
-		            				}
-		            				else if(result["result"]=="1"){
-		            					//alert("该结点下有子结点，不能删除");
-		            					$.Layer.confirm({
-		                	                msg:"该结点下有子结点，不能删除!",
-		                	                fn:function(){
-		                	                 gridManager.reload();
-		                	                }
-		                	            });
-		            				}
-		            				else if(result["result"]=="3"){
-		            					//alert("删除成功！");
-		            					$.Layer.confirm({
-		                	                msg:"删除成功",
-		                	                fn:function(){
-		                	                 treeManager.reload();
-		                	                 gridManager.reload();
-		                	                }
-		                	            });
-		            				}
-		            				else {
-		            					//alert("请选择行进行删除!");
-		            					$.Layer.confirm({
-		                	                msg:"请选择记录进行删除!",
-		                	            });
-		            				}
-		                        	gridManager.reload();
-		                        },error:function(){
-		                            alert("删除失败！");
+		                        	$.Layer.confirm({
+	                	                msg:result["msg"],
+	                	                fn:function(){
+	                	                	if(result["flag"]=="1"){
+		                	                	treeManager.reload();
+		                	                	gridManager.reload();
+	                	                	}
+	                	                }
+	                	            });
+		            				
+		                        },
+		                        error:function(){
+		                        	$.Layer.confirm({
+	                	                msg:"删除失败！"
+	                	            });
 		                        }
 		                    });
-		                },
-		                fn2:function(){
-		                	gridManager.reload();
 		                }
 		                
 		            });
@@ -426,36 +403,19 @@
 			                        type:"post",
 			                        dataType:"json",
 			                        success:function(result){
-			                        	if(result["result"]=="0") {
-			            			         treeManager.reload();
-			            			         //成功则删除这个树结点
-			            			         //resource_type.removeTreeItem(actionNodeID);
-			            			         //把所有结点都删除了，这时需要把新增按钮显示
-			            			         if(result["showBtnFlag"] == "1") {
-			            			        	 window.layerTheme.showBtn();
-			            			         }
-			            				}
-			            				else if(result["result"]=="1"){
-			            					//alert("该结点下有子结点，不能删除");
-			            					$.Layer.confirm({
-			                	                msg:"该结点下有子结点，不能删除!",
-			                	                fn:function(){
-			                	                 gridManager.reload();
-			                	                }
-			                	            });
-			            				}
-			            				else if(result["result"]=="3"){
-			            					$.Layer.confirm({
-			                	                msg:"删除成功",
-			                	                fn:function(){
-			                	                 treeManager.reload();
-			                	                 gridManager.reload();
-			                	                }
-			                	            });
-			            				}
-			                        	gridManager.reload();
+			                        	$.Layer.confirm({
+		                	                msg:result["msg"],
+		                	                fn:function(){
+		                	                	if(result["flag"]=="1"){
+			                	                	treeManager.reload();
+			                	                	gridManager.reload();
+		                	                	}
+		                	                }
+		                	            });
 			                        },error:function(){
-			                            alert("删除失败！");
+			                        	$.Layer.confirm({
+		                	                msg:"删除失败！"
+		                	            });
 			                        }
 			                    });
 			                },
@@ -465,7 +425,6 @@
 			            });
 			    	} 
 			    	else{
-			    		//alert("请选择数据！");
 			    		$.Layer.confirm({
         	                msg:"请选择记录进行删除!",
         	            });

@@ -2,10 +2,13 @@ package com.ycsys.smartmap.sys.controller;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +38,7 @@ public class ConfigServiceExtendPropertyController {
 
 
 	@RequestMapping("toEdit")
+	@RequiresPermissions(value = "sys-serviceExtendProperty-edit")
 	public String toEdit(String flag, ConfigServiceExtendProperty configServiceExtendProperty, Model model) {
 		// 新增
 		if (null == configServiceExtendProperty.getId()) {
@@ -49,15 +53,20 @@ public class ConfigServiceExtendPropertyController {
 	}
 	
 	//保存服务引擎配置方法
-	@RequestMapping("save")
 	@ResponseBody
-	public String save(ConfigServiceExtendProperty configServiceExtendProperty,Model model,HttpServletRequest request) {
+	@RequestMapping("save")
+	@RequiresPermissions(value = "sys-serviceExtendProperty-edit")
+	public Map<String,String> save(ConfigServiceExtendProperty configServiceExtendProperty,Model model,HttpServletRequest request) {
 		User user = (User) request.getSession().getAttribute(Global.SESSION_USER);
+		Map<String,String> map = new HashMap<String,String>();
+		map.put("msg", "操作失败！");
 		//新增
 		if(configServiceExtendProperty.getId()==null){
 			configServiceExtendProperty.setCreateDate(new Date());
 			configServiceExtendProperty.setCreator(user);
 			configServiceExtendPropertyService.save(configServiceExtendProperty);
+			map.put("msg", "新增成功！");
+			map.put("flag", "1");
 		}
 		//更新
 		else{
@@ -75,32 +84,18 @@ public class ConfigServiceExtendPropertyController {
 			configServiceExtendProperty.setUpdateDate(new Date());
 			configServiceExtendProperty.setUpdator(user);
 			configServiceExtendPropertyService.update(dbConfigServerExtendProperty);
+			map.put("msg", "修改成功！");
+			map.put("flag", "1");
 		}
 		
-		return "success";
+		return map;
 	}
 		
-	//删除多条服务引擎扩展属性
-	/*@RequestMapping("deletes")
-	@ResponseBody
-	public String delete(String idsStr) {
-		String ids[] = idsStr.split(",");
-		if(ids != null && ids.length > 0) {
-			for(String id:ids) {
-				ConfigServiceExtendProperty configServiceExtendProperty = configServiceExtendPropertyService.get(ConfigServiceExtendProperty.class, Integer.parseInt(id));
-				if(configServiceExtendProperty != null) {
-					configServiceExtendPropertyService.delete(configServiceExtendProperty);
-				}
-			}
-			return "success";
-		}
-		else {
-			return "failure";
-		}
-	}*/
 	
-	@RequestMapping("deletes")
+	
 	@ResponseBody
+	@RequestMapping("deletes")
+	@RequiresPermissions(value = "sys-serviceExtendProperty-delete")
 	public ResponseEx delete(String idsStr) {
 		ResponseEx ex = new ResponseEx();
 		String ids[] = idsStr.split(",");
@@ -124,6 +119,7 @@ public class ConfigServiceExtendPropertyController {
 	 */
     @ResponseBody
     @RequestMapping(value="/delete",method = RequestMethod.POST)
+    @RequiresPermissions(value = "sys-serviceExtendProperty-delete")
     public ResponseEx delete(ConfigServiceExtendProperty configServiceExtendProperty){
         ResponseEx ex = new ResponseEx();
         try{
@@ -136,6 +132,7 @@ public class ConfigServiceExtendPropertyController {
     }
 	
 	@RequestMapping("update")
+	@RequiresPermissions(value = "sys-serviceExtendProperty-edit")
 	public String update(ConfigServiceExtendProperty configServiceExtendProperty,Model model) {
 		configServiceExtendPropertyService.update(configServiceExtendProperty);
 		return "";
@@ -143,6 +140,7 @@ public class ConfigServiceExtendPropertyController {
 	
 	//列表列出所有数据
 	@RequestMapping("list")
+	@RequiresPermissions(value = "sys-serviceExtendProperty-list")
 	public String list(Model model){
 		List<ConfigServiceExtendProperty> list = configServiceExtendPropertyService.find("from ConfigServiceExtendProperty c where 1=1 ");
 		model.addAttribute("list", list);
@@ -152,6 +150,7 @@ public class ConfigServiceExtendPropertyController {
 	//查询出填充数据表格的数据
 	@ResponseBody
 	@RequestMapping("/listData")
+	@RequiresPermissions(value = "sys-serviceExtendProperty-list-data")
 	public Grid<ConfigServiceExtendProperty> listData(PageHelper page) {
 		Grid g = new Grid(configServiceExtendPropertyService.find("from ConfigServiceExtendProperty c where 1 = 1",
 				null, page));

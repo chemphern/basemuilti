@@ -15,7 +15,7 @@ $(document).ready(function(){
     });
     //当屏幕在768下隐藏左侧菜单
     var _width = $(window).width(); 
-     if(_width < 769){
+     if(_width < 1023){
          $(".main").addClass('hide-left-menu');
          $("#mapContent").css('left','0px');
          $('.leftBox').css('left','-298px');
@@ -54,6 +54,8 @@ $(document).ready(function(){
         if($(".menu-toggler").is(":visible")){
           $("#navbar-collapse").slideToggle();
         }
+        //一级菜单切换所需要做的操作
+        onModelChangeHandler(index);
     });
 
 
@@ -76,17 +78,25 @@ $(document).ready(function(){
      })
     
     //地图标绘选项卡切换
-    $('.bs-icon-list li').click(function() {
-        $(this).toggleClass('active').siblings().removeClass('active');
-    });
-
+//    $('.bs-icon-list li').click(function() {
+//        $(this).toggleClass('active').siblings().removeClass('active');
+//    });
+    //地图属性查询结果点击改变图标
+//    $('.result li').bind('click',function(){
+//        $(this).toggleClass('active').siblings().removeClass('active');
+//    });
     //地图标绘高级选项面板展开收起
     $(".advanced-box").hide();
-    $('.btn_set').click(function(){
+    $('.btn_set').click(function(e){
+        e.preventDefault();        
         if ($(this).parents().next(".advanced-box").is(':visible')) {
             $(this).parents().next(".advanced-box").slideUp();
+            $(this).next('.btn-group-adv').hide();
+            $(this).removeClass('active');
         }else{
             $(this).parents().next(".advanced-box").slideDown();
+            $(this).next('.btn-group-adv').show();
+            $(this).addClass('active');
         }
     });
     
@@ -183,7 +193,9 @@ $(document).ready(function(){
         $('#mapView-btn-3dmy').addClass('active').siblings().removeClass('active');
         $(".resizable-right").css('display','block');
         $(".resizable-left").css('display','none'); 
-        $(".resizable-right").css('width','100%'); 
+        $(".resizable-right").css('width','100%');
+        //初始加载飞行路径列表
+        getFlyPaths("tableFlyPathForRoam");
     });
     //地图切换按钮
 
@@ -236,7 +248,19 @@ $(document).ready(function(){
             event.stopPropagation();  
     });
 
+    //地区选择
+    var srTargetCity;   
+    $(".city-change-inner").click(function(e){
+         srTargetCity=e.target;
+         $(".city-popup-main").fadeIn();
+    });
 
+    $(".sel-city").on('click','span,li,button.city-pupup-close',function(event) {
+        if (event.target !=srTargetCity) {
+          $(".city-popup-main").fadeOut();
+        }
+    });
+    
     //鼠标拖拽滑块改变div大小
     var doc = $(document), dl = $("div.resizable-left"), dc = $("div.resizable-right");
     var sum = dl.width() * 100 + "%" + dc.width() * 100 + "%" + 

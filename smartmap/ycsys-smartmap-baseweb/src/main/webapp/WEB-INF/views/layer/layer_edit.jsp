@@ -25,7 +25,10 @@
   <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
 
 <!-- jQuery 2.2.3 -->
+<script src="${res}/js/common/form.js"></script>
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
+<script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
+<script src="${res}/plugins/jquery-validation-1.15.1/dist/jquery.validate.min.js" type="text/javascript"></script>
 <!--grid-->
 <script src="${res}/plugins/ligerUI/js/core/base.js" type="text/javascript"></script>
 <script src="${res}/plugins/ligerUI/js/plugins/ligerGrid.js" type="text/javascript"></script>  
@@ -35,20 +38,11 @@
 <script src="${res}/plugins/ligerUI/js/plugins/CustomersData.js" type="text/javascript"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="${res}/bootstrap/js/bootstrap.min.js"></script>
-<!-- jQuery Knob Chart -->
-<!-- Slimscroll 滚动条 -->
-<%-- <!-- AdminLTE App -->
-<script src="${res}/dist/js/app.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="${res}/dist/js/demo.js"></script> --%>
+
 <!-- 封装弹出框dialog -->
 <script type="text/javascript" src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>
 <script type="text/javascript" src="${res}/plugins/dialog/iframeTools.source.js"></script>
 <script type="text/javascript" src="${res}/plugins/dialog/unit.js"></script>
-<script src="${res}/js/common/multiselect.js"></script>
-<script src="${res}/plugins/jquery-validation-1.15.1/dist/jquery.validate.min.js"></script>
-<script src="${res}/plugins/jquery-validation-1.15.1/lib/jquery.form.js"></script>
-<script src="${res}/js/common/form.js"></script>
 <script src="${res}/plugins/ligerUI/js/ligerui.all.js" type="text/javascript"></script>
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -61,173 +55,150 @@
 <body>
 	<form method="post" id="form_id">
 		<input type="hidden" name="id" value="${layer.id}">
+		<input type="hidden" name="geometryType" id="geometryType">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="date_add_table">
 			<tr>
 				<td class="t_r">上级图层目录：</td>
 				<td>
-					<select type="text" name="parent.id" id="parentId" class="text">
-						<c:forEach var="list" items="${lists }">
+					<select type="text" name="parent.id" id="parentId" class="text" disabled="disabled">
+						<c:forEach var="list" items="${layerTypes }">
 							<c:if test="${ not empty list }">
-								<c:if test="${layer.id eq list.id }">
-									<option value="${list.id }" selected="selected">${list.name }</option>
-								</c:if>
-								<c:if test="${layer.id ne list.id }">
-									<option value="${list.id }">${list.name }</option>
-								</c:if>
+								<option value="${list.id }">${list.name }</option>
 							</c:if>
 						</c:forEach>
 					</select>
-					<input type="hidden" name="pId" id="pId" value="${layer.pId}">
 				</td>
 			</tr>
-			<!-- <tr>
-				<td class="t_r">服务注册类型：</td>
-				<td>
-					<select type="text" name="registerType" id="registerType" class="text">
-						<option>...请选择...</option>
-						<option value="0">GIS服务注册</option>
-						<option value="1">OneMap服务注册</option>
-					</select>
-				</td>
-			</tr> -->
 			
 			<tr>
-				<td class="t_r">服务注册：</td>
+				<td class="t_r">服务名称：</td>
 				<td>
-				<select type="text" name="service.id" id="serviceId" class="text">
-						<c:forEach var="list" items="${serviceList }">
-							<c:if test="${ not empty list }">
-								<c:if test="${layer.service.id eq list.id }">
-									<option value="${list.id }" selected="selected">${list.registerName }</option>
-								</c:if>
-								<c:if test="${layer.service.id ne list.id }">
-									<option value="${list.id }">${list.registerName }</option>
-								</c:if>
-							</c:if>
-						</c:forEach>
-				</select>	
+					<input type="text" id="serviceName" disabled="disabled" class="text" value="${layer.service.showName }">
 				</td>
 			</tr>
 			
 			<tr>
 				<td class="t_r">图层名称：</td>
-				<td><input type="text" name="name" id="name" size="15"
-					value="${layer.name }" class="text validate[required]"
-					validate="{required:true,maxlength:15,messages:{required:'必填',maxlength:'结点名称 的字符长度大于15个字符！'}}" /></td>
-			</tr>
-			<tr>
-				<td class="t_r">几何类型：</td>
-				<%-- <td><input type="text" name="geometryType" id="geometryType" size="15"
-					value="${layer.geometryType }" class="text validate[required]"
-					validate="{required:true,maxlength:15,messages:{required:'必填',maxlength:'结点名称 的字符长度大于15个字符！'}}" />
-				</td> --%>
 				<td>
-					<select type="text" name="geometryType" id="geometryType" class="text">
-						<c:forEach var="map" items="${geometryType}">
-							<option value="${map.key }">${map.value.name }</option>
-						</c:forEach>
-					</select>
-			    </td>
+					<input type="text" id="name" name="name" class="text" value="${layer.name }">
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="t_r">nameField：</td>
+				<td>
+					<%-- <textarea name="tempNameField" id="tempNameField" clos="20" rows="15" disabled="disabled"
+						style="width:170px; height:80px; resize:both; overflow:auto;">${layer.nameField }</textarea> --%>
+					<input name="tempNameField" id="tempNameField" class="text" disabled="disabled">
+					<input type="hidden" id="nameField" name="nameField" value="${layer.nameField }">
+					<input type="button" value="选择" onclick="selectFields('1')">
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="t_r">summaryFields：</td>
+				<td>
+					<textarea name="tempSummaryFields" id="tempSummaryFields" clos="20" rows="15" disabled="disabled"
+						style="width:170px; height:80px; resize:both; overflow:auto;">${layer.summaryFields }</textarea>
+					<input type="hidden" id="summaryFields" name="summaryFields" value="${layer.summaryFields }">
+					<input type="button" value="选择" onclick="selectFields('2')">
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="t_r">displayFields：</td>
+				<td>
+					<textarea name="tempDisplayFields" id="tempDisplayFields" clos="20" rows="15" disabled="disabled"
+						style="width:170px; height:80px; resize:both; overflow:auto;">${layer.displayFields }</textarea>
+					<input type="hidden" id="displayFields" name="displayFields" value="${layer.displayFields }">
+					<input type="button" value="选择" onclick="selectFields('3')">
+				</td>
 			</tr>
 		</table>
    </form> 
 </body>
 <script type="text/javascript">
-var treeManager = null;
-var gridManager = null;
-;(function($) { //避免全局依赖,避免第三方破坏
-	$(document).ready(function() {
-		//下拉树
-        var combo = $("#pName").ligerComboBox({
-            width: 200,
-            selectBoxWidth: 200,
-            selectBoxHeight: 200,
-            valueField: 'id',
-            textField:'text',
-            treeLeafOnly:false,
-            isMultiSelect:false,
-            detailPostIdField:"test",
-            //isShowCheckBox: true,
-            tree: { url: '${ctx}/layer/listAll',
-                    checkbox: false,
-                ajaxType: 'get',
-                idFieldName: 'id',
-                parentIDFieldName:'pid'
-                },
-        	onSelected:function(value,text){
-        		$("#pName").val(text);
-        		$("#pid").val(value);
-        	}
-        });
-		});
-	})(jQuery);
-
+	//选择域
+	function selectFields(flag) {
+		$.Layer.iframe(
+	            { 
+	              id:"selectFieldsDialog",
+	              title: "选择域",
+	              url:"${ctx}/layer/toSelectFields?address=${layer.address}&flag=" + flag,
+	              width: 800,
+	              height: 500
+	          });
+	}
 	$(function() {
 		//设置下拉的值
-		if("${layer.id}"){
-			var geometryType = "${layer.geometryType}";
-			if(geometryType) {
-				$("#geometryType option[value="+geometryType+"]").attr("selected",true);
-			}
-			/* var layerPid = "${layer.pId}";
-			if(layerPid) {
-				$("#layerPid option[value="+layerPid+"]").attr("selected",true);
-			} */
-			var registerType = "${layer.service.registerType}";
-			if(registerType) {
-				$("#registerType option[value="+registerType+"]").attr("selected",true);
-			}
+		if("${layer.parent.id}") {
+			$("#parentId option[value=${layer.parent.id}]").attr("selected",true);
 		}
-		var form = $("#form_id");
-		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
-		form.validate(val_obj);
 		
-		var parentWin = window.parent;
+		//选择服务
+		$("#selectServiceBtn").on("click",function(e) {
+			e.preventDefault();
+			$.Layer.iframe(
+	                { 
+	                  id:"selectServiceDialog",
+	                  title: "选择服务",
+	                  url:"${ctx}/service/toSelectService",
+	                  width: 1020,
+	                  height: 500
+	              });
+		});
+		
+		//选择图层 selectLayerBtn
+		$("#selectLayerBtn").on("click",function(e) {
+			e.preventDefault();
+			$.Layer.iframe(
+	                { 
+	                  id:"selectLayerDialog",
+	                  title: "选择服务",
+	                  url:"${ctx}/service/toSelectLayer?id=" + $("#serviceId").val() +"&serviceVisitAddress=" + $("#serviceVisitAddress").val(),
+	                  width: 800,
+	                  height: 500
+	              });
+		});
+		
+		
+		var form = $("#form_id");
+		var parentWin = window.parent[0];
 		var dialog = parentWin.art.dialog.list["editLayerDialog"];
 		var dialog_div = dialog.DOM.wrap;
 		
 		dialog_div.on("ok", function() {
-            var counts = $('div.l-exclamation'); //填的不对的记录数
-			if(counts.length < 1) {
-				$.ajax({
-					type : "POST",
-					url : "${ctx }/layer/save",
-					data : $('#form_id').serialize(),
-					dataType:"json",
-					async : false,
-					error : function(request) {
-						alert("Connection error");
-					},
-					success : function(ret) {
-						dialog.close();
-						if(ret.msg=="新增成功！"){
-							$.Layer.confirm({
-            	                msg:"保存成功！",
-            	                fn:function(){
-            	                 //treeManager.reload();
-            	                 //dialog.close();
-            	                 parentWin.treeManager.reload();
-            	                 parentWin.gridManager.reload();
-            	                }
-            	            });
-						}
-						if(ret.msg=="修改成功！"){
-							$.Layer.confirm({
-            	                msg:"修改成功！",
-            	                fn:function(){
-            	                 parentWin.treeManager.reload();
-            	                 parentWin.gridManager.reload();
-            	                }
-            	            });
-						}	
-					}
-				});
-			}
-			else {
-				alert("请重新填写那些有误的信息！");
-			}
-
+			form.submit();
 		});
+		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
+		val_obj.submitHandler = function(){
+			$.ajax({
+				type : "POST",
+				url : "${ctx }/layer/updateLayer",
+				data : $('#form_id').serialize(),
+				dataType:"json",
+				async : false,
+				error : function(ret) {
+					$.Layer.confirm({
+    	                msg:"connection error!"
+    	            });
+				},
+				success : function(ret) {
+					$.Layer.confirm({
+    	                msg:ret["msg"],
+    	                fn:function(){
+    	                	if(ret["flag"]=="1"){
+    	                		parentWin.gridManager.reload();
+    	    					parentWin.treeManager.reload();
+    	    					dialog.close();
+    	                	}
+    	                }
+    	            });
+				}
+			});
+	    };
+	    form.validate(val_obj);
+		
 	});
 </script>
 </html>

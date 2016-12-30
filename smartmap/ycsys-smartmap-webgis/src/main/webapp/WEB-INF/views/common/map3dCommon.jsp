@@ -48,7 +48,8 @@ function to3dMap(mapExtent) {
 	        alert("Error: " + e.description);
 	    }
 	}else{
-		setExtentTo2dMap();
+	    if( mapOpt != 3)
+			setExtentTo2dMap();
 	}
 	//标识目前显示三维状态
     mapOpt = 3;
@@ -61,7 +62,7 @@ function to3dMap(mapExtent) {
 */
 function OnProjectLoadFinished() {
     //隐藏自有导航控件
-    SwitchNavigateBar();
+//    SwitchNavigateBar();
     //与二维地图关联地图显示范围
     window.setTimeout("setExtentTo2dMap()",500);
   	//初始化试图记录
@@ -176,5 +177,6 @@ function OnInputModeChangedListening(NewMode) {
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/fly.js"></script>
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dQuery.js"></script>
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dService.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dPlot.js"></script>
 </body>
 </html>

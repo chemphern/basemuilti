@@ -89,7 +89,7 @@ public class Service implements java.io.Serializable {
 	private String folderName; //服务的发布目录
 	
 	@Column(name = "cluster_name")
-	private String clusterName;
+	private String clusterName; //服务的集群
 
 	@Column(name = "cache_type", length = 1)
 	private String cacheType;// 服务缓存类型(0:Dynamic;1:Tiled)
@@ -97,10 +97,13 @@ public class Service implements java.io.Serializable {
 	@Column(name = "remote_services_type", length = 1)
 	private String remoteServicesType; //远程服务类型（0：ArcGIS;1:OGC;）
 
-	@Column(name = "service_visit_address", length = 100)
+	@Column(name = "service_visit_address", length = 200)
 	private String serviceVisitAddress;// 服务访问地址
 	
-	@Column(name = "manager_service_url", length = 100)
+	@Column(name = "service_visit_address_open", length = 200)
+	private String serviceVisitAddressOpen;// 服务对外访问地址(二、三维系统用)
+	
+	@Column(name = "manager_service_url", length = 200)
 	private String managerServiceUrl;// 服务管理url(用于启动、停止、删除服务操作)
 	
 	@Column(name = "imagePath")
@@ -109,9 +112,18 @@ public class Service implements java.io.Serializable {
 	@Column(name = "metadata_visit_address", length = 100)
 	private String metadataVisitAddress;// 元数据访问地址
 	
+	@Column(name = "more_property", length = 1)
+	private String moreProperty;//(空:没有更多属性；1：有更多属性)
+
 	@Column(name = "remarks", length = 200)
 	private String remarks; // 备注
-	
+
+	@Column(name="monitor_status")
+	private String monitorStatus;//监控状态
+
+	@Column(name="monitor_rate")
+	private String monitorRate;//监控频率
+
 	@ManyToOne
 	@JoinColumn(name = "server_engine_id")
 	private ConfigServerEngine serverEngine;
@@ -368,6 +380,39 @@ public class Service implements java.io.Serializable {
 
 	public void setAuditOption(String auditOption) {
 		this.auditOption = auditOption;
+	}
+
+	public String getMoreProperty() {
+		return moreProperty;
+	}
+
+	public void setMoreProperty(String moreProperty) {
+		this.moreProperty = moreProperty;
+	}
+
+
+	public String getMonitorStatus() {
+		return monitorStatus;
+	}
+
+	public void setMonitorStatus(String monitorStatus) {
+		this.monitorStatus = monitorStatus;
+	}
+
+	public String getMonitorRate() {
+		return monitorRate;
+	}
+
+	public void setMonitorRate(String monitorRate) {
+		this.monitorRate = monitorRate;
+	}
+
+	public String getServiceVisitAddressOpen() {
+		return serviceVisitAddressOpen;
+	}
+
+	public void setServiceVisitAddressOpen(String serviceVisitAddressOpen) {
+		this.serviceVisitAddressOpen = serviceVisitAddressOpen;
 	}
 	
 }

@@ -44,14 +44,10 @@
             <h1>
                 异常报警配置
             </h1>
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> 系统首页</a></li>
-                <li class="active">异常报警配置</li>
-            </ol>
         </section>
-		<section class="content">
+
 <div class="row">
-    <div class="col-md-3">
+    <div class="col-md-3 col-sm-4">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">异常报警规则</h4>
@@ -65,7 +61,7 @@
         </div>
     </div>
     <!-- /.col -->
-    <div class="col-md-9">
+    <div class="col-md-9 col-sm-8">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">异常报警规则列表</h4>
@@ -73,7 +69,7 @@
                     <button class="current" onclick="addConfigExceptionAlarm('1');"><i class="iconfont icon-plus"></i>增加</button>
                 	<button onclick="addConfigExceptionAlarm('2');"><i class="iconfont icon-edit"></i>编辑</button>
                 	<button onclick="deleteConfigExceptionAlarm();"><i class="iconfont icon-trash"></i>删除</button>
-                	<button class="cog" onclick="addEmailServerConfig();"><i class="glyphicon glyphicon-cog"></i>邮件服务器参数设置</button>
+                	<button class="cog" onclick="addEmailServerConfig();"><i class="glyphicon glyphicon-cog"></i>邮件参数设置</button>
                     <button class="cog" onclick="addSMSConfig();"><i class="glyphicon glyphicon-cog"></i>SMS发送设置</button>
                 </div>
             </div>
@@ -84,7 +80,7 @@
         <!-- /.col -->
     </div>
 </div>
-        </section>
+
 </body>
 
 <!-- jQuery 2.2.3 -->

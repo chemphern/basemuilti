@@ -27,10 +27,7 @@
     .mapcontent .toolbar a{margin-right:8px !important;min-width: 36px;}
     .mapcontent .toolbar h3{display:none !important;}
 }
-@media (min-width: 320px) and  (max-width:769px){
-    .leftBox{left:-298px;}
-    #mapContent{left:0px;}
-}
+
 .fore-core-side>div{display:none;}
 .fore-core-side div.current{display:block;}
 .leftBox .subTabs>div{display:none;}
@@ -93,14 +90,14 @@
 .BMap_stdMpZoom{width:27px;height:180px;top:58px;left:12px;}
 .BMap_stdMpZoom .BMap_button{width:18px;height:18px;left:4px;background:url(../../dist/img/map/earth-control-bg.png) 0 0 no-repeat;overflow:hidden;z-index: 10;cursor:pointer;}
 .BMap_stdMpZoom div.BMap_stdMpPos{background-position:-1px -134px;}
-.BMap_stdMpZoom div.BMap_stdMpZoomIn{background-position:-1px -156px;top:22px;}
-.BMap_stdMpZoom div.BMap_stdMpZoomOut{background-position:-1px -180px;top:190px;}
-.BMap_stdMpZoom div.BMap_stdMpZoomIn:hover{background-position:-31px -156px;}
-.BMap_stdMpZoom div.BMap_stdMpZoomOut:hover{background-position:-31px -180px;}
-.BMap_stdMpSlider{width:6px;height:150px;left:10px;top:40px;}
-.BMap_stdMpSliderBgTop{width:6px;top:0;height:150px;background:url(../../dist/img/map/earth-control-bg.png) -53px -156px no-repeat;overflow:hidden;}
-.BMap_stdMpSliderBar{width:18px;height:18px;left:-5px;background:url(../../dist/img/map/earth-control-bg.png) -32px -135px no-repeat;overflow:hidden;cursor:pointer;}
-.BMap_stdMpSliderBgBot{width:6px;background:url(../../dist/img/map/earth-control-bg.png) -53px 0px no-repeat;bottom:0;overflow:hidden;}
+.BMap_stdMpZoom div.BMap_stdMpZoomIn{background-position:-1px -158px;top:21px;}
+.BMap_stdMpZoom div.BMap_stdMpZoomOut{background-position:-1px -179px;top:200px;}
+.BMap_stdMpZoom div.BMap_stdMpZoomIn:hover{background-position:-31px -158px;}
+.BMap_stdMpZoom div.BMap_stdMpZoomOut:hover{background-position:-31px -179px;}
+.BMap_stdMpSlider{width:6px;height:152px;left:10px;top:43px;}
+.BMap_stdMpSliderBgTop{width:6px;top:-6px;height:164px;background:url(../../dist/img/map/earth-control-bg.png) -53px -153px no-repeat;overflow:hidden;}
+.BMap_stdMpSliderBar{width:18px;height:12px;left:-5px;background:url(../../dist/img/map/earth-control-bg.png) -32px -138px no-repeat;overflow:hidden;cursor:pointer;}
+.BMap_stdMpSliderBgBot{width:6px;background:url(../../dist/img/map/earth-control-bg.png) -53px 0px no-repeat;bottom:-6px;overflow:hidden;}
 /**content tab**/
 .tab-mapBtn{position:absolute;top:55px;right:30px;z-index: 99999;}
 .tab-mapBtn>.mapBtn>button.active, .dropdown-menu>li.active>a:focus, .nav-tabs>li.active>a:hover{background-color: #26bf8c; color:#fff;border:none;border-radius: 0;}
@@ -115,6 +112,25 @@
 .tab-mapBtn .mapBtn .maplayer>li>a:hover{background:none;color:#26bf8c;}
 .tab-mapBtn .mapBtn button.active{background-color: #26bf8c;border:1px solid #26bf8c;color:#fff;}
 .tab-mapBtn .mapBtn .maplayer>li>a.select{background:url(../../dist/img/map/icon-action.png) 4px 13px no-repeat;}
+/* 城市区县选择 */
+.sel-city a.city-change-inner{position:relative;height:34px;min-width:74px;background:#fff;border:1px solid #ccc;padding-right:25px;color:#666;}
+.sel-city .city-change-inner em{width:28px;height:28px;background:url(../../dist/img/map/icon_btn_arrow.png) 12px 0px no-repeat;position: absolute;right:0px;top:0px;}
+.control-shadow{-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);}
+.sel-city .city-popup-triangle-up {position: absolute; left: 99px;top:-10px;  bottom: 0px; display: block; width: 0; height: 0; overflow: hidden; line-height: 0; font-size: 0; vertical-align: middle; border-bottom: 10px solid #fff; border-top: 0 none; border-left: 10px solid transparent; border-right: 10px solid transparent; } 
+.sel-city .city-popup-main{position:absolute;left:-68px;width:342px;height:266px;margin-top:13px;border:0;z-index: 50000;}
+.city-dropdown-menu {position: absolute; top: 100%; left: 0; z-index: 1000; display: none; float: left; min-width: 160px; padding: 5px 0; margin: 2px 0 0; font-size: 14px; text-align: left; list-style: none; background-color: #fff; -webkit-background-clip: padding-box; background-clip: padding-box; border: 1px solid #ccc; border: 1px solid rgba(0, 0, 0, .15); border-radius: 4px; -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, .175); box-shadow: 0 6px 12px rgba(0, 0, 0, .175); }
+.city-title{border-bottom: 1px solid #ececec;height:36px;line-height: 36px;padding-left:10px;color:#666;font-weight: bold;}
+.city-title span{cursor: pointer;}
+.city-popup-main .city-pupup-close{width:24px;height:24px;background:url(../../dist/img/map/icon_popup.png) 0px 0px no-repeat;position:absolute;right:10px;top:10px;border:0;}
+.city-popup-main .city-pupup-close:hover{background-position: 0px -24px;}
+.city-list{padding:10px;height:220px;overflow-y:auto;line-height: 22px;}
+.city-list li.shi{margin-bottom: 6px;}
+.city-list li{cursor: pointer;}
+.city-list li .label{width:50px;text-align: left;color:#666;font-size:14px;float:left;padding:4px 0px;}
+.city-list li .shi-list {width:254px;float:left;}
+.city-list li .shi-list li{float:left;color:#999;padding: 0 4px; outline: 0; text-decoration: none; white-space: nowrap; text-decoration: none; cursor: pointer;}
+.city-title span:hover,.city-list li .label:hover,.city-list li .shi-list li.active,.city-list li .shi-list li:hover {color: #26bf8c;}
 
 .tab-mapCon{max-width: 100%;height:100%;position:relative;z-index: 3;overflow:hidden;padding-bottom: 40px;margin-bottom: -40px;background:url(../../dist/img/map/bg_map.jpg);}
 .tab-mapCon-pane{width:100%;height:100%; float:left;overflow:hidden; display:none;}
@@ -126,3 +142,27 @@
 .resizable-right{width:40%;float:right;}
 .tab-mapCon div.handler{right:0px;background: #ccc;width: 5px;height: 100%;position: absolute;cursor: e-resize;float:left;z-index:2;display:none;}
 #LayoutContainer .container{padding:0px;}
+/* esriPopup */
+.tab-mapCon .esriPopup .esriPopupWrapper{background:#fff;box-shadow: 0 0 0.75em rgba(0,0,0,.15);-webkit-box-shadow: 0 0 0.75em rgba(0,0,0,.15);}
+.tab-mapCon .esriPopup .pointer, .esriPopup .outerPointer{background:#fff;box-shadow: 0 0 0.75em rgba(0,0,0,.15);-webkit-box-shadow: 0 0 0.75em rgba(0,0,0,.15);border-radius: 5px;-webkit-border-radius: 5px;}
+.tab-mapCon .esriPopup .sizer{width:330px;position: relative;z-index: 1;}
+.tab-mapCon .esriPopup .contentPane{background:#fff; position: relative; max-height: 300px; overflow: auto; padding: 10px 6px 6px 10px;color:#666;} 
+.tab-mapCon .esriPopup .titlePane {background-color: #f6f6f6; color: #666; line-height: 30px; padding-left: 15px; border-radius: 5px 5px 0px 0px; -webkit-border-radius: 5px 5px 0px 0px; cursor: default; font-size: 14px; font-weight: bold; border-bottom: 1px solid #ebebeb; }
+.tab-mapCon .esriPopup .titleButton{position: absolute; top: 2px; cursor: pointer; background: url("../../dist/img/map/icon_popup.png") 0 0 no-repeat; } 
+.tab-mapCon .esriPopup .titleButton.close {right: 4px; background-position: 0 0; width: 24px; height: 24px; opacity:1; } 
+.tab-mapCon .esriPopup .titleButton.close:hover {background-position: 0 -24px; } 
+.esriPopup .titleButton.maximize{width:0;height:0px;overflow:hidden;}
+.tab-mapCon .esriPopup .actionsPane{text-align:center;padding:15px 0px;background:#fff;}
+.tab-mapCon .actionList a{display:inline-block;line-height:30px;height:30px;padding:0px 15px;color:#fff;font-family:"微软雅黑";text-align:center;border-radius:5px;background-color:#2b81ff;}
+.tab-mapCon .actionList a:hover{background:#1a7dd9;}
+.tab-mapCon .esriPopup .contentPane table{width:99% !important;border-left: 1px solid #ebebeb;border-top: 1px solid #ebebeb;}
+.tab-mapCon .esriPopup .contentPane table td{padding:0px 10px;border-right: 1px solid #ebebeb;border-bottom: 1px solid #ebebeb;color:#999;font-size:13px;height:20px;line-height:20px;}
+.tab-mapCon .esriPopup .contentPane table td.attrTd{background-color:#f8f8f8;color:#666;width: 100px;padding-top: 3px;padding-bottom: 3px;}
+.tab-mapCon .esriPopup .contentPane table.table-nobd{border:0px;}
+.tab-mapCon .esriPopup .contentPane table.table-nobd td.attrTd {width:27%;text-align:right;background: none; color: #666; padding-left: 5px; padding-right: 0px; } 
+.tab-mapCon .esriPopup .contentPane table.table-nobd td {padding: 0px 10px; color: #999; font-size: 13px; height: 20px; line-height: 20px; border:0px; }
+.tab-mapCon .esriPopup .contentPane table.attrPopFm{border:0px;}
+.tab-mapCon .esriPopup .contentPane table.attrPopFm td.attrTdFm2{width:1%;padding:2px;}
+.tab-mapCon .esriPopup .contentPane table.attrPopFm td.attrTdFm3{padding-left:0px;}
+.tab-mapCon .esriPopup .contentPane table.attrPopFm td.attrTdFm1 {width:27%;text-align:right;background: none; color: #666; padding-left: 5px; padding-right: 0px; } 
+.tab-mapCon .esriPopup .contentPane table.attrPopFm td {padding: 0px 10px; color: #999; font-size: 13px; height: 20px; line-height: 20px; border:0px; }

@@ -331,17 +331,21 @@ function findItemByNameInFolder(folderPath,objectName) {
 
 //三维场景全局清除
 function clearMap3D(){
-	if(ZoomInOutToolGlobe.ZoomInOutType!=""){
+	if(ZoomInOutToolGlobe.ZoomInOutType!=""){//拉框缩放
 		zoomInOutRBUpHandler();
-	}else if(YcMap3D.ProjectTree.FindItem(DrawToolGlobe.DrawToolFolder)!=""){
+	}else if(YcMap3D.ProjectTree.FindItem(DrawToolGlobe.DrawToolFolder)!=""){//绘制
 		if(DrawToolGlobe.DrawOperation!="")
-			endDrawShape();
-		deleteItemsByName(DrawToolGlobe.DrawToolFolder);
-	}else if(YcMap3D.ProjectTree.FindItem(MeasureToolGlobe.MeasureFolder)!=""){
+            DrawTool.deactivate();
+        DrawTool.clear();
+	}else if(YcMap3D.ProjectTree.FindItem(MeasureToolGlobe.MeasureFolder)!=""){//量测
 		if(MeasureToolGlobe.MeasureOperation!="")
-			endMeasureOperation();
+			MeasureTool.deactivate();
 		deleteItemsByName(MeasureToolGlobe.MeasureFolder);
-	}
+	}else if(YcMap3D.ProjectTree.FindItem(PlotToolGlobe.PlotToolFolder)!=""){//标绘
+	    if(PlotToolGlobe.PlotOperation!="")
+	        PlotTool.deactivate();
+        PlotTool.clear();
+    }
     deleteFolderObjects(configration.QueryIcoFolder);
     deleteFolderObjects(configration.QueryDrawFolder);
 }
