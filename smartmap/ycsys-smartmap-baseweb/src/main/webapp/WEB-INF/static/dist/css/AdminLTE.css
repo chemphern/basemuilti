@@ -24,7 +24,7 @@ body {
   font-family: "微软雅黑", "宋体", Arial, sans-serif;
   font-weight: 400;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
   font-size: 14px;
 }
 /*表格页*/
@@ -77,9 +77,9 @@ body {
 /*列表操作*/
 .list-btn{width:16px; height:20px; border:none;margin:10px 13px 0px 0px; cursor:pointer; outline:none;}
 .bt_edit{ background:url(../img/icon_action.png) 0 0px no-repeat;}
-.bt_del{ background:url(../img/icon_action.png) 0 -19px no-repeat;}
-.bt_view{background:url(../img/icon_action.png) 0 -39px no-repeat;}
-.bt_add{background:url(../img/icon_action.png) 0 -430px no-repeat;}
+.bt_del{ background:url(../img/icon_action.png) 0 -23px no-repeat;}
+.bt_view{background:url(../img/icon_action.png) 0 -43px no-repeat;}
+.bt_add{background:url(../img/icon_action.png) 0 -434px no-repeat;}
 
 /**2016.11.14 庾平峰  服务发布**/
 .gis{margin: 20px 0 0 20px;}
@@ -211,7 +211,7 @@ body.hold-transition .main-header .logo {
   margin-left: auto;
   padding-left: 15px;
   padding-right: 15px;
-  padding-top:0px;
+  padding-top:65px;
 }
 /* H1 - H6 font */
 h1,
@@ -253,9 +253,13 @@ a:focus {
  * ----------------------
  */
 .main-header {
-  position: relative;
+  position: fixed;
   max-height: 100px;
   z-index: 1030;
+  overflow:hiden;
+  top:0;
+  right:0;
+  left:0;
 }
 .main-header .navbar {
   -webkit-transition: margin-left 0.3s ease-in-out;
@@ -467,7 +471,7 @@ a:focus {
  */
 .main-sidebar,
 .left-side {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   padding-top: 60px;
@@ -572,7 +576,7 @@ a:focus {
   padding: 0;
 }
 .sidebar-menu > li > a {
-  padding: 12px 5px 12px 15px;
+  padding: 10px 5px 10px 15px;
   display: block;
 }
 .sidebar-menu > li > a > .fa,
@@ -727,7 +731,7 @@ a:focus {
 .main-sidebar .user-panel,
 .sidebar-menu > li.header {
   white-space: nowrap;
-  overflow: hidden;
+  overflow: auto;
 }
 .sidebar-menu:hover {
   overflow: visible;
@@ -775,7 +779,7 @@ a:focus {
   }
 }
 .control-sidebar > .tab-content {
-  padding: 10px 15px;
+  padding: 10px 10px 2px 10px;
 }
 .control-sidebar.control-sidebar-open,
 .control-sidebar.control-sidebar-open + .control-sidebar-bg {
@@ -1650,7 +1654,7 @@ a:focus {
   border-left: 1px solid #f4f4f4;
 }
 .box.box-solid {
-  border-top: 0; min-height: 800px;
+  border-top: 0; min-height: 1200px; border-bottom:0px; height:100%;
 }
 .box.box-solid > .box-header .btn.btn-default {
   background: transparent;
@@ -5045,7 +5049,7 @@ float: right;
   }
 }
 
-.firefoxIframeW { width:100%; }
+.firefoxIframeW { width:100%; height:90%;}
 @-moz-document url-prefix() {    .firefoxIframeW { width:100%   }}
 
 

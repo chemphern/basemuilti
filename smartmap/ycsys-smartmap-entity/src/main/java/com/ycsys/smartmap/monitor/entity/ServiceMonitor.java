@@ -1,22 +1,13 @@
 package com.ycsys.smartmap.monitor.entity;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
+import com.ycsys.smartmap.service.entity.Service;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import com.ycsys.smartmap.service.entity.Service;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 监控服务
@@ -48,11 +39,10 @@ public class ServiceMonitor implements java.io.Serializable {
 	private String monitorAddress; // 监控地址
 
 	@Column(name = "respTime",length = 10)
-	private String respTime; // 响应时间
+	private float respTime; // 响应时间
 
 	@Column(name = "monitor_date")
 	private Date monitorDate; // 监控时间
-
 
 	public Integer getId() {
 		return id;
@@ -86,11 +76,11 @@ public class ServiceMonitor implements java.io.Serializable {
 		this.monitorAddress = monitorAddress;
 	}
 
-	public String getRespTime() {
+	public float getRespTime() {
 		return respTime;
 	}
 
-	public void setRespTime(String respTime) {
+	public void setRespTime(float respTime) {
 		this.respTime = respTime;
 	}
 

@@ -1,39 +1,29 @@
 package com.ycsys.smartmap.sys.task;
 
-import com.ycsys.smartmap.monitor.entity.NativeDbMonitor;
-import com.ycsys.smartmap.monitor.entity.NativeServerMonitor;
-import com.ycsys.smartmap.monitor.entity.NativeTomcatMonitor;
-import com.ycsys.smartmap.monitor.entity.ServiceMonitor;
-import com.ycsys.smartmap.monitor.service.NativeDbMonitorService;
-import com.ycsys.smartmap.monitor.service.NativeServerMonitorService;
-import com.ycsys.smartmap.monitor.service.NativeTomcatMonitorService;
-import com.ycsys.smartmap.monitor.service.ServiceMonitorService;
+import com.ycsys.smartmap.monitor.entity.*;
+import com.ycsys.smartmap.monitor.service.*;
 import com.ycsys.smartmap.service.entity.Service;
+import com.ycsys.smartmap.sys.common.config.parseobject.tomcat.TomcatConnectorStatusObject;
+import com.ycsys.smartmap.sys.common.config.parseobject.tomcat.TomcatMemoryStatusObject;
+import com.ycsys.smartmap.sys.common.config.parseobject.tomcat.TomcatStatusObject;
 import com.ycsys.smartmap.sys.common.jmx.JavaInformations;
 import com.ycsys.smartmap.sys.common.jmx.MemoryInformations;
 import com.ycsys.smartmap.sys.common.jmx.TomcatInformations;
+import com.ycsys.smartmap.sys.common.snmp.*;
 import com.ycsys.smartmap.sys.common.utils.DbMonitorUtil;
 import com.ycsys.smartmap.sys.common.utils.HttpSocketUtil;
-import com.ycsys.smartmap.sys.common.utils.JaxbMapper;
-import com.ycsys.smartmap.sys.task.object.MonitorConstant;
-import com.ycsys.smartmap.sys.common.snmp.*;
+import com.ycsys.smartmap.sys.common.utils.MonitorUtil;
 import com.ycsys.smartmap.sys.entity.ConfigServerMonitor;
-import com.ycsys.smartmap.sys.service.ConfigServerMonitorService;
-import com.ycsys.smartmap.sys.common.config.parseobject.tomcat.TomcatStatusObject;
+import com.ycsys.smartmap.sys.task.object.MonitorConstant;
+import com.ycsys.smartmap.sys.util.NetWorkUtil;
 import com.ycsys.smartmap.sys.util.SpringContextHolder;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.auth.AuthScope;
-import org.apache.http.auth.UsernamePasswordCredentials;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicCredentialsProvider;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.util.EntityUtils;
 
 import javax.servlet.ServletContext;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 监控任务
@@ -41,15 +31,27 @@ import java.util.*;
  */
 public class MonitorTask {
 
-    //收集服务器信息
+    //收集并保存服务器信息
     public void collectServiceInfo(ConfigServerMonitor config) {
             Map<String,Object> res = serviceMonitor(config.getId().toString(),config.getUrl(),config.getSnmpPort(),config.getCommunicate(),config.getMonitorRate());
             if(res != null && String.valueOf(res.get("code")).equals("1")){
-                //SpringContextHolder.getBean("");
+                CpuInfo cpuInfo = (CpuInfo) res.get("cpuInfo");
+                NetAnalyzeInfo netAnalyzeInfo = (NetAnalyzeInfo) res.get("netAnalyzeInfo");
+                ServerMonitorData serverMonitorData = new ServerMonitorData();
+                serverMonitorData.setConfigServerMonitor(config);
+                serverMonitorData.setCpuUsedRate(cpuInfo.getSysRate());
+                serverMonitorData.setMonitorTime(new Date());
+                serverMonitorData.setRate(config.getMonitorRate());
+                serverMonitorData.setRecByte(netAnalyzeInfo.getDurationRecByte());
+                serverMonitorData.setSendByte(netAnalyzeInfo.getDurationSendByte());
+                serverMonitorData.setReceivePackage(netAnalyzeInfo.getDurationRecPack());
+                serverMonitorData.setSendPackage(netAnalyzeInfo.getDurationSendPack());
+                ServerMonitorDataService serverMonitorDataService = SpringContextHolder.getBean("serverMonitorDataService");
+                serverMonitorDataService.save(serverMonitorData);
             }
     }
 
-    public void saveServiceInfo() {
+    /*public void saveServiceInfo() {
         ConfigServerMonitorService configServerMonitorService = SpringContextHolder.getBean("configServerMonitorService");
         MonitorConstant cons = MonitorConstant.getInstance();
         java.text.DecimalFormat df = new java.text.DecimalFormat("#.##");
@@ -61,56 +63,45 @@ public class MonitorTask {
         ses.put("netMap", netMap);
         ses.put("cpus", cpuMap);
         configServerMonitorService.saveServiceInfo(ses);
-    }
+    }*/
 
+    //收集并保存tomcat监控信息
     public void collectTomcatInfo(ConfigServerMonitor config) {
-        BasicCredentialsProvider credentialsProvider = new BasicCredentialsProvider();
-        AuthScope scope = new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM);
-        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(config.getUserName(), config.getUserPassword());
-        credentialsProvider.setCredentials(scope, credentials);
-        CloseableHttpClient httpClient = HttpClientBuilder.create().setDefaultCredentialsProvider(credentialsProvider).build();
-        String result = "";
-        HttpGet httpGet = null;
-        HttpResponse httpResponse = null;
-        HttpEntity entity = null;
-        httpGet = new HttpGet(config.getUrl());
-        String key = config.getId().toString();
-        try {
-            httpResponse = httpClient.execute(httpGet);
-            entity = httpResponse.getEntity();
-            if (entity != null) {
-                //判断格式是否正确
-                String content_type = entity.getContentType().getValue();
-                String[] contents = content_type.split(";");
-                String type = contents[0];
-                if (type != null) {
-                    if (type.trim().equals("text/html")) {
-                        //System.out.println("验证失败");
-                        return;
-                    }
-                    ;
+        TomcatStatusObject tomcatStatusObject = MonitorUtil.getTomcatStatusInfo(config.getUrl(),config.getUserName(),config.getUserPassword());
+        if(tomcatStatusObject != null) {
+            TomcatMonitorData tomcatMonitorData = new TomcatMonitorData();
+            tomcatMonitorData.setMonitorTime(new Date());
+            TomcatMemoryStatusObject memoryStatusObject = tomcatStatusObject.getJvm().getMemory();
+            tomcatMonitorData.setFreeMemory(memoryStatusObject.getFree());
+            tomcatMonitorData.setMaxMemory(memoryStatusObject.getMax());
+            tomcatMonitorData.setMemory(memoryStatusObject.getTotal());
+            List<TomcatConnectorStatusObject> tomcatConnectorStatusObjects = tomcatStatusObject.getConnector();
+            TomcatConnectorStatusObject httpConnector = null;
+            for (TomcatConnectorStatusObject connectorStatusObject : tomcatConnectorStatusObjects) {
+                if (connectorStatusObject.getName().indexOf("http-nio") > -1) {
+                    httpConnector = connectorStatusObject;
                 }
-                result = EntityUtils.toString(entity);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            //System.out.println("连接失败！");
+            tomcatMonitorData.setThread(httpConnector.getThreadInfo().getCurrentThreadCount());
+            tomcatMonitorData.setThreadBusy(httpConnector.getThreadInfo().getCurrentThreadsBusy());
+            tomcatMonitorData.setConfigServerMonitor(config);
+            TomcatMonitorDataService tomcatMonitorDataService = SpringContextHolder.getBean("tomcatMonitorDataService");
+            tomcatMonitorDataService.save(tomcatMonitorData);
         }
-        TomcatStatusObject tomcatStatusObject = JaxbMapper.fromXml(result, TomcatStatusObject.class);
-        MonitorConstant cons = MonitorConstant.getInstance();
-        cons.getTomcatStatusList(key).add(tomcatStatusObject);
+//        MonitorConstant cons = MonitorConstant.getInstance();
+//        cons.getTomcatStatusList(key).add(tomcatStatusObject);
     }
 
     public void collectServiceInfo(Service service) {
         String url = service.getServiceVisitAddress();
         Map<String,Object> res = HttpSocketUtil.sendRequest(url);
-        String resTime = "";
+        long resTime = 0;
         String resCode = "";
         if(String.valueOf(res.get("code")).equals("1")){
-            resTime = (long)res.get("resTime") + "";
+            resTime = (long)res.get("resTime");
             resCode = String.valueOf(res.get("status"));
         }else{
-            resTime = null;
+            resTime = 0;
             resCode = "600";
         }
         ServiceMonitor m = new ServiceMonitor();
@@ -140,7 +131,9 @@ public class MonitorTask {
             monitor.setRecPackage(netAnalyzeInfo.getDurationRecPack());
             monitor.setSendPackage(netAnalyzeInfo.getDurationSendPack());
             monitor.setUsedRate(Double.parseDouble(cpuInfo.getSysRate()));
+            monitor.setMacAddr(NetWorkUtil.getLocalMacAddr());
             monitor.setIp(url);
+            monitor.setNativeIp(NetWorkUtil.getLocalIp());
             nativeServerMonitorService.save(monitor);
         }
     }
@@ -153,6 +146,8 @@ public class MonitorTask {
             db.setTime(new Date());
             db.setType(type);
             db.setConnect(Integer.parseInt(connect));
+            db.setMacAddr(NetWorkUtil.getLocalMacAddr());
+            db.setNativeIp(NetWorkUtil.getLocalIp());
             NativeDbMonitorService nativeDbMonitorService = SpringContextHolder.getBean("nativeDbMonitorService");
             nativeDbMonitorService.save(db);
         }
@@ -177,6 +172,8 @@ public class MonitorTask {
         t.setUsedMemory(usedMemory );
         t.setThread(threadCount);
         t.setThreadBusy(threadBusy);
+        t.setMacAddr(NetWorkUtil.getLocalMacAddr());
+        t.setNativeIp(NetWorkUtil.getLocalIp());
         NativeTomcatMonitorService nativeTomcatMonitorService = SpringContextHolder.getBean("nativeTomcatMonitorService");
         nativeTomcatMonitorService.save(t);
         javaInformations = null;
@@ -192,7 +189,6 @@ public class MonitorTask {
             NetInfo netInfo = snmp.getNetInfo();
             String key = monitorId;
             MonitorConstant cons = MonitorConstant.getInstance();
-            //cons.getCpuInfoList(key).add(cpuInfo);
             NetInfo prev = cons.getNetInfos(key)[0];
             long time = Long.parseLong(rate) * 1000;
             //不能得到分析的网络数据
@@ -225,10 +221,8 @@ public class MonitorTask {
                 //cons.getNetAnalyzeList(key).add(netAnalyzeInfo);
                 cons.getNetInfos(key)[0] = netInfo;
                 CpuInfo cpuInfo = snmp.getCpuInfo();
-                MemoryInfo memoryInfo = snmp.getMemoryInfo();
                 res.put("cpuInfo",cpuInfo);
                 res.put("netAnalyzeInfo",netAnalyzeInfo);
-                res.put("memoryInfo",memoryInfo);
                 res.put("code","1");
             }
         } catch (Exception e) {

@@ -45,16 +45,29 @@ public class LayerTheme implements Serializable {
 	@Column(name = "type")
 	private String type;
 	
-	@Column(name = "address", length = 300)
-	private String address;
+	@Column(name = "show_address", length = 500)
+	private String showAddress; //展示服务地址
+	
+	@Column(name = "query_address", length = 500)
+	private String queryAddress; //查询服务地址
+	
+	@Column(name = "real_address", length = 500)
+	private String realAddress; //展示服务的真实地址
+	
+	@Column(name = "real_address2", length = 500)
+	private String realAddress2; //查询服务的真实地址
 	
 	@ManyToOne
 	@JoinColumn(name = "parent_id")
 	private LayerTheme parent; // 父亲结点
 	
 	@ManyToOne
-	@JoinColumn(name = "service_id")
-	private Service service;
+	@JoinColumn(name = "show_service_id")
+	private Service showService; //展示服务
+	
+	@ManyToOne
+	@JoinColumn(name = "query_service_id")
+	private Service queryService; //查询服务
 	
 	@Column(name = "create_date")
 	private Date createDate; // 创建时间
@@ -70,14 +83,6 @@ public class LayerTheme implements Serializable {
 	@JoinColumn(name = "updator_id")
 	private User updator; // 更新者
 	
-	public Service getService() {
-		return service;
-	}
-
-	public void setService(Service service) {
-		this.service = service;
-	}
-
 	public Integer getId() {
 		return id;
 	}
@@ -109,16 +114,6 @@ public class LayerTheme implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-
-	public String getAddress() {
-		return address;
-	}
-
-	public void setAddress(String address) {
-		this.address = address;
-	}
-
-	
 
 	public String getType() {
 		return type;
@@ -166,6 +161,54 @@ public class LayerTheme implements Serializable {
 
 	public void setUpdator(User updator) {
 		this.updator = updator;
+	}
+	
+	public String getRealAddress() {
+		return realAddress;
+	}
+
+	public void setRealAddress(String realAddress) {
+		this.realAddress = realAddress;
+	}
+
+	public Service getQueryService() {
+		return queryService;
+	}
+
+	public void setQueryService(Service queryService) {
+		this.queryService = queryService;
+	}
+
+	public String getShowAddress() {
+		return showAddress;
+	}
+
+	public void setShowAddress(String showAddress) {
+		this.showAddress = showAddress;
+	}
+
+	public String getQueryAddress() {
+		return queryAddress;
+	}
+
+	public void setQueryAddress(String queryAddress) {
+		this.queryAddress = queryAddress;
+	}
+
+	public String getRealAddress2() {
+		return realAddress2;
+	}
+
+	public void setRealAddress2(String realAddress2) {
+		this.realAddress2 = realAddress2;
+	}
+
+	public Service getShowService() {
+		return showService;
+	}
+
+	public void setShowService(Service showService) {
+		this.showService = showService;
 	}
 	
 }

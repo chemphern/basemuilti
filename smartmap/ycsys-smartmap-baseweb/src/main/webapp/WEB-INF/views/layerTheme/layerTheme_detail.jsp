@@ -63,15 +63,32 @@
 	<form method="post" id="form_id">
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="date_add_table">
 			<tr>
-				<td class="t_r">服务名称：</td>
+				<td class="t_r">展示服务名称：</td>
 				<td>
-					<input type="text" name="serviceName" id="serviceName" value="${layerTheme.service.showName }" class="text" disabled="disabled"/>
+					<input type="text" name="serviceName" id="serviceName" value="${layerTheme.showService.showName }" class="text" disabled="disabled"/>
 				</td>
 			</tr>
 			<tr>
-				<td class="t_r">服务注册类型：</td>
+				<td class="t_r">展示服务注册类型：</td>
 				<td>
 					<select type="text" name="registerType" id="registerType" class="text" disabled="disabled">
+						<c:forEach var="map" items="${serviceRegisterType}">
+							<option value="${map.key }">${map.value.name }</option>
+						</c:forEach>
+					</select>
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="t_r">查询服务名称：</td>
+				<td>
+					<input type="text" value="${layerTheme.queryService.showName }" class="text" disabled="disabled"/>
+				</td>
+			</tr>
+			<tr>
+				<td class="t_r">查询服务注册类型：</td>
+				<td>
+					<select type="text" id="queryServiceRegisterType" class="text" disabled="disabled">
 						<c:forEach var="map" items="${serviceRegisterType}">
 							<option value="${map.key }">${map.value.name }</option>
 						</c:forEach>
@@ -96,9 +113,14 @@
 </body>
 <script type="text/javascript">
 	$(function() {
-		if("${layerTheme.service.registerType}") {
-			$("#registerType option[value=${layerTheme.service.registerType}]").attr("selected",true);
+		if("${layerTheme.showService.registerType}") {
+			$("#registerType option[value=${layerTheme.showService.registerType}]").attr("selected",true);
 		}
+		
+		if("${layerTheme.queryService.registerType}") {
+			$("#queryServiceRegisterType option[value=${layerTheme.queryService.registerType}]").attr("selected",true);
+		}
+		
 	});
 </script>
 </html>

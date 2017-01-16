@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ycsys.smartmap.service.dao.LayerServiceDao;
 import com.ycsys.smartmap.service.entity.Layer;
 import com.ycsys.smartmap.service.service.LayerService;
+import com.ycsys.smartmap.sys.common.annotation.ToLog;
+import com.ycsys.smartmap.sys.common.enums.LogType;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 
 @Transactional
@@ -20,21 +22,25 @@ public class LayerServiceImpl implements LayerService {
 	private LayerServiceDao layerServiceDao;
 	
 	@Override
+	@ToLog(name="新增图层",type= LogType.Layer)
 	public Integer save(Layer o) {
 		return (Integer)layerServiceDao.save(o);
 	}
-
+	
 	@Override
+	@ToLog(name="删除图层",type= LogType.Layer)
 	public void delete(Layer o) {
 		layerServiceDao.delete(o);
 	}
 
 	@Override
+	@ToLog(name="修改图层",type= LogType.Layer)
 	public void update(Layer o) {
 		layerServiceDao.update(o);
 	}
-
+	
 	@Override
+	@ToLog(name="新增或修改图层",type= LogType.Layer)
 	public void saveOrUpdate(Layer o) {
 		layerServiceDao.saveOrUpdate(o);
 	}

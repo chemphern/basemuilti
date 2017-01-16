@@ -69,7 +69,7 @@
 			</tr>
 			
 			<tr>
-				<td class="t_r">服务：</td>
+				<td class="t_r">展示服务：</td>
 				<td>
 					<textarea name="serviceName" id="serviceName" clos="20" rows="15" disabled="disabled"
 						style="width:170px; height:80px; resize:both; overflow:auto;" 

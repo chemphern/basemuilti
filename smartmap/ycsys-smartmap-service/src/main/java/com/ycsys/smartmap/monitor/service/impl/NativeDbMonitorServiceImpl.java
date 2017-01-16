@@ -33,4 +33,10 @@ public class NativeDbMonitorServiceImpl implements NativeDbMonitorService {
 	public List<NativeDbMonitor> find(String hql, List<Object> param) {
 		return nativeDbMonitorDao.find(hql, param);
 	}
+
+	@Override
+	public Object[] findArrValue(String hql, List<Object> params) {
+		// TODO Auto-generated method stub
+		return nativeDbMonitorDao.findArrValue(hql, params);
+	}
 }

@@ -1,12 +1,14 @@
 package com.ycsys.smartmap.sys.dao.impl;
 
 import com.ycsys.smartmap.sys.dao.UserDao;
-import com.ycsys.smartmap.sys.entity.*;
+import com.ycsys.smartmap.sys.entity.User;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 /**
@@ -23,4 +25,22 @@ public class UserDaoImpl extends BaseDaoImpl<User,Integer>  implements UserDao  
         criteria.add(criterion);
         return (User)criteria.uniqueResult();
     }
+
+    @Override
+    public List<Integer> findUsersByRoleIds(List<Integer> ids) {
+        String hql = "select u.id from User u join u.userRoles ur join ur.role r where r.id in (:alist)";
+        Query query=this.getCurrentSession().createQuery(hql);
+        query.setParameterList("alist", ids);
+        return query.list();
+    }
+
+    @Override
+    public List<Integer> findUsersByOrgIds(List<Integer> ids) {
+        String hql = "select id from User where organization.id in (:olist)";
+        Query query=this.getCurrentSession().createQuery(hql);
+        query.setParameterList("olist", ids);
+        return query.list();
+    }
+
+
 }

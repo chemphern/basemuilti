@@ -25,7 +25,7 @@
     <!-- 弹出框 -->
     <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
 </head>
-<body>
+<body >
 <div class="row">
     <div class="col-md-12">
         <div class="box box-solid">

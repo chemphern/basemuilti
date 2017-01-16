@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ycsys.smartmap.sys.common.annotation.ToLog;
+import com.ycsys.smartmap.sys.common.enums.LogType;
 import com.ycsys.smartmap.sys.dao.ConfigServiceExtendPropertyDao;
 import com.ycsys.smartmap.sys.entity.ConfigServiceExtendProperty;
 import com.ycsys.smartmap.sys.entity.PageHelper;
@@ -18,22 +20,26 @@ public class ConfigServiceExtendPropertyServiceImpl implements
 	
 	@Autowired
 	private ConfigServiceExtendPropertyDao configServiceExtendPropertyDao;
-
+	
+	@ToLog(name="新增服务扩展属性",type= LogType.System)
 	public Integer save(ConfigServiceExtendProperty o) {
 		// TODO Auto-generated method stub
 		return (Integer)configServiceExtendPropertyDao.save(o);
 	}
 
+	@ToLog(name="删除服务扩展属性",type= LogType.System)
 	public void delete(ConfigServiceExtendProperty o) {
 		// TODO Auto-generated method stub
 		configServiceExtendPropertyDao.delete(o);
 	}
-
+	
+	@ToLog(name="修改服务扩展属性",type= LogType.System)
 	public void update(ConfigServiceExtendProperty o) {
 		// TODO Auto-generated method stub
 		configServiceExtendPropertyDao.update(o);
 	}
-
+	
+	@ToLog(name="新增或修改服务扩展属性",type= LogType.System)
 	public void saveOrUpdate(ConfigServiceExtendProperty o) {
 		// TODO Auto-generated method stub
 		configServiceExtendPropertyDao.saveOrUpdate(o);

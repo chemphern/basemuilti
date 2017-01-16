@@ -45,23 +45,23 @@
 
   //Dark sidebar skins
   var skin_blue =
-      $("<li />", {style: "float:left; width: 32%; padding: 5px;"})
+      $("<li />", {style: "float:left; width: 32%; padding: 2px;"})
           .append("<a href='javascript:void(0);' data-skin='skin-blue' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.8)' class='clearfix full-opacity-hover'>"
-          + "<div><span style='display:block; width: 100%; float: left; height: 27px; background: #26bf8c;'></span></div>"
+          + "<div><span style='display:block; width: 100%; float: left; height: 40px; background: #26bf8c;'></span></div>"
           + "</a>"
           + "<p class='text-center no-margin'>极简.青</p>");
   skins_list.append(skin_blue);
   var skin_purple =
-      $("<li />", {style: "float:left; width: 32%; padding: 5px;"})
+      $("<li />", {style: "float:left; width: 32%; padding: 2px;"})
           .append("<a href='javascript:void(0);' data-skin='skin-purple' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.8)' class='clearfix full-opacity-hover'>"
-          + "<div><span style='display:block; width: 100%; float: left; height: 27px; background: #1e8bf2;' ></span></div>"
+          + "<div><span style='display:block; width: 100%; float: left; height: 40px; background: #1e8bf2;' ></span></div>"
           + "</a>"
           + "<p class='text-center no-margin'>科技.蓝</p>");
   skins_list.append(skin_purple);
   var skin_green =
-      $("<li />", {style: "float:left; width: 32%; padding: 5px;"})
+      $("<li />", {style: "float:left; width: 32%; padding: 2px;"})
           .append("<a href='javascript:void(0);' data-skin='skin-green' style='display: block; box-shadow: 0 0 3px rgba(0,0,0,0.8)' class='clearfix full-opacity-hover'>"
-          + "<div><span style='display:block; width: 100%; float: left; height: 27px; background: #00a65a;'></span></div>"
+          + "<div><span style='display:block; width: 100%; float: left; height: 40px; background: #00a65a;'></span></div>"
           + "</a>"
           + "<p class='text-center no-margin'>生命.绿</p>");
   skins_list.append(skin_green);
@@ -185,4 +185,13 @@ $("html").click(function(event) {
       $('.control-sidebar').fadeOut();
     });
   }
+  
+  var iframeSrc = null;
+  
+  $(".sidebar-toggle").click(function(){
+	  iframeSrc = $("#main_iframe").attr("src")
+	  setTimeout(function(){
+		  $("#main_iframe").attr("src",iframeSrc)
+	  },300)
+  })
 })(jQuery, $.AdminLTE);

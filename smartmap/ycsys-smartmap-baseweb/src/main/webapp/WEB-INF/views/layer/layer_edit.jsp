@@ -55,7 +55,7 @@
 <body>
 	<form method="post" id="form_id">
 		<input type="hidden" name="id" value="${layer.id}">
-		<input type="hidden" name="geometryType" id="geometryType">
+		<!-- <input type="hidden" name="geometryType" id="geometryType"> -->
 		<table width="100%" border="0" cellpadding="0" cellspacing="0" class="date_add_table">
 			<tr>
 				<td class="t_r">上级图层目录：</td>
@@ -124,7 +124,7 @@
 	            { 
 	              id:"selectFieldsDialog",
 	              title: "选择域",
-	              url:"${ctx}/layer/toSelectFields?address=${layer.address}&flag=" + flag,
+	              url:"${ctx}/layer/toSelectFields?address=${layer.realAddress}&flag=" + flag,
 	              width: 800,
 	              height: 500
 	          });

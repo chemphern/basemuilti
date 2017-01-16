@@ -8,7 +8,7 @@
     <title>羽辰智慧林业综合管理平台-资源管理</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="shortcut icon" href="${res}/images/favicon.ico" />
+    <link rel="shortcut icon" href="${res}/images/favicon.ico"/>
     <!-- Bootstrap 3.3.6 -->
     <link rel="stylesheet" href="${res}/bootstrap/css/bootstrap.css">
     <!-- iconfont -->
@@ -21,33 +21,32 @@
     <!-- iCheck -->
     <link rel="stylesheet" href="${res}/plugins/iCheck/flat/blue.css">
     <!-- list -->
-    <link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
+    <link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css"/>
     <!-- 弹出框 -->
     <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
-        <style>
-        html,body{
+    <style>
+        html, body {
             background-color: #f1f1f1
         }
-        body{
+
+        body {
             overflow-y: hidden;
         }
-        </style>
+    </style>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
-        <!-- Content Header (Page header) -->
-        <section class="content-header">
-            <h1>
-                日志管理
-            </h1>
-        </section>
-
+<section class="content-header">
+    <h1>
+        运维监控日志
+    </h1>
+</section>
 <div class="row">
     <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header with-border">
-                <h4 class="box-title">日志列表</h4>
+                <h4 class="box-title">运维监控日志列表</h4>
                 <div class="btn_box">
-                    <button><i class="iconfont icon-angle-double-up"></i>导出</button>
+                    <button onclick="exportLog()"><i class="iconfont icon-angle-double-up"></i>导出</button>
                 </div>
             </div>
             <div class="box_l">
@@ -81,57 +80,66 @@
 
 </body>
 <script type="text/javascript">
-    ;(function($){
+    Date.prototype.Format = function(fmt)
+    { //author: meizz
+        var o = {
+            "M+" : this.getMonth()+1,                 //月份
+            "d+" : this.getDate(),                    //日
+            "h+" : this.getHours(),                   //小时
+            "m+" : this.getMinutes(),                 //分
+            "s+" : this.getSeconds(),                 //秒
+            "q+" : Math.floor((this.getMonth()+3)/3), //季度
+            "S"  : this.getMilliseconds()             //毫秒
+        };
+        if(/(y+)/.test(fmt))
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        for(var k in o)
+            if(new RegExp("("+ k +")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+        return fmt;
+    };
         //表格列表
         $(function () {
             $("#maingrid4").ligerGrid({
                 checkbox: false,
                 columns: [
-                    { display: '操作名称', name: 'operationName'},
-                    { display: '操作类型', name: 'operationType'},
-                    { display: '服务名称', name: 'serverName' },
-                    { display: '请求ip', name: 'requestIp' },
-                    { display: '请求时间', name: 'start_time' },
-                    { display: '用户', name: 'userId' },
-                    { display: '操作',
-                        render: function (rowdata, rowindex, value)
-                        {
-                            var h = "";
-                            if (!rowdata._editing)
-                            {
-                                h += "<input type='button' class='list-btn bt_del' onclick='yc_delete(" + rowdata.id + ")'/>";
-                            }
-                            return h;
-                        } }
-                ], pageSize:30,
-                url:"${ctx}/log/listData",
-                width: '100%',height:'94%'
+                    {display: '日志时间', name: 'createTime',render:function(rowdata,rowindex,value){
+                        var d = new Date(value).Format("yyyy-MM-dd hh:mm:ss");
+                        return d;
+                    }},
+                    {display: '日志内容', name: 'operationName'},
+                    {
+                        display: '日志类型', name: 'operationType', render: function (rowdata, rowindex, value) {
+                        var levels = ["基础类", "基础类", "服务管理类","资源管理类","统计分析类","图层类","监控类"];
+                        return "调用" + levels[parseInt(value)] + "接口";
+                    }
+                    },
+                    {display: '操作人', name: 'username'},
+                    {display: '请求IP', name: 'requestIp'},
+                    {
+                        display: '日志状态', name: 'status', render: function (rowdata, rowindex, value) {
+                        var levels = ["正常", "正常", "异常"];
+                        return levels[parseInt(value)];
+                    }
+                    },
+                    {display: '备注', name: 'remark'}
+                ], pageSize: 30,
+                url: "${ctx}/log/listData",
+                width: '100%', height: '98%'
             });
         });
-    })(jQuery);
-    function getLigerManager(){
+    function getLigerManager() {
         return $("#maingrid4").ligerGetGridManager();
-    };
-    function yc_delete(id){
-        $.Layer.confirm({
-            msg:"确定删除该项？",
-            fn:function(){
-                $.ajax({
-                    url:"${ctx}/log/delete",
-                    data:{id:id},
-                    type:"post",
-                    dataType:"json",
-                    success:function(res){
-                        alert(res.retMsg);
-                        getLigerManager().loadData();
-                    },error:function(){
-                        alert("删除失败！");
-                    }
-                });
-            },
-            fn2:function(){
-            }
-        });
-    };
+    }
+    function exportLog(){
+        var dialog = $.Layer.iframe(
+            {
+                id:"exportLog",
+                title: '导出运维监控日志',
+                url:'${ctx}/log/exportv',
+                width: 400,
+                height: 220
+            });
+    }
 </script>
 </html>

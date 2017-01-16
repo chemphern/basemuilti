@@ -448,7 +448,7 @@ body {
 						pageSize : 30,
 						url:"${ctx}/service/listService",
 						width : '100%',
-						height : '97%'
+						height : '98%'
 					});
 
 					$("#pageloading").hide();

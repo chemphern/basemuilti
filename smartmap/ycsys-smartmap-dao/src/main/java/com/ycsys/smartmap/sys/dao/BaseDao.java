@@ -72,4 +72,6 @@ public interface BaseDao<T,PK> {
     public List<T> find(String s, PageHelper page);
     
     public Object[] findArrValue(String hql,List<Object> params);
+    
+    public Object[] findArrValue(String hql,List<Object> params,Integer page,Integer pageSize);
 }

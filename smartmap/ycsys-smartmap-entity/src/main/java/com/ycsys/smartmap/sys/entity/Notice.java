@@ -32,7 +32,8 @@ public class Notice implements Serializable{
     private String title;
 
     //内容
-    @Column(name = "content",length=3999)
+    @Lob
+    @Column(name = "content")
     private String content;
     //类型
     @Column(name = "type")
@@ -51,7 +52,7 @@ public class Notice implements Serializable{
     @Column(name = "update_time")
     private Timestamp updateTime;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "notice")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "notice")
     private Set<NoticeReceiver> noticeReceivers = new HashSet<NoticeReceiver>(0);
 
     public Integer getId() {

@@ -129,10 +129,16 @@ public class ResourceController {
 		Map<String, String> map = new HashMap<String, String>();
 		User user = (User) request.getSession().getAttribute(
 				Global.SESSION_USER);
-		String path = request.getSession().getServletContext()
-				.getRealPath("upload" + File.separator + "资源");
+		/*String path = request.getSession().getServletContext()
+				.getRealPath("upload" + File.separator + "资源");*/
 		ResourceType resourceType = resourceTypeService.get(ResourceType.class,
 				resource.getResourceType().getId());
+		String tomcatHome = System.getProperty("catalina.home"); //D:\software1\tomcat\apache-tomcat-8.5.6
+		tomcatHome = tomcatHome.substring(0, tomcatHome.lastIndexOf("\\"));
+		String resourcePath =  tomcatHome +File.separator + "项目文件" + File.separator + "资源";
+		//System.out.println("tomcatHome=" + tomcatHome);
+		String path2 = request.getSession().getServletContext().getRealPath("/");
+		System.out.println("path2= " + path2);
 		// 上传文件处理
 		if (file != null && file.getSize() > 0) {
 			String fileName = file.getOriginalFilename();
@@ -156,10 +162,11 @@ public class ResourceController {
 			for(String s:parentNameList) {
 				sb.append(File.separator).append(s);
 			}
-			path = path + sb.toString();
+			//path = path + sb.toString();
 			//path = path + File.separator + "资源" + File.separator + resourceType.getName();
-			if(!(new File(path).exists())) {
-				new File(path).mkdirs();
+			resourcePath = resourcePath + sb.toString();
+			if(!(new File(resourcePath).exists())) {
+				new File(resourcePath).mkdirs();
 			}
 			
 			List<Resource> rList = null;
@@ -176,7 +183,8 @@ public class ResourceController {
 				String temp[] = fileName.split("\\.");
 				fileName = temp[0] + "("+rList.size() + ")." + temp[1];
 			}
-			File targetFile = new File(path, fileName);
+			//File targetFile = new File(path, fileName);
+			File targetFile = new File(resourcePath, fileName);
 			/*if (!targetFile.exists()) {
 				targetFile.mkdirs();
 			}*/
@@ -186,7 +194,9 @@ public class ResourceController {
 				resource.setUploadPerson(user);
 				resource.setUploadStatus("1");
 				resource.setFileName(fileName);
-				resource.setFilePath(path + File.separator + fileName);
+				//resource.setFilePath(path + File.separator + fileName);
+				resource.setFilePath(resourcePath + File.separator + fileName);
+				
 			} catch (IllegalStateException | IOException e) {
 				map.put("flag", "2");
 				map.put("msg", "上传文件失败！");

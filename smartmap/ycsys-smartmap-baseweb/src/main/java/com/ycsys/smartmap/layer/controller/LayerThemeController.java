@@ -218,12 +218,20 @@ public class LayerThemeController {
 			if(s != null) {
 				LayerTheme lt = new LayerTheme();
 				lt.setType("n");
-				lt.setService(s);
+				lt.setShowService(s);
 				lt.setName(s.getShowName());
 				lt.setCreateDate(new Date());
 				lt.setCreator(user);
 				lt.setParent(layerTheme.getParent());
-				lt.setAddress(s.getServiceVisitAddress());
+				/*String serviceVisitAddressOpen = StringUtils.getUrlSuffix(s.getServiceVisitAddress());
+				String str2 = serviceVisitAddressOpen.substring(0, serviceVisitAddressOpen.indexOf("/"));
+				String str3 = serviceVisitAddressOpen.substring(serviceVisitAddressOpen.indexOf("/"));
+				String ipAddress = StringUtils.getUrlPrefix(s.getServiceVisitAddress());
+				String encodeStr = Base64Util.encode(ipAddress + "/" + str2);
+				serviceVisitAddressOpen = "/arcgis/" + encodeStr + str3;
+				lt.setAddress(serviceVisitAddressOpen);*/
+				lt.setShowAddress(s.getServiceVisitAddressOpen());
+				lt.setRealAddress(s.getServiceVisitAddress());
 				lt.setPId(layerTheme.getParent().getId());
 				
 				List<LayerTheme> rtLists = themeService.find("from LayerTheme t where t.parent.id=" + lt.getParent().getId() +" and t.name='" + lt.getName()+"' and t.id <>" + lt.getId());

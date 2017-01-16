@@ -1,7 +1,6 @@
 package com.ycsys.smartmap.sys.service;
 
 import com.ycsys.smartmap.sys.common.config.parseobject.user.UserRootXmlObject;
-import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.*;
 
 import java.io.Serializable;
@@ -37,4 +36,19 @@ public interface UserService {
     /**所有用户总条数
      * @param orgId**/
     long countAll(String orgId);
+    
+    /**
+     * 根据条件统计数量
+     * @param hql
+     * @param param
+     * @return
+     */
+    long count(String hql, Object[] param);
+
+    List<User> findAll();
+
+    /****/
+    List<String> findUsersByOrgIds(String[] split);
+
+    List<String> findUsersByRoleIds(String[] split);
 }

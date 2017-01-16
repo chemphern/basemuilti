@@ -10,6 +10,7 @@ import com.ycsys.smartmap.sys.entity.ShiroUser;
 import com.ycsys.smartmap.sys.entity.User;
 import com.ycsys.smartmap.sys.entity.UserRole;
 import com.ycsys.smartmap.sys.util.CaptchaException;
+import com.ycsys.smartmap.sys.util.NetWorkUtil;
 import com.ycsys.smartmap.sys.util.UsernamePasswordCaptchaToken;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
@@ -54,6 +55,7 @@ public class UserRealmImpl extends AuthorizingRealm {
 	@Override
 	protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authcToken) throws AuthenticationException {
 		UsernamePasswordCaptchaToken token = (UsernamePasswordCaptchaToken) authcToken;
+		String host = token.getHost();
 		User user = (User)userDao.findByAttr("loginName", token.getUsername());
 		if (user != null&&doCaptchaValidate(token)) {
 			byte[] salt = Encodes.decodeHex(user.getSalt());
@@ -70,6 +72,7 @@ public class UserRealmImpl extends AuthorizingRealm {
 			user.setSuper(is_super);
 			Session session =SecurityUtils.getSubject().getSession();
 			session.setAttribute(Global.SESSION_USER, user);
+			session.setAttribute(Global.NET_ENVIRONMENT, NetWorkUtil.isInnerNet(host));
 			return new SimpleAuthenticationInfo(shiroUser,user.getPassword(), ByteSource.Util.bytes(salt), getName());
 		} else {
 			return null;

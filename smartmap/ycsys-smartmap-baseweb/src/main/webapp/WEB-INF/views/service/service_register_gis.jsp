@@ -51,6 +51,7 @@ body {
 <body>
 <body class="hold-transition skin-blue sidebar-mini">
 <form method="post" action="${ctx }/service/registerGis" id="form_id" enctype="multipart/form-data">
+	<input type="hidden" name="ipAddress" id="ipAddress">
 	<input type="hidden" name="managerServiceUrl" id="managerServiceUrl">
 	<input type="hidden" name="serviceVisitAddressOpen" id="serviceVisitAddressOpen">
 	<input type="hidden" name="folderName" id="folderName">
@@ -403,6 +404,7 @@ body {
 		    					//console.log("serviceVisitAddress="+result.serviceVisitAddress);
 		    					//console.log("managerServiceUrl="+result.managerServiceUrl);
 		    					$("#managerServiceUrl").val(result.managerServiceUrl);
+		    					$("#ipAddress").val(result.ipAddress);
 		    					$("#serviceVisitAddressOpen").val(result.serviceVisitAddressOpen);
 		    					$("#functionType").val(result.functionType);
 		    				},

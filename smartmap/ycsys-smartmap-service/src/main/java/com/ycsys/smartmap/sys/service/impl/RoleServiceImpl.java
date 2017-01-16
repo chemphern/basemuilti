@@ -1,7 +1,9 @@
 package com.ycsys.smartmap.sys.service.impl;
 
+import com.ycsys.smartmap.sys.common.annotation.ToLog;
 import com.ycsys.smartmap.sys.common.config.parseobject.role.RoleRootXmlObject;
 import com.ycsys.smartmap.sys.common.config.parseobject.role.RoleXmlObject;
+import com.ycsys.smartmap.sys.common.enums.LogType;
 import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
 import com.ycsys.smartmap.sys.common.utils.DateUtils;
 import com.ycsys.smartmap.sys.dao.OrganizationDao;
@@ -37,6 +39,7 @@ public class  RoleServiceImpl implements RoleService{
     @Resource
     private PermissionDao permissionDao;
 
+    @ToLog(name="查询所有角色",type= LogType.System)
     @Override
     public List<Role> findAll(PageHelper page) {
         return roleDao.find("from Role",page);

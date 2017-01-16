@@ -41,7 +41,8 @@ function searchBack(result){
 		var pointLyr=new esri.layers.GraphicsLayer({id:"iPointLyr"});
 		var polylineLyr=new esri.layers.GraphicsLayer({id:"iPolylineLyr"});
 		var polygonLyr=new esri.layers.GraphicsLayer({id:"iPolygonLyr"});
-		map.addLayers([polygonLyr,polylineLyr,pointLyr]);
+		var markerLyr=new esri.layers.GraphicsLayer({id:"markerLyr"});
+		map.addLayers([polygonLyr,polylineLyr,pointLyr,markerLyr]);
 		arrFeaturesTemp=[];
 		$.each(result.results,function(k,arr){
 			$.each(arr,function(indx,val){

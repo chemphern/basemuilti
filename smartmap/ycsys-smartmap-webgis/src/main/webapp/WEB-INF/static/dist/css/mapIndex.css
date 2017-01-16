@@ -37,7 +37,7 @@
 .mapcontent{height:100%;position:absolute;top:0px;left:298px; right:0px;bottom:0px;overflow:hidden;z-index: 2;margin:0 !important;padding:0 !important;}
 .mapcontent .toolbar{height:36px;background:rgba(244,251,244,.9);text-align: right;-webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);box-shadow: 0 6px 12px rgba(0,0,0,.175);}
 .mapcontent .toolbar a{line-height:36px;display:inline-block;margin-right:15px;}
-.mapcontent .toolbar .icon{font-size: 16px;color:#26bf8c;font-weight: 600;}
+.mapcontent .toolbar .icon{font-size: 16px;color:#26bf8c;}
 .mapcontent .toolbar h3{font-size: 14px;color:#666;display:inline-block;padding-left:10px;margin:0;}
 
 /**legendBox 图例**/
@@ -130,7 +130,7 @@
 .city-list li .label{width:50px;text-align: left;color:#666;font-size:14px;float:left;padding:4px 0px;}
 .city-list li .shi-list {width:254px;float:left;}
 .city-list li .shi-list li{float:left;color:#999;padding: 0 4px; outline: 0; text-decoration: none; white-space: nowrap; text-decoration: none; cursor: pointer;}
-.city-title span:hover,.city-list li .label:hover,.city-list li .shi-list li.active,.city-list li .shi-list li:hover {color: #26bf8c;}
+.city-title span:hover,.city-list li .label:hover,.city-list li .shi-list li.active,.city-list li .shi-list li:hover {color: #26bf8c;text-decoration:underline;}
 
 .tab-mapCon{max-width: 100%;height:100%;position:relative;z-index: 3;overflow:hidden;padding-bottom: 40px;margin-bottom: -40px;background:url(../../dist/img/map/bg_map.jpg);}
 .tab-mapCon-pane{width:100%;height:100%; float:left;overflow:hidden; display:none;}
@@ -166,3 +166,111 @@
 .tab-mapCon .esriPopup .contentPane table.attrPopFm td.attrTdFm3{padding-left:0px;}
 .tab-mapCon .esriPopup .contentPane table.attrPopFm td.attrTdFm1 {width:27%;text-align:right;background: none; color: #666; padding-left: 5px; padding-right: 0px; } 
 .tab-mapCon .esriPopup .contentPane table.attrPopFm td {padding: 0px 10px; color: #999; font-size: 13px; height: 20px; line-height: 20px; border:0px; }
+/* dialog video */
+.tab-mapCon .esriPopup .sizer_video{width:430px;position: relative;z-index: 1;}
+.tab-mapCon .esriPopup .content_video{width:400px;margin:0 auto;padding:15px;}
+.video-popup-triangle-up {position: absolute; left: 40px; top: 360px; bottom: 0px; display: block; width: 0; height: 0; overflow: hidden; line-height: 0; font-size: 0; vertical-align: middle; border-bottom:0 none ; border-top: 24px solid #fff; border-left: 12px solid transparent; border-right: 12px solid transparent; box-shadow: 0 0 0.75em rgba(0,0,0,.15);-webkit-box-shadow: 0 0 0.75em rgba(0,0,0,.15); -ms-box-shadow: 0 0 0.75em rgba(0,0,0,.15); -moz-box-shadow: 0 0 0.75em rgba(0,0,0,.15); -o-box-shadow: 0 0 0.75em rgba(0,0,0,.15);}
+/* dialog space */
+.tab-mapCon .esriPopup .sizer_space{width:464px;position: relative;z-index: 1;}
+.tab-mapCon .esriPopup .content_space{width:432px;height:340px;margin:0 auto;padding:15px;overflow:hidden;}
+.space_describe{padding:10px 10px 0;line-height:22px;color:#999;}
+.space-tab-content{margin-top:10px;}
+.space-tabs-bd .space-nav-tabs{margin-top:10px;}
+.space-tabs-bd .space-nav-tabs li a{padding:5px;color:#666;}
+.space-tab-content >div{display:none;}
+.space-tab-content div.active{display:block;}
+.space-tabs-bd .nav-tabs > li.active > a,.space-tabs-bd .nav-tabs > li.active > a:hover,.space-tabs-bd .nav-tabs > li.active > a:focus{color:#55cc85;background:#f6f6f6;margin-bottom: 2px;border:0;border-radius: 3px;}
+
+/* dialog 视频监控 */
+.videojkPopupCon .esriPopup .titlePane {background-color: #26bf8c; color: #fff; line-height: 36px; padding-left: 15px; border-radius: 5px 5px 0px 0px; -webkit-border-radius: 5px 5px 0px 0px; cursor: default; font-size: 14px; font-weight: bold; border-bottom: 1px solid #ebebeb; }
+.videojkPopupCon .esriPopup .titleButton{position: absolute; top: 6px; cursor: pointer; background: url("../../dist/img/map/icon_aui_close.png") 0 0 no-repeat; } 
+.videojkPopupCon .esriPopup .titleButton.close {right: 4px; background-position: 0 0; width: 23px; height: 23px; opacity:1; } 
+.videojkPopupCon .esriPopup .titleButton.close:hover {background-position: 0 -23px; } 
+.videojkPopupCon .esriPopup .sizer_video{width:430px;position: relative;z-index: 1;}
+.videojkPopupCon .esriPopup .content_video{overflow:hidden;margin:15px;width:400px;height:300px;position:relative;}
+.videojk_box{width:400px;height:300px;}
+.video-popup-triangle-up {position: absolute; left: 40px; top: 360px; bottom: 0px; display: block; width: 0; height: 0; overflow: hidden; line-height: 0; font-size: 0; vertical-align: middle; border-bottom:0 none ; border-top: 24px solid #fff; border-left: 12px solid transparent; border-right: 12px solid transparent; box-shadow: 0 0 0.75em rgba(0,0,0,.15);-webkit-box-shadow: 0 0 0.75em rgba(0,0,0,.15); -ms-box-shadow: 0 0 0.75em rgba(0,0,0,.15); -moz-box-shadow: 0 0 0.75em rgba(0,0,0,.15); -o-box-shadow: 0 0 0.75em rgba(0,0,0,.15);}
+.videojkPopupCon  .videojk_mainbtn_group{position:absolute;bottom:10px;right:16px;}
+.boxshadow{box-shadow: 0 0 0.75em rgba(0,0,0,.15);-webkit-box-shadow: 0 0 0.75em rgba(0,0,0,.15);-ms-box-shadow: 0 0 0.75em rgba(0,0,0,.15); -moz-box-shadow: 0 0 0.75em rgba(0,0,0,.15); -o-box-shadow: 0 0 0.75em rgba(0,0,0,.15);}
+
+.videojkPopup{background-color:#c7c7c7; min-width: 760px;min-height: 100%; position: relative;overflow:hidden;}
+.videojkPopup  .videojkPopupWrapper{margin:10px;position: relative;}
+.videojkPopup .boxshadow{background-color:#eaeaea;border:6px solid #fff;box-shadow: 0 0 0.75em rgba(0,0,0,.15);-webkit-box-shadow: 0 0 0.75em rgba(0,0,0,.15);-ms-box-shadow: 0 0 0.75em rgba(0,0,0,.15); -moz-box-shadow: 0 0 0.75em rgba(0,0,0,.15); -o-box-shadow: 0 0 0.75em rgba(0,0,0,.15);}
+.videojkPopup .sizer_videojk_full{width:100%;position: relative;z-index: 1;}
+
+.videojkPopup .videojk_content{position: relative;margin-right:200px;float:right;min-width:920px;min-height:690px;}
+.videojk_content .videojk_mainbox{max-height:100%; overflow: hidden;} 
+.videojk_content .videojk_mainbox img{max-width:100%;max-height:100%; }
+.videojkPopup .videojk_content .videojk_mainbtn_group{position:absolute;bottom:10px;right:16px;}
+.vbtn{display:inline-block;margin-left:10px;width:32px;height:32px;border-radius: 5px;background:url("../../dist/img/map/viedo_mainbtn.png") 0 0 no-repeat;}
+.vbtn.btn_video{background-position: 0 0;}
+.vbtn.btn_photo{background-position: -42px 0;}
+.vbtn.btn_vioce{background-position: -84px 0;}
+.vbtn.btn_screen{background-position: -127px 0;}
+
+.videojk_sidebar{position:absolute;top:0px;right:0px;bottom:0;overflow:hidden;width:190px;height:100%;min-height:690px;padding:14px;}
+.videojk_sidebar_con{margin:0 auto;}
+
+.control_direction .dbtn{display:inline-block;float:left;margin:0 5px 5px 0;width:46px;height:46px;border:1px solid #a7a7a7;border-radius: 5px;background-color:#f6f6f6;}
+.control_direction .dbtn:nth-child(3n){margin-right:0;}
+.control_direction .dbtn span{display:inline-block;text-align: center;vertical-align:middle;margin:14px;width:16px;height:16px;background-image:url("../../dist/img/map/video_conbtn.png");background-repeat: no-repeat;}
+.control_direction .btn_tl span{background-position:0 0;}
+.control_direction .btn_tc span{background-position:-23px 0;}
+.control_direction .btn_tr span{background-position:-46px 0;}
+.control_direction .btn_ml span{background-position:0 -30px;}
+.control_direction .btn_mc span{width:28px;height:28px;margin:9px;background-position:-18px -22px;}
+.control_direction .btn_mr span{background-position:-46px -30px;}
+.control_direction .btn_bl span{background-position:0 -60px;}
+.control_direction .btn_bc span{background-position:-25px -60px;}
+.control_direction .btn_br span{background-position:-49px -60px;}
+.control_direction .btn_tl:hover span{background-position:-71px 0;}
+.control_direction .btn_tc:hover span{background-position:-94px 0;}
+.control_direction .btn_tr:hover span{background-position:-117px 0;}
+.control_direction .btn_ml:hover span{background-position:-71px -30px;}
+.control_direction .btn_mc:hover span{background-position:-89px -22px;}
+.control_direction .btn_mr:hover span{background-position:-117px -30px;}
+.control_direction .btn_bl:hover span{background-position:-71px -60px;}
+.control_direction .btn_bc:hover span{background-position:-96px -60px;}
+.control_direction .btn_br:hover span{background-position:-120px -60px;}
+.control_zoom{padding:0 2px;width:148px;height:23px;border:1px solid #a7a7a7;border-radius: 5px;background-color:#f6f6f6;}
+.zbtn{display:inline-block;width:20px;height:20px;text-align: center;vertical-align:middle;background-image:url("../../dist/img/map/video_conbtn.png");background-repeat: no-repeat;}
+.zbtn.btn_minus{background-position: 0px -85px;float:left;}
+.zbtn.btn_add{background-position: -26px -85px;float:right;}
+.zbtn.btn_minus:hover{background-position: -50px -85px;}
+.zbtn.btn_add:hover{background-position: -76px -85px;}
+.control_zoom.slider_bar .slider.slider-horizontal{float:left;width:100px;height:20px;} 
+
+.modified_ul {margin-left:-8px;margin-right:-4px;}
+.modified_ul li{width:33.3%;display:inline-block;float:left;text-align: center;}
+.modified_ul li span{display:inline-block;margin:10px 0;color:#666;text-align: center;}
+.mbtn{display:inline-block;width:35px;height:35px;text-align: center;vertical-align:middle;background-image:url("../../dist/img/map/video_conbtn.png");background-repeat: no-repeat;border:1px solid #a7a7a7;border-radius: 5px;background-color:#f6f6f6;}
+.mbtn.btn_minus_big{background-position: -46px -100px;}
+.mbtn.btn_add_big{background-position: 8px -100px;}
+.mbtn.btn_minus_big:hover{background-position: -70px -100px;}
+.mbtn.btn_add_big:hover{background-position: -16px -100px;}
+
+.preferences .select-item{position:relative;width:148px;height:28px;border:1px solid #a7a7a7;background-color:#f6f6f6;color:#666;}
+.select-btn{position:absolute;right:-1px;top:-1px;bottom:0;width:26px;height:28px;background-image:url("../../dist/img/map/video_conbtn.png");background-repeat: no-repeat;background-position:-124px -106px;}
+.preferences .select-item select.form-control {appearance: none; -webkit-appearance: none; -moz-appearance: none; -ms-appearance: none; border: 0; background: transparent; line-height: 1; }
+.preferences .select-item select.input-sm{height:28px;}
+.preferences .form-group .form-control{width:88px;height:28px;border:1px solid #a7a7a7;background-color:#f6f6f6;color:#666;border-radius: 0;}
+.preferences .form-group label{padding:0;height:23px;line-height:23px;color:#666;float:left;font-weight: normal;}
+.preferences .form-group  .col-sm-8,.form-horizontal .preferences .form-group {margin-left:0;margin-right:0;padding:0;}
+.btn_list .btn{border:1px solid #a7a7a7;border-radius: 5px;background-color:#f6f6f6;padding:4px 25px;}
+
+.slider_box{margin-top:10px;padding:15px 0;border-top: 1px solid #c8c8c8;}
+.slider_item{height:32px;}
+.slider_item label{position:relative;float:left;margin-bottom:0;margin-right:5px;width:32px;height:32px;}
+.slider_item .icon_pic{display:inline-block;width:30px;height:32px;background-image:url("../../dist/img/map/video_conbtn.png");background-repeat: no-repeat;}
+.icon_pic.icon_brightness{background-position:0 -155px;}
+.icon_pic.icon_contrast{background-position:-32px -155px;}
+.icon_pic.icon_saturation{background-position:-60px -155px;}
+.icon_pic.icon_tone{background-position:-90px -155px;}
+
+.slider_bar .slider.slider-horizontal{float:left;width:112px;height:20px;}
+.slider_bar .slider-handle{width:15px;height:15px;background-color: #26bf8c;border:1px solid #63a08c;background-image:none;}
+.slider_bar .slider.slider-horizontal .slider-handle{margin-top:-8px;margin-left:-13px;}
+.slider_bar .slider-selection{background-color:#c2e8db;background-image:none;box-shadow:none;}
+.slider_bar .slider-track{border:1px solid #a7a7a7;background-color:#f6f6f6;box-shadow:none;}
+.videojk_sidebar button.btn-reset{background-color:#26bf8c;color:#fff; border-color: #26bf8c;}
+.videojk_sidebar button.btn-reset:hover{color: #fff; background-color: #21a67a; border-color: #21a67a;}

@@ -1,12 +1,7 @@
 package com.ycsys.smartmap.sys;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.servlet.ServletContext;
-
 import com.ycsys.smartmap.service.entity.Service;
 import com.ycsys.smartmap.service.service.ServiceService;
-import com.ycsys.smartmap.sys.advise.ExceptionAdvise;
 import com.ycsys.smartmap.sys.common.config.parseobject.org.OrgRootXmlObject;
 import com.ycsys.smartmap.sys.common.config.parseobject.permission.PermissionXmlObject;
 import com.ycsys.smartmap.sys.common.config.parseobject.role.RoleRootXmlObject;
@@ -15,9 +10,9 @@ import com.ycsys.smartmap.sys.common.config.parseobject.user.UserRootXmlObject;
 import com.ycsys.smartmap.sys.common.schedule.CronUtil;
 import com.ycsys.smartmap.sys.common.schedule.JobTaskManager;
 import com.ycsys.smartmap.sys.common.schedule.ScheduleJob;
-import com.ycsys.smartmap.sys.common.snmp.SnmpBase;
 import com.ycsys.smartmap.sys.common.utils.DbMonitorUtil;
 import com.ycsys.smartmap.sys.common.utils.HttpSocketUtil;
+import com.ycsys.smartmap.sys.common.utils.MonitorUtil;
 import com.ycsys.smartmap.sys.service.*;
 import com.ycsys.smartmap.sys.util.XmlParseObjectUtil;
 import org.quartz.SchedulerException;
@@ -27,6 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.ServletContextAware;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import javax.servlet.ServletContext;
 import java.io.InputStream;
 import java.util.*;
 
@@ -205,27 +203,27 @@ public class Initialization implements ServletContextAware {
 			String port = properties.getProperty("snmp.port");
 			String communicate = properties.getProperty("snmp.communicate");
 			/**测试地址是否能连通**/
-			SnmpBase base = new SnmpBase(url,port , communicate);
-			base.snmpGet(".1.3.6.1.2.1.1.1.0");
-			String rate = properties.getProperty("snmp.rate");
-			if(rate == null || rate.equals("")){
-				rate = "30";
+			if(MonitorUtil.testSnmpStatus(url,port,communicate)) {
+				String rate = properties.getProperty("snmp.rate");
+				if (rate == null || rate.equals("")) {
+					rate = "30";
+				}
+				String monitorkey = "nativeServerJob";
+				ScheduleJob job = new ScheduleJob();
+				job.setJobName("nativeServerJob");
+				job.setJobGroup("nativeInfoMonitor");
+				job.setJobStatus(ScheduleJob.STATUS_RUNNING);
+				job.setCronExpression(CronUtil.getCronByMillions(Long.parseLong(rate)));
+				job.setDescription("本地服务器监控的定时器");
+				job.setBeanClass("com.ycsys.smartmap.sys.task.MonitorTask");
+				job.setMethodName("collectNativeServer");
+				job.setMethodParameter(new Object[]{String.class, String.class, String.class, String.class, String.class});
+				job.setArgs(new Object[]{monitorkey, url, port, communicate, rate});
+				job.setIsConcurrent(ScheduleJob.CONCURRENT_NOT);
+				job.setCreateTime(new Date());
+				jobTaskManager.addJob(job);
+				is.close();
 			}
-			String monitorkey = "nativeServerJob";
-			ScheduleJob job = new ScheduleJob();
-			job.setJobName("nativeServerJob");
-			job.setJobGroup("nativeInfoMonitor");
-			job.setJobStatus(ScheduleJob.STATUS_RUNNING);
-			job.setCronExpression(CronUtil.getCronByMillions(Long.parseLong(rate)));
-			job.setDescription("本地服务器监控的定时器");
-			job.setBeanClass("com.ycsys.smartmap.sys.task.MonitorTask");
-			job.setMethodName("collectNativeServer");
-			job.setMethodParameter(new Object[]{String.class,String.class,String.class,String.class,String.class});
-			job.setArgs(new Object[]{monitorkey,url,port,communicate,rate});
-			job.setIsConcurrent(ScheduleJob.CONCURRENT_NOT);
-			job.setCreateTime(new Date());
-			jobTaskManager.addJob(job);
-			is.close();
 		}catch (Exception e){
 			logger.error("本地服务器监控启动失败！");
 		}

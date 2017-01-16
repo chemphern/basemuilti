@@ -130,7 +130,7 @@ body {
 			    			parentWin.document.getElementById("displayFields").value = fileds;
 							parentWin.document.getElementById("tempDisplayFields").value = fileds;
 			    		}
-			    		parentWin.document.getElementById("geometryType").value = selectedRows[0].geometryType;
+			    		//parentWin.document.getElementById("geometryType").value = selectedRows[0].geometryType;
 						dialog.close();
 					}
 

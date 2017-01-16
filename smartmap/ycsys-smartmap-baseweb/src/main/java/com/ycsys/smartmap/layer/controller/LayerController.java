@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -230,12 +231,37 @@ public class LayerController {
 		String ids [] = layer.getIds().split(",");
 		User user = (User) request.getSession().getAttribute(Global.SESSION_USER);
 		layer.setType("n");
-		
 		Layer parent = layerService.get(Layer.class, layer.getParent().getId());
-		if(parent != null && StringUtils.isBlank(parent.getAddress())) {
-			parent.setAddress(layer.getService().getServiceVisitAddress());
+		
+		//判断图层是不是同一个服务下的
+		List<Layer> layerLists = layerService.find("from Layer t where t.parent.id="+layer.getParent().getId());
+		if(layerLists != null && layerLists.size() > 0) {
+			Layer l = layerLists.get(0);
+			if(layer.getService().getId() != l.getService().getId()) {
+				map.put("msg", "请添加相同服务的图层！");
+				return map;
+			}
+		}
+		
+		//设置图层树的地址
+		if(layerLists == null || layerLists.size() == 0) {
+			/*String serviceVisitAddressOpen = StringUtils.getUrlSuffix(layer.getService().getServiceVisitAddress());
+			String str2 = serviceVisitAddressOpen.substring(0, serviceVisitAddressOpen.indexOf("/"));
+			String str3 = serviceVisitAddressOpen.substring(serviceVisitAddressOpen.indexOf("/"));
+			String ipAddress = StringUtils.getUrlPrefix(layer.getService().getServiceVisitAddress());
+			String encodeStr = Base64Util.encode(ipAddress + "/" + str2);
+			serviceVisitAddressOpen = "/arcgis/" + encodeStr + str3;*/
+			parent.setAddress(layer.getService().getServiceVisitAddressOpen());
+			parent.setRealAddress(layer.getService().getServiceVisitAddress());
 		}
 		long count = 0;
+		String businessType = "default";
+		//得到图层的业务类型
+		Map<String, Object> businessTypeMap = DataDictionary.getObject("business_type");
+		for(Entry<String, Object> businessTypeEntry:businessTypeMap.entrySet()) {
+			businessType = businessTypeEntry.getKey();
+			break;
+		}
 		for(int i = 0; i < names.length; i++) {
 			Layer newLayer = new Layer();
 			try {
@@ -249,16 +275,21 @@ public class LayerController {
 			}
 			newLayer.setPId(layer.getParent().getId());
 			newLayer.setName(names[i]);
-			String address = layer.getService().getServiceVisitAddress() + "/" + ids[i];
+			//String address = layer.getService().getServiceVisitAddress() + "/" + ids[i];
+			String address = parent.getAddress() + "/" + ids[i];
+			String realAddress = parent.getRealAddress() + "/" + ids[i];
 			newLayer.setAddress(address);
+			newLayer.setRealAddress(realAddress);
+			String geometryType = ServiceUtils.getGeometryType(realAddress);
+			newLayer.setGeometryType(geometryType);
 			List<Layer> rtLists = layerService.find("from Layer t where t.parent.id="+newLayer.getParent().getId() +" and t.name='"+newLayer.getName()+"' and t.id <>" +newLayer.getId());
 			if(rtLists != null && rtLists.size() > 0) {
 				log.warn("存在相同的图层");
 				continue;
 			}
-			
-			newLayer.setUpdateDate(new Date());
-			newLayer.setUpdator(user);
+			newLayer.setBusinessType(businessType);
+			newLayer.setCreateDate(new Date());
+			newLayer.setCreator(user);
 			layerService.save(newLayer);
 			count++;
 		}
@@ -286,6 +317,7 @@ public class LayerController {
 		List<Layer> layerTypes = layerService.find("from Layer t where t.type = 'r' ");
 		model.addAttribute("layerTypes", layerTypes);
 		model.addAttribute("layer", layer);
+		model.addAttribute("businessType", DataDictionary.getObject("business_type"));
 		return "/layer/layer_edit";
 	}
 	

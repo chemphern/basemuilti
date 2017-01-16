@@ -171,6 +171,7 @@ function queryAttr2d(layerItem,fieldName,fieldType,fieldValue){
 		fieldValue="date '"+fieldValue+"'";
 	}
 	var sqlWhere=fieldName + opt + fieldValue;
+	console.log(layerItem.url);
 	query(layerItem.url,sqlWhere);
 }
 
@@ -421,8 +422,8 @@ function createPageContent(pageIndex){
 		
 	}
 	//传递要素给3纬处理
-	graphicsConvertor(arrFeaturePerPage,false)
-	fromArcgisTo3dScene(arrFeaturePerPage)
+	graphicsConvertor(arrFeaturePerPage,false);
+	fromArcgisTo3dScene(arrFeaturePerPage,true);
 	return arrTemp.join("<br>");
 }
 
@@ -471,8 +472,8 @@ function createPageContentSpatial(pageIndex){
 		
 	}
 	//传递要素给3纬处理
-	graphicsConvertor(arrFeaturePerPage)
-	fromArcgisTo3dScene(arrFeaturePerPage)
+	graphicsConvertor(arrFeaturePerPage);
+	fromArcgisTo3dScene(arrFeaturePerPage,true);
 	return arrTemp.join("<br>");
 }
 /**
@@ -771,6 +772,9 @@ function createItemSpatial(feature,index){
 //没有别名对象的情况(空间查询的属性键采用别名)
 function createTemplateInfo(displayFieldsStr){
 	//构建模板内容
+	if(!displayFieldsStr){
+		return "${*}";
+	}
 	var arrDisplayFields=displayFieldsStr.split(";");
 	var arr=[];
 	if(arrDisplayFields.length>6){

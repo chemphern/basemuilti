@@ -74,6 +74,7 @@
 						validate="{required:true,messages:{required:'必填'}}" class="text">
 					<input type="hidden" id="serviceId" name="service.id">
 					<input type="hidden" id="serviceVisitAddress" name="service.serviceVisitAddress">
+					<input type="hidden" id="serviceVisitAddressOpen" name="service.serviceVisitAddressOpen">
 					<input type="button" value="选择" id="selectServiceBtn">
 					<span style="color: red">*</span>	
 				</td>

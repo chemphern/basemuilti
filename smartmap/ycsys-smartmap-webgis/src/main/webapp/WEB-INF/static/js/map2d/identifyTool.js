@@ -1,8 +1,13 @@
 $(function(){
 	$("#btnIdentify").click(function(){
 		clear2dMap();
-		//若外部需要查询结果数据，只需提供回调函数
-		IdentifyTool.identify(null);
+		if(mapOpt==2){
+			//二维调用，若外部需要查询结果数据，只需提供回调函数(返回参数为feature集合)
+			IdentifyTool.identify();
+		}else{
+			//三维调用方式
+            identifySpatialQuery3d();
+		}
 	});
 });
 
@@ -38,20 +43,34 @@ IdentifyTool={
 		if(ilyr) this._map.removeLayer(ilyr);
 	},
 	_onDrawEnd:function(e){
+		IdentifyTool._map.setMapCursor("wait");
 		queryCatalog=3;//I查询
 		IdentifyTool._map.enablePan();
 		var lyrs=IdentifyTool._map.getLayersVisibleAtScale();
 		var deferreds=[];
-		$.each(lyrs,function(i,lyr){
-			var id=lyr.id;
-			var url=lyr.url;
-			if($.isNumeric(id) && lyr.visible){//自定义id
-				deferreds.push(IdentifyTool._doTask(url,e.geometry));
-			}
+		//获取所有地图服务,区分专题和其他图层。专题图查询地址不是展示图层地址
+		var allUrl=[];
+		if(modelIndex == 3){
+			var tree=$.fn.zTree.getZTreeObj('treeMapzt');
+			var selNodes=tree.getSelectedNodes();
+			allUrl.push(selNodes[0].queryAddress);
+		}else{
+			$.each(lyrs,function(i,lyr){
+				var id=lyr.id;
+				var url=lyr.url;
+				if($.isNumeric(id) && lyr.visible){//自定义id,不查地图以及图形图层
+					var msUrl=url.substring(0,url.indexOf('MapServer')+9);
+					allUrl.push(msUrl);
+				}
+			});
+		}
+		var arrMapServerUrl=IdentifyTool._formatToMapServer(allUrl);
+		$.each(arrMapServerUrl,function(i,u){
+			deferreds.push(IdentifyTool._doTask(u,e.geometry));
 		});
+		
 		var deferredList=new dojo.DeferredList(deferreds);
 		deferredList.then(IdentifyTool._dealResults);
-		IdentifyTool._map.setMapCursor("default");
 		IdentifyTool._draw.deactivate();
 	},
 	_doTask:function(url,geometry){
@@ -64,9 +83,20 @@ IdentifyTool={
 		params.tolerance=3;
 		return task.execute(params);
 	},
+	_formatToMapServer:function(urls){
+		var arr=[];
+		$.each(urls,function(i,u){
+			if($.inArray(u,arr)<0){
+				arr.push(u);
+			}
+		});
+		return arr;
+	},
 	_dealResults:function(results){
+		IdentifyTool._map.setMapCursor("default");
 		//结果预处理
-		var large=false;
+		if(!$.isArray(results[0])) return;
+		var large=false,all=0;
 		$.each(results,function(i,arr){
 			var count=arr[1].length;
 			if(count>500){
@@ -74,8 +104,10 @@ IdentifyTool={
 				large=true;
 				return false;
 			}
+			all+=count;
 		});
 		if(large) return;
+		if(all==0) showAlertDialog('没有查询到结果');
 		
 		var features=[];
 		var url=path+"/static/dist/img/map/icon_feature_0.png";
@@ -106,7 +138,7 @@ IdentifyTool={
 					polylineLyr.add(feature);
 				}else if(geoType.indexOf('polygon')>-1){
 					feature.setSymbol(style);
-					polygonLyr.add(featuer);
+					polygonLyr.add(feature);
 				}
 				var symbol=getPicSymbol(url);//未封装的方法
 				var center=getGeomoetryCenter(feature);//未封装的方法
@@ -116,10 +148,9 @@ IdentifyTool={
 				markerLyr.add(graphic);
 			}
 		}
-		//回调函数，向外部提供查询结果
-		if(IdentifyTool._callback){
-			IdentifyTool._callback(features);
-		}
+		//向三维提供查询结果
+		if(mapOpt!=2)
+            fromArcgisTo3dScene(features,false);
 	},
 	_createInfoTemplate:function(feature){
 		var html=[];
@@ -136,7 +167,7 @@ IdentifyTool={
 		e.preventDefault();
 		IdentifyTool._map.infoWindow.markerSymbol.outline.color=new esri.Color([0,0,0,0]);
 		var url=path+"/static/dist/img/map/icon_feature_0.png";
-		var selUrl=path+"/static/dist/img/map/icon_feature_1.png";
+		var selUrl=path+"/static/dist/img/map/icon_feature_0h.png";
 		var markLyr=IdentifyTool._map.getLayer('iMkLyr');
 		var graphics=markLyr.graphics;
 		$.each(graphics,function(i,g){

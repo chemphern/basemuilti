@@ -64,8 +64,9 @@
     <!-- /.col -->
     <div class="col-md-9 col-sm-8">
         <div class="box box-solid">
-            <div id="targetDiv"></div>
-
+			<div class="box_l">
+                <div class="list" id="targetDiv"></div>
+            </div>
         </div>
         <!-- /.col -->
     </div>

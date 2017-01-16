@@ -63,10 +63,12 @@ import com.ycsys.smartmap.service.service.ThemeService;
 import com.ycsys.smartmap.service.utils.ServiceUtils;
 import com.ycsys.smartmap.sys.common.config.Global;
 import com.ycsys.smartmap.sys.common.enums.ExceptionLevel;
+import com.ycsys.smartmap.sys.common.enums.LogType;
 import com.ycsys.smartmap.sys.common.exception.GisServerException;
 import com.ycsys.smartmap.sys.common.exception.ServiceException;
 import com.ycsys.smartmap.sys.common.result.Grid;
 import com.ycsys.smartmap.sys.common.utils.ArcGisServerUtils;
+import com.ycsys.smartmap.sys.common.utils.Base64Util;
 import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
 import com.ycsys.smartmap.sys.common.utils.FileUtils;
 import com.ycsys.smartmap.sys.common.utils.HttpClientUtils;
@@ -79,6 +81,7 @@ import com.ycsys.smartmap.sys.entity.DictionaryItem;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.entity.User;
 import com.ycsys.smartmap.sys.service.ConfigServerEngineService;
+import com.ycsys.smartmap.sys.service.LogService;
 import com.ycsys.smartmap.sys.util.DataDictionary;
 import com.ycsys.smartmap.sys.util.DbUtils;
 
@@ -92,18 +95,20 @@ import com.ycsys.smartmap.sys.util.DbUtils;
 @RequestMapping("/service")
 public class ServiceController extends BaseController {
 	@Autowired
-	private ServiceService serviceService;
-	@Autowired
-	private ResourceService resourceService;
+	private LogService logService;
 	@Autowired
 	private LayerService layerService;
 	@Autowired
 	private ThemeService themeService;
 	@Autowired
+	private ServiceService serviceService;
+	@Autowired
+	private ResourceService resourceService;
+	@Autowired
 	private ConfigServerEngineService configServerEngineService;
 	
 	//服务导入模版地址
-	private static final String DOWNLOADURL = "/data/服务导入模版.zip";
+	private static final String DOWNLOADURL = "/template/服务导入模版.zip";
 	
 	//服务引擎的数据插入
     public static void main(String [] args){
@@ -215,10 +220,18 @@ public class ServiceController extends BaseController {
 	@RequestMapping("viewResource")
 	@RequiresPermissions(value = "service-publish")
 	public String viewResource(Model model) {
-
-		return "/service/service_select_resource";
+		model.addAttribute("fileType", DataDictionary.getObject("arc_file_type"));
+		model.addAttribute("resourceType", DataDictionary.getObject("resource_type"));
+		return "/resource/resource_select";
+		//return "/service/service_select_resource";
 	}
-
+	
+	/**
+	 * 服务发布
+	 * @param request
+	 * @param model
+	 * @return
+	 */
 	@ResponseBody
 	@RequestMapping("publish")
 	@RequiresPermissions(value = "service-publish")
@@ -233,6 +246,7 @@ public class ServiceController extends BaseController {
 		String folderName = request.getParameter("folderName");
 		String[] extensionName = request.getParameterValues("extensionName");
 		List<String> extensionNameList = null;
+		long startTime = System.currentTimeMillis();
 		if (extensionName != null && extensionName.length > 0) {
 			extensionNameList = Arrays.asList(extensionName);
 		}
@@ -275,6 +289,8 @@ public class ServiceController extends BaseController {
 				map.put("flag", "0");
 				map.put("msg", "发布失败！");
 				//return map;
+				long endTime = System.currentTimeMillis();
+				logService.saveLogInfo("上传服务资源到arcServer上失败", LogType.Server, "上传服务资源到arcServer上失败", 2, "failure", endTime-startTime);
 				throw new GisServerException("上传服务资源到arcServer上失败", "上传服务资源到arcServer上失败", ExceptionLevel.SERIOUS.getValue(), "上传服务资源到arcServer上失败");
 				
 			} finally {
@@ -551,6 +567,7 @@ public class ServiceController extends BaseController {
 			resource.setStatus("1");
 			map.put("flag", "1");
 			map.put("msg", "发布成功！");
+			logService.saveLogInfo("服务发布成功成功", LogType.Server, "服务发布成功成功", 1, map, System.currentTimeMillis()-startTime);
 			String managerServiceUrl = "http://" + ip + ":" + port
 					+ "/arcgis/admin/services/";
 			if (StringUtils.isNotBlank(folderName) && !("/".equals(folderName))) {
@@ -678,8 +695,7 @@ public class ServiceController extends BaseController {
 		try {
 			User user = (User) request.getSession().getAttribute(
 					Global.SESSION_USER);
-			String path = request.getSession().getServletContext()
-					.getRealPath("upload");
+			//String path = request.getSession().getServletContext().getRealPath("upload");
 			if (s.getServerEngine() != null
 					&& StringUtils.isNotBlank(s.getShowName())) {
 				if (file != null && file.getSize() > 0) {
@@ -687,15 +703,26 @@ public class ServiceController extends BaseController {
 					// 得到数字字典的图片类型, 再判断上传的文件是否是图片
 					// Map<String, Object> mFileType =
 					// DataDictionary.getObject("image_type");
-					path = path + File.separator + "service" + File.separator
-							+ "image";
-					File targetFile = new File(path, fileName);
+					//path = path + File.separator + "service" + File.separator + "image";
+					String tomcatHome = System.getProperty("catalina.home"); //D:\software1\tomcat\apache-tomcat-8.5.6
+					tomcatHome = tomcatHome.substring(0, tomcatHome.lastIndexOf("\\"));
+					String imagePath =  tomcatHome +File.separator + "项目文件" + File.separator + "服务";
+					File targetFile = new File(imagePath, fileName);
+					//判断是否存在相同的图片文件,存在则在名字后面加上数字，如xxx(2).png
+					List<Service> serviceList = serviceService.find("from Service t where t.imagePath = ? ", new Object[]{targetFile.getAbsolutePath()});
+					if(serviceList != null && serviceList.size() > 0) {
+						String temp[] = fileName.split("\\.");
+						if(temp != null && temp.length == 2) {
+							fileName = temp[0]+"(" + serviceList.size() + ")." + temp[1];
+							targetFile = new File(imagePath, fileName);
+						}
+					}
 					if (!targetFile.exists()) {
 						targetFile.mkdirs();
 					}
 					try {
 						file.transferTo(targetFile);
-						s.setImagePath(path + File.separator + fileName);
+						s.setImagePath(targetFile.getAbsolutePath());
 					} catch (IllegalStateException | IOException e) {
 						map.put("flag", "2");
 						map.put("msg", "上传文件失败！");
@@ -813,9 +840,9 @@ public class ServiceController extends BaseController {
 			String folderName, String showName, String functionType) {
 		Map<String, String> map = new HashMap<String, String>();
 		try {
-			String hostAddress = InetAddress.getLocalHost().getHostAddress();
-			String contextPath = request.getContextPath();
-			String serverPort = request.getServerPort() + "";
+			//String hostAddress = InetAddress.getLocalHost().getHostAddress();
+			//String contextPath = request.getContextPath();
+			//String serverPort = request.getServerPort() + "";
 			ConfigServerEngine severEngine = configServerEngineService.get(
 					ConfigServerEngine.class, serverEngineId);
 			// http://172.16.10.52:6080/arcgis/admin/services/
@@ -835,7 +862,13 @@ public class ServiceController extends BaseController {
 					map.put("serviceExtend", s.getServiceExtend());
 					String managerServiceUrl = "http://" + ip + ":" + port + "/arcgis/admin/services/";
 					String serviceVisitAddress = "http://" + ip + ":" + port + "/arcgis/rest/services/";
-					String serviceVisitAddressOpen = "http://" + hostAddress + ":" + serverPort + contextPath + "/arcgis/rest/services/";
+					String ipAddress = ip + ":" + port;
+					//String serviceVisitAddressOpen = "http://" + hostAddress + ":" + serverPort + contextPath + "/arcgis/rest/services/";
+					//String serviceVisitAddressOpen = "/arcgis/rest/services/";
+					String serviceVisitAddressOpen = "/arcgis/";
+					String encodeStr = Base64Util.encode(ip + ":" + port + "/arcgis"); //base64 编码
+					serviceVisitAddressOpen = serviceVisitAddressOpen + encodeStr + "/rest/services/";
+					
 					if (StringUtils.isNotBlank(folderName) && !("/".equals(folderName))) {
 						managerServiceUrl = managerServiceUrl + folderName + "/";
 						serviceVisitAddress = serviceVisitAddress + folderName + "/";
@@ -844,12 +877,13 @@ public class ServiceController extends BaseController {
 					managerServiceUrl = managerServiceUrl + showName + "." + functionType;
 					serviceVisitAddress = serviceVisitAddress + showName + "/" + functionType;
 					serviceVisitAddressOpen = serviceVisitAddressOpen +  showName + "/" + functionType;
+					map.put("ipAddress", ipAddress);
 					map.put("managerServiceUrl", managerServiceUrl);
 					map.put("serviceVisitAddress", serviceVisitAddress);
 					map.put("serviceVisitAddressOpen", serviceVisitAddressOpen);
 				}
 			}
-		} catch (UnknownHostException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return map;
@@ -920,7 +954,7 @@ public class ServiceController extends BaseController {
 					}
 				}
 				//设置服务状态
-				String result = HttpClientUtils.get(s.getServiceVisitAddress() + "?f=json");
+				/*String result = HttpClientUtils.get(s.getServiceVisitAddress() + "?f=json");
 				if(StringUtils.isNotBlank(result)) {
 					Map retMap = JsonMapper.getInstance().readValue(result, Map.class);
 					if (retMap != null && retMap.size() > 0) {
@@ -938,12 +972,22 @@ public class ServiceController extends BaseController {
 				}
 				else {
 					s.setServiceStatus("0");
-				}
-				String hostAddress = InetAddress.getLocalHost().getHostAddress();
+				}*/
+				s.setServiceStatus("1");
+				/*String hostAddress = InetAddress.getLocalHost().getHostAddress();
 				String contextPath = request.getContextPath();
 				String serverPort = request.getServerPort() + "";
 				String serviceVisitAddressOpen = "http://" + hostAddress + ":" + serverPort + contextPath;
 				serviceVisitAddressOpen = serviceVisitAddressOpen + getUrl(s.getServiceVisitAddress());
+				*/
+				String serviceVisitAddressOpen = getUrlSuffix(s.getServiceVisitAddress());
+				String str2 = serviceVisitAddressOpen.substring(0, serviceVisitAddressOpen.indexOf("/"));
+				String str3 = serviceVisitAddressOpen.substring(serviceVisitAddressOpen.indexOf("/"));
+				
+				String ipAddress = getUrlPrefix(s.getServiceVisitAddress());
+				String encodeStr = Base64Util.encode(ipAddress + "/" + str2);
+				serviceVisitAddressOpen = "/arcgis/" + encodeStr + str3;
+				s.setIpAddress(ipAddress);
 				s.setServiceVisitAddressOpen(serviceVisitAddressOpen);
 				s.setRegisterType("1");
 				s.setCreateDate(new Date());
@@ -962,18 +1006,38 @@ public class ServiceController extends BaseController {
 	}
 	
 	/**
-	 * 得到url端口后面的内容
+	 * 得到url第一个“/”后面的内容
 	 * @param url
 	 * @return
 	 */
-	private String getUrl(String url) {
-		if(StringUtils.isNotBlank(url) && url.length() > 2) {
-			url = url.substring(url.indexOf("//") + 2);
+	private String getUrlSuffix(String url) {
+		if(StringUtils.isNotBlank(url)) {
+			if(url.indexOf("//") > 0) {
+				url = url.substring(url.indexOf("//") + 2);
+			}
 			boolean b = url.contains(":");
 			if(b) {
 				url = url.substring(url.indexOf(":") + 1);
 			}
-			url = url.substring(url.indexOf("/"));
+			url = url.substring(url.indexOf("/") + 1);
+		}
+		return url;
+	}
+	
+	/**
+	 * 得到url的ip和端口
+	 * @param url
+	 * @return
+	 */
+	private static String getUrlPrefix(String url) {
+		if(StringUtils.isNotBlank(url)) {
+			//String temp = "";
+			if(url.indexOf("//") > 0) {
+				//temp = url.substring(0,url.indexOf("//") + 2);
+				url = url.substring(url.indexOf("//") + 2);
+			}
+			url = url.substring(0,url.indexOf("/"));
+			//url = temp + url;
 		}
 		return url;
 	}
@@ -1073,12 +1137,17 @@ public class ServiceController extends BaseController {
 				//判断是否被引用(后面设计成捕获异常来判断是否被引用)
 				Object[] obj = new Object[] {service.getId()};
 				List<Layer> layerList = layerService.find("from Layer t where t.service.id = ?", obj);
-				List<LayerTheme> layerThemeList = themeService.find("from LayerTheme t where t.service.id = ?", obj);
+				List<LayerTheme> layerThemeList = themeService.find("from LayerTheme t where t.showService.id = ?", obj);
+				List<LayerTheme> layerThemeList2 = themeService.find("from LayerTheme t where t.queryService.id = ?", obj);
 				if(layerList != null && layerList.size() > 0) {
 					map.put("msg", "服务被图层引用，不能删除！");
 					return map;
 				}
 				if(layerThemeList != null && layerThemeList.size() > 0) {
+					map.put("msg", "服务被专题图引用，不能删除！");
+					return map;
+				}
+				if(layerThemeList2 != null && layerThemeList2.size() > 0) {
 					map.put("msg", "服务被专题图引用，不能删除！");
 					return map;
 				}
@@ -1280,13 +1349,23 @@ public class ServiceController extends BaseController {
 						s.getId());
 				BeanExtUtils.copyProperties(dbService, s, true, true, null);
 				
-				String hostAddress = InetAddress.getLocalHost().getHostAddress();
+				/*String hostAddress = InetAddress.getLocalHost().getHostAddress();
 				String contextPath = request.getContextPath();
 				String serverPort = request.getServerPort() + "";
 				String serviceVisitAddressOpen = "http://" + hostAddress + ":" + serverPort + contextPath;
-				serviceVisitAddressOpen = serviceVisitAddressOpen + getUrl(s.getServiceVisitAddress());
-				dbService.setServiceVisitAddressOpen(serviceVisitAddressOpen);
+				serviceVisitAddressOpen = serviceVisitAddressOpen + getUrlSuffix(s.getServiceVisitAddress());*/
+				//String serviceVisitAddressOpen = getUrlSuffix(s.getServiceVisitAddress());
 				
+				String serviceVisitAddressOpen = getUrlSuffix(s.getServiceVisitAddress());
+				String str2 = serviceVisitAddressOpen.substring(0, serviceVisitAddressOpen.indexOf("/"));
+				String str3 = serviceVisitAddressOpen.substring(serviceVisitAddressOpen.indexOf("/"));
+				
+				String ipAddress = getUrlPrefix(s.getServiceVisitAddress());
+				String encodeStr = Base64Util.encode(ipAddress + str2);
+				serviceVisitAddressOpen = "/arcgis/" + encodeStr + str3;
+				
+				dbService.setServiceVisitAddressOpen(serviceVisitAddressOpen);
+				dbService.setIpAddress(ipAddress);
 				dbService.setUpdateDate(new Date());
 				dbService.setUpdator(user);
 				serviceService.update(dbService);
@@ -2112,7 +2191,7 @@ public class ServiceController extends BaseController {
 	@RequiresPermissions(value = "service-layer-select")
 	public String toSelectLayer(Service service, Model model) {
 		model.addAttribute("serviceVisitAddress",service.getServiceVisitAddress());
-		//List<Layer> layers = ServiceUtils.getLayers(service.getServiceVisitAddress());
+		model.addAttribute("serviceId",service.getId());
 		return "/service/service_select_layer";
 	}
 	
@@ -2120,6 +2199,7 @@ public class ServiceController extends BaseController {
 	@RequestMapping("/listLayer")
 	@RequiresPermissions(value = "service-layer-select")
 	public Grid<Layer> listLayer(Service service,String serviceVisitAddress, PageHelper page) {
+		service = serviceService.get(Service.class, service.getId());
 		List<Layer> layers = ServiceUtils.getLayers(service.getServiceVisitAddress());
 		Grid<Layer> g = new Grid<Layer>(layers);
 		return g;

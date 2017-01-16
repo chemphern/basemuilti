@@ -93,6 +93,8 @@ public class FormAuthenticationCaptchaFilter extends FormAuthenticationFilter {
 					}
 				}
 			}
+			String ip = NetWorkUtil.getIpAddress((HttpServletRequest)request);
+			session.setAttribute(Global.NET_ENVIRONMENT, NetWorkUtil.isInnerNet(ip));
 			return true;
 		}
 		return super.isAccessAllowed(request, response, mappedValue);

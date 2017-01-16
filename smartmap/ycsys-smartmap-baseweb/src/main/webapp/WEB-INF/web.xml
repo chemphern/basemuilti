@@ -18,7 +18,7 @@
   <!-- 通常会将此filter-mapping放置到最前面(即其他filter-mapping前面),以保证它是过滤器链中第一个起作用的 -->
   <filter>
     <filter-name>shiroFilter</filter-name>
-    <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    <filter-class>com.ycsys.smartmap.sys.filter.MyDelegatingFilterProxy</filter-class>
     <init-param>
       <!-- 该值缺省为false,表示生命周期由SpringApplicationContext管理,设置为true则表示由ServletContainer管理 -->
       <param-name>targetFilterLifecycle</param-name>
@@ -86,7 +86,7 @@
     <servlet-name>argisrest</servlet-name>
     <servlet-class>com.ycsys.smartmap.sys.support.ProxyServletSupport</servlet-class>
     <init-param>
-      <param-name>targetUri</param-name>
+      <param-name>defaultTargetUri</param-name>
       <param-value>http://172.16.10.52:6080/arcgis</param-value>
     </init-param>
     <init-param>

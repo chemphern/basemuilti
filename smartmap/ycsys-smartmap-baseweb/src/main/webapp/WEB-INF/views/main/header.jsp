@@ -108,7 +108,7 @@
                 <!-- Messages: style can be found in dropdown.less-->
                 <li class="dropdown messages-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="glyphicon glyphicon-bell"></i>
+                        <i class="iconfont icon-iconfontbell2"></i>
                         <span class="label label-success" style="color:red;">3</span>
                     </a>
                     <ul class="dropdown-menu">

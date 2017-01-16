@@ -30,33 +30,117 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+<style>
+html,body {
+	background-color: #f1f1f1
+}
+
+body {
+	overflow-y: auto;
+}
+
+body,ul,li {
+	margin: 0;
+	padding: 0;
+	font: 12px normal "宋体", Arial, Helvetica, sans-serif;
+	list-style: none;
+}
+
+a {
+	text-decoration: none;
+	color: #000;
+	font-size: 14px;
+}
+
+#tabbox {
+	width: 100%;
+	overflow: hidden;
+	margin: 0 10px;
+}
+
+.tab_conbox {
+	border: 1px solid #999;
+	border-top: none;
+}
+
+.tab_con {
+	display: none;
+}
+
+.tabs {
+	height: 32px;
+	border-bottom: 1px solid #999;
+	border-left: 1px solid #999;
+	width: 100%;
+}
+
+.tabs li {
+	height: 31px;
+	line-height: 31px;
+	float: left;
+	border: 1px solid #999;
+	border-left: none;
+	margin-bottom: -1px;
+	background: #e0e0e0;
+	overflow: hidden;
+	position: relative;
+}
+
+.tabs li a {
+	display: block;
+	padding: 0 20px;
+	border: 1px solid #fff;
+	outline: none;
+}
+
+.tabs li a:hover {
+	background: #ccc;
+}
+
+.tabs .thistab,.tabs .thistab a:hover {
+	background: #fff;
+	border-bottom: 1px solid #fff;
+}
+
+.tab_con {
+	padding: 12px;
+	font-size: 14px;
+	line-height: 175%;
+}
+</style>
 </head>
 <body>
 	<div>
     <!-- Content Header (Page header) -->
     <section class="content-header">
       <h1>运维系统操作统计</h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="iconfont iconfont-bars"></i> 首页</a></li>
-        <li class="active">运维系统操作统计</li>
-      </ol>
     </section>
 
-   <!-- Main content -->
-    <section class="content">
-    <div class="row">
-        <div class="col-md-12">
-          <div class="btn_box" style="float: left;margin-top:30px;"> 
-            	时间：<input name="startTime" id="startTime" type="text" class="text date_plug" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"> 
-            	至 <input name="endTime" id="endTime" type="text" class="text date_plug" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})">
-            <button class="current" id="queryBtn"><i class="glyphicon glyphicon-search"></i>查询</button><hr />
-          </div>
-          <div class="charts" id="chart"></div>
-          <div class="charts" id="chart2"></div>
-        </div>
-        </div>
-      <!-- /.row -->
-    </section>
+   		<div class="row">
+   		  <div class="box box-solid">
+        	<div class="col-md-12">
+        		<div class="btn_box" style="float: left;margin:5px 0 20px 10px;"> 
+		            	时间：<input name="startTime" id="startTime" type="text" value="${curDate }" class="text date_plug" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"> 
+		            	至 <input name="endTime" id="endTime" type="text" class="text date_plug" value="${curDateTo }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})">
+		            <button class="current" id="queryBtn"><i class="glyphicon glyphicon-search"></i>查询</button>
+		         </div>
+        		<div id="tabbox">
+					<ul class="tabs" id="tabs">
+						<li><a href="#">用户操作统计</a></li>
+						<li><a href="#">操作类别统计</a></li>
+					</ul>
+					<ul class="tab_conbox" id="tab_conbox">
+						<li class="tab_con">
+							<div class="charts" id="chart2"></div>
+						</li>
+						<li class="tab_con">
+							<div class="charts" id="chart3"></div>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
     <!-- /.content -->
   </div>
 </body>
@@ -80,6 +164,32 @@
 <script src="${res }/plugins/My97DatePicker/WdatePicker.js"></script>
 <%-- <script src="${res }/dist/js/pages/yext02.js"></script> --%>
 <script>
+$(document).ready(function() {
+	//选项卡
+	jQuery.jqtab = function(tabtit, tab_conbox, event) {
+		//$(tab_conbox).find("li").eq(1).find("#chart3").width($(tab_conbox).width()-20)
+		$(tab_conbox).find("li").hide();
+		$(tabtit).find("li:first").addClass("thistab").show();
+		$(tab_conbox).find("li:first").show();
+
+		$(tabtit).find("li").bind(event,
+			function() {
+				$(this).addClass("thistab").siblings("li")
+						.removeClass("thistab");
+				var activeindex = $(tabtit).find("li").index(
+						this);
+				$(tab_conbox).children().eq(activeindex).show()
+						.siblings().hide();
+				return false;
+			});
+
+	};
+	/*调用方法如下：*/
+	$.jqtab("#tabs", "#tab_conbox", "click");
+	//$.jqtab("#tabs2", "#tab_conbox", "mouseenter");
+
+});
+
 $(document).ready(function(){
 	$("#queryBtn").on("click",function(){
 		query();
@@ -88,9 +198,12 @@ $(document).ready(function(){
 	$("#queryBtn").click();
 	
 	function query() {
-		var myChart1 = echarts.init(document.getElementById('chart'),'macarons');
+		//var myChart1 = echarts.init(document.getElementById('chart'),'macarons');
+		//$("#chart3").css("width", $("#chart2").width());
+		$("#chart2").css("width", $("#tab_conbox").width()-20);
+		$("#chart3").css("width", $("#tab_conbox").width()-20);
 	    var myChart2 = echarts.init(document.getElementById('chart2'),'macarons');
-	    //var myChart3 = echarts.init(document.getElementById('chart3'),'macarons');
+	    var myChart3 = echarts.init(document.getElementById('chart3'),'macarons');
 		
 	     $.ajax({
 			url:"${ctx}/statistics/getMaintenanceOperationInfo",
@@ -98,17 +211,25 @@ $(document).ready(function(){
 			data:{'startTime':$("#startTime").val(),'endTime':$("#endTime").val()},
 			dataType:"json",
 			success:function(ret) {
-				var successRate = ret.successRate;
-				var xOpetAxisData = ret.xOpetAxisData;
-				var opeSeriesData = ret.opeSeriesData;
-				if(successRate) {
-					successRate = JSON.parse(successRate);
+				var successRate = "";
+				var xOpetAxisData = "";
+				var opeSeriesData = "";
+				var xOpetTypeAxisData = "";
+				var opeTypeSeriesData = "";
+				if(ret.successRate) {
+					successRate = JSON.parse(ret.successRate);
 				}
-				if(xOpetAxisData) {
-					xOpetAxisData = JSON.parse(xOpetAxisData);
+				if(ret.xOpetAxisData) {
+					xOpetAxisData = JSON.parse(ret.xOpetAxisData);
 				}
-				if(opeSeriesData) {
-					opeSeriesData = JSON.parse(opeSeriesData);
+				if(ret.opeSeriesData) {
+					opeSeriesData = JSON.parse(ret.opeSeriesData);
+				}
+				if(ret.xOpetTypeAxisData) {
+					xOpetTypeAxisData = JSON.parse(ret.xOpetTypeAxisData);
+				}
+				if(ret.opeTypeSeriesData) {
+					opeTypeSeriesData = JSON.parse(ret.opeTypeSeriesData);
 				}
 				var option1 = {
 				          title : {
@@ -212,67 +333,77 @@ $(document).ready(function(){
 				    };
 				    
 				    var option3 = {
-				            title : {
-				                text: '用户操作统计'
-				            },
-				            tooltip : {
-				                trigger: 'axis'
-				            },
-				            legend: {
-				                data:['统计次数（次）']
-				            },
-				            toolbox: {
-				                show : true,
-				                feature : {
-				                    mark : {show: true},
-				                    dataView : {show: true, readOnly: false},
-				                    magicType : {show: true, type: ['line', 'bar']},
-				                    restore : {show: true},
-				                    saveAsImage : {show: true}
-				                }
-				            },
-				            calculable : true,
-				            xAxis : [
-				                {
-				                    type : 'category',
-				                    data : ['usa2','USA','usa','POIG','CQTE','Maps','Web','tile','smap','CQSE']
-				                }
-				            ],
-				            yAxis : [
-				                {
-				                    type : 'value'
-				                }
-				            ],
-				            series : [
-				                {
-				                    name:'统计次数（次）',
-				                    type:'bar',
-				                    data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0],
-				                    markPoint : {
-				                        data : [
-				                            {type : 'max', name: '最大值'},
-				                            {type : 'min', name: '最小值'}
-				                        ]
-				                    },
-				                    markLine : {
-				                        data : [
-				                            {type : 'average', name: '平均值'}
-				                        ]
-				                    }
-				                }
-				            ]
-				      };
-
-				    myChart1.setOption(option1);
+					          title : {
+					              text: '操作类别统计'
+					          },
+					          tooltip : {
+					              trigger: 'axis'
+					          },
+					          legend: {
+					              data:['统计次数（次）']
+					          },
+					          toolbox: {
+					              show : true,
+					              feature : {
+					                  mark : {show: true},
+					                  dataView : {show: true, readOnly: false},
+					                  magicType : {show: true, type: ['line', 'bar']},
+					                  restore : {show: true},
+					                  saveAsImage : {show: true}
+					              }
+					          },
+					          calculable : true,
+					          xAxis : [
+					              {
+					                  type : 'category',
+					                  data : xOpetTypeAxisData
+					                  //data : ['usa2','USA','usa','POIG','CQTE','Maps','Web','tile','smap','CQSE']
+					              }
+					          ],
+					          yAxis : [
+					              {
+					                  type : 'value'
+					              }
+					          ],
+					          series : [
+					              {
+					                  name:'统计次数（次）',
+					                  type:'bar',
+					                  data:opeTypeSeriesData,
+					                  //data:[2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0],
+					                  markPoint : {
+					                      data : [
+					                          {type : 'max', name: '最大值'},
+					                          {type : 'min', name: '最小值'}
+					                      ]
+					                  }
+					                  /* markLine : {
+					                      data : [
+					                          {type : 'average', name: '平均值'}
+					                      ]
+					                  } */
+					              }
+					          ]
+					    };
+					
+				    if(opeSeriesData == "") {
+				    	option2.series=[''];
+				    }
+				    if(opeTypeSeriesData == "") {
+				    	option3.series=[''];
+				    }
+				    
+				    
+				    //myChart1.setOption(option1);
 				    myChart2.setOption(option2);
-				    //myChart3.setOption(option3);
+				    myChart3.setOption(option3);
 			},
 			error: function(result) {
 				alert("connection error!");		
 			}
 	     });
 	}
-
+	
 });
 </script>
 </html>

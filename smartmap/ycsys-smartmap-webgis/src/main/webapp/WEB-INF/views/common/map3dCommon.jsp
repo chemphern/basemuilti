@@ -167,16 +167,17 @@ function OnInputModeChangedListening(NewMode) {
 </head>
 <body>
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/YcMap3D.js"></script>
-	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/viewRecorder.js"></script>
-	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/zoomInOut.js"></script>
-	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/measure.js"></script>
-	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/draw.js"></script>
-	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/scan.js"></script>
-	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/analysis.js"></script>
-	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/config.js"></script>
-	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/fly.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dViewRecorder.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dZoomInOut.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dMeasure.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dDraw.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dScan.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dAnalysis.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dConfig.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dFly.js"></script>
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dQuery.js"></script>
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dService.js"></script>
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dPlot.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/fireSimulation.js"></script>
 </body>
 </html>

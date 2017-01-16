@@ -1,17 +1,16 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.ycsys.smartmap.sys.util.NetWorkUtil" %>
+<%@ page import="com.ycsys.smartmap.sys.common.config.Global" %>
 <%
+	String ip = NetWorkUtil.getIpAddress(request);
 	String basePath = request.getScheme() + "://" + request.getServerName()+ ":" + request.getServerPort() + request.getContextPath();
+	request.setAttribute(Global.NET_ENVIRONMENT, NetWorkUtil.isInnerNet(ip));
 	request.setAttribute("path", basePath);
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link href="http://172.16.10.50:8080/arcgis_js_api/3.18/dijit/themes/claro/claro.css" rel="stylesheet">
-<link href="http://172.16.10.50:8080/arcgis_js_api/3.18/esri/css/esri.css" rel="stylesheet">
-<!-- <link href="http://localhost:8000/arcgis_js_api/library/3.18/3.18/esri/css/esri.css" rel="stylesheet"> -->
-<!-- <link href="http://localhost:8000/arcgis_js_api/library/3.18/3.18/dijit/themes/claro/claro.css" rel="stylesheet"> -->
 <style type="text/css">
 	.arcgisSearch,.searchExpandContainer,.searchInputGroup,.searchInput{width:160px;}
     /*.templatePicker {*/
@@ -34,20 +33,27 @@
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <!-- cookies -->
 <script src="${res}/plugins/jQuery/jquery.cookie.js"></script> 
-  <!-- 颜色选择 -->
- <script src="${res}/plugins/jqColorPicker/colors.js"></script>
- <script src="${res}/plugins/jqColorPicker/jqColorPicker.js"></script>
-  <script type="text/javascript">
-      $('.color').colorPicker(); 
-  </script> 
-<script src="http://172.16.10.50:8080/arcgis_js_api/3.18/init.js"></script>
-<!-- <script src="http://localhost:8000/arcgis_js_api/library/3.18/3.18/init.js"></script> -->
-<script src="${res}/js/map2d/tiandituImgLayer.js"></script>
+<!-- 颜色选择 -->
+<script src="${res}/plugins/jqColorPicker/colors.js"></script>
+<script src="${res}/plugins/jqColorPicker/jqColorPicker.js"></script>
+<script src="${res }/js/map2d/mapConfig.js"></script>
 <script type="text/javascript">
+    $('.color').colorPicker(); 
 	var path="${path}";
+    var netStatus=${NET_ENVIRONMENT};
+  	mapConfig.init(netStatus);
+  	document.write("<link rel='stylesheet' href='"+mapConfig.esriCss+"'>");  
+  	document.write("<link rel='stylesheet' href='"+mapConfig.esriCss2+"'>");  
+  	document.write("<script type='text/javascript' src='"+mapConfig.jsapi+"'><\/script>");
+</script> 
+<!-- <script src="http://localhost:8000/arcgis_js_api/library/3.18/3.18/init.js"></script> -->
+<!-- <link href="http://localhost:8000/arcgis_js_api/library/3.18/3.18/esri/css/esri.css" rel="stylesheet"> -->
+<!-- <link href="http://localhost:8000/arcgis_js_api/library/3.18/3.18/dijit/themes/claro/claro.css" rel="stylesheet"> -->
+<%-- <script src="${res}/js/map2d/tiandituImgLayer.js"></script> --%>
+<script type="text/javascript">
 	var centerPt=[113.244931,23.115074];
 	var map,naviBar,measure,draw,printer,locator,baseLyr,imgLyr,search;
-	var NAVI,bookmarks,ArcGISTiledMapServiceLayerLocal;
+	var NAVI,bookmarks,ArcGISTiledMapServiceLayerLocal,geoService;
 	var minx,miny,maxx,maxy;
 	var lyrList=[];
 	var DrawEx,DrawExt;
@@ -103,6 +109,8 @@
 		  "esri/dijit/InfoWindow",
 		  "esri/symbols/TextSymbol",
 		  "esri/symbols/PictureFillSymbol",
+		  "esri/tasks/Geoprocessor",
+		  "esri/tasks/LinearUnit",
 		  "dojo/domReady!"
 		], function(parser,Map,ArcGISTiledMapServiceLayer,GeometryService,Navigation,dom,Draw,OverviewMap,MeasureTools,Print,PrintTask,PrintParameters,PrintTemplate,Scalebar,LocateButton,Legend,
 					FeatureLayer,Extent,SpatialReference,Color,SimpleMarkerSymbol,SimpleLineSymbol,SimpleFillSymbol,Editor,TemplatePicker,esriConfig,jsapiBundle,arrayUtils,keys,SimpleRenderer,
@@ -112,10 +120,11 @@
 			// snapping is enabled for this sample - change the tooltip to reflect this
 			jsapiBundle.toolbars.draw.start = jsapiBundle.toolbars.draw.start +  "<br>按住 <b>ALT</b>键启用捕捉";
 			// refer to "Using the Proxy Page" for more information:  https://developers.arcgis.com/javascript/3/jshelp/ags_proxy.html
-			esriConfig.defaults.io.proxyUrl = "http://172.16.10.50:8080/Java/proxy.jsp";
-//            esriConfig.defaults.io.alwaysUseProxy= false;
+			esriConfig.defaults.io.proxyUrl = mapConfig.proxyUrl;
+           esriConfig.defaults.io.alwaysUseProxy= false;
 			//This service is for development and testing purposes only. We recommend that you create your own geometry service for use within your applications.
-			esriConfig.defaults.geometryService = new GeometryService("http://172.16.10.52:6080/arcgis/rest/services/Utilities/Geometry/GeometryServer");
+			esriConfig.defaults.geometryService = new GeometryService(mapConfig.geoServiceUrl);
+			geoService = new GeometryService(mapConfig.geoServiceUrl);
 			NAVI=Navigation;
 			DrawExt=drawExt;
 			DrawEx=drawEx;
@@ -133,9 +142,9 @@
 //            map.addLayer(baseLyr);//天地图地图
 //            annoLyr= new TDTAnnoLayer();
 //            map.addLayer(annoLyr);//天地图注记图
-            baseLyr = new ArcGISTiledMapServiceLayer("http://172.16.10.52:6080/arcgis/rest/services/%E5%B9%BF%E5%B7%9E%E5%B8%82_%E7%9F%A2%E9%87%8F%E5%9C%B0%E5%9B%BE/MapServer",{id:'base0'});
+            baseLyr = new ArcGISTiledMapServiceLayer(mapConfig.baseMapUrl,{id:'base0'});
             map.addLayer(baseLyr);
-            imgLyr = new  ArcGISTiledMapServiceLayerLocal("http://172.16.10.52:6080/arcgis/rest/services/%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%BD%B1%E5%83%8F%E5%9C%B0%E5%9B%BE/MapServer",{id:'base1'});
+            imgLyr = new  ArcGISTiledMapServiceLayerLocal(mapConfig.imgMapUrl,{id:'base1'});
 
             map.on("load",init);
 // 			map.on("layers-add-result", initEditor);
@@ -151,14 +160,37 @@
 //             map.addLayers([responsePolys, responsePoints]);
 			
 			function init(){
-				map.on("onMouseMove",showCoordinate);
+				map.on("pan",function(){
+					if(mapOpt==0 && map3DInit){
+                        //判断设置三维坐标范围
+                        if(activetedMap==2)
+                            setMap3dExtent();
+					}
+				});
 				//滑动条响应地图事件
 				ScrollBar.Initialize(map);
-            	ScrollBar.maxValue = 19;//比地图级别大1
+            	ScrollBar.maxValue = 19;//
             	ScrollBar.minValue = 0;
-				map.on('zoom-end',function(e){
-	            	ScrollBar.SetValue(e.level);
-	            });
+                map.on('zoom-end',function(e){
+                    ScrollBar.SetValue(e.level);
+                    if(mapOpt==0||mapOpt==2){
+                        setQuickLocationMap2d();//设置快速定位目前位置
+                        //判断设置三维坐标范围
+                        if(activetedMap==2&&mapOpt==0)
+                            setMap3dExtent();
+                    }
+
+                });
+                map.on('mouse-up',function(e){
+                    if(mapOpt==0||mapOpt==2){
+                        setQuickLocationMap2d();//设置快速定位目前位置
+                        //判断设置三维坐标范围
+                        if(activetedMap==2&&mapOpt==0)
+                            setMap3dExtent();
+                        //标识当前活跃地图为二维
+                        activetedMap = 2;
+                    }
+                });
 				//i查询工具
 				if(!IdentifyTool.isLoaded){
 					IdentifyTool.init(map);
@@ -197,7 +229,7 @@
   				},dom.byId("search"));
   				var sources = search.get("sources");
   				 sources.push({
-  			         featureLayer: new esri.layers.FeatureLayer("http://172.16.10.52:6080/arcgis/rest/services/%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%85%B4%E8%B6%A3%E7%82%B9/FeatureServer/0"),
+  			         featureLayer: new esri.layers.FeatureLayer(mapConfig.interestingPOI),
   			         searchFields: ["NAME_CHN"],
   			         displayField: "NAME_CHN",
   			         exactMatch: false,
@@ -208,7 +240,7 @@
   			         maxSuggestions: 6
   			      });
   				 sources.push({
-  					 featureLayer: new esri.layers.FeatureLayer("http://172.16.10.52:6080/arcgis/rest/services/%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%85%B4%E8%B6%A3%E7%82%B9/FeatureServer/1"),
+  					 featureLayer: new esri.layers.FeatureLayer(mapConfig.interestingNaturalPOI),
   					 searchFields: ["NAME_CHN"],
   					 displayField: "NAME_CHN",
   					 exactMatch: false,
@@ -281,21 +313,21 @@
 	function getMapExtentLngLat(){
 		return esri.geometry.webMercatorToGeographic(map.extent);
 	}
-	function showCoordinate(evt) {
-		var mp = evt.mapPoint;
-		dojo.byId("coord").innerHTML = "坐标：" + mp.x + " , " + mp.y;
-	}
+	
 	function to2dMap() {
+		if(mapOpt==3){
+			//同步三维范围
+			setMapExtent();
+		}
 		mapOpt = 2;
 		map.removeLayer(imgLyr);
 		map.addLayer(baseLyr);
-//		map.addLayer(annoLyr);
 	}
 	function to2dImgMap() {
         console.log("触发切换地图事件");
-		mapOpt = 2;
+        mapOpt = 2;
 //		imgLyr = new TDTImageryLayer();
-//        imgLyr = new  ArcGISTiledMapServiceLayerLocal("http://172.16.10.52:6080/arcgis/rest/services/%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%BD%B1%E5%83%8F%E5%9C%B0%E5%9B%BE/MapServer");
+//      imgLyr = new  ArcGISTiledMapServiceLayerLocal("http://172.16.10.52:6080/arcgis/rest/services/%E5%B9%BF%E5%B7%9E%E5%B8%82%E5%BD%B1%E5%83%8F%E5%9C%B0%E5%9B%BE/MapServer");
 		map.removeLayer(baseLyr);
         map.addLayer(imgLyr);
 //		map.removeLayer(annoLyr);
@@ -330,9 +362,8 @@
 	}
 	function print2dMap() {
 		map.setMapCursor("wait");
-		var printTask = new esri.tasks.PrintTask("http://172.16.10.52:6080/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task");
+		var printTask = new esri.tasks.PrintTask(mapConfig.printService);
 		var template = new esri.tasks.PrintTemplate();
-// 		var dpi = document.getElementById("dpi").value ;
 		template.exportOptions = {width : 800,height : 600,
 		dpi: 96
 		};
@@ -344,12 +375,11 @@
 		params.template = template;
 		printTask.execute(params, function(evt) {
 			map.setMapCursor("default");
-			window.open(evt.url, "_blank");
+			var url=mapConfig.replaceWithProxyUrl(evt.url);
+			window.open(url, "_blank");
 		});
 	}
 	function clear2dMap() {
-		console.log(map.graphicsLayerIds);
-		console.log(map.graphics);
 		map.infoWindow.hide();
 		if (measure) {
 			measure._measureLayer.clear();
@@ -369,9 +399,10 @@
 		if(DCI.Plot.graphicslayer){
 			DCI.Plot.graphicslayer.clear();
 		}
-		//Identify结果
+		//清除Identify结果
 		IdentifyTool.clear();
- 		// map.graphics.clear();
+		//清除空间分析
+		clearAnalysisLyr();
 	}
 	function clearResult(){
 		map.infoWindow.hide();
@@ -429,7 +460,7 @@
 		var pointColor;//点颜色
 		var polylineColor;//线颜色
 		var polygonColor;//面颜色
-		var outline=new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SHORTDASHDOTDOT,new esri.Color([91,127,239,0.5]), 2);//轮廓线
+		var outline=new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,new esri.Color([91,127,239,0.5]), 2);//轮廓线
 		if(highlightShow){
 			pointColor=new esri.Color([0, 255, 255, 0.5 ]);
 			polylineColor=new esri.Color([255, 0, 0, 1 ]);
@@ -445,7 +476,7 @@
 		}else if(type.indexOf("polyline")>-1){
 			symbol =new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,polylineColor, 2);
 
-		}else if(type.indexOf("polygon")>-1){
+		}else{
 			symbol = new esri.symbol.SimpleFillSymbol(esri.symbol.SimpleFillSymbol.STYLE_SOLID, outline, polygonColor);
 		}
 		return symbol;
@@ -491,6 +522,7 @@
 <script type="text/javascript" src="${res}/dist/js/map/plot/_plot.js"></script>
 <script type="text/javascript" src="${res }/js/map2d/mapPlot.js"></script>
 <script type="text/javascript" src="${res }/js/map2d/identifyTool.js"></script>
+<script type="text/javascript" src="${res }/js/map2d/spatialAnalysis.js"></script>
 </head>
 <body>
 </body>

@@ -2,6 +2,7 @@ package com.ycsys.smartmap.sys.advise;
 
 import com.ycsys.smartmap.monitor.entity.Alarm;
 import com.ycsys.smartmap.sys.common.enums.ExceptionClass;
+import com.ycsys.smartmap.sys.common.enums.ExceptionLevel;
 import com.ycsys.smartmap.sys.common.exception.*;
 import com.ycsys.smartmap.sys.service.AlarmService;
 import com.ycsys.smartmap.sys.util.SpringContextHolder;
@@ -48,8 +49,7 @@ public class ExceptionAdvise {
             type = ExceptionClass.ServerException.getType();
             //业务逻辑层异常
         } else if (err.equals(ExceptionClass.ServiceException.getValue())) {
-            ServiceException ssex = (ServiceException) ex;
-            platException = new ServerException(ssex.getMsg());
+            platException = (ServiceException) ex;
             type = ExceptionClass.ServiceException.getType();
             //系统异常
         } else if (err.equals(ExceptionClass.SysException.getValue())) {
@@ -64,7 +64,7 @@ public class ExceptionAdvise {
             //其他异常
         } else {
             Exception eex = (Exception) ex;
-            platException = new ServerException(eex.getMessage());
+            platException = new ServerException("程序发生异常",eex.getMessage(), ExceptionLevel.PRIMARY.getValue(),"");
             type = ExceptionClass.Other.getType();
         }
         if(platException != null){

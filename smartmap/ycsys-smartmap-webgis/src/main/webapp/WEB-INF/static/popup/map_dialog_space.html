@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>羽辰智慧林业二三维一体化应用系统</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="../dist/css/mapPublic.css">
+  <link rel="stylesheet" href="../dist/css/mapIndex.css">
+  <!-- 表格 -->
+  <link href="../plugins/table/bootstrap-table.min.css" rel="stylesheet">
+  <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script> 
+  <!-- Bootstrap 3.3.2 -->
+  <link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+  <script src="../bootstrap/js/bootstrap.min.js"></script>
+     <!-- HTML5 IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="../dist/js/html5shiv.min.js"></script>
+   <script src="../dist/js/respond.min.js"></script>
+  <![endif]-->
+  <!-- bootstrap-table -->
+  <script src="../plugins/table/bootstrap-table.min.js"></script>
+  <script src="../plugins/table/bootstrap-table-zh-CN.min.js"></script>
+
+  
+</head>
+<body>
+<div class="tab-mapCon" style="display: block; position: absolute; margin-left:-165px; margin-top:-160px; left: 50%; top: 50%; z-index: 1994;" >
+
+<div class="esriPopup esriPopupVisible">
+  <div class="esriPopupWrapper">
+    <div class="sizer_space">
+      <div class="titlePane" style="-webkit-user-select: none;">
+        <div class="title">查询结果</div>
+        <div class="titleButton close" title="关闭"></div>
+      </div>
+    </div>
+    <div class="sizer_space content">
+      <div class="space_describe">文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述</div>
+      <!-- space-tabs-bd start -->
+      <div class="space-tabs-bd">
+        <ul id="spaceTab" class="nav nav-tabs space-nav-tabs">
+           <li class="active">
+              <a href="#spaceTab1" data-toggle="tab">
+                 城际道路
+              </a>
+           </li>
+           <li><a href="#spaceTab2" data-toggle="tab">桥</a></li>
+           <li><a href="#spaceTab3" data-toggle="tab">铁路铁路</a></li>
+           <li><a href="#spaceTab4" data-toggle="tab">公路公路</a></li>
+           <li><a href="#spaceTab5" data-toggle="tab">水路水路</a></li>
+           <li><a href="#spaceTab6" data-toggle="tab">桥</a></li>
+           <li><a href="#spaceTab7" data-toggle="tab">铁路铁路</a></li>
+           <li><a href="#spaceTab8" data-toggle="tab">公路公路</a></li>
+           <li><a href="#spaceTab9" data-toggle="tab">水路水路</a></li>
+<!--            <li class="dropdown">
+              <a href="#" id="myTabDrop1" class="dropdown-toggle" 
+                 data-toggle="dropdown">更多 
+                 <b class="caret"></b>
+              </a>
+              <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
+                 <li><a href="#jmeter" tabindex="-1" data-toggle="tab">jmeter</a></li>
+                 <li><a href="#ejb" tabindex="-1" data-toggle="tab">ejb</a></li>
+              </ul>
+           </li> -->
+        </ul>
+        <div id="spaceTabContent" class="space-tab-content">
+           <div class="tab-pane active" id="spaceTab1">
+            <table class="table  table-hover table-responsive search-form-table" id="spaceTable1"  
+              data-toggle="table"
+              data-url="../dist/js/map/data/mapSpaceData.json"
+              data-query-params="queryParams"
+              data-pagination="true"
+              data-only-info-pagination="true"
+              data-page-size="5">
+                  <thead>
+                    <tr>
+                      <th data-field="id">序号1</th>
+                      <th data-field="pathName">名称</th>
+                      <th data-field="pathDataSource">描述</th>
+                    </tr>
+                  </thead>
+              </table> 
+           </div>
+           <div class="tab-pan" id="spaceTab2">
+            <table class="table  table-hover table-responsive search-form-table" id="spaceTable2"  
+              data-toggle="table"
+              data-url="../dist/js/map/data/mapSpaceData.json"
+              data-query-params="queryParams"
+              data-pagination="true"
+              data-only-info-pagination="true"
+              data-page-size="5">
+                  <thead>
+                    <tr>
+                      <th data-field="id">序号2</th>
+                      <th data-field="pathName">名称</th>
+                      <th data-field="pathDataSource">描述</th>
+                    </tr>
+                  </thead>
+              </table> 
+           </div>
+           <div class="tab-pane" id="spaceTab3">
+            <table class="table  table-hover table-responsive search-form-table" id="spaceTable3"  
+              data-toggle="table"
+              data-url="../dist/js/map/data/mapSpaceData.json"
+              data-query-params="queryParams"
+              data-pagination="true"
+              data-only-info-pagination="true"
+              data-page-size="5">
+                  <thead>
+                    <tr>
+                      <th data-field="id">序号3</th>
+                      <th data-field="pathName">名称</th>
+                      <th data-field="pathDataSource">描述</th>
+                    </tr>
+                  </thead>
+              </table> 
+           </div>
+           <div class="tab-pane" id="spaceTab4">
+            <table class="table  table-hover table-responsive search-form-table" id="spaceTable4"  
+              data-toggle="table"
+              data-url="../dist/js/map/data/mapSpaceData.json"
+              data-query-params="queryParams"
+              data-pagination="true"
+              data-only-info-pagination="true"
+              data-page-size="5">
+                  <thead>
+                    <tr>
+                      <th data-field="id">序号4</th>
+                      <th data-field="pathName">名称</th>
+                      <th data-field="pathDataSource">描述</th>
+                    </tr>
+                  </thead>
+              </table> 
+           </div>
+        </div>
+      </div>
+      <!-- space-tabs-bd end -->
+
+    </div>
+
+    <div class="pointer bottomLeft"></div>
+  </div>
+  <div class="outerPointer"></div>
+</div>
+
+</div>
+</body>
+</html>

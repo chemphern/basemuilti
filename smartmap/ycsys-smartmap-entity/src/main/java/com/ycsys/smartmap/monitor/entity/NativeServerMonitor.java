@@ -51,6 +51,12 @@ public class NativeServerMonitor implements java.io.Serializable {
     @Column(name="used_memory")
     private double usedMemory;//使用内存
 
+    @Column(name="max_addr")
+    private String macAddr;//本机max地址
+
+    @Column(name="native_ip")
+    private String nativeIp;//本机ip
+
     @Column
     private Date time;
 
@@ -140,5 +146,21 @@ public class NativeServerMonitor implements java.io.Serializable {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public String getMacAddr() {
+        return macAddr;
+    }
+
+    public void setMacAddr(String macAddr) {
+        this.macAddr = macAddr;
+    }
+
+    public String getNativeIp() {
+        return nativeIp;
+    }
+
+    public void setNativeIp(String nativeIp) {
+        this.nativeIp = nativeIp;
     }
 }

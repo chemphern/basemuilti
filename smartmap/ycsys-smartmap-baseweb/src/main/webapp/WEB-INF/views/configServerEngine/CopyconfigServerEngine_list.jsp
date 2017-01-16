@@ -164,7 +164,7 @@
           	        ], 
           	pageSize:30,
             url:"${ctx}/configServerEngine/listData",
-            width: '100%',height:'96%'
+            width: '100%',height:'98%'
         });
     	//表格列表 end
     })(jQuery);	

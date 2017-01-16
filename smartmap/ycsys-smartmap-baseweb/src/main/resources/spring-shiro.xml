@@ -65,6 +65,7 @@
 		<property name="filterChainDefinitions">
 			<value>
 				/static/** = anon
+				/arcgis/** = anon
 				/** = authc
 			</value>
 		</property>

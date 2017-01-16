@@ -30,33 +30,32 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+  <style>
+body {
+	overflow-y: auto;
+}
+  </style>
 </head>
 <body>
 	<div>
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1>平台数据库统计</h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="iconfont iconfont-bars"></i> 首页</a></li>
-        <li class="active">平台数据库统计</li>
-      </ol>
+      <h1 style="background-color: #f1f1f1;">平台数据库统计</h1>
     </section>
 
     <!-- Main content -->
-    <section class="content">
     <div class="row">
         <div class="col-md-12">
-          <div class="btn_box" style="float: left;margin-top:30px;"> 
-            	时间：<input name="startTime" id="startTime" type="text" class="text date_plug" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"> 
-            	至 <input name="endTime" id="endTime" type="text" class="text date_plug" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})">
-            <button class="current" id="queryBtn"><i class="glyphicon glyphicon-search"></i>查询</button><hr />
+          <div class="btn_box" style="float: left;margin:5px 0 20px 10px;"> 
+            	时间：<input name="startTime" id="startTime" type="text" class="text date_plug" value="${curDate }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"> 
+            	至 <input name="endTime" id="endTime" type="text" class="text date_plug" value="${curDateTo }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})">
+            <button class="current" id="queryBtn"><i class="glyphicon glyphicon-search"></i>查询</button>
           </div>
           <div class="charts" id="chart"></div>
           <div id="maingrid4"></div>
         </div>
         </div>
       <!-- /.row -->
-    </section>
     <!-- /.content -->
   </div>
 </body>
@@ -88,26 +87,6 @@ $(document).ready(function(){
 	
 	$("#queryBtn").click();
 	
-	//数据库列表start
-    $(function () {
-	   gridManager = $("#maingrid4").ligerGrid({
-	         checkbox: false,
-	         columns: [
-	         { display: '数据库服务器名称', name: 'databaseName', minwidth: 90 },
-	         { display: '登陆会话数最大值发生时间', name: 'sessionMaxDate', minwidth: 90 },
-	         { display: '登陆会话数最大值', name: 'sessionMaxCount', minwidth: 90 },
-	         { display: '登陆会话数最小值发生时间', name: 'sessionMinDate', minwidth: 90 },
-	         { display: '登陆会话数最小值', name: 'sessionMinCount', minwidth: 90 },
-	         { display: '登陆会话数平均值', name: 'sessionAverage', minwidth: 90 }
-	         ], pageSize:5,
-	         url:"${ctx}/statistics/listDatabaseData",
-	         usePager: false,
-	         width: '100%',height:'300px'
-	     });
-      $("#pageloading").hide(); 
-	 });
-	//数据库列表end
-	
 	function query() {
 		if(gridManager) {
 			gridManager.setParm("startTime",$("#startTime").val());
@@ -123,8 +102,15 @@ $(document).ready(function(){
 			data:{'startTime':$("#startTime").val(),'endTime':$("#endTime").val()},
 			dataType:"json",
 			success:function(ret) {
-				var xData = JSON.parse(ret.xAxisData);
-				var seriesData = JSON.parse(ret.seriesData);
+				var xData = "";
+				var seriesData = "";
+				if(ret.xAxisData) {
+					xData = JSON.parse(ret.xAxisData);
+				}
+				if(ret.seriesData) {
+					seriesData = JSON.parse(ret.seriesData);
+				}
+				
 			    var option = {
 			    		  title : {
 			    		      text : 'Session信息统计'
@@ -133,10 +119,11 @@ $(document).ready(function(){
 			    		      trigger: 'axis',
 			    		  },
 			    		  toolbox: {
-			    		      show : false,
+			    		      show : true,
 			    		      feature : {
 			    		          mark : {show: true},
 			    		          dataView : {show: true, readOnly: false},
+			    		          //magicType : {show: true, type: ['line', 'bar']},
 			    		          restore : {show: true},
 			    		          saveAsImage : {show: true}
 			    		      }
@@ -183,6 +170,27 @@ $(document).ready(function(){
 			}
 	    });
 	  //获取session信息 end
+	  
+	  //数据库列表start
+    $(function () {
+	   gridManager = $("#maingrid4").ligerGrid({
+	         checkbox: false,
+	         columns: [
+	         { display: '数据库服务器名称', name: 'databaseName', minwidth: 90 },
+	         { display: '登陆会话数最大值发生时间', name: 'sessionMaxDate', minwidth: 90 },
+	         { display: '登陆会话数最大值', name: 'sessionMaxCount', minwidth: 90 },
+	         { display: '登陆会话数最小值发生时间', name: 'sessionMinDate', minwidth: 90 },
+	         { display: '登陆会话数最小值', name: 'sessionMinCount', minwidth: 90 },
+	         { display: '登陆会话数平均值', name: 'sessionAverage', minwidth: 90 }
+	         ], pageSize:5,
+	         url:"${ctx}/statistics/listDatabaseData",
+	         usePager: false,
+	         width: '100%',
+	         height:'300px'
+	     });
+      $("#pageloading").hide(); 
+	 });
+	//数据库列表end
 }
 });
 </script>

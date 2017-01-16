@@ -303,4 +303,28 @@ public class BaseDaoImpl<T,PK> extends HibernateDaoSupport implements BaseDao<T,
 		return null;
 	}
 
+	@Override
+	public Object[] findArrValue(String hql, List<Object> params, Integer page,
+			Integer pageSize) {
+		if (page == null || page < 1) {
+			page = 1;
+		}
+		if (pageSize == null || pageSize < 1) {
+			pageSize = 10;
+		}
+		Query q = this.getCurrentSession().createQuery(hql);
+		if (params != null && params.size() > 0) {
+			for (int i = 0; i < params.size(); i++) {
+				q.setParameter(i, params.get(i));
+			}
+		}
+		q.setFirstResult((page - 1) * pageSize);
+		q.setMaxResults(pageSize);
+		List<Object> list = q.list();
+		if(list != null && list.size() > 0) {
+			return list.toArray();
+		}
+		return null;
+	}
+
 }

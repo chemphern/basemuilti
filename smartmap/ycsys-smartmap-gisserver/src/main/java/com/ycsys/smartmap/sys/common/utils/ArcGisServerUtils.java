@@ -8,6 +8,8 @@ import org.apache.log4j.Logger;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.ycsys.smartmap.sys.common.enums.ExceptionLevel;
+import com.ycsys.smartmap.sys.common.exception.GisServerException;
 
 /**
  * 
@@ -31,10 +33,13 @@ public class ArcGisServerUtils {
 				return map;
 			} catch (JsonParseException e) {
 				log.warn("JsonParseException="+e);
+				throw new GisServerException("get token error", "GisServerException", ExceptionLevel.PRIMARY.getValue(), "get token error");
 			} catch (JsonMappingException e) {
 				log.warn("JsonMappingException="+e);
+				throw new GisServerException("get token error", "GisServerException", ExceptionLevel.PRIMARY.getValue(), "get token error");
 			} catch (IOException e) {
 				log.warn("IOException="+e);
+				throw new GisServerException("get token error", "GisServerException", ExceptionLevel.PRIMARY.getValue(), "get token error");
 			}
 		}
 		return null;

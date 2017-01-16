@@ -10,7 +10,7 @@
 .skin-blue .navbar-user .memu-list>li>a:hover i.iconfont{color:#1e8bf2;}
 .skin-blue .fore-core-side .breadcrumb li a{color:#1e8bf2;}
 .skin-blue .fore-core-side .breadcrumb li i.home{color:#1e8bf2;}
-.skin-blue .fore-core-side .panelBox>.panelBox-heading .panelBox-title{color:#1e8bf2;}
+.skin-blue .fore-core-side .panelBox .panelBox-heading .panelBox-title,.skin-blue .panelBox-heading-disable .panelBox-title{color:#1e8bf2;}
 .skin-blue .fore-core-side .panelBox-heading .icon_map{color:#1e8bf2;}
 .skin-blue .panelBox-body .submenu .mapSearch{color:#1e8bf2;}
 .skin-blue .submenu a.active .mapSearch{background-color:#1e8bf2;border-color:#1e8bf2;color:#fff;}
@@ -52,6 +52,7 @@
 .skin-blue .search-form .searchBtn .btn-warning:hover{color: #fff; background-color: #1a7dd9; border-color: #1a7dd9;}
 .skin-blue .l_icon{background:url(../../../dist/img/map/left_hidden_icon_blue.png) 0px 0px no-repeat;}
 .skin-blue .fore-core-side .arrow{ background:url(../../../dist/img/map/icon_arrow_blue.png) 0px -82px no-repeat;}
+.skin-blue .fore-core-side .panelBox-heading-disable span.arrow-back{ background:url(../../../dist/img/map/icon_arrow_blue.png) -8px -96px no-repeat;}
 .skin-blue .fore-core-side span.arrow_unfold{background-position: 0px -64px;}
 .skin-blue .legendWrap .legendIcon{background-image:url(../../../dist/img/map/icon_arrow_blue.png);}
 .skin-blue .search-form .select-item{background:#fff url(../../../dist/img/map/icon_arrow_blue.png) right -110px no-repeat;}
@@ -64,6 +65,10 @@
     .skin-blue .header .bigmenu {background-color:#1e8bf2;}
     .skin-blue .header .bigmenu li.active,.skin-blue .header .bigmenu>li a:hover,.skin-blue .header .bigmenu>li a:focus{background-color:#087ae4;background-image: none;}
 }
+.skin-blue .BMap_stdMpPan,.skin-blue .BMap_button,.skin-blue .BMap_stdMpZoom .BMap_button,.skin-blue .BMap_stdMpSliderBgTop,.skin-blue .BMap_stdMpSliderBar,.skin-blue .BMap_stdMpSliderBgBot{background-image:url(../../../dist/img/map/earth-control-bg-blue.png);}
+.skin-blue .tag_hr{border-bottom: 3px solid #1e8bf2;}
+.skin-blue .conents-form .btn-group button.active,.skin-blue .conents-form .btn-group button:hover {background-color:#1e8bf2;}
+.skin-blue .search-form .btn_import {background-color: #1e8bf2; border-color: #1e8bf2;} 
 /*
  * Skin: Green
  * ----------
@@ -76,7 +81,7 @@
 .skin-green .navbar-user .memu-list>li>a:hover i.iconfont{color:#19b957;}
 .skin-green .fore-core-side .breadcrumb li a{color:#19b957;}
 .skin-green .fore-core-side .breadcrumb li i.home{color:#19b957;}
-.skin-green .fore-core-side .panelBox>.panelBox-heading .panelBox-title{color:#19b957;}
+.skin-green .fore-core-side .panelBox .panelBox-heading .panelBox-title,.skin-green .panelBox-heading-disable .panelBox-title{color:#19b957;}
 .skin-green .fore-core-side .panelBox-heading .icon_map{color:#19b957;}
 .skin-green .panelBox-body .submenu .mapSearch{color:#19b957;}
 .skin-green .submenu a.active .mapSearch{background-color:#19b957;border-color:#19b957;color:#fff;}
@@ -117,6 +122,7 @@
 .skin-green .search-form .searchBtn .btn-warning:hover{color: #fff; background-color: #db9f14; border-color: #db9f14;}
 .skin-green .l_icon{background:url(../../../dist/img/map/left_hidden_icon_green.png) 0px 0px no-repeat;}
 .skin-green .fore-core-side .arrow{ background:url(../../../dist/img/map/icon_arrow_green.png) 0px -82px no-repeat;}
+.skin-green .fore-core-side .panelBox-heading-disable span.arrow-back{ background:url(../../../dist/img/map/icon_arrow_green.png) -8px -96px no-repeat;}
 .skin-green .fore-core-side span.arrow_unfold{background-position: 0px -64px;}
 .skin-green .legendWrap .legendIcon{background-image:url(../../../dist/img/map/icon_arrow_green.png);}
 .skin-green .search-form .select-item{background:#fff url(../../../dist/img/map/icon_arrow_green.png) right -110px no-repeat;}
@@ -129,6 +135,10 @@
     .skin-green .header .bigmenu {background-color:#19b957;}
     .skin-green .header .bigmenu li.active,.skin-green .header .bigmenu>li a:hover,.skin-green .header .bigmenu>li a:focus{background-color: #16a14b;background-image:none;}
 }
+.skin-green .BMap_stdMpPan,.skin-green .BMap_button,.skin-green .BMap_stdMpZoom .BMap_button,.skin-green .BMap_stdMpSliderBgTop,.skin-green .BMap_stdMpSliderBar,.skin-green .BMap_stdMpSliderBgBot{background-image:url(../../../dist/img/map/earth-control-bg-green.png);}
+.skin-green .tag_hr{border-bottom: 3px solid #19b957;}
+.skin-green .conents-form .btn-group button.active,.skin-green .conents-form .btn-group button:hover {background-color:#19b957;}
+.skin-green .search-form .btn_import {background-color: #19b957; border-color: #19b957;} 
 /*
  * Skin: Cyan
  * ----------

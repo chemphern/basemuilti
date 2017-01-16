@@ -31,21 +31,20 @@
                 字典管理
             </h1>
         </section>
-
             <div class="row">
                 <div class="col-md-12">
-<div class="box box-solid">
-    <div class="box-header with-border">
-        <h4 class="box-title">数据字典列表</h4>
-        <div class="btn_box">
-            <button class="current" id="addDict"><i class="iconfont icon-plus"></i>新增</button>
-            <!--<button><i class="iconfont icon-trash"></i>导入</button>-->
-        </div>
-    </div>
-    <div class="box_l">
-        <div class="list" id="maingrid4"></div>
-    </div>
-</div>
+					<div class="box box-solid">
+					    <div class="box-header with-border">
+					        <h4 class="box-title">数据字典列表</h4>
+					        <div class="btn_box">
+					            <button class="current" id="addDict"><i class="iconfont icon-plus"></i>新增</button>
+					            <!--<button><i class="iconfont icon-trash"></i>导入</button>-->
+					        </div>
+					    </div>
+					    <div class="box_l">
+					        <div class="list" id="maingrid4"></div>
+					    </div>
+					</div>
                 </div>
                 <!-- /.col -->
             </div>
@@ -87,7 +86,7 @@
             ],
             pageSize:10,
             url:"${ctx}/dictionary/listData",
-            width: '100%',height:'94%'
+            width: '100%',height:'98%'
             // parms:[{name:""}]
         });
         $("#addDict").click(function(e){

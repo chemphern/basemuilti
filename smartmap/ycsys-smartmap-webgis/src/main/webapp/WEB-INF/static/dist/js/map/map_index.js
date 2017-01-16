@@ -108,10 +108,38 @@ $(document).ready(function(){
     $('.maplayer li a').click(function(){
         $(this).toggleClass('select');
     });
+
+    /******空间分析 三维分析 林火蔓延分析******/
     //三维分析点击三级菜单高亮
     $('.side-menu a').click(function(){
         $(this).toggleClass('active').siblings().removeClass('active');
     });
+    //显示林火蔓延分析面板
+    $('#forestFirebox').hide();
+     $("#sideMenu").on('click','#forestFire',function (e) { 
+        e.preventDefault();
+        if ($('#forestFirebox').is(":visible")) {
+            $('#forestFirebox').hide();
+            $('#sideMenu').show();
+        }else{
+            $('#forestFirebox').show();
+            $('#sideMenu').hide();
+        }
+    });
+     //返回选项
+     $("#forestFirebox").on('click','.arrow-back', function (e) { 
+        e.preventDefault();
+        if ($('#sideMenu').is(":hidden")) {
+            $('#sideMenu').show();
+            $('#forestFirebox').hide();
+        }
+    });
+    //点击按钮高亮 
+    $('#forestFireBtn').on('click','button',function(e){
+        e.preventDefault();
+        $(this).addClass('active').siblings().removeClass('active');
+    });
+
 
     //隐藏显示右下角图例以及调整鹰眼的显示位置
     $(".legendBox").hide();
@@ -135,11 +163,13 @@ $(document).ready(function(){
 
 
     /*全屏显示*/
-    $('#fullScreenBtn').click(function(event){
+    $('#fullScreenBtn').click(function(){
+    	var elem = $("#mapContent"); 
+    	requestFullScreen(elem);
         $("#mapContent").css('left','0px');
         $(".main").addClass('hide-left-menu');
         $('.leftBox').css('left','-298px');
-        requestFullScreen();
+        
     });
 
     $(document).keyup(function(event) {
@@ -152,7 +182,7 @@ $(document).ready(function(){
     });
     function requestFullScreen() {
         var el = document.documentElement,
-            rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullScreen,
+            rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen,
             wscript;
      
         if(typeof rfs != "undefined" && rfs) {
@@ -230,6 +260,7 @@ $(document).ready(function(){
             $lir.find("input[name='2d3dcheckbox']").prop('checked',$(this).prop('checked'));
             $('.mapView-btn').removeClass('active');
             if ($(this).prop('checked')) {
+                    getMap3dReadyInCommon();//勾选二三维同步时，三维操作
                     $(".resizable-left").css('width','50%');
                     $(".resizable-left").css('display','block');
                     $(".resizable-right").css('display','block');
@@ -257,6 +288,12 @@ $(document).ready(function(){
 
     $(".sel-city").on('click','span,li,button.city-pupup-close',function(event) {
         if (event.target !=srTargetCity) {
+          $(".city-popup-main").fadeOut();
+        }
+    });
+    //点击下拉框其他地方隐藏
+    $("html").click(function(e) {
+        if (e.target !=srTargetCity) {
           $(".city-popup-main").fadeOut();
         }
     });

@@ -119,4 +119,43 @@ public class StringUtils extends org.apache.commons.lang3.StringUtils {
 		return toLong(val).intValue();
 	}
 	
+	/**
+	 * 得到url第一个“/”后面的内容
+	 * @param url
+	 * @return
+	 */
+	public static String getUrlSuffix(String url) {
+		if(StringUtils.isNotBlank(url)) {
+			if(url.indexOf("//") > 0) {
+				url = url.substring(url.indexOf("//") + 2);
+			}
+			boolean b = url.contains(":");
+			if(b) {
+				url = url.substring(url.indexOf(":") + 1);
+			}
+			url = url.substring(url.indexOf("/") + 1);
+		}
+		return url;
+	}
+	
+	/**
+	 * 得到url的ip和端口
+	 * @param url
+	 * @return
+	 */
+	public static String getUrlPrefix(String url) {
+		if(StringUtils.isNotBlank(url)) {
+			//String temp = "";
+			if(url.indexOf("//") > 0) {
+				if(url.indexOf("//") > 0) {
+					//temp = url.substring(0,url.indexOf("//") + 2);
+					url = url.substring(url.indexOf("//") + 2);
+				}
+				url = url.substring(0,url.indexOf("/"));
+				//url = temp + url;
+			}
+		}
+		return url;
+	}
+	
 }

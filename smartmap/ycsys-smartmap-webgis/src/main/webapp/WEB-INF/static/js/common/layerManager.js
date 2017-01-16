@@ -14,6 +14,7 @@ var setting = {
 		enable: true,
 		contentType: "application/json",
 		url: path+"/layerService/layerList.do",
+		dataFilter:filterHandler,
 		autoParam: ["id", "name"]
 	},
     callback: {
@@ -22,13 +23,21 @@ var setting = {
     }
   };
   
-  function beforeCheck(treeId, treeNode) {
-  }
+function filterHandler(treeId, parentNode, childNodes){
+	if (childNodes) {
+	      for(var i =0; i < childNodes.length; i++) {
+	    	var treeNode = childNodes[i];
+	    	treeNode.address = mapConfig.preAddProxyUrl(treeNode.address);
+	      }
+	    }
+	return childNodes;
+}
+
+function beforeCheck(treeId, treeNode){
+}
   
-  function onCheck(e, treeId, treeNode) {
-	  var url=treeNode.address;
+function onCheck(e, treeId, treeNode) {
 	  var nodeType=treeNode.type;
-	  console.log(treeNode);
 	  if(nodeType=='n'){//子节点node
 		  toggleLayerInMgr(treeNode);
 		  if(map3DInit==true)
@@ -44,18 +53,18 @@ var setting = {
 	  }
 	  setTimeout(listFields,500);
 	  setTimeout(listFieldsLogic,500);
-  }  
-  
-  function addLayerItem(treeNode){
+}  
+
+function addLayerItem(treeNode){
 	  var select=$('#queryLyrLst')[0];
 	  var selectLogic=$('#queryLyrLogic')[0];
 	  doAddLayerItem(treeNode,select);
 	  doAddLayerItem(treeNode,selectLogic);
 	  
-  }
-  
-  //参数select为下拉框对象
-  function doAddLayerItem(treeNode,select){
+}
+
+//参数select为下拉框对象
+function doAddLayerItem(treeNode,select){
 	  if(treeNode.geometryType && treeNode.geometryType.toLowerCase()!="null"){
 		  if(treeNode.checked){
 			  var opt=new Option(treeNode.name,treeNode.id);
@@ -73,9 +82,9 @@ var setting = {
 			}
 		  } 
 	  }
-  }
-  
-  function toggleLayerInMgr(treeNode){
+}
+
+function toggleLayerInMgr(treeNode){
 	  addLayerItem(treeNode);
 	  if(treeNode.checked){
 	        var layer;
@@ -105,8 +114,8 @@ var setting = {
 	    		map.removeLayer(lyr);
 	    	}
 	    }
-  }
-  
-  $(document).ready(function(){
-    $.fn.zTree.init($("#treeMaptcgl"), setting);
-  });
+}
+
+$(document).ready(function(){
+  $.fn.zTree.init($("#treeMaptcgl"), setting);
+});

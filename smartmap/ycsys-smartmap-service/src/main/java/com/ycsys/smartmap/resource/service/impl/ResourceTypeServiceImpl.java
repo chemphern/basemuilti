@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ycsys.smartmap.resource.dao.ResourceTypeDao;
 import com.ycsys.smartmap.resource.entity.ResourceType;
 import com.ycsys.smartmap.resource.service.ResourceTypeService;
+import com.ycsys.smartmap.sys.common.annotation.ToLog;
+import com.ycsys.smartmap.sys.common.enums.LogType;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 /**
  * 
@@ -22,22 +24,25 @@ public class ResourceTypeServiceImpl implements ResourceTypeService {
 	@Autowired 
 	private ResourceTypeDao resourceTypeDao;
 	
+	@ToLog(name="新增资源分类",type= LogType.Resource)
 	public Integer save(ResourceType o) {
-		// TODO Auto-generated method stub
 		return (Integer)resourceTypeDao.save(o);
 	}
-
+	
+	@ToLog(name="删除资源分类",type= LogType.Resource)
 	public void delete(ResourceType o) {
 		// TODO Auto-generated method stub
 		resourceTypeDao.delete(o);
 
 	}
 
+	@ToLog(name="修改资源分类",type= LogType.Resource)
 	public void update(ResourceType o) {
 		// TODO Auto-generated method stub
 		resourceTypeDao.update(o);
 	}
 
+	@ToLog(name="新增或修改资源分类",type= LogType.Resource)
 	public void saveOrUpdate(ResourceType o) {
 		// TODO Auto-generated method stub
 		resourceTypeDao.saveOrUpdate(o);

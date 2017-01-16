@@ -36,6 +36,12 @@ public class NativeTomcatMonitor implements java.io.Serializable {
     @Column(name="free_memory")
     private long freeMemory;//jvm 空闲内存
 
+    @Column(name="max_addr")
+    private String macAddr;//本机max地址
+
+    @Column(name="native_ip")
+    private String nativeIp;//本机ip
+
     @Column
     private Date time;//时间
 
@@ -85,5 +91,21 @@ public class NativeTomcatMonitor implements java.io.Serializable {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public String getMacAddr() {
+        return macAddr;
+    }
+
+    public void setMacAddr(String macAddr) {
+        this.macAddr = macAddr;
+    }
+
+    public String getNativeIp() {
+        return nativeIp;
+    }
+
+    public void setNativeIp(String nativeIp) {
+        this.nativeIp = nativeIp;
     }
 }

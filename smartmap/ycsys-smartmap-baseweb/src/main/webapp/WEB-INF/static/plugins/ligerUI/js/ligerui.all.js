@@ -9534,6 +9534,22 @@
         _updateHorizontalScrollStatus: function ()
         {
             var g = this, p = this.options;
+            //768
+            //if()
+            
+            /*jQuery("#maingrid4").width(jQuery(document).width()-27)
+            jQuery(".l-grid2").width(jQuery(document).width()-54)
+            jQuery(".l-grid-header-inner").width(jQuery(document).width()-54)
+            jQuery(".l-grid-header-table").width(jQuery(document).width()-54)*/
+            
+            /*
+            
+            jQuery(".l-grid-header-inner:eq(1)").width(jQuery("#maingrid4").width()+5)
+            console.log(jQuery(".l-grid-header-inner:eq(1)").width())
+            jQuery(".l-grid-body-inner:eq(1)").width(jQuery("#maingrid4").width()-27)
+            jQuery(".l-grid-body-table").width(jQuery(".l-grid-body-inner:eq(1)").width())
+            console.log(jQuery(".l-grid-body-inner:eq(1)").width(),"body222222")*/
+            
             if (g.isHorizontalScrollShowed())
             {
                 g.gridview.addClass("l-grid-hashorizontal");

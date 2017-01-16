@@ -59,6 +59,9 @@ public class Layer implements Serializable{
 	@Column(name = "address", length = 300)
 	private String address;
 	
+	@Column(name = "real_address", length = 500)
+	private String realAddress; //存放图层的真实地址
+	
 	/**
 	 * 图层几何类型，结合实际，发布服务所对应的几何类型统一约定三种类型，不考虑path,ring,sphere,envelop...等几何图形
 	 * 栅格图层：null
@@ -68,6 +71,9 @@ public class Layer implements Serializable{
 	 */
 	@Column(name = "geometry_type")
 	private String geometryType;//几何类型：栅格(图片):[null];[esriGeometryPoint ];[esriGeometryPolyline];[esriGeometryPolygon ]
+	
+	@Column(name = "business_type")
+	private String businessType; //业务类型(default,video,scene)
 
 	@Transient
 	private Boolean open=true;
@@ -278,6 +284,22 @@ public class Layer implements Serializable{
 
 	public void setUpdator(User updator) {
 		this.updator = updator;
+	}
+
+	public String getRealAddress() {
+		return realAddress;
+	}
+
+	public void setRealAddress(String realAddress) {
+		this.realAddress = realAddress;
+	}
+
+	public String getBusinessType() {
+		return businessType;
+	}
+
+	public void setBusinessType(String businessType) {
+		this.businessType = businessType;
 	}
 	
 }

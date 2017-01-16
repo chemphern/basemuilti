@@ -22,20 +22,13 @@
     <jsp:include page="header.jsp"></jsp:include>
     <jsp:include page="left.jsp"></jsp:include>
 
-
-
     <!-- Content Wrapper. Contains page content -->
-    <div class="content-wrapper">
-
-
+    <div class="content-wrapper" style="min-height:600px;">
         <!-- Main content -->
         <section class="content">
-            <!-- Small boxes (Stat box) -->
-            <!-- /.row -->
-            <!-- Main row -->
             <!--主要内容-->
             <div id="yc_main">
-                <iframe class="firefoxIframeW" id="main_iframe" name="main_iframe" src="${ctx}/welcome" frameborder="0" align="center" onload="iframeResize(this)"></iframe>
+                <iframe class="firefoxIframeW" id="main_iframe" name="main_iframe" src="${ctx}/welcome" frameborder="0" align="center" ></iframe>
             </div>
             <!-- /.row (main row) - ->
 
@@ -65,28 +58,6 @@
 <script type="text/javascript" src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>
 <script type="text/javascript" src="${res}/plugins/dialog/iframeTools.source.js"></script>
 <script type="text/javascript" src="${res}/plugins/dialog/unit.js"></script>
-<script>
-    function iframeResize(iframe) {
-        try {
-//            var idocumentElement = iframe.contentWindow.document.documentElement;
-//            iframe.scrolling = "no";
-//            iframe.height = "";
-//            if (idocumentElement.scrollHeight > 560) {
-//                iframe.height = idocumentElement.scrollHeight + 100;
-//            }
-//            else {
-//                iframe.height = 560;
-//            }
-           var parent = iframe.contentWindow.parent;
-           var aside = parent.$(".main-sidebar");
-           var header = parent.$(".main-header");
-           var ih = aside.height() - header.height();
-           iframe.height = ih;
-        }
-        catch (e) {
-            window.status = 'Error: ' + e.number + '; ' + e.description;
-        }
-    }
-</script>
+
 </body>
 </html>

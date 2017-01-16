@@ -15,4 +15,7 @@ public class Global {
     public static final int HASH_INTERATIONS = 1024;
 
     public static final String LOGIN_CAPTCHA = "captcha";
+    
+    /**网络环境：内外网 */
+    public static final String NET_ENVIRONMENT="NET_ENVIRONMENT";
 }

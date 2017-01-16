@@ -5,7 +5,7 @@
  */
 
 //图层管理控制图层显示隐藏
-function changeVisibleInMap3D(treeNode){
+function changeVisibleInMap3D(treeNode,layerNum){
 	var ifAdd = false;
 	var wmsServices = getFolderObjects(configration.WMSServiceFolder);
 	if(wmsServices!=null&&wmsServices!=undefined&&wmsServices.length>0){
@@ -22,7 +22,7 @@ function changeVisibleInMap3D(treeNode){
 		}
 	}
 	if(!ifAdd){
-		addWMSServiceToMap(treeNode.address,treeNode.name);
+		addWMSServiceToMap(treeNode.address,treeNode.name,layerNum);
 		//addWFSServiceToMap(decodeURI(treeNode.address),treeNode.name);
 	}
 }
@@ -52,12 +52,18 @@ function initPOILayer() {
     wfsLayer.Visibility.Show = false;
 }
 
-function addWMSServiceToMap(address,name){
+function addWMSServiceToMap(address,name,layerNum){
 	 setTimeout(function(){
-		 var server = getWMSLayerServer(address);
-		 var layer = address.substring(address.lastIndexOf("/")+1,address.length);
-		 var url= server + "?request=GetMap&Version=1.1.1&Service=WMS&SRS=EPSG:4326&Styles=default&Transparent=true&Format=image/png&BBOX=-180.000000,-90.000000,180.000000,90.000000&WIDTH=256&HEIGHT=256 HTTP/1.1&Layers=" + layer;
-	     CreatWMSlayer(url,name);    
+	 	if(layerNum!=null||layerNum!=undefined){
+            var server = getThemeWMSLayerServer(address);
+            var url= server + "?request=GetMap&Version=1.1.1&Service=WMS&SRS=EPSG:4326&Styles=default&Transparent=true&Format=image/png&BBOX=-180.000000,-90.000000,180.000000,90.000000&WIDTH=256&HEIGHT=256 HTTP/1.1&Layers=0";
+            CreatWMSlayer(url,name);
+		}else{
+            var server = getWMSLayerServer(address);
+            var layer = address.substring(address.lastIndexOf("/")+1,address.length);
+            var url= server + "?request=GetMap&Version=1.1.1&Service=WMS&SRS=EPSG:4326&Styles=default&Transparent=true&Format=image/png&BBOX=-180.000000,-90.000000,180.000000,90.000000&WIDTH=256&HEIGHT=256 HTTP/1.1&Layers=" + layer;
+            CreatWMSlayer(url,name);
+        }
      },500);
 }
 
@@ -95,6 +101,12 @@ function getWMSLayerServer(url){
 	var loseRest = url.replace("rest/", "");
 	var server = loseRest.substring(0,loseRest.lastIndexOf("/"));
 	return server + "/WMSServer";
+}
+
+function getThemeWMSLayerServer(url) {
+    var loseRest = url.replace("rest/", "");
+    var server = loseRest.substring(0,loseRest.lastIndexOf("/"));
+    return server + "/MapServer/WMSServer";
 }
 
 function getSFSLayerServer(url){

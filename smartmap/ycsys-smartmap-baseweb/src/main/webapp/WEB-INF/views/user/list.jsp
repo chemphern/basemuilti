@@ -138,7 +138,7 @@
                                 }}
                         ], pageSize:10,
                         url:"${ctx}/user/listData",
-                        width: '100%',height:'96%',
+                        width: '100%',height:'98%',
                         parms: [
                             {name:'orgId', value:data.id}
                         ],

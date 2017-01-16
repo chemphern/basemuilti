@@ -39,13 +39,13 @@ public class Service implements java.io.Serializable {
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id; // 唯一标识
 
-	@Column(name = "register_name", length = 30)
+	@Column(name = "register_name", length = 300)
 	private String registerName; // 注册名称(为英文)
 
-	@Column(name = "show_name", nullable = false, length = 30)
+	@Column(name = "show_name", nullable = false, length = 500)
 	private String showName; // 服务显示名
 	
-	@Column(name = "arc_gis_service_name")
+	@Column(name = "arc_gis_service_name", length = 500)
 	private String arcGisServiceName; //在arcGisserver上面的服务名字，它可能跟注册到平台的名字不同
 
 	@Column(name = "service_extend", length = 200)
@@ -67,7 +67,7 @@ public class Service implements java.io.Serializable {
 	@JoinColumn(name = "auditor_id")
 	private User auditor; // 审核人
 
-	@Column(name = "audit_option")
+	@Column(name = "audit_option",length = 2000)
 	private String auditOption;// 审核意见
 
 	@Column(name = "permission_status", length = 1)
@@ -76,7 +76,7 @@ public class Service implements java.io.Serializable {
 	@Column(name = "max_version_num")
 	private Integer maxVersionNum; // 最大版本号
 
-	@Column(name = "version_remarks")
+	@Column(name = "version_remarks",length = 2000)
 	private String versiomnRemarks; // 更新版本备注
 
 	@Column(name = "type")
@@ -97,25 +97,28 @@ public class Service implements java.io.Serializable {
 	@Column(name = "remote_services_type", length = 1)
 	private String remoteServicesType; //远程服务类型（0：ArcGIS;1:OGC;）
 
-	@Column(name = "service_visit_address", length = 200)
+	@Column(name = "service_visit_address", length = 1000)
 	private String serviceVisitAddress;// 服务访问地址
 	
-	@Column(name = "service_visit_address_open", length = 200)
+	@Column(name = "service_visit_address_open", length = 1000)
 	private String serviceVisitAddressOpen;// 服务对外访问地址(二、三维系统用)
 	
-	@Column(name = "manager_service_url", length = 200)
+	@Column(name = "manager_service_url", length = 1000)
 	private String managerServiceUrl;// 服务管理url(用于启动、停止、删除服务操作)
 	
-	@Column(name = "imagePath")
+	@Column(name = "ip_address", length = 100)
+	private String ipAddress;//服务的ip地址(用于转发)
+	
+	@Column(name = "imagePath", length = 1000)
 	private String imagePath; //服务缩略图 存放路径
 
-	@Column(name = "metadata_visit_address", length = 100)
+	@Column(name = "metadata_visit_address", length = 1000)
 	private String metadataVisitAddress;// 元数据访问地址
 	
 	@Column(name = "more_property", length = 1)
 	private String moreProperty;//(空:没有更多属性；1：有更多属性)
 
-	@Column(name = "remarks", length = 200)
+	@Column(name = "remarks", length = 2000)
 	private String remarks; // 备注
 
 	@Column(name="monitor_status")
@@ -414,5 +417,15 @@ public class Service implements java.io.Serializable {
 	public void setServiceVisitAddressOpen(String serviceVisitAddressOpen) {
 		this.serviceVisitAddressOpen = serviceVisitAddressOpen;
 	}
+
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
+	
+	
 	
 }

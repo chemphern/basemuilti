@@ -59,7 +59,9 @@
   <script  src="${res}/js/common/plot.js"></script>
   <script  src="${res}/js/common/layerManager.js"></script>
   <script  src="${res}/js/common/themeManager.js"></script>
-  
+  <script  src="${res}/js/common/quickLocation.js"></script>
+  <script  src="${res}/js/common/analysis.js"></script>
+
   <!-- 三维地图飞行漫游功能模块 -->
   <script  src="${res}/js/common/flightRoaming.js"></script>
   <!-- 表格 -->
@@ -78,7 +80,7 @@
 <!-- wrapper start -->
 <div class="wrapper" > 
   <!-- header start -->
-  <nav class="header navbar navbar-static-top" role="navigation">
+  <nav class="header navbar navbar-static-top" role="navigation" id="header">
         <div class="navbar-inner clearfix">
           <a class="navbar-brand logo" href="#"><img src="${res}/dist/img/map/logo.png" alt="logo" /></a>
         
@@ -323,7 +325,6 @@
                   	<div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">查询图层：</label>
                     <div class="col-sm-8 select-item">
-<%--                       <select class="form-control input-sm easyui-combotree " data-options="url:'${res }/dist/js/map/data/mapLayerData.json',method:'get'" name="mapLayer2"></select> --%>
                       <select class="form-control input-sm" id="queryLyrLogic" onchange="listFieldsLogic();"></select>
                     </div>
                   </div>
@@ -1371,7 +1372,7 @@
                       <button type="button" class="btn btn_set">高级选项<span></span></button>
                       <div class="btn-group-adv">
                         <button type="submit" class="btn btn-success" id="plot3dSetLineStyle">应用</button>
-                        <button type="reset" class="btn btn-warning">重置</button>
+                        <button type="reset" class="btn btn-warning" id="plot3dSetLineStyleDefault">重置</button>
                       </div>
                     </div>
                     <div class="advanced-box">
@@ -1424,10 +1425,10 @@
                           <label for="name" class="col-sm-4">边线宽：</label>
                           <div class="col-sm-8 select-item">
                             <select class="form-control input-sm" id='selOutlineWidthPlot2dStyle'>
-                              <option>1</option>
-                              <option selected="true">2</option>
-                              <option>3</option>
-                              <option>4</option>
+                              <option value="1">1</option>
+                              <option value="2" selected="true">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
                             </select>
                           </div>
                         </div>
@@ -1448,13 +1449,14 @@
                           <option value="0" name="pic3dType">车辆类</option>
                           <option value="1" name="pic3dType">建筑类</option>
                           <option value="2" name="pic3dType">人员类</option>
+                          <option value="3" name="pic3dType">旗帜类</option>
                         </select>
                       </div>
                     </div>
                     </form>
                     <div class="tab-icon-list" id="3dIconList0">
                       <h4>车辆类</h4>            
-                      <ul class="bs-icon-list_pic clearfix" id="planePlot3dImageCar">
+                      <ul class="bs-icon-list_pic clearfix">
                         <li><span class="icon_pic car_1"></span><span class="icon-class">消防车1</span></li>
                         <li><span class="icon_pic car_2"></span><span class="icon-class">消防车2</span></li>
                         <li><span class="icon_pic car_3"></span><span class="icon-class">消防车3</span></li>
@@ -1480,14 +1482,22 @@
                         <li><span class="icon_pic per_3"></span><span class="icon-class">消防人员1</span></li>
                         <li><span class="icon_pic per_4"></span><span class="icon-class">消防人员2</span></li>
                       </ul>
-                    </div>                     
+                    </div>
+                    <div class="tab-icon-list"  id="3dIconList3" style="display:none">
+                      <h4>旗帜类</h4>            
+                      <ul class="bs-icon-list_pic clearfix">
+                        <li><span class="icon_pic flg3dCurve"></span><span class="icon-class">曲线旗标</span></li>
+                        <li><span class="icon_pic flg3dRectangle"></span><span class="icon-class">直角旗标</span></li>
+                        <li><span class="icon_pic flg3dTriang"></span><span class="icon-class">三角旗标</span></li>
+                      </ul>
+                    </div>                      
                     <script type="text/javascript">
                      //图片标绘下拉选择
                         function Pic3d(obj){
                             $(obj).parents("form").next("div").find("tab-icon-list").each(function(){
-                                $(this).hide().siblings("div").show();
+                                $(this).hide().siblings("div.tab-icon-list").show();
                             });
-                            $("#3dIconList" + obj.value).show().siblings("div").hide();
+                            $("#3dIconList" + obj.value).show().siblings("div.tab-icon-list").hide();
                         }
                     </script>
                     <!-- 图片标绘 end-->
@@ -1511,11 +1521,17 @@
                       <button type="button" class="btn btn_set">高级选项<span></span></button>
                       <div class="btn-group-adv">
                         <button type="submit" class="btn btn-success" id="plot3dSetTextImageStyle">应用</button>
-                        <button type="reset" class="btn btn-warning">重置</button>
+                        <button type="reset" class="btn btn-warning" id="plot3dSetTextImageStyleDefault">重置</button>
                       </div>
                     </div>
                     <div class="advanced-box">
                       <div class="form-horizontal search-form" role="form">
+                        <div class="form-group form-group-sm">
+                          <label for="name" class="col-sm-4">图标比例：</label>
+                          <div class="col-sm-8 select-item">
+                            <input type="text" class="form-control" value='1' placeholder="取值1~10之间的数" id='txtImageScalePlot3dStyle'>
+                          </div>
+                        </div>
                         <div class="form-group form-group-sm">
                           <label for="name" class="col-sm-4">字体：</label>
                           <div class="col-sm-8 select-item">
@@ -1544,19 +1560,19 @@
                           <label for="name" class="col-sm-4">字体尺寸：</label>
                           <div class="col-sm-8 select-item">
                             <select class="form-control input-sm" id='selFontSizePlot3d'>
-                              <option>10</option>
-                              <option>12</option>
-                              <option>14</option>
-                              <option>16</option>
-                              <option>18</option>
-                              <option>20</option>
-                              <option>22</option>
-                              <option>24</option>
-                              <option>26</option>
-                              <option>28</option>
-                              <option>30</option>
-                              <option>32</option>
-                              <option>34</option>
+                              <option value="10">10</option>
+                              <option value="12">12</option>
+                              <option value="14">14</option>
+                              <option value="16" selected="true">16</option>
+                              <option value="18">18</option>
+                              <option value="20">20</option>
+                              <option value="22">22</option>
+                              <option value="24">24</option>
+                              <option value="26">26</option>
+                              <option value="28">28</option>
+                              <option value="30">30</option>
+                              <option value="32">32</option>
+                              <option value="34">34</option>
                             </select>
                           </div>
                         </div>
@@ -1596,9 +1612,9 @@
                           </div>
                         </div>
                         <div class="form-group form-group-sm">
-                          <label for="name" class="col-sm-4">字体明度：</label>
+                          <label for="name" class="col-sm-4">文字透明度：</label>
                           <div class="col-sm-8 select-item">
-                            <input type="text" class="form-control" value='1' placeholder="取值0~1之间的小数" id='txtFonAlphaPlot3dStyle'>
+                            <input type="text" class="form-control" value='1' placeholder="取值0~1之间的小数" id='txtFontAlphaPlot3dStyle'>
                           </div>
                         </div>
                         <div class="form-group form-group-sm">
@@ -1654,7 +1670,7 @@
                       <button type="button" class="btn btn_set">高级选项<span></span></button>
                       <div class="btn-group-adv">
                         <button type="submit" class="btn btn-success" id="plot3dSetFillStyle">应用</button>
-                        <button type="reset" class="btn btn-warning">重置</button>
+                        <button type="reset" class="btn btn-warning" id="plot3dSetFillStyleDefault">重置</button>
                       </div>
                     </div>
                     <div class="advanced-box">
@@ -1992,12 +2008,16 @@
                      <a href="javascript:;"><span class="icon iconfont">&#xe632;</span></a>      
                   </div>               
                 </div>
+<!--                 <div class="col-sm-8 select-item"> -->
+<!--                     <select class="easyui-combobox" id="overlay" multiple="multiple"></select> -->
+<!--                 </div> -->
                 <form class="form-inline search-form" role="form">
                 <div class="form-group form-group-sm">
                     <label for="name">导入GPS</label>
                     <div class="filebox"><input type="file" name="file_0_ture" size="20" onchange="document.getElementById('file_0').value=this.value" class="filetext opacity "><input name="file_0" id="file_0" value="" class="form-control"> <button type="button"  class="btn btn_import">导 入</button></div>
                 </div>
-                </form>              
+                </form> 
+                <div style="display: none;" id='overlayPnl'></div>             
               </div>
             </div>
             <div class="panelBox" id="fore-2d3d-menu-fx-hcqfx">
@@ -2053,29 +2073,146 @@
               </div>
             </div>
             <div class="panelBox" id="fore-2d3d-menu-fx-3dfx">
-              <div class="panelBox-heading">
-                <h3 class="panelBox-title">三维分析</h3><span class="arrow arrowUp"></span>
-              </div>
-              <div  class="panelBox-body">
-                <div class="row side-menu">
-                  <a href="#" class="col-sm-6 active">
-                    <i class="icon iconfont side-menu-icon">&#xe64b;</i>
-                    <h2>光照分析</h2>
-                  </a>
-                  <a href="#" class="col-sm-6" >
-                    <i class="icon iconfont side-menu-icon">&#xe60b;</i>
-                    <h2>水淹分析</h2>
-                  </a>
-                  <a href="#" class="col-sm-6" >
-                    <i class="icon iconfont side-menu-icon">&#xe65d;</i>
-                    <h2>视线分析</h2>
-                  </a>
-                  <a href="#" class="col-sm-6" >
-                    <i class="icon iconfont side-menu-icon">&#xe658;</i>
-                    <h2>视域分析</h2>
-                  </a>
+              <div id="sideMenu">
+                <div class="panelBox-heading">
+                  <h3 class="panelBox-title">三维分析</h3><span class="arrow arrowUp"></span>
+                </div>
+                <div  class="panelBox-body">
+                  <div class="row side-menu">
+                    <a href="javascript:void(0)" class="col-sm-4 active" onclick="analysis3dSunlight()">
+                      <i class="icon iconfont side-menu-icon">&#xe64b;</i>
+                      <h2>光照分析</h2>
+                    </a>
+                    <a href="javascript:void(0)" class="col-sm-4" onclick="analysis3dFlood()">
+                      <i class="icon iconfont side-menu-icon">&#xe60b;</i>
+                      <h2>水淹分析</h2>
+                    </a>
+                    <a href="javascript:void(0)" class="col-sm-4" onclick="analysis3dLineOfSight()">
+                      <i class="icon iconfont side-menu-icon">&#xe65d;</i>
+                      <h2>视线分析</h2>
+                    </a>
+                    <a href="javascript:void(0)" class="col-sm-4" onclick="analysis3dViewShed()">
+                      <i class="icon iconfont side-menu-icon">&#xe658;</i>
+                      <h2>视域分析</h2>
+                    </a>
+                    <a href="javascript:void(0)" class="col-sm-4" id="forestFire">
+                      <i class="icon iconfont side-menu-icon">&#xe694;</i>
+                      <h2>林火蔓延分析</h2>
+                    </a>
+                  </div>
                 </div>
               </div>
+              <!-- 林火蔓延分析 start -->
+              <div id="forestFirebox">
+                <div class="panelBox-heading-disable">
+                  <h3 class="panelBox-title">林火蔓延分析</h3><span class="arrow-back"></span>
+                </div>          
+                <div  class="panelBox-body">
+                    <!-- 参数设置 start-->
+                    <div class="block_title">
+                      <div class="block_title_tags">
+                        <a href="#" class="tag">参数设置</a>
+                        <i class="tag_hr"></i>
+                      </div>
+                      <span class="rtime" style="display: none">剩余时间：<i class="red" id="fireRemainingTime"></i></span>
+                    </div>
+                    <div class="tag_conents clearfix">
+                      <form class="conents-form" role="form">
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-5">温度</label>
+                          <input type="text" class="input-sm col-sm-7" value="27" id="fireWenDu">
+                        </div>
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-5">湿度</label>
+                          <input type="text" class="input-sm col-sm-7" value="0.32" id="fireShiDu">
+                        </div>
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-5">风速</label>
+                          <input type="text" class="input-sm col-sm-7" value="5" id="fireFengSu">
+                        </div>
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-5">风向</label>
+                          <input type="text" class="input-sm col-sm-7" value="西南" id="fireFengXiang">
+                        </div>
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-7">干旱码</label>
+                          <input type="text" class="input-sm col-sm-5" value="0.5" id="fireGanHanMa">
+                        </div>
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-7">模拟时间</label>
+                          <input type="text" class="input-sm col-sm-5" value="0.5" id="fireMNTime">
+                        </div>
+                      </form>
+                    </div>
+                    <!-- 参数设置 end-->
+                    <!-- 蔓延速度 start-->
+                    <div class="block_title">
+                      <div class="block_title_tags">
+                        <a href="#" class="tag">蔓延速度（米/秒）</a>
+                        <i class="tag_hr"></i>
+                      </div>
+                    </div>
+                    <div class="tag_conents clearfix">
+                      <form class="conents-form" role="form">
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-5">东</label>
+                          <input type="text" class="input-sm col-sm-7" value="0.0" disabled id="fireEast">
+                        </div>
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-5">东北</label>
+                          <input type="text" class="input-sm col-sm-7" value="0.0" disabled id="fireEastNorth">
+                        </div>
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-5">南</label>
+                          <input type="text" class="input-sm col-sm-7" value="0.0" disabled id="fireSouth">
+                        </div>
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-5">东南</label>
+                          <input type="text" class="input-sm col-sm-7" value="0.0" disabled id="fireEastSouth">
+                        </div>
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-5">西</label>
+                          <input type="text" class="input-sm col-sm-7" value="0.0" disabled id="fireWest">
+                        </div>
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-5">西北</label>
+                          <input type="text" class="input-sm col-sm-7" value="0.0" disabled id="fireWestNorth">
+                        </div>
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-5">北</label>
+                          <input type="text" class="input-sm col-sm-7" value="0.0" disabled id="fireNorth">
+                        </div>
+                        <div class="form-group col-sm-6">
+                          <label for="name" class="label col-sm-5">西南</label>
+                          <input type="text" class="input-sm col-sm-7" value="0.0" disabled id="fireWestSouth">
+                        </div>
+                      </form>
+                    </div>      
+                    <!-- 蔓延速度 end-->
+                    <!-- 模拟蔓延 start-->
+                    <div class="block_title">
+                      <div class="block_title_tags">
+                        <a href="#" class="tag">模拟蔓延</a>
+                        <i class="tag_hr"></i>
+                      </div>
+                    </div>
+                    <div class="tag_conents clearfix">
+                      <%--<form class="conents-form">--%>
+                        <div class="form-group col-sm-12">                          
+                          <input type="text" class="input-sm col-sm-6" value="" disabled id="firePosition">
+                          <button for="name" class="col-sm-6" onclick="getFireClick()">拾取起火点位置</button>
+                        </div>
+                        <div class="btn-group col-sm-12" id="forestFireBtn">
+                          <button type="button" class="btn btn-default col-sm-4" onclick="startSimulation()">开始模拟</button>
+                          <button type="button" class="btn btn-default col-sm-4" onclick="pauseSimulation()">暂停模拟</button>
+                          <button type="button" class="btn btn-default col-sm-4" onclick="stopSimulation()">停止模拟</button>
+                        </div>
+                      <%--</form>--%>
+                    </div>      
+                    <!-- 模拟蔓延 end-->
+                </div>
+              </div>
+              <!-- 林火蔓延分析 end -->
             </div>
           </div>
         </div>
@@ -2258,7 +2395,7 @@
     <div class="mapcontent" id="mapContent">
       <!-- 地图工具条 start-->
       <div class="toolbar" id="measureDiv">
-      	  <a href="javascript:;" id="btnIdentify"><i class="icon iconfont">&#xe63f;</i><h3>I查询</h3></a>
+      	  <a href="javascript:;" id="btnIdentify"><i class="icon iconfont">&#xe692;</i><h3>I查询</h3></a>
       	  <a href="javascript:;" id="printDiv" onclick="print()"><i class="icon iconfont">&#xe63f;</i><h3>打印</h3></a>
           <a href="javascript:;" id="fullScreenBtn"><i class="icon iconfont">&#xe643;</i><h3>全屏</h3></a>
           <a href="javascript:;" onclick="clearMap()"><i class="icon iconfont">&#xe646;</i><h3>清除</h3></a>
@@ -2340,7 +2477,7 @@
               <div class="city-popup-main city-dropdown-menu">
               <iframe id="map3dSceneViewIframe" frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
                 <i class="city-popup-triangle-up"></i>
-                <div class="city-title">全图范围：广东省</div>
+                <div class="city-title">全图范围：<span>广东省</span></div>
                 <button class="city-pupup-close" title="关闭"></button>
                 <ul class="city-list clearfix" id="city-listUI">
                                
@@ -2351,8 +2488,6 @@
                       <li class="" lon="113.588233" lat="23.549492" zoom="12">从化市</li>
                                         
                       <li class="" lon="113.838826" lat="23.292648" zoom="12">增城市</li>
-                                        
-                      <li class="" lon="113.527309" lat="23.056706" zoom="12">萝岗区</li>
                                         
                       <li class="" lon="113.502856" lat="22.828951" zoom="12">南沙区</li>
                                         

@@ -1,5 +1,7 @@
 package com.ycsys.smartmap.sys.common.annotation;
 
+import com.ycsys.smartmap.sys.common.enums.LogType;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -15,9 +17,9 @@ public @interface ToLog {
     public abstract String name();
 
     /***备注*/
-    public abstract String remark() default "";
+    public abstract String remark() default "正常";
 
     /**日志类型**/
-    public abstract String type();
+    public abstract LogType type();
 
 }

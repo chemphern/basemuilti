@@ -67,22 +67,28 @@ public class ClusterUtils {
 		Map<String, String> params = new HashMap<String, String>();
 		String tokenUrl = "http://" + ip + ":" + port + "/arcgis/admin/generateToken";
 		String token = ArcGisServerUtils.getTken(tokenUrl,userName, password);
+		List<String> lists = new ArrayList<String>();
+		if(token == null) {
+			return lists;
+		}
 		params.put("Token", token);
 		//http://172.16.10.52:6080/arcgis/admin/clusters
 		String url = "http://" + ip + ":" + port + "/arcgis/admin/clusters";
 		String retStr = excute2(url, params);
-		List<String> lists = new ArrayList<>();
+		
 		// System.out.println("retStr="+retStr);
 		if (retStr != null) {
 			Map map1 = (Map) JSON.parse(retStr);
 			// System.out.println("map1="+map1);
 			if(map1 != null && map1.size() > 0) {
 				JSONArray jArray = (JSONArray) map1.get("clusters");
-				for (int i = 0; i < jArray.size(); i++) {
-					Map map = (Map) jArray.get(i);
-					String clusterName = (String) map.get("clusterName");
-					// System.out.println("clusterName="+clusterName);
-					lists.add(clusterName);
+				if(jArray != null) {
+					for (int i = 0; i < jArray.size(); i++) {
+						Map map = (Map) jArray.get(i);
+						String clusterName = (String) map.get("clusterName");
+						// System.out.println("clusterName="+clusterName);
+						lists.add(clusterName);
+					}
 				}
 			}
 		}

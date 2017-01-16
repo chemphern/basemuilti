@@ -1,23 +1,13 @@
 package com.ycsys.smartmap.monitor.entity;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
+import com.ycsys.smartmap.sys.entity.User;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import com.ycsys.smartmap.service.entity.Service;
-import com.ycsys.smartmap.sys.entity.User;
+import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "m_service_request")
@@ -39,29 +29,31 @@ public class ServiceRequest implements java.io.Serializable {
 	@Column(name = "request_date")
 	private Date requestDate;
 
-	@Column(name = "request_ip", length = 20)
+	@Column(name = "request_ip",length = 255)
 	private String requestIp; // 请求ip
 
-	@Column(name = "server_ip", length = 20)
+	@Column(name = "server_ip",length = 255)
 	private String serverIp; // 服务器ip
 	
-	@Column(name = "server_port")
+	@Column(name = "server_port",length = 10)
 	private Integer serverPort;	//服务器端口
+
+	@Column(name="service_name",length = 255)
+	private String serviceName;//服务名称
+
+	@Column(name="service_Type",length = 255)
+	private String serviceType;//服务类型
 	
-	@ManyToOne
-	@JoinColumn(name = "service_id")
-	private Service service; //服务
-	
-	@Column(name = "service_method",length = 30)
+	@Column(name = "service_method",length = 255)
 	private String serviceMethod;	//服务方法
 	
-	@Column(name = "request_url")
+	@Column(name = "request_url",length = 3999)
 	private String requestUrl; //请求url
 	
-	@Column(name ="visit_date")
-	private Date visitDate;	//访问时间
+	@Column(name ="visit_time")
+	private long visitTime;	//访问时间
 	
-	@Column(name = "return_status",length = 1)
+	@Column(name = "return_status",length = 10)
 	private String returnStatus;	//返回状态
 	
 	@Column(name = "create_date")
@@ -115,14 +107,6 @@ public class ServiceRequest implements java.io.Serializable {
 		this.serverPort = serverPort;
 	}
 
-	public Service getService() {
-		return service;
-	}
-
-	public void setService(Service service) {
-		this.service = service;
-	}
-
 	public String getServiceMethod() {
 		return serviceMethod;
 	}
@@ -139,12 +123,12 @@ public class ServiceRequest implements java.io.Serializable {
 		this.requestUrl = requestUrl;
 	}
 
-	public Date getVisitDate() {
-		return visitDate;
+	public long getVisitTime() {
+		return visitTime;
 	}
 
-	public void setVisitDate(Date visitDate) {
-		this.visitDate = visitDate;
+	public void setVisitTime(long visitTime) {
+		this.visitTime = visitTime;
 	}
 
 	public String getReturnStatus() {
@@ -161,5 +145,21 @@ public class ServiceRequest implements java.io.Serializable {
 
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
+	public String getServiceType() {
+		return serviceType;
+	}
+
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
 	}
 }

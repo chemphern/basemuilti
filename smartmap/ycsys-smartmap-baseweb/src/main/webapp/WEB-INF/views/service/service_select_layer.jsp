@@ -143,7 +143,7 @@ body {
 						pageSize : 50,
 						url:"${ctx}/service/listLayer",
 						parms: [
-	                            {name:'serviceVisitAddress', value:'${serviceVisitAddress}'}
+	                            {name:'id', value:'${serviceId}'}
 	                        ],
 						width : '300%',
 						height : '97%'

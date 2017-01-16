@@ -35,8 +35,7 @@
         <tr>
             <td class="t_r">拥有角色：</td>
             <td>
-                <select id="roleName" readonly name="roleName" >
-                </select>
+                <input id="roleName" readonly name="roleName" type="text">
             </td>
         </tr>
         <tr>

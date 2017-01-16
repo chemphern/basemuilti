@@ -17,6 +17,7 @@ var themeSetting = {
 		enable: true,
 		contentType: "application/json",
 		url: path+"/themeService/themeList.do",
+		dataFilter:filterHandler,
 		autoParam: ["id", "name"]
 	},
     callback: {
@@ -25,6 +26,17 @@ var themeSetting = {
     }
 };
   
+function filterHandler(treeId, parentNode, childNodes){
+	if (childNodes) {
+	      for(var i =0; i < childNodes.length; i++) {
+	    	var treeNode = childNodes[i];
+	    	treeNode.showAddress = mapConfig.preAddProxyUrl(treeNode.showAddress);
+	    	treeNode.queryAddress = treeNode.queryAddress ? mapConfig.preAddProxyUrl(treeNode.queryAddress) : treeNode.showAddress;
+	      }
+	    }
+	return childNodes;
+}
+
 $(document).ready(function(){
     $.fn.zTree.init($("#treeMapzt"), themeSetting);
 });
@@ -34,7 +46,9 @@ function beforeClickHandler(treeId,treeNode,flag){
 }
 
 function clickHanlder(e, treeId, treeNode,flag) {
-	addThemeLayer(treeNode.id,treeNode.address);
+	addThemeLayer(treeNode.id,treeNode.showAddress);
+	if(mapOpt!=2)
+   		changeVisibleInMap3D(treeNode,0);
 }  
 
 function addThemeLayer(lyrId,lyrUrl){
@@ -42,7 +56,7 @@ function addThemeLayer(lyrId,lyrUrl){
 	IdentifyTool.clear();
 	if(preThemeId){
 		var preLyr=map.getLayer(preThemeId);
-		map.removeLayer(preLyr);
+		if(preLyr) map.removeLayer(preLyr);
 	}
 	var id=String(lyrId);
 	var lyr=new esri.layers.ArcGISDynamicMapServiceLayer(lyrUrl,{id:id});
@@ -54,6 +68,7 @@ function addThemeLayer(lyrId,lyrUrl){
 
 //初始化专题模块
 function loadThemeLayers(){
+	map.setZoom(9);
 	var bIds=map.basemapLayerIds;
 	var lIds=map.layerIds;
 	var gIds=map.graphicsLayerIds;
@@ -79,9 +94,10 @@ function loadThemeLayers(){
 		if(selNodes.length>0){
 			node=selNodes[0];
 		}else{
-			node=roots[0].children[0];
+			node=roots[0].children?roots[0].children[0]:roots[0];
+			tree.selectNode(node);
 		}
-		var lyr=addThemeLayer(node.id,node.address);
+		var lyr=addThemeLayer(node.id,node.showAddress);
 		if(!lyr.visibleAtMapScale){
 			lyr.show();
 		}

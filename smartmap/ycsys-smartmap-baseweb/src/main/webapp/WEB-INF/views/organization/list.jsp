@@ -157,7 +157,7 @@
             ],
             pageSize:10,
             url:"${ctx}/org/listData",
-            width: '100%',height:'96%',
+            width: '100%',height:'98%',
             tree:{columnName:"name"},
             enabledSort:false,
             rownumbers:true

@@ -13,4 +13,6 @@ public interface NativeDbMonitorService {
     public List<NativeDbMonitor> find(String hql, Object[] param);
     
     public List<NativeDbMonitor> find(String hql, List<Object> param);
+    
+    public Object[] findArrValue(String hql, List<Object> params);
 }

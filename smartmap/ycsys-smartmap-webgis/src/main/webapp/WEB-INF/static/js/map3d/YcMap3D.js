@@ -1,5 +1,4 @@
 //-------------------------------------------------全局变量-------------------------------------------------//
-var Map3DPlugDownoadPath = "http://172.16.10.52/Skyline_ZhouShan/setup.exe";//插件下载地址
 var HiddenGroup = "~HiddenGroup";
 
 //----------------------------------------------浏览器类型判断----------------------------------------------//
@@ -346,6 +345,10 @@ function clearMap3D(){
 	        PlotTool.deactivate();
         PlotTool.clear();
     }
+    if(AnalysisToolGloble.AnalysisType!=""){//三维分析清除
+        AnalyseTool.deactivate();
+    }
+    YcMap3D.Window.HideMessageBarText();//清除隐藏消息栏
     deleteFolderObjects(configration.QueryIcoFolder);
     deleteFolderObjects(configration.QueryDrawFolder);
 }

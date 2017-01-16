@@ -47,11 +47,11 @@
     <div class="row">
         <div class="col-md-12">
           <div class="btn_box" style="float: left;margin-top:10px;"> 
-            	时间：<input name="startTime" id="startTime" type="text" class="text date_plug" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"> 
-            	至 <input name="endTime" id="endTime" type="text" class="text date_plug" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})">&nbsp;&nbsp;
+            	时间：<input name="startTime" id="startTime" type="text" class="text date_plug" value="${curDate }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"> 
+            	至 <input name="endTime" id="endTime" type="text" class="text date_plug" value="${curDateTo }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})">&nbsp;&nbsp;
             	统计类型：<select id="statType" name="statType">
 		            		<option value="1">线程池信息</option>
-		            		<option value="2">JVM内存信息 </option>
+		            		<option value="2">JVM内存信息</option>
 		              </select>
 		            参数类型：<input type="checkbox" name="paramType" checked="checked" value="1" class="text" style="width: 5px;"><span id="spanId1">&nbsp;&nbsp;当前线程数</span> &nbsp;&nbsp;
 		             <input type="checkbox" name="paramType" checked="checked" value="2" class="text" style="width: 5px;" > <span id="spanId2">&nbsp;&nbsp;繁忙线程数</span> 
@@ -85,9 +85,11 @@
 <script src="${res }/plugins/My97DatePicker/WdatePicker.js"></script>
 <%-- <script src="${res }/dist/js/pages/ptsj.js"></script> --%>
 <script>
+var gridManager = null;
 $(document).ready(function(){
 	//统计类型改变事件
-	$("#statType").on("change",function() {
+	$("#statType").on("change",function(e) {
+		e.preventDefault();
 		if($(this).val() == "1") {
 			$("#spanId1").html("&nbsp;&nbsp;当前线程数");
 			$("#spanId2").html("&nbsp;&nbsp;繁忙线程数");
@@ -99,7 +101,8 @@ $(document).ready(function(){
 	});
 	
 	//查询按钮绑定单击事件
-	$("#queryBtn").on("click",function(){
+	$("#queryBtn").on("click",function(e){
+		e.preventDefault();
 		query();
 	});
 	
@@ -108,7 +111,14 @@ $(document).ready(function(){
 	
 	//查询 start
 	function query() {
+		if(gridManager) {
+			gridManager.setParm("startTime",$("#startTime").val());
+	    	gridManager.setParm("endTime",$("#endTime").val());
+	    	gridManager.reload();
+		}
 	 	var myChart = echarts.init(document.getElementById('chart'),'macarons');
+	 	//统计类型
+	 	var statType = $("#statType").val();
 	 	//参数类型
 	 	var paramType = [];
 	 	$("input[name='paramType']:checked").each(function() {
@@ -118,8 +128,6 @@ $(document).ready(function(){
 	 		alert("请至少选择1个参数类型！");
 	 		return false;
 	 	}
-	 	//统计类型
-	 	var statType = $("#statType").val();
 	    //获取应用服务器信息 start
 	    $.ajax({
 			url:"${ctx}/statistics/getAppServerInfo",
@@ -129,14 +137,14 @@ $(document).ready(function(){
 			success:function(ret) {
 				var xData = JSON.parse(ret.xAxisData);
 				//console.log("ret.seriesData1=" + ret.seriesData1);
-				//console.log("ret.seriesData2" + ret.seriesData2);
+				//console.log("ret.seriesData2=" + ret.seriesData2);
 				var seriesData1 = "";
 				var seriesData2 = "";
 				if(ret.seriesData1) {
-					seriesData1 = JSON.parse(ret.seriesData1)
+					seriesData1 = JSON.parse(ret.seriesData1);
 				}
 				if(ret.seriesData2) {
-					seriesData2 = JSON.parse(ret.seriesData2)
+					seriesData2 = JSON.parse(ret.seriesData2);
 				}
 				
 			    var option = {
@@ -186,12 +194,24 @@ $(document).ready(function(){
 			    		      {
 			    		          name: statType=="1"?'当前线程数':'已占用内存',
 			    		          type: 'line',
-			    		          data:seriesData1
+			    		          data:seriesData1,
+			    		          markPoint : {
+				                       data : [
+				                           {type : 'max', name: '最大值'},
+				                           {type : 'min', name: '最小值'}
+				                       ]
+				                   }
 			    		      },
 			    		      {
 			    		          name: statType=="1"?'繁忙线程数':'空闲内存',
 			    		          type: 'line',
-			    		          data:seriesData2
+			    		          data:seriesData2,
+			    		          markPoint : {
+				                       data : [
+				                           {type : 'max', name: '最大值'},
+				                           {type : 'min', name: '最小值'}
+				                       ]
+				                   }
 			    		      }
 			    		  ]
 			    		};
@@ -202,11 +222,11 @@ $(document).ready(function(){
 			}
 	    });
 	  //获取应用服务器信息  end
-
-	   //数据库列表start
+	  
+	   //应用服务器列表start
 	   $(function () {
 		 if(statType == "1") {
-		     $("#maingrid4").ligerGrid({
+			 gridManager = $("#maingrid4").ligerGrid({
 		         checkbox: false,
 		         columns: [
 		         { display: '应用服务器名称', name: 'serverName', minwidth: 100 },
@@ -223,7 +243,7 @@ $(document).ready(function(){
 		     });
 		 }
 		 else {
-			 $("#maingrid4").ligerGrid({
+			 gridManager = $("#maingrid4").ligerGrid({
 		         checkbox: false,
 		         columns: [
 		         { display: '应用服务器名称', name: 'serverName', minwidth: 100 },
@@ -241,7 +261,7 @@ $(document).ready(function(){
 		 }
 	     $("#pageloading").hide(); 
 	 });
-	//数据库列表end
+	//应用服务器列表end
 	}
 	//查询  end
 });

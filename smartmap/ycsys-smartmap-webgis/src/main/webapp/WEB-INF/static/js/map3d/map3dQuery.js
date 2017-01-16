@@ -105,8 +105,9 @@ function featureSpatialQueryArea(geometry) {
 /**
  * ArcGIS查询结果转变添加到三维场景中
  * @param featureSet ArcGIS查询结果要素集
+ * @param ifIndex 标识结果集是否显示编号图标
  */
-function fromArcgisTo3dScene(featureSet) {
+function fromArcgisTo3dScene(featureSet,ifIndex) {
     if(map3DInit==true){
         if(featureSet!=null&&featureSet.length>0){
             clearFeatureSearchFolder();
@@ -115,7 +116,12 @@ function fromArcgisTo3dScene(featureSet) {
             for(var i=0;i<featureSet.length;i++){
                 var feature = featureSet[i];
                 //绘制结果图标和要素到场景中
-                var featureExtent = addFeatureToScene3D(feature,i+1);
+                var num;
+                if(ifIndex)
+                    num = i+1;
+                else
+                    num = -1;
+                var featureExtent = addFeatureToScene3D(feature,num);
                 //获取得到结果集区域信息
                 if(feature.geometry.type=="point"){
                     featurePointArr.push(feature);
@@ -223,15 +229,21 @@ function addFeatureToScene3D(feature,num) {
  */
 function addFeatureImage(position,feature,num) {
     //创建场景中要素图标
-    var imgPath = getProjectPath() + "static/dist/img/map/icon_features_" + num.toString() + ".png";
-    var LabelStyle = YcMap3D.Creator.CreateLabelStyle(0);
-    var groupID = YcMap3D.ProjectTree.FindItem(configration.QueryIcoFolder);
-    var featureImage = YcMap3D.Creator.CreateImageLabel(position,imgPath,LabelStyle,groupID,feature.attributes.OBJECTID);
-    //创建图标点击信息弹窗
-    var pagePath = path + "/static/popup/map_dialog_a1.html?id=" + featureImage.ID + "&&attributes=" + JSON.stringify(feature.attributes);
-    var manager = YcMap3D.Creator.CreatePopupMessage("要素属性",pagePath,10,10,360,350,-1);
-    manager.ShowCaption = false;
-    featureImage.Message.MessageID = manager.ID;
+    if(position!=null&&feature!=null&&num!=null){
+        var imgPath;
+        if(num==-1)
+            imgPath = path+"/static/dist/img/map/icon_feature_0.png";
+        else
+            imgPath = getProjectPath() + "static/dist/img/map/icon_features_" + num.toString() + ".png";
+        var LabelStyle = YcMap3D.Creator.CreateLabelStyle(0);
+        var groupID = YcMap3D.ProjectTree.FindItem(configration.QueryIcoFolder);
+        var featureImage = YcMap3D.Creator.CreateImageLabel(position,imgPath,LabelStyle,groupID,feature.attributes.OBJECTID);
+        //创建图标点击信息弹窗
+        var pagePath = path + "/static/popup/map_dialog_a1.html?id=" + featureImage.ID + "&&attributes=" + JSON.stringify(feature.attributes);
+        var manager = YcMap3D.Creator.CreatePopupMessage("要素属性",pagePath,10,10,360,350,-1);
+        manager.ShowCaption = false;
+        featureImage.Message.MessageID = manager.ID;
+    }
 }
 
 /**
@@ -372,6 +384,15 @@ function navigateToSceneFeature(featureObjId,sceneObjID) {
         //点击同一个对象直接返回
         if(selectFeature!=null&&currentSelectFeature!=null&&currentSelectFeature.ID==selectFeature.ID)
             return;
+
+        //判断是否是专题图查询
+        var ifThemeSearch = false;
+        if(selectFeature!=null&&selectFeature.ObjectType==24){
+            var imagePath = selectFeature.ImageFileName;
+            if(imagePath.substring(imagePath.lastIndexOf("_")-7,imagePath.lastIndexOf("_"))=="feature")
+                ifThemeSearch = true;
+        }
+
         //判断是否存在已有高亮对象，去除原有高亮图标
         if(selectFeature!=null&&currentSelectFeature!=null&&currentSelectFeature.ID!=selectFeature.ID){
             var imagePath = currentSelectFeature.ImageFileName;
@@ -380,7 +401,8 @@ function navigateToSceneFeature(featureObjId,sceneObjID) {
         if(selectFeature!=null&&selectFeature.ObjectType==24){//高亮点击对象
             var imagePath = selectFeature.ImageFileName;
             selectFeature.ImageFileName = imagePath.substr(0,imagePath.lastIndexOf(".")) + "h.png";
-            if(isSceneClick){
+
+            if(isSceneClick&&!ifThemeSearch){//非专题图查询高亮结果列表图标
                 var index = imagePath.substring(imagePath.lastIndexOf("_") + 1,imagePath.lastIndexOf("."));
                 $('.no-'+index).parent().toggleClass('active').siblings().removeClass('active');
             }
@@ -412,4 +434,36 @@ function clearFeatureSearchFolder() {
     //清除前一页要素相关记录
     currentSelectFeature = null;
     currentFeatureSetPos = null;
+}
+
+//------------------------------------------------------------------------------Identify查询------------------------------------------------------------------------//
+//查询后，调用空间查询的结果展示
+
+/**
+ * 入口绘制查询区域
+ */
+function identifySpatialQuery3d() {
+    clearFeatureSearchFolder();
+    //空间查询面查询绘制操作
+    DrawTool.activate(DrawTool.DrawType.TERRARECTANGLE);
+    //空间查询面查询结果处理
+    DrawTool.drawEndHandler = function (rectangel) {
+        var geoArr = new Array(rectangel.Left,rectangel.Top,0,rectangel.Left,rectangel.Bottom,0,rectangel.Right,rectangel.Bottom,0,rectangel.Right,rectangel.Top,0);
+        var rectangelPolygon = YcMap3D.Creator.GeometryCreator.CreateLinearRingGeometry(geoArr);
+        identifySpatialQuery3dArea(rectangelPolygon);
+    };
+}
+
+/**
+ * 将绘制区域传递回二维查询
+ */
+function identifySpatialQuery3dArea(geometry) {
+    if(geometry!=null&&geometry.NumPoints>0){
+        var polygon = new esri.geometry.Polygon();
+        var coords = convert3DTo2DCoord(geometry.Points);
+        polygon.addRing(coords);
+        var geometryObj={geometry:null}
+        geometryObj.geometry = polygon;
+        IdentifyTool._onDrawEnd(geometryObj);
+    }
 }

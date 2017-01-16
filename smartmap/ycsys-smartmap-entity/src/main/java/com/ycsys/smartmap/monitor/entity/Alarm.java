@@ -1,22 +1,13 @@
 package com.ycsys.smartmap.monitor.entity;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-
+import com.ycsys.smartmap.sys.entity.User;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import com.ycsys.smartmap.sys.entity.User;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 异常报警
@@ -37,7 +28,7 @@ public class Alarm implements java.io.Serializable {
 	@Column(name = "id", unique = true, nullable = false)
 	private Integer id; // 唯一标识
 
-	@Column(name = "title", length = 1000)
+	@Column(name = "title", length = 3999)
 	private String title;	//标题
 
 	@Column(name = "content", length = 3000)

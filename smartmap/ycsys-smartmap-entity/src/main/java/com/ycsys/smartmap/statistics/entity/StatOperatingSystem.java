@@ -75,6 +75,37 @@ public class StatOperatingSystem implements java.io.Serializable {
 	@Column(name = "free_average")
 	private Float freeAverage;	//cpu当前空闲率平均值
 	
+	private long sendPackageMax; //发送包裹最大
+	
+	private long sendPackageMin; //发送包裹最小
+	
+	private Float sendPackageAverage; //发送包裹平均
+	
+	private long recPackageMax; //接收包裹最大
+	
+	private long recPackageMin; //接收包裹最小
+	
+	private Float recPackageAverage; //接收包裹平均
+	
+	private long sendByteMax; //发送流量最大
+	
+	private long sendByteMin; //发送流量最小
+	
+	private Float sendByteAverage; //发送流量平均
+	
+	private long recByteMax; //接收流量最大
+	
+	private long recByteMin; //接收流量最小
+	
+	private Float recByteAverage; //接收流量平均
+	
+	private double usedMemoryMax; //使用内存最大
+	
+	private double usedMemoryMin; //使用内存最小
+	
+	private double usedMemoryAverage; //使用内存平均
+	
+	
 	@Column(name = "statistics_date")
 	private Date statisticsDate; // 统计时间
 
@@ -208,6 +239,126 @@ public class StatOperatingSystem implements java.io.Serializable {
 
 	public void setStatisticsUser(User statisticsUser) {
 		this.statisticsUser = statisticsUser;
+	}
+
+	public long getSendPackageMax() {
+		return sendPackageMax;
+	}
+
+	public void setSendPackageMax(long sendPackageMax) {
+		this.sendPackageMax = sendPackageMax;
+	}
+
+	public long getSendPackageMin() {
+		return sendPackageMin;
+	}
+
+	public void setSendPackageMin(long sendPackageMin) {
+		this.sendPackageMin = sendPackageMin;
+	}
+
+	public Float getSendPackageAverage() {
+		return sendPackageAverage;
+	}
+
+	public void setSendPackageAverage(Float sendPackageAverage) {
+		this.sendPackageAverage = sendPackageAverage;
+	}
+
+	public long getRecPackageMax() {
+		return recPackageMax;
+	}
+
+	public void setRecPackageMax(long recPackageMax) {
+		this.recPackageMax = recPackageMax;
+	}
+
+	public long getRecPackageMin() {
+		return recPackageMin;
+	}
+
+	public void setRecPackageMin(long recPackageMin) {
+		this.recPackageMin = recPackageMin;
+	}
+
+	public Float getRecPackageAverage() {
+		return recPackageAverage;
+	}
+
+	public void setRecPackageAverage(Float recPackageAverage) {
+		this.recPackageAverage = recPackageAverage;
+	}
+
+	public long getSendByteMax() {
+		return sendByteMax;
+	}
+
+	public void setSendByteMax(long sendByteMax) {
+		this.sendByteMax = sendByteMax;
+	}
+
+	public long getSendByteMin() {
+		return sendByteMin;
+	}
+
+	public void setSendByteMin(long sendByteMin) {
+		this.sendByteMin = sendByteMin;
+	}
+
+	public Float getSendByteAverage() {
+		return sendByteAverage;
+	}
+
+	public void setSendByteAverage(Float sendByteAverage) {
+		this.sendByteAverage = sendByteAverage;
+	}
+
+	public double getUsedMemoryMax() {
+		return usedMemoryMax;
+	}
+
+	public void setUsedMemoryMax(double usedMemoryMax) {
+		this.usedMemoryMax = usedMemoryMax;
+	}
+
+	public double getUsedMemoryMin() {
+		return usedMemoryMin;
+	}
+
+	public void setUsedMemoryMin(double usedMemoryMin) {
+		this.usedMemoryMin = usedMemoryMin;
+	}
+
+	public double getUsedMemoryAverage() {
+		return usedMemoryAverage;
+	}
+
+	public void setUsedMemoryAverage(double usedMemoryAverage) {
+		this.usedMemoryAverage = usedMemoryAverage;
+	}
+
+	public long getRecByteMax() {
+		return recByteMax;
+	}
+
+	public void setRecByteMax(long recByteMax) {
+		this.recByteMax = recByteMax;
+	}
+
+	public long getRecByteMin() {
+		return recByteMin;
+	}
+
+	public void setRecByteMin(long recByteMin) {
+		this.recByteMin = recByteMin;
+	}
+
+	public Float getRecByteAverage() {
+		return recByteAverage;
+	}
+
+	public void setRecByteAverage(Float recByteAverage) {
+		this.recByteAverage = recByteAverage;
 	}
 	
 }

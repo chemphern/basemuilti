@@ -1,11 +1,20 @@
 package com.ycsys.smartmap.sys.support;
 
+import com.ycsys.smartmap.monitor.entity.ServiceRequest;
+import com.ycsys.smartmap.monitor.service.ServiceRequestService;
+import com.ycsys.smartmap.sys.common.config.Global;
+import com.ycsys.smartmap.sys.common.utils.Base64Util;
+import com.ycsys.smartmap.sys.entity.User;
+import com.ycsys.smartmap.sys.util.NetWorkUtil;
+import com.ycsys.smartmap.sys.util.SpringContextHolder;
 import org.apache.http.*;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.AbortableHttpRequest;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.params.CookiePolicy;
 import org.apache.http.client.utils.URIUtils;
+import org.apache.http.entity.BasicHttpEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
@@ -15,30 +24,37 @@ import org.apache.http.message.BasicHttpRequest;
 import org.apache.http.message.HeaderGroup;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.Args;
+import org.apache.http.util.CharArrayBuffer;
 import org.apache.http.util.EntityUtils;
 import org.mitre.dsmiley.httpproxy.ProxyServlet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.net.HttpCookie;
 import java.net.URI;
-import java.util.BitSet;
-import java.util.Enumeration;
-import java.util.Formatter;
-import java.util.List;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
+import java.nio.charset.UnsupportedCharsetException;
+import java.util.*;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * http代理Servlet
  * Created by lixiaoxin on 2016/12/30.
  */
 public class ProxyServletSupport extends HttpServlet {
+
+    private static Logger log = LoggerFactory.getLogger(ProxyServletSupport.class);
       /* INIT PARAMETER NAME CONSTANTS */
 
     /** A boolean parameter name to enable logging of input and target URLs to the servlet log. */
@@ -48,7 +64,8 @@ public class ProxyServletSupport extends HttpServlet {
     public static final String P_FORWARDEDFOR = "forwardip";
 
     /** The parameter name for the target (destination) URI to proxy to. */
-    protected static final String P_TARGET_URI = "targetUri";
+    /**默认的转发地址**/
+    protected static final String P_TARGET_URI = "defaultTargetUri";
     protected static final String ATTR_TARGET_URI =
             ProxyServlet.class.getSimpleName() + ".targetUri";
     protected static final String ATTR_TARGET_HOST =
@@ -104,7 +121,7 @@ public class ProxyServletSupport extends HttpServlet {
             this.doForwardIP = Boolean.parseBoolean(doForwardIPString);
         }
 
-        initTarget();//sets target*
+        //initTarget();//sets target*
 
         HttpParams hcParams = new BasicHttpParams();
         hcParams.setParameter(ClientPNames.COOKIE_POLICY, CookiePolicy.IGNORE_COOKIES);
@@ -112,15 +129,38 @@ public class ProxyServletSupport extends HttpServlet {
         proxyClient = createHttpClient(hcParams);
     }
 
-    protected void initTarget() throws ServletException {
-        targetUri = getConfigParam(P_TARGET_URI);
-        if (targetUri == null)
-            throw new ServletException(P_TARGET_URI+" is required.");
-        //test it's valid
+    /**
+     * 初始化目标
+     * **/
+//    protected void initTarget() throws ServletException {
+//        targetUri = getConfigParam(P_TARGET_URI);
+//        if (targetUri == null)
+//            throw new ServletException(P_TARGET_URI+" is required.");
+//        //test it's valid
+//        try {
+//            targetUriObj = new URI(targetUri);
+//        } catch (Exception e) {
+//            throw new ServletException("Trying to process targetUri init parameter: "+e,e);
+//        }
+//        targetHost = URIUtils.extractHost(targetUriObj);
+//    }
+
+    /**初始化目标地址**/
+    private void initTargetUri(HttpServletRequest servletRequest) throws ServletException {
+        String uri = servletRequest.getRequestURI();
+        String[] urisplit =  uri.split("/");
+        String place = urisplit[3];
+        if(place.equals("rest") || place.equals("services")){
+            targetUri = getConfigParam(P_TARGET_URI);
+        }else{
+            //该路径中使用了base64编码host和port以及contextPath
+            String final_place = Base64Util.decode(place);
+            targetUri = "http://" + final_place;//+"/" + urisplit[4];
+        }
         try {
             targetUriObj = new URI(targetUri);
         } catch (Exception e) {
-            throw new ServletException("Trying to process targetUri init parameter: "+e,e);
+            throw new ServletException("初始化代理Uri发生异常！ "+e,e);
         }
         targetHost = URIUtils.extractHost(targetUriObj);
     }
@@ -197,8 +237,14 @@ public class ProxyServletSupport extends HttpServlet {
     @Override
     protected void service(HttpServletRequest servletRequest, HttpServletResponse servletResponse)
             throws ServletException, IOException {
+        /**初始化转发地址**/
+        initTargetUri(servletRequest);
+
+        Date nowDate = new Date();
+
+        long startTime = System.currentTimeMillis();
+
         //initialize request attributes from caches if unset by a subclass by this point
-        System.out.println("==========================测试==============================");
         if (servletRequest.getAttribute(ATTR_TARGET_URI) == null) {
             servletRequest.setAttribute(ATTR_TARGET_URI, targetUri);
         }
@@ -240,6 +286,14 @@ public class ProxyServletSupport extends HttpServlet {
             // copying response headers to make sure SESSIONID or other Cookie which comes from remote server
             // will be saved in client when the proxied url was redirected to another one.
             // see issue [#51](https://github.com/mitre/HTTP-Proxy-Servlet/issues/51)
+
+            //设置响应头 服务端名称
+            proxyResponse.setHeader("Server","Ycsys Smartmap Proxy Server");
+            //设置源
+            String orgin = servletRequest.getHeader("Origin");
+            if(orgin != null){
+                proxyResponse.setHeader("Access-Control-Allow-Origin",orgin);
+            }
             copyResponseHeaders(proxyResponse, servletRequest, servletResponse);
 
             if (doResponseRedirectOrNotModifiedLogic(servletRequest, servletResponse, proxyResponse, statusCode)) {
@@ -253,7 +307,10 @@ public class ProxyServletSupport extends HttpServlet {
             servletResponse.setStatus(statusCode, proxyResponse.getStatusLine().getReasonPhrase());
 
             // Send the content to the client
-            copyResponseEntity(proxyResponse, servletResponse);
+            long endTime = System.currentTimeMillis();
+            //自定义
+            saveArgisRequest(servletRequest,endTime-startTime,statusCode,nowDate);
+            copyResponseEntity(servletRequest,proxyResponse, servletResponse);
 
         } catch (Exception e) {
             //abort request, according to best practice with HttpClient
@@ -276,6 +333,55 @@ public class ProxyServletSupport extends HttpServlet {
                 consumeQuietly(proxyResponse.getEntity());
             //Note: Don't need to close servlet outputStream:
             // http://stackoverflow.com/questions/1159168/should-one-call-close-on-httpservletresponse-getoutputstream-getwriter
+        }
+    }
+
+    private void saveArgisRequest(HttpServletRequest servletRequest,long time,int statusCode,Date date) {
+        try {
+            String uri = URLDecoder.decode(servletRequest.getRequestURI(), "utf-8");
+            String requestIp = NetWorkUtil.getIpAddress(servletRequest);
+            int port = servletRequest.getLocalPort();
+            String ip = servletRequest.getLocalAddr();
+            User user = (User) servletRequest.getSession().getAttribute(Global.SESSION_USER);
+            //服务rest api
+            int index = uri.indexOf("/services/");
+            String serviceName = null;
+            String serviceType = null;
+            String serviceMethod = "view";
+            if (index > -1) {
+                String[] serviceArr = uri.substring(index + 10, uri.length()).split("/");
+                //确保有两截
+                if (serviceArr.length > 1) {
+                    serviceName = serviceArr[0];
+                    serviceType = serviceArr[1];
+                    if (serviceArr.length > 2) {
+                        String method = serviceArr[2];
+                        if (!method.matches("[0-9]+")) {
+                            serviceMethod = method;
+                        }
+                        ;
+                    }
+                }
+            }
+            ServiceRequestService serviceRequestService = SpringContextHolder.getBean("serviceRequestService");
+            ServiceRequest sq = new ServiceRequest();
+            sq.setCreateDate(new Date());
+            sq.setRequestUser(user);
+            sq.setRequestDate(date);
+            sq.setServerIp(ip);
+            sq.setRequestUrl(uri);
+            sq.setRequestIp(requestIp);
+            sq.setReturnStatus(String.valueOf(statusCode));
+            sq.setServerPort(port);
+            sq.setServiceName(serviceName);
+            sq.setServiceType(serviceType);
+            sq.setServiceMethod(serviceMethod);
+            sq.setReturnStatus(String.valueOf(statusCode));
+            sq.setVisitTime(time);
+            serviceRequestService.save(sq);
+        }catch (Exception e){
+            e.printStackTrace();
+            log.error("请求列表异常：" + e.getMessage());
         }
     }
 
@@ -459,23 +565,112 @@ public class ProxyServletSupport extends HttpServlet {
     }
 
     /** Copy response body data (the entity) from the proxy to the servlet client. */
-    protected void copyResponseEntity(HttpResponse proxyResponse, HttpServletResponse servletResponse) throws IOException {
+    protected void copyResponseEntity(HttpServletRequest request,HttpResponse proxyResponse, HttpServletResponse servletResponse) throws IOException {
         HttpEntity entity = proxyResponse.getEntity();
-        if (entity != null) {
-            OutputStream servletOutputStream = servletResponse.getOutputStream();
-            entity.writeTo(servletOutputStream);
+        //默认编码
+        if(entity != null) {
+            //当响应结果为gzip压缩，并且响应格式为xml时，进行特殊处理，替换里面的地址
+            if (entity.getContentEncoding() != null && entity.getContentEncoding().getValue().toLowerCase().indexOf("gzip") > -1 && entity.getContentType().getValue().toLowerCase().indexOf("text/xml") > -1) {
+                String content = null;
+                //ByteArrayInputStream temp = new ByteArrayInputStream(data);
+                Charset defaultCharset = Consts.UTF_8;
+                GZIPInputStream zin = new GZIPInputStream(entity.getContent());
+                try {
+                    Args.check(entity.getContentLength() <= Integer.MAX_VALUE,
+                            "HTTP entity too large to be buffered in memory");
+                    int i = (int) entity.getContentLength();
+                    if (i < 0) {
+                        i = 4096;
+                    }
+                    Charset charset = null;
+                    try {
+                        final ContentType contentType = ContentType.get(entity);
+                        if (contentType != null) {
+                            charset = contentType.getCharset();
+                        }
+                    } catch (final UnsupportedCharsetException ex) {
+                        if (defaultCharset == null) {
+                            throw new UnsupportedEncodingException(ex.getMessage());
+                        }
+                    }
+                    if (charset == null) {
+                        charset = defaultCharset;
+                    }
+                    if (charset == null) {
+                        charset = HTTP.DEF_CONTENT_CHARSET;
+                    }
+                    //读取为字符串
+                    defaultCharset = charset;
+                    final Reader reader = new InputStreamReader(zin, charset);
+                    final CharArrayBuffer buffer = new CharArrayBuffer(i);
+                    final char[] tmp = new char[1024];
+                    int l;
+                    while ((l = reader.read(tmp)) != -1) {
+                        buffer.append(tmp, 0, l);
+                    }
+                    content = buffer.toString();
+                } finally {
+                    zin.close();
+                }
+                //替换里面的内容
+                if (content != null) {
+                    if (content.indexOf(targetUri) > -1) {
+                        String baseUri = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/arcgis";
+                        content = content.replaceAll(targetUri, baseUri);
+                        BasicHttpEntity bentity = new BasicHttpEntity();
+                        ByteArrayOutputStream out = new ByteArrayOutputStream();
+                        GZIPOutputStream gzip = new GZIPOutputStream(out);
+                        gzip.write(content.getBytes(defaultCharset));
+                        gzip.close();
+                        String gziplast = out.toString("ISO-8859-1");
+                        InputStream in = new ByteArrayInputStream(gziplast.getBytes("ISO-8859-1"));
+                        bentity.setContentLength(entity.getContentLength());
+                        bentity.setContent(in);
+                        bentity.setContentType(entity.getContentType());
+                        bentity.setContentEncoding(entity.getContentEncoding());
+                        OutputStream servletOutputStream = servletResponse.getOutputStream();
+                        bentity.writeTo(servletOutputStream);
+                    }
+                }else {
+                    OutputStream servletOutputStream = servletResponse.getOutputStream();
+                    entity.writeTo(servletOutputStream);
+                }
+                //其他格式
+            }else{
+                OutputStream servletOutputStream = servletResponse.getOutputStream();
+                entity.writeTo(servletOutputStream);
+            }
         }
     }
 
     /** Reads the request URI from {@code servletRequest} and rewrites it, considering targetUri.
      * It's used to make the new request.
+     * 重写URI
      */
     protected String rewriteUrlFromRequest(HttpServletRequest servletRequest) {
         StringBuilder uri = new StringBuilder(500);
         uri.append(getTargetUri(servletRequest));
         // Handle the path given to the servlet
-        if (servletRequest.getPathInfo() != null) {//ex: /my/path.html
-            uri.append(encodeUriQuery(servletRequest.getPathInfo()));
+        ///bWFwLmdlb3EuY24=/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer
+        ///rest/services/广州市_矢量地图/MapServer/legend
+        //分两种情况重写地址
+        String uris = servletRequest.getRequestURI();
+        String[] urisplit =  uris.split("/");
+        String place = urisplit[3];
+        if(place.equals("rest") || place.equals("services")){
+            if (servletRequest.getPathInfo() != null) {
+                uri.append(encodeUriQuery(servletRequest.getPathInfo()));
+            }
+        }else{
+            if (servletRequest.getPathInfo() != null) {
+                String path = servletRequest.getPathInfo();
+                StringBuilder sb = new StringBuilder();
+                String [] paths =  path.split("/");
+                for(int x = 2;x<paths.length;x++){
+                    sb.append("/").append(paths[x]);
+                }
+                uri.append(encodeUriQuery(sb.toString()));
+            }
         }
         // Handle the query string & fragment
         String queryString = servletRequest.getQueryString();//ex:(following '?'): name=value&foo=bar#fragment

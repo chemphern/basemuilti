@@ -69,17 +69,40 @@
 				</td>
 			</tr>
 			
-			<tr>
+			<%-- <tr>
 				<td class="t_r">服务名称：</td>
 				<td>
-					<input type="text" id="serviceName" disabled="disabled" class="text" value="${layerTheme.service.showName }">
+					<input type="text" id="serviceName" disabled="disabled" class="text" value="${layerTheme.showService.showName }">
 				</td>
-			</tr>
+			</tr> --%>
 			
 			<tr>
 				<td class="t_r">专题图名称：</td>
 				<td>
 					<input type="text" id="name" name="name" class="text" value="${layerTheme.name }">
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="t_r">展示服务：</td>
+				<td>
+					<input type="text" id="showServiceName" disabled="disabled" class="text" value="${layerTheme.showService.showName }">
+					<input type="hidden" id="showServiceId" name="showService.id" value="${layerTheme.showService.id }">
+					<input type="hidden" id="showServiceVisitAddress" name="realAddress" value="${layerTheme.realAddress }">
+					<input type="hidden" id="showServiceVisitAddressOpen" name="showAddress" value="${layerTheme.showAddress }">
+					<input type="button" value="选择" id="selectServiceBtn2">
+				</td>
+			</tr>
+			
+			<tr>
+				<td class="t_r">查询服务：</td>
+				<td>
+					<input type="text" id="queryServiceName" disabled="disabled"
+						value="${layerTheme.queryService.showName }" class="text">
+					<input type="hidden" id="queryServiceId" name="queryService.id" value="${layerTheme.queryService.id }">
+					<input type="hidden" id="queryServiceVisitAddress" name="realAddress2" value="${layerTheme.realAddress2 }">
+					<input type="hidden" id="queryServiceVisitAddressOpen" name="queryAddress" value="${layerTheme.queryAddress }">
+					<input type="button" value="选择" id="selectServiceBtn">
 				</td>
 			</tr>
 			
@@ -92,6 +115,32 @@
 		if("${layerTheme.parent.id}") {
 			$("#parentId option[value=${layerTheme.parent.id}]").attr("selected",true);
 		}
+		
+		//选择查询服务
+		$("#selectServiceBtn").on("click",function(e) {
+			e.preventDefault();
+			$.Layer.iframe(
+	                { 
+	                  id:"selectServiceDialog",
+	                  title: "选择服务",
+	                  url:"${ctx}/service/toSelectService?flag=3",
+	                  width: 1020,
+	                  height: 500
+	              });
+		});
+		
+		//选择展示服务
+		$("#selectServiceBtn2").on("click",function(e) {
+			e.preventDefault();
+			$.Layer.iframe(
+	                { 
+	                  id:"selectServiceDialog",
+	                  title: "选择服务",
+	                  url:"${ctx}/service/toSelectService?flag=4",
+	                  width: 1020,
+	                  height: 500
+	              });
+		});
 		
 		var form = $("#form_id");
 		var parentWin = window.parent[0];

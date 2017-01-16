@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>羽辰智慧林业二三维一体化应用系统</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="../dist/css/mapAdminLTE.css">
+  <!-- 换肤 -->
+  <link rel="stylesheet" href="../dist/css/mapSkins/_all-skins.css">
+  <link rel="stylesheet" href="../dist/css/mapPublic.css">
+  <link rel="stylesheet" href="../dist/css/mapIndex.css">
+  <!-- 修改浏览器默认滚动条 -->
+  <link href="../plugins/mCustomScrollbar/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css">
+  <!-- jQuery Easyui css-->
+  <link rel="stylesheet" href="../plugins/jeasyui/themes/default/easyui.css">
+  <link rel="stylesheet"  href="../plugins/jeasyui/themes/icon.css">
+  <!-- 弹出框 -->
+  <link href="../plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
+  <!-- 表格 -->
+  <link href="../plugins/table/bootstrap-table.min.css" rel="stylesheet">
+
+  <!-- jQuery  -->
+  <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
+  <!-- <script src="../plugins/jQueryUI/jquery-ui.min.js"></script> -->
+
+
+  <!-- <script src="plugins/jQueryUI/Layout.js"></script> -->
+ <!-- cookies -->
+<!-- <script src="../dist/js/jquery.cookie.js"></script> -->
+  <!-- Bootstrap 3.3.2 -->
+  <link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+  <script src="../bootstrap/js/bootstrap.min.js"></script>
+   <!-- HTML5 IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="../dist/js/html5shiv.min.js"></script>
+   <script src="../dist/js/respond.min.js"></script>
+  <![endif]-->
+ 
+
+<!--   <script src="../dist/js/map/map_index.js"></script>
+  <script src="../dist/js/map/map_index_dialog.js"></script> -->
+
+<!--   <link rel="stylesheet" href="../dist/css/mapPublic.css">
+  <link rel="stylesheet" href="../dist/css/mapIndex.css"> -->
+<!-- Bootstrup的jQuery slider插件 -->
+<link href="../plugins/slider/bootstrap-slider.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="videojkPopup clearfix">
+
+  <div class="videojkPopupWrapper">
+    <div class="sizer_video" style="display:none;">
+      <div class="titlePane" style="-webkit-user-select: none;">
+        <div class="title">全景</div>
+        <div class="titleButton close" title="关闭"></div>
+      </div>
+    </div>
+    <div class="sizer_videojk_full clearfix">
+      <div class="videojk_content boxshadow">
+        <div class="videojk_mainbox"><img src="../dist/img/map/photo_videojk.jpg" alt=""/></div>
+        <div class="videojk_mainbtn_group">
+          <a href="javascript:void(0)" class="vbtn btn_video" title="录像"></a>
+          <a href="javascript:void(0)" class="vbtn btn_photo" title="截图"></a>
+          <a href="javascript:void(0)" class="vbtn btn_vioce" title="声音"></a>
+          <a href="javascript:void(0)" class="vbtn btn_screen fullScreenOpen" title="关闭"></a>
+        </div>
+      </div>
+      <!-- 侧边操作按钮 start -->
+      
+      <div class="videojk_sidebar boxshadow" >
+      <form action="" class="form-horizontal">
+        <div class="videojk_sidebar_con clearfix">
+          <!-- 方向控制 -->
+          <div class="control_direction clearfix">
+            <a href="javascript:void(0)" class="dbtn btn_tl" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_tc" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_tr" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_ml" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_mc" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_mr" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_bl" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_bc" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_br" title=""><span></span></a>             
+          </div>
+          <!-- 放大缩小控制 -->
+          <div class="control_zoom slider_bar mt15">
+            <a href="javascript:void(0)" class="zbtn btn_minus"></a>
+            <a href="javascript:void(0)" class="zbtn btn_add"></a>
+            <input id="videozoom" data-slider-id='videozoomSlider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="10" data-slider-tooltip="hide"/>
+          </div>
+          <!-- 变倍 焦距 光圈 控制-->
+          <div class="control_modified mt15 clearfix">
+            <ul class="modified_ul">
+              <li><a href="javascript:void(0)" class="mbtn btn_add_big"></a><span>变倍</span><a href="javascript:void(0)" class="mbtn btn_minus_big"></a></li>
+              <li><a href="javascript:void(0)" class="mbtn btn_add_big"></a><span>焦距</span><a href="javascript:void(0)" class="mbtn btn_minus_big"></a></li>
+              <li><a href="javascript:void(0)" class="mbtn btn_add_big"></a><span>光圈</span><a href="javascript:void(0)" class="mbtn btn_minus_big"></a></li>
+            </ul>
+          </div>
+          <!-- 参数设置-->
+          
+          <div class="preferences  mt20  clearfix">
+            <div class="select-item">
+              <div class="select-btn"></div>
+              <select class="form-control input-sm">
+                <option>预置点</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <div class="form-group mt15">
+              <div class="col-sm-8">
+                <input type="text" class="form-control input-sm" placeholder="" value="1">
+              </div>
+              <label for="name" class="col-sm-4">1~255</label>
+            </div>
+            <div class="btn_list">
+              <button type="button" class="btn">定位</button>
+            </div>
+          </div>
+          
+          <!-- 滑块设置-->
+          <div class="slider_box slider_bar">
+              <div class="slider_item">
+                <label for=""><i class="icon_pic icon_brightness"></i></label>
+                <input id="brightness" data-slider-id='brightnessSlider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="10" data-slider-tooltip="hide"/>
+              </div>
+              <div class="slider_item">
+                <label for=""><i class="icon_pic icon_contrast"></i></label>
+                <input id="contrast" data-slider-id='contrastSlider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="10" data-slider-tooltip="hide"/>
+              </div>
+              <div class="slider_item">
+                <label for=""><i class="icon_pic icon_saturation"></i></label>
+                <input id="saturation" data-slider-id='saturationSlider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="10" data-slider-tooltip="hide"/>
+              </div>
+              <div class="slider_item">
+                <label for=""><i class="icon_pic icon_tone"></i></label>
+                <input id="tone" data-slider-id='toneSlider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="10" data-slider-tooltip="hide"/>
+              </div>
+          </div>
+          <div class="text-center">
+            <button type="reset" class="btn btn-reset">重置</button>
+          </div>
+        </div>
+        </form>
+      </div>
+      
+      <!-- 侧边操作按钮 end-->
+    </div>
+
+
+  </div>
+<!--  
+<div class="video-popup-triangle-up"></div> -->
+
+
+</div> 
+<script type='text/javascript' src="../plugins/slider/bootstrap-slider.min.js"></script>
+<script type='text/javascript'>
+  $(document).ready(function() {
+    $('#videozoom').slider();
+    $('#brightness').slider({
+          // formatter: function(value) {
+          //   return '当前值: ' + value;
+          // }
+      });
+    $('#contrast').slider();
+    $('#saturation').slider();
+    $('#tone').slider();
+  });
+</script>
+</body>
+</html>

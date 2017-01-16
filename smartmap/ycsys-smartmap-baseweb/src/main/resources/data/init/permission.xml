@@ -187,7 +187,6 @@
                     </code>
                 </func>
             </url>
-            <url sort="2" name="日志管理" href="/log/list" funcs="sys-log-list"/>
             <url name="服务引擎配置" sort="3" href="/configServerEngine/list" funcs="sys-configServerEngine-list">
                 <func name="创建" sort="1">
                     <code>
@@ -257,6 +256,7 @@
                     </code>
                 </func>
             </url>
+            <!--
             <url name="服务监控配置" sort="5" href="/serverMonitor/list" funcs="sys-serverMonitor-list">
                 <func name="服务监控配置" sort="1">
                     <code>
@@ -265,6 +265,7 @@
                     </code>
                 </func>
             </url>
+            -->
             <url name="平台监控配置" sort="6" href="/platMonitorConfig/list" funcs="sys-platMonitorConfig-list">
                 <func name="平台监控配置" sort="1">
                     <code>
@@ -460,17 +461,78 @@
             </url>
         </module>
         <module name="系统监控" sort="6">
-            <url name="平台监控" sort="1" href="/platmonitor/list" funcs="sys-platmonitor-list">
+            <url name="服务监控" sort="1" href="/serviceMonitor/list" funcs="sys-platmonitor-list">
+                <func name="查看" sort="1">
+                    <code>
+                        sys-serviceMonitor-list
+                    </code>
+                </func>
+            </url>
+            <url name="当前请求列表" sort="2" href="/requestList/list" funcs="sys-platmonitor-list">
+                <func name="查看" sort="1">
+                    <code>
+                        sys-requestList-list
+                    </code>
+                </func>
+            </url>
+            <url name="异常报警" sort="3" href="/exceptionAlarm/list" funcs="sys-platmonitor-list">
+                <func name="查看" sort="1">
+                    <code>
+                        sys-exceptionAlarm-list
+                    </code>
+                </func>
+            </url>
+            <menu name="平台消息" sort="4">
+                <url name="我的消息" sort="1" href="/platNotice/myNotice" funcs="sys-platNotice-myNotice">
+                    <code>
+                        sys-platNotice-myNotice
+                    </code>
+                </url>
+                <url name="消息管理" sort="1" href="/platNotice/list" funcs="sys-platNotice-list">
+                    <code>
+                        sys-platNotice-list
+                    </code>
+                </url>
+                <url name="发送消息" sort="1" href="/platNotice/sendNotice" funcs="sys-platNotice-sendNotice">
+                    <code>
+                        sys-platNotice-sendNotice
+                    </code>
+                </url>
+            </menu>
+            <url name="平台监控" sort="5" href="/platmonitor/list" funcs="sys-platmonitor-list">
                 <func name="查看" sort="1">
                     <code>
                         sys-platmonitor-list
                     </code>
                 </func>
             </url>
+            <url name="运维系统检测" sort="6" href="/sysDetection/list" funcs="sys-platmonitor-list">
+                <func name="查看" sort="1">
+                    <code>
+                        sys-sysDetection-list
+                    </code>
+                </func>
+            </url>
         </module>
-        
-        <module name="统计分析" sort="6">
-            <url name="服务统计" sort="1" href="/statistics/seviceList" funcs="stat-database-list">
+
+        <module name="日志管理" sort="7">
+            <url name="服务访问日志" sort="1" href="/log/listRequest" funcs="sys-log-listRequest">
+                <func name="查看" sort="1">
+                    <code>
+                        sys-log-listRequest
+                    </code>
+                </func>
+            </url>
+            <url name="运维监控日志" sort="2" href="/log/list" funcs="sys-log-list">
+                <func name="查看" sort="1">
+                    <code>
+                        sys-log-list
+                    </code>
+                </func>
+            </url>
+        </module>
+        <module name="统计分析" sort="8">
+            <url name="服务统计" sort="1" href="/statistics/seviceList" funcs="stat-service-list">
                 <func name="查看" sort="1">
                     <code>
                         stat-service-list
@@ -502,6 +564,13 @@
                 <func name="查看" sort="1">
                     <code>
                         stat-applicationServer-list
+                    </code>
+                </func>
+            </url>
+            <url name="综合分析统计" sort="5" href="/statistics/analysisList" funcs="stat-analysis-list">
+                <func name="查看" sort="1">
+                    <code>
+                        stat-analysis-list
                     </code>
                 </func>
             </url>

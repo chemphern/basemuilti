@@ -92,7 +92,7 @@ background: url('../images/panel/header-bg.gif') repeat-x left -1px; position:re
 }
  .l-grid table{border-spacing:0 0;}
 .l-grid-header {
-	height: 40px;
+	height: 40px !important;
 	line-height: 40px;
 	background: #46c99d;
 	overflow: hidden;
@@ -368,7 +368,7 @@ padding-right: 10px;
 }
 .l-grid-row-cell-inner
 {
-    text-align:center;line-height:40px; min-height:28px; _height:28px;
+    text-align:center;line-height:40px; min-height:40px !important; _height:40px !important;
     margin-left:3px; margin-right:6px; overflow:hidden;
 }
 .l-grid-row-cell-inner-fixedheight
@@ -471,7 +471,7 @@ background: url(../images/icon/icon-loading.gif) no-repeat; background-position:
 */
 .l-grid-tree-space  
 {
-    width:18px; height:20px; line-height:20px; overflow:hidden; float:left;
+    width:18px; height:40px; line-height:20px; overflow:hidden; float:left;
 } 
 .l-grid-tree-link-open
 {

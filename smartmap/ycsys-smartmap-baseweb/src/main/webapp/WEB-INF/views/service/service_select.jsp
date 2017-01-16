@@ -151,6 +151,7 @@ body {
 							parentWin.document.getElementById("serviceId").value = selectedRows[0].id;
 							parentWin.document.getElementById("serviceName").value = selectedRows[0].showName;
 							parentWin.document.getElementById("serviceVisitAddress").value = selectedRows[0].serviceVisitAddress;
+							parentWin.document.getElementById("serviceVisitAddressOpen").value = selectedRows[0].serviceVisitAddressOpen;
 							//显示图层编辑框
 							parentWin.document.getElementById("layerNameRowId").style.display = "table-row";
 							dialog.close();
@@ -177,6 +178,36 @@ body {
 				    		address = address.substring(0,address.length-1);
 							parentWin.document.getElementById("serviceIds").value = ids;
 							parentWin.document.getElementById("serviceName").value = names;
+							dialog.close();
+						}
+					}
+					else if(flag == "3") {
+				    	if(selectedRows.length != 1) {
+				    		$.Layer.confirm({
+            	                msg:"请选择一条记录进行操作！"
+            	            });
+				    		return false;
+				    	}
+				    	else {
+							parentWin.document.getElementById("queryServiceId").value = selectedRows[0].id;
+							parentWin.document.getElementById("queryServiceName").value = selectedRows[0].showName;
+							parentWin.document.getElementById("queryServiceVisitAddress").value = selectedRows[0].serviceVisitAddress;
+							parentWin.document.getElementById("queryServiceVisitAddressOpen").value = selectedRows[0].serviceVisitAddressOpen;
+							dialog.close();
+						}
+					}
+					else if(flag == "4") {
+				    	if(selectedRows.length != 1) {
+				    		$.Layer.confirm({
+            	                msg:"请选择一条记录进行操作！"
+            	            });
+				    		return false;
+				    	}
+				    	else {
+							parentWin.document.getElementById("showServiceId").value = selectedRows[0].id;
+							parentWin.document.getElementById("showServiceName").value = selectedRows[0].showName;
+							parentWin.document.getElementById("showServiceVisitAddress").value = selectedRows[0].serviceVisitAddress;
+							parentWin.document.getElementById("showServiceVisitAddressOpen").value = selectedRows[0].serviceVisitAddressOpen;
 							dialog.close();
 						}
 					}

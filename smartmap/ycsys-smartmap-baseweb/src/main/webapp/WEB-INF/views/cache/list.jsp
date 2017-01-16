@@ -84,7 +84,7 @@
                             }}
                     ], pageSize:10,
                     url:"${ctx}/cache/listData",
-                    width: '100%',height:'96%',
+                    width: '100%',height:'98%',
                     usePager:false
                 });
 

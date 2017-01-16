@@ -63,7 +63,7 @@ var PlotPointGlobe={
 var PlotLineGlobe={
     "Pattern": "SOLID",
     "Color":"#FF0000",
-    "BackColor":"#6e6e6e",
+    "BackColor":"#6E6E6E",
     "Alpha":0.5,
     "Width":2
 };
@@ -74,33 +74,73 @@ var PlotAreaGlobe={
     "Alpha":0.5
 };
 
+/**
+ *重置绘制标绘风格
+ */
+function resetShapePlot3DStyle() {
+    PlotAreaGlobe.Color = "#6E6E6E";
+    PlotAreaGlobe.Alpha = 0.5;
+    PlotLineGlobe.Alpha = 0.5;
+    PlotLineGlobe.Color = "#FF0000";
+    PlotLineGlobe.BackColor = "#6E6E6E";
+    PlotLineGlobe.Pattern = "SOLID";
+    PlotLineGlobe.Width = 2;
+}
+
 //定义标绘体属性对象
 var PlotCubeGlobe={
     "LinePattern": "SOLID",
     "LineColor":"#FF0000",
-    // "BackColor":"#6e6e6e",
     "LineAlpha":0.5,
     "LineWidth":2,
-    "AreaColor":"#6e6e6e",
+    "AreaColor":"#6E6E6E",
     "AreaAlpha":0.5
 };
+
+/**
+ *重置立体标绘风格
+ */
+function resetCubePlot3DStyle() {
+    PlotCubeGlobe.AreaColor = "#6E6E6E";
+    PlotCubeGlobe.AreaAlpha = 0.5;
+    PlotCubeGlobe.LineColor = "#FF0000";
+    PlotCubeGlobe.LineAlpha = 0.5;
+    PlotCubeGlobe.LinePattern = "SOLID";
+    PlotCubeGlobe.LineWidth = 2;
+}
 
 //定义标绘文字属性对象
 var PlotTextOrImageGlobe={
     "Data":"",
     "Front":"宋体",
-    "Color":"#ffda22",
+    "Color":"#FFDA22",
     "ColorAlpha":1,
     "BackgroundColor":"#000000",
     "BackgroundColorAlpha":0,
     "Bold":false,
     "Italic":false,
     "Underline":false,
-    // "LineToGround":false,
-    "Size":10,
-    "Scale":1,
+    "Size":16,//Text
+    "Scale":1,//Image
     "LabelStyle":0
 };
+
+/**
+ *重置图文标绘风格
+ */
+function resetTextOrImagePlot3DStyle() {
+    PlotTextOrImageGlobe.Front = "宋体";
+    PlotTextOrImageGlobe.Color = "#FFDA22";
+    PlotTextOrImageGlobe.ColorAlpha = 1;
+    PlotTextOrImageGlobe.BackgroundColor = "#000000";
+    PlotTextOrImageGlobe.BackgroundColorAlpha = 0;
+    PlotTextOrImageGlobe.Bold = false;
+    PlotTextOrImageGlobe.Italic = false;
+    PlotTextOrImageGlobe.Underline = false;
+    PlotTextOrImageGlobe.Size = 16;
+    PlotTextOrImageGlobe.Scale = 1;
+    PlotTextOrImageGlobe.LabelStyle = 0;
+}
 
 /**
  * 标绘入口、开始方法
@@ -686,6 +726,7 @@ function plotTextOrImage(position) {
         setTextOrImageStyle(text);
     }else if(PlotToolGlobe.PlotOperation=="IMAGE"){
         var image = YcMap3D.Creator.CreateImageLabel(position,PlotTextOrImageGlobe.Data,style,PlotToolGlobe.PlotToolFolderID,PlotTool.PlotDescription);
+        image.Position.Altitude = 0;
         setTextOrImageStyle(image);
     }
 }

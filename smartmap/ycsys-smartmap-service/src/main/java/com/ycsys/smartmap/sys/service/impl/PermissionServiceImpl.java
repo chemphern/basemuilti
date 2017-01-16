@@ -69,6 +69,8 @@ public class PermissionServiceImpl implements PermissionService {
 			permissionDao.executeHql("delete from System");
 			//删除角色权限表
 			permissionDao.executeHql("delete from RolePermission");
+			//删除机构角色表
+			permissionDao.executeHql("delete from OrganizationPermission");
 			//删除所有该系统权限
 			permissionDao.executeHql("delete from Permission");
 			updateSystemFromXmlObject(obj);

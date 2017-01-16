@@ -53,8 +53,10 @@ public class ServiceUtils {
 				Map map1 = (Map) JSON.parse(retStr);
 				if(map1 != null && map1.size() > 0) {
 					JSONArray jArray = (JSONArray) map1.get("folders");
-					for (int i = 0; i < jArray.size(); i++) {
-						lists.add((String)jArray.get(i));
+					if(jArray != null) {
+						for (int i = 0; i < jArray.size(); i++) {
+							lists.add((String)jArray.get(i));
+						}
 					}
 				}
 			}
@@ -108,38 +110,42 @@ public class ServiceUtils {
 	 * @return
 	 */
 	public static List<Service> listServices(String ip,String port,String folderName,String userName,String password) {
+		List<Service> lists = new ArrayList<Service>();
 		if(StringUtils.isNotBlank(ip) && StringUtils.isNotBlank(userName) && StringUtils.isNotBlank(password)) {
 			String url = "http://" + ip + ":" + port + "/arcgis/admin/services/";
 			if(StringUtils.isNotBlank(folderName)) {
 				url = url + folderName;
 			}
-			List<Service> lists = new ArrayList<Service>();
 			Map<String, String> params = new HashMap<String, String>();
-			String token = ArcGisServerUtils.getToken();
-			//String token2 = ArcGisServerUtils.getTken(url,userName, password);
-			params.put("Token", token);
-			String retStr = ArcGisServerUtils.excute2(url, params);
-			if (retStr != null) {
-				Map map1 = (Map) JSON.parse(retStr);
-				if(map1 != null && map1.size() > 0) {
-					JSONArray jArray = (JSONArray) map1.get("services");
-					for (int i = 0; i < jArray.size(); i++) {
-						Map map = (Map) jArray.get(i);
-						if(map != null && map.size() > 0) {
-							Service s = new Service();
-							s.setFunctionType((String)map.get("type"));
-							s.setFolderName((String)map.get("folderName"));
-							s.setRemarks((String)map.get("description"));
-							s.setShowName((String)map.get("serviceName"));
-							lists.add(s);
+			//String token = ArcGisServerUtils.getToken();
+			//String tokenUrl = "http://" + ip + ":" + port + "/arcgis/admin/generateToken";
+			String token = ArcGisServerUtils.getTken(ip,port,userName, password);
+			if(StringUtils.isNotBlank(token)) {
+				params.put("Token", token);
+				String retStr = ArcGisServerUtils.excute2(url, params);
+				if (retStr != null) {
+					Map map1 = (Map) JSON.parse(retStr);
+					if(map1 != null && map1.size() > 0) {
+						JSONArray jArray = (JSONArray) map1.get("services");
+						if(jArray != null) {
+							for (int i = 0; i < jArray.size(); i++) {
+								Map map = (Map) jArray.get(i);
+								if(map != null && map.size() > 0) {
+									Service s = new Service();
+									s.setFunctionType((String)map.get("type"));
+									s.setFolderName((String)map.get("folderName"));
+									s.setRemarks((String)map.get("description"));
+									s.setShowName((String)map.get("serviceName"));
+									lists.add(s);
+								}
+							}
 						}
 					}
 				}
+				return lists;
 			}
-			//System.out.println("lists="+lists);
-			return lists;
 		}
-		return null;
+		return lists;
 	}
 	
 	/**
@@ -381,7 +387,7 @@ public class ServiceUtils {
 	 */
 	public static boolean startService(String ip,String port,String userName,String password,String managerServiceUrl) {
 		String token = ArcGisServerUtils.getTken(ip,port, userName, password);
-		if(StringUtils.isBlank(token)) {
+		if(StringUtils.isBlank(token) || StringUtils.isBlank(managerServiceUrl)) {
 			return false;
 		}
 		managerServiceUrl = managerServiceUrl + "/start";
@@ -397,7 +403,7 @@ public class ServiceUtils {
 				return false;
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	/**
@@ -411,7 +417,7 @@ public class ServiceUtils {
 	 */
 	public static boolean stopService(String ip,String port,String userName,String password,String managerServiceUrl) {
 		String token = ArcGisServerUtils.getTken(ip,port, userName, password);
-		if(StringUtils.isBlank(token)) {
+		if(StringUtils.isBlank(token) || StringUtils.isBlank(managerServiceUrl)) {
 			return false;
 		}
 		managerServiceUrl = managerServiceUrl + "/stop";
@@ -427,7 +433,7 @@ public class ServiceUtils {
 				return false;
 			}
 		}
-		return true;
+		return false;
 	}
 	
 	
@@ -568,6 +574,26 @@ public class ServiceUtils {
 			return list;
 		}
 		return null;
+	}
+	
+	/**
+	 * 得到图层的几何类型
+	 * @param visitUrl
+	 * @return
+	 */
+	public static String getGeometryType(String visitUrl) {
+		String geometryType = "";
+		if(StringUtils.isNotBlank(visitUrl)) {
+			Map<String, String> params = new HashMap<String, String>();
+			String retStr = ArcGisServerUtils.excute2(visitUrl, params);
+			if (StringUtils.isNotBlank(retStr)) {
+				Map map = (Map) JSON.parse(retStr);
+				if(map.get("geometryType") != null) {
+					geometryType = (String) map.get("geometryType");
+				}
+			}
+		}
+		return geometryType;
 	}
 	
 	/**

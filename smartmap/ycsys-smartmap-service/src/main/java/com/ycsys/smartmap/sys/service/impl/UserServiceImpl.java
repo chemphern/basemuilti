@@ -4,6 +4,7 @@ import com.ycsys.smartmap.sys.common.annotation.ToLog;
 import com.ycsys.smartmap.sys.common.config.Global;
 import com.ycsys.smartmap.sys.common.config.parseobject.user.UserRootXmlObject;
 import com.ycsys.smartmap.sys.common.config.parseobject.user.UserXmlObject;
+import com.ycsys.smartmap.sys.common.enums.LogType;
 import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
 import com.ycsys.smartmap.sys.common.utils.DateUtils;
 import com.ycsys.smartmap.sys.common.utils.security.Digests;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.lang.System;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -128,7 +130,7 @@ public class UserServiceImpl implements UserService {
 		userDao.update(user);
 	}
 
-	@ToLog(name="查询所有用户",type="test")
+	@ToLog(name="查询所有用户",type= LogType.System)
 	public List<User> findAllUsers(PageHelper page) {
 		return userDao.find("from User",page);
 	}
@@ -277,7 +279,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	public static void main(String [] args){
-		String pwd = "ycsys123456";
+		String pwd = "xin879651855";
 		byte[] salt = Digests.generateSalt(SALT_SIZE);
 		String s = Encodes.encodeHex(salt);
 
@@ -285,6 +287,47 @@ public class UserServiceImpl implements UserService {
 		String last = Encodes.encodeHex(hashPassword);
 		System.out.println(s);
 		System.out.println(last);
+	}
+
+	@Override
+	public long count(String hql, Object[] param) {
+		// TODO Auto-generated method stub
+		return userDao.count(hql, param);
+	}
+
+	@Override
+	public List<User> findAll() {
+		return userDao.find("from User");
+	}
+
+	@Override
+	public List<String> findUsersByOrgIds(String[] split) {
+		//Integer []ids = new Integer[split.length];
+		List<Integer> ids = new ArrayList<>();
+		for(int x = 0;x<split.length;x++){
+			//ids[x] = Integer.parseInt(split[x]);
+			ids.add(Integer.parseInt(split[x]));
+		}
+		List<Integer> getIds = userDao.findUsersByOrgIds(ids);
+		List<String> list = new ArrayList<>();
+		for(int id:getIds){
+			list.add(String.valueOf(id));
+		}
+		return list;
+	}
+
+	@Override
+	public List<String> findUsersByRoleIds(String[] split) {
+		List<Integer> ids = new ArrayList<>();
+		for(int x = 0;x<split.length;x++){
+			ids.add(Integer.parseInt(split[x]));
+		}
+		List<Integer> getIds = userDao.findUsersByRoleIds(ids);
+		List<String> list = new ArrayList<>();
+		for(int id:getIds){
+			list.add(String.valueOf(id));
+		}
+		return list;
 	}
 
 }

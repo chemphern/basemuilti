@@ -129,7 +129,7 @@ body {
 		                    title: 'ArcServer服务注册',
 		                    url:'${ctx}/service/toRegisterGis',
 		                    width: 1000,
-		                    height: 600,
+		                    height: 550,
 		                    button:[]
 		                });
 		            //dialog.hGrid = table;
@@ -144,7 +144,7 @@ body {
 		                    title: '新增角色',
 		                    url:'${ctx}/service/toRegisterOther',
 		                    width: 1000,
-		                    height: 600,
+		                    height: 550,
 		                    button:[]
 		                });
 		            //dialog.hGrid = table;

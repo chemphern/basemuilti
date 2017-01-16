@@ -96,16 +96,26 @@ $(function(){
 		$(this).toggleClass('active').siblings().removeClass('active');
         var i=$(this).index();
         var id=$(this).parent().parent().attr('id');
-        
-        var attr= $(this).children(".icon_pic").attr('class');
-		var name=attr.substring(9,attr.length);
-		url=path+'/static/dist/img/map/'+name+'.png';
-        if(mapOpt==2) {
-            plotPic(i, url);
-        }else if(mapOpt==3){
-            plot23dImage(url);
+        if(id.substring(0,id.length-1)=="IconList") {
+            var attr = $(this).children(".icon_pic").attr('class');
+            var name = attr.substring(9, attr.length);
+            url = path + '/static/dist/img/map/' + name + '.png';
+            if (mapOpt == 2) {
+                plotPic(i, url);
+            } else {
+                alert("请使用三维标绘中的图文标绘功能，此功能仅在二维地图下使用！");
+            }
+        }else if(id.substring(0,id.length-1)=="3dIconList"){
+            var attr= $(this).children(".icon_pic").attr('class');
+            var name=attr.substring(9,attr.length);
+            url=path+'/static/dist/img/map/'+name+'.png';
+            if(mapOpt==3){
+                plot23dImage(url);
+            }else{
+                alert("请使用图文标绘中的图片标绘功能，此功能仅在三维地图下使用！");
+            }
         }
-	})
+	});
     //------------------------------------------------三维功能与界面绑定---------------------------------------------//
     //点标绘入口绑定
     $("#planePlot3dPoint").on('click',plot3dPoint);
@@ -137,7 +147,11 @@ $(function(){
     $("#plot3dSetTextImageStyle").on('click',plot3dSetTextImageStyle);
     $("#plot3dSetFillStyle").on('click',plot3dSetFillStyle);
     $("#plot3dSetLineStyle").on('click',plot3dSetLineStyle);
-})
+    //重置标绘风格
+    $("#plot3dSetLineStyleDefault").on('click',plot3dSetLineStyleDefault);
+    $("#plot3dSetTextImageStyleDefault").on('click',plot3dSetTextImageStyleDefault);
+    $("#plot3dSetFillStyleDefault").on('click',plot3dSetFillStyleDefault);
+});
 
 function plotPoint(i){
 	if(mapOpt==2){
@@ -292,6 +306,8 @@ function plot3dSimpleText() {
             alert("请先输入文字内容！");
             return;
         }
+        PlotTextOrImageGlobe.Size = $('#selFontSizePlot3d option:selected').val();
+        PlotTextOrImageGlobe.Front = $('#selFontFamilyPlot3d option:selected').val();
         PlotTool.activate(PlotTool.PlotType.TEXT,$('#txtContentPlot3d').val());
     }else
         alert("请切换到三维地图下使用！");
@@ -305,6 +321,7 @@ function plot3dTitleText() {
             alert("请先输入文字内容！");
             return;
         }
+        PlotTextOrImageGlobe.Front = $('#selFontFamilyPlot3d option:selected').val();
         PlotTool.activate(PlotTool.PlotType.TEXT,$('#txtContentPlot3d').val());
     }else
         alert("请切换到三维地图下使用！");
@@ -344,7 +361,7 @@ function plot3dSetLineStyle() {
     }
     var lineAlpha = $("#txtOutlineAlphaPlot2dStyle").val();
     if(lineAlpha==""){
-        alert("请正确输入填充颜色透明度！取值范围：0~1");
+        alert("请正确输入边线颜色透明度！取值范围：0~1");
         return;
     }
     PlotAreaGlobe.Color = fillColor;
@@ -374,7 +391,7 @@ function plot3dSetFillStyle() {
     }
     var lineAlpha = $("#txtOutlineAlphaPlot3d").val();
     if(lineAlpha==""){
-        alert("请正确输入填充颜色透明度！取值范围：0~1");
+        alert("请正确输入边线颜色透明度！取值范围：0~1");
         return;
     }
     PlotCubeGlobe.AreaColor = fillColor;
@@ -389,17 +406,17 @@ function plot3dSetFillStyle() {
 function plot3dSetTextImageStyle() {
     var textColor = $("#txtFontColorPlot3d").val();
     if(textColor==""){
-        alert("请选择填充颜色！");
+        alert("请选择文字颜色！");
         return;
     }
     var backColor = $("#txtBackColorPlot3d").val();
     if(backColor==""){
-        alert("请选择填充颜色！");
+        alert("请选择背景颜色！");
         return;
     }
     var textAlpha = $("#txtFontAlphaPlot3dStyle").val();
     if(textAlpha==""){
-        alert("请正确输入填充颜色透明度！取值范围：0~1");
+        alert("请正确输入文字颜色透明度！取值范围：0~1");
         return;
     }
     var backAlpha = $("#txtFontBackAlphaPlot3dStyle").val();
@@ -416,6 +433,7 @@ function plot3dSetTextImageStyle() {
     PlotTextOrImageGlobe.Italic = getBoolenValuePlot3d($('#selFontVariantPlot3d option:selected').val());
     PlotTextOrImageGlobe.Underline = getBoolenValuePlot3d($('#selFontStylePlot3d option:selected').val());
     PlotTextOrImageGlobe.Size = $('#selFontSizePlot3d option:selected').val();
+    PlotTextOrImageGlobe.Scale =  $("#txtImageScalePlot3dStyle").val();
 }
 
 
@@ -424,4 +442,47 @@ function getBoolenValuePlot3d(name) {
         return false;
     else
         return true;
+}
+
+function getTextValuePlot3d(ifUse) {
+    if(ifUse)
+        return 1;
+    else
+        return 0;
+}
+
+function plot3dSetLineStyleDefault() {
+    resetShapePlot3DStyle();
+    $("#txtPgColorPlot2dStyle").val(PlotAreaGlobe.Color);//填充颜色
+    $("#txtPgAlphaPlot2dStyle").val(PlotAreaGlobe.Alpha);//填充颜色透明度
+    $("#txtOutlineColorPlot2dStyle").val(PlotLineGlobe.Color);//边线颜色
+    $("#txtOutlineAlphaPlot2dStyle").val(PlotLineGlobe.Alpha);//边线颜色透明度
+    //边线样式及线宽
+    $("#selOutlineStylePlot2dStyle option[value='"+PlotLineGlobe.Pattern+"']").attr("selected", "selected");//边线样式
+    $("#selOutlineWidthPlot2dStyle option[value='"+PlotLineGlobe.Width+"']").attr("selected", "selected");//边线宽度
+}
+
+function plot3dSetTextImageStyleDefault() {
+    resetTextOrImagePlot3DStyle();
+    $("#txtFontColorPlot3d").val(PlotTextOrImageGlobe.Color);
+    $("#txtBackColorPlot3d").val(PlotTextOrImageGlobe.BackgroundColor);
+    $("#txtFontAlphaPlot3dStyle").val(PlotTextOrImageGlobe.ColorAlpha);
+    $("#txtFontBackAlphaPlot3dStyle").val(PlotTextOrImageGlobe.BackgroundColorAlpha);
+    $("#txtImageScalePlot3dStyle").val(PlotTextOrImageGlobe.Scale);
+    $("#selFontFamilyPlot3d option[value='"+PlotTextOrImageGlobe.Front+"']").attr("selected", "selected");
+    $("#selFontSizePlot3d option[value='"+ PlotTextOrImageGlobe.Size+"']").attr("selected", "selected");
+    $("#selFontBoldPlot3d option[value='"+getTextValuePlot3d(PlotTextOrImageGlobe.Bold)+"']").attr("selected", "selected");
+    $("#selFontVariantPlot3d option[value='"+getTextValuePlot3d(PlotTextOrImageGlobe.Italic)+"']").attr("selected", "selected");
+    $("#selFontStylePlot3d option[value='"+getTextValuePlot3d(PlotTextOrImageGlobe.Underline)+"']").attr("selected", "selected");
+}
+
+function plot3dSetFillStyleDefault() {
+    resetCubePlot3DStyle();
+    $("#txtPgColorPlot3d").val(PlotCubeGlobe.AreaColor);//填充颜色
+    $("#txtPgAlphaPlot3d").val(PlotCubeGlobe.AreaAlpha);//填充颜色透明度
+    $("#txtOutlineColorPlot3d").val(PlotCubeGlobe.LineColor);//边线颜色
+    $("#txtOutlineAlphaPlot3d").val(PlotCubeGlobe.LineAlpha);//边线颜色透明度
+    //边线样式及线宽
+    $("#selOutlineStylePlot3d option[value='"+PlotCubeGlobe.LinePattern+"']").attr("selected", "selected");//边线样式
+    $("#selOutlineWidthPlot3d option[value='"+PlotCubeGlobe.LineWidth+"']").attr("selected", "selected");//边线宽度
 }

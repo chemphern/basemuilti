@@ -35,7 +35,7 @@
             background-color: #f1f1f1
         }
         body{
-            overflow-y: hidden;
+        	overflow-y: auto;
         }
         </style>
 </head>
@@ -49,8 +49,8 @@
 	<div class="row">
         <div class="col-md-12" style="margin:0 0 20px 10px;">
           <div class="btn_box" style="float: left;margin-top:5px;"> 
-           	 时间：<input type="text" id="startTime" class="text date_plug" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"/> 
-           	 至 <input type="text" id="endTime" class="text date_plug" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"/>
+           	 时间：<input type="text" id="startTime" class="text date_plug" value="${curDate }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"/> 
+           	 至 <input type="text" id="endTime" class="text date_plug" value="${curDateTo }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"/>
             <button class="current" id="queryBtn"><i class="glyphicon glyphicon-search"></i>查询</button>
           </div>
         </div>
@@ -92,6 +92,7 @@
 <script src="${res }/plugins/My97DatePicker/WdatePicker.js"></script>
 <%-- <script src="${res }/dist/js/pages/fwtj.js"></script> --%>
 <script>
+var gridManager = null;
 $(document).ready(function(){
 	$("#queryBtn").on("click",function(){
 		query();
@@ -100,6 +101,12 @@ $(document).ready(function(){
 	$("#queryBtn").click();
 	
 	function query() {
+		if(gridManager) {
+			gridManager.setParm("startTime",$("#startTime").val());
+	    	gridManager.setParm("endTime",$("#endTime").val());
+	    	gridManager.reload();
+		}
+		
 		var myChart = echarts.init(document.getElementById('chart'),'macarons');
 		var myChart1 = echarts.init(document.getElementById('chart1'),'macarons');
 		var myChart2 = echarts.init(document.getElementById('chart2'),'macarons');
@@ -110,12 +117,28 @@ $(document).ready(function(){
 			data:{'startTime':$("#startTime").val(),'endTime':$("#endTime").val()},
 			dataType:"json",
 			success:function(ret) {
-				var xData = JSON.parse(ret.xAxisData);
-				var seriesData = JSON.parse(ret.seriesData);
-				var xVisitAxisData = JSON.parse(ret.xVisitAxisData);
-				var visitSeriesData = JSON.parse(ret.visitSeriesData);
-				var serviceStatus = JSON.parse(ret.serviceStatus);
-				//console.log("seriesData=" + seriesData);
+				var xResTimeData = "";
+				var resTimeSeriesData = "";
+				var serviceStatus = "";
+				var xVisitAxisData = "";
+				var visitSeriesData = "";
+				if(ret.xResTimeData) {
+					xResTimeData = JSON.parse(ret.xResTimeData);
+				}
+				if(ret.resTimeSeriesData) {
+					resTimeSeriesData = JSON.parse(ret.resTimeSeriesData);
+				}
+				if(ret.serviceStatus) {
+					serviceStatus = JSON.parse(ret.serviceStatus);
+				}
+				if(ret.xVisitAxisData) {
+					xVisitAxisData = JSON.parse(ret.xVisitAxisData);
+				}
+				if(ret.visitSeriesData) {
+					visitSeriesData = JSON.parse(ret.visitSeriesData);
+				}
+				 
+				
 				var option = {
 			           title : {
 			               text: '平均响应时间'
@@ -141,7 +164,7 @@ $(document).ready(function(){
 			               {
 			                   type : 'category',
 			                   boundaryGap : false,
-			                   data:xData
+			                   data:xResTimeData
 			                   //data : ['周一','周二','周三','周四','周五','周六','周日']
 			               }
 			           ],
@@ -158,7 +181,7 @@ $(document).ready(function(){
 			               {
 			                   name:'服务响应时间（ms）',
 			                   type:'line',
-			                   data:seriesData,
+			                   data:resTimeSeriesData,
 			                   //data:[11, 11, 15, 13, 12, 13, 10],
 			                   markPoint : {
 			                       data : [
@@ -232,7 +255,6 @@ $(document).ready(function(){
 			      var option2 = {
 		            title : {
 		                text: '服务运行状态统计',
-		                //subtext: '纯属虚构',
 		                x:'center'
 		            },
 		            tooltip : {
@@ -242,7 +264,7 @@ $(document).ready(function(){
 		            legend: {
 		                orient : 'vertical',
 		                x : 'left',
-		                data:['服务启动','服务停止','服务异常']
+		                data:['服务启动','服务停止']
 		            },
 		            toolbox: {
 		                show : false,
@@ -273,18 +295,22 @@ $(document).ready(function(){
 		                    radius : '55%',
 		                    center: ['50%', '50%'],
 		                    data:serviceStatus
-		                   /*  data:[
-		                        {value:335, name:'服务启动'},
-		                        {value:310, name:'服务停止'},
-		                        {value:234, name:'服务异常'}
-		                    ] */
 		                }
 		            ]
 			      };
+				if(xResTimeData == "") {
+					option.series=[''];
+				}
 				
+				if(xVisitAxisData == ""){
+					option1.series=[''];
+				}
+				if(serviceStatus == ""){
+					option2.series=[''];				
+				}
 				myChart.setOption(option);
 				myChart1.setOption(option1);
-			    myChart2.setOption(option2);
+				myChart2.setOption(option2);
 			},
 			error: function(result) {
 				alert("connection error!");
@@ -292,11 +318,9 @@ $(document).ready(function(){
 		});
 	}
 	
-	
-     
 	//grid start
       $(function () {
-        $("#maingrid4").ligerGrid({
+    	  gridManager = $("#maingrid4").ligerGrid({
             checkbox: false,
             columns: [
             { display: '服务名称', name: 'service.showName', minwidth: 100 },

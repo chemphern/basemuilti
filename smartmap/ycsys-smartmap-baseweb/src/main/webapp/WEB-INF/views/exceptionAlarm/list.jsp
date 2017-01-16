@@ -30,7 +30,7 @@
         异常报警
     </h1>
 </section>
-<section class="content">
+
     <div class="row">
         <div class="col-md-12">
             <div class="box box-solid">
@@ -46,7 +46,6 @@
             </div>
         </div>
     </div>
-</section>
 </body>
 <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <script src="${res}/plugins/ligerUI/js/core/base.js" type="text/javascript"></script>
@@ -61,16 +60,43 @@
 <script type="text/javascript" src="${res}/plugins/dialog/unit.js"></script>
 
 <script type="text/javascript">
-        //表格列表
+    Date.prototype.Format = function(fmt)
+    { //author: meizz
+        var o = {
+            "M+" : this.getMonth()+1,                 //月份
+            "d+" : this.getDate(),                    //日
+            "h+" : this.getHours(),                   //小时
+            "m+" : this.getMinutes(),                 //分
+            "s+" : this.getSeconds(),                 //秒
+            "q+" : Math.floor((this.getMonth()+3)/3), //季度
+            "S"  : this.getMilliseconds()             //毫秒
+        };
+        if(/(y+)/.test(fmt))
+            fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        for(var k in o)
+            if(new RegExp("("+ k +")").test(fmt))
+                fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));
+        return fmt;
+    };
+    //表格列表
         $(function () {
             $("#maingrid4").ligerGrid({
                 checkbox: false,
                 columns: [
                     { display: '标题', name: 'title', width: 100 },
                     { display: '报警内容', name: 'content', minWidth: 60 },
-                    { display: '报警等级', name: 'grade', minWidth: 100 },
-                    { display: '状态', name: 'status', minWidth: 100 },
-                    {display:"异常发生时间",name:"happenDate",minWidth:100},
+                    { display: '报警等级', name: 'grade', minWidth: 100,render:function(rowdata,rowindex,value){
+                        var levels = ["普通","普通","严重"];
+                        return levels[parseInt(value)];
+                    }},
+                    { display: '状态', name: 'status', minWidth: 100,render:function(rowdata,rowindex,value){
+                        var levels = ["未处理","未处理","已处理"];
+                        return levels[parseInt(value)];
+                    } },
+                    {display:"异常发生时间",name:"happenDate",minWidth:100,render:function(rowdata,rowindex,value){
+                        var d = new Date(value).Format("yyyy-MM-dd hh:mm:ss");
+                        return d;
+                    }},
                     { display: '备注', name: 'remark', minWidth: 100 },
                     { display: '操作',
                         render: function (rowdata, rowindex, value)
@@ -86,7 +112,7 @@
                         } }
                 ], pageSize:30,
                 url:"${ctx}/exceptionAlarm/listData",
-                width: '100%',height:'97%'
+                width: '100%',height:'98%'
             });
             //新增弹窗
             $(".current").on('click', function (e) {   //添加/编辑解析规则

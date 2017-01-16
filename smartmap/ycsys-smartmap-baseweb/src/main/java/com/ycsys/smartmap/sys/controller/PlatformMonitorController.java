@@ -3,19 +3,21 @@ package com.ycsys.smartmap.sys.controller;
 import com.alibaba.druid.stat.DruidStatManagerFacade;
 import com.alibaba.druid.support.http.stat.WebAppStatManager;
 import com.alibaba.fastjson.JSONArray;
+import com.ycsys.smartmap.monitor.entity.ServerMonitorData;
+import com.ycsys.smartmap.monitor.entity.TomcatMonitorData;
+import com.ycsys.smartmap.monitor.service.ServerMonitorDataService;
+import com.ycsys.smartmap.monitor.service.TomcatMonitorDataService;
+import com.ycsys.smartmap.sys.common.config.parseobject.tomcat.*;
 import com.ycsys.smartmap.sys.common.jmx.JavaInformations;
+import com.ycsys.smartmap.sys.common.result.ResponseEx;
 import com.ycsys.smartmap.sys.common.schedule.JobTaskManager;
-import com.ycsys.smartmap.sys.common.schedule.ScheduleJob;
 import com.ycsys.smartmap.sys.common.snmp.*;
-import com.ycsys.smartmap.sys.common.utils.DateUtils;
+import com.ycsys.smartmap.sys.common.utils.MonitorUtil;
 import com.ycsys.smartmap.sys.entity.ConfigServerMonitor;
 import com.ycsys.smartmap.sys.service.ConfigServerMonitorService;
 import com.ycsys.smartmap.sys.task.object.MonitorConstant;
-import org.hibernate.service.spi.ServiceException;
-import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -37,6 +39,12 @@ public class PlatformMonitorController {
     @Resource
     private ConfigServerMonitorService configServerMonitorService;
 
+    @Resource
+    private ServerMonitorDataService serverMonitorDataService;
+
+    @Resource
+    private TomcatMonitorDataService tomcatMonitorDataService;
+
     @Autowired
     private JobTaskManager jobTaskManager;
 
@@ -53,8 +61,11 @@ public class PlatformMonitorController {
         return configs;
     }
 
-    @RequestMapping("/listMonitorService")
-    public String listMonitorService(String id,Model model){
+    @RequestMapping("/getMonitorServiceData")
+    @ResponseBody
+    public ResponseEx listMonitorService(String id){
+        ResponseEx ex = new ResponseEx();
+        Map<String,Object> res = new HashMap<String,Object>();
         ConfigServerMonitor config = configServerMonitorService.getById(id);
         String type = config.getMonitorType();
         Map<String,Object> map = new HashMap<String,Object>();
@@ -72,11 +83,10 @@ public class PlatformMonitorController {
                 ArrayList<DiskInfo> diskInfo = base.getDiskInfo();
                 MemoryInfo memoryInfo = base.getMemoryInfo();
                 Map<String,List<CpuInfo>> cpus = cons.getCpuInfoMap();
-                Map<String,List<NetAnalyzeInfo>> nets = cons.getNetAnalyzeMap();
-                model.addAttribute("systemInfo",systemInfo);
-                model.addAttribute("diskInfo",diskInfo);
-                model.addAttribute("memoryInfo",memoryInfo);
-                model.addAttribute("cpuInfo",base.getCpuInfo());
+                res.put("systemInfo",systemInfo);
+                res.put("diskInfo",diskInfo);
+                res.put("memoryInfo",memoryInfo);
+                res.put("cpuInfo",base.getCpuInfo());
                 if(cpus.get(id) != null){
                     List<CpuInfo> cpulist = cpus.get(id);
                     List<String> xList = new ArrayList<>();
@@ -85,40 +95,42 @@ public class PlatformMonitorController {
                         xList.add(format.format(new Date(tc.getTime())));
                         yList.add(tc.getSysRate());
                     }
-                    model.addAttribute("cpu_xlist", JSONArray.toJSON(xList));
-                    model.addAttribute("cpu_ylist",JSONArray.toJSON(yList));
+                    res.put("cpu_xlist", JSONArray.toJSON(xList));
+                    res.put("cpu_ylist",JSONArray.toJSON(yList));
                 }
-                if(nets.get(id) != null){
-                    List<NetAnalyzeInfo> netlist = nets.get(id);
-                    List<String> xList = new ArrayList<>();
-                    List<String> yInList = new ArrayList<>();
-                    List<String> yOutList = new ArrayList<>();
-                    List<String> ySendPackList = new ArrayList<>();
-                    List<String> yGetPackList = new ArrayList<>();
-                    for(NetAnalyzeInfo n :netlist){
-                        xList.add(format.format(new Date(n.getTime())));
-                        yInList.add(n.getInkbps() + "");
-                        yOutList.add(n.getOutkbps() + "");
-                        ySendPackList.add(n.getPersendpack() + "");
-                        yGetPackList.add(n.getPerrecpack() + "");
-                    }
-                    model.addAttribute("net_xlist",JSONArray.toJSON(xList));
-                    model.addAttribute("net_yInlist",JSONArray.toJSON(yInList));
-                    model.addAttribute("net_yOutlist",JSONArray.toJSON(yOutList));
-                    model.addAttribute("net_ySendpacklist",JSONArray.toJSON(ySendPackList));
-                    model.addAttribute("net_yGetpacklist",JSONArray.toJSON(yGetPackList));
-                }
-                model.addAttribute("netsChart",nets.get(id));
+                List<ServerMonitorData> serverDatas = serverMonitorDataService.findPrevData(id,20);
+                res.put("chartData",serverDatas);
             } catch (Exception e) {
-                model.addAttribute("msg","获取系统信息失败！snmp连接不通！");
+                ex.setFail("获取系统信息失败！snmp连接不通！");
+                return ex;
             }
         }else if(type.equals("2")){
-
+            TomcatStatusObject tomcatStatusObject = MonitorUtil.getTomcatStatusInfo(config.getUrl(),config.getUserName(),config.getUserPassword());
+            if(tomcatStatusObject!= null){
+                List<TomcatConnectorStatusObject> tomcatConnectorStatusObjects = tomcatStatusObject.getConnector();
+                TomcatConnectorStatusObject httpConnector = null;
+                for (TomcatConnectorStatusObject connectorStatusObject : tomcatConnectorStatusObjects) {
+                    if (connectorStatusObject.getName().indexOf("http-nio") > -1) {
+                        httpConnector = connectorStatusObject;
+                    }
+                }
+                TomcatRequestInfoObject request =  httpConnector.getRequestInfo();
+                TomcatThreadInfoStatusObject thread = httpConnector.getThreadInfo();
+                TomcatMemoryStatusObject jvmMemory = tomcatStatusObject.getJvm().getMemory();
+                List<TomcatMonitorData> tomcatDatas = tomcatMonitorDataService.findPrevData(id,20);
+                res.put("chartData",tomcatDatas);
+                res.put("requestInfo",request);
+                res.put("threadInfo",thread);
+                res.put("jvmMemoryInfo",jvmMemory);
+            }
         } else if (type.equals("3")) {
 
         }else if(type.equals("4")){
+
         }
-        return "/platmonitor/list" + map.get(type) + "Monitor";
+        res.put("type",type);
+        ex.setRetData(res);
+        return ex;
     }
 
     @RequestMapping("/getDatabaseBaseInfo")

@@ -35,5 +35,4 @@ public interface ConfigServerMonitorService {
     /**获取所有的配置**/
     List<ConfigServerMonitor> findAll();
 
-    Boolean testTomcatConfig(ConfigServerMonitor config);
 }

@@ -225,11 +225,28 @@
 	            checkbox: true,
 	            columns: [
 							{ display: '专题图名称', name: 'name', align: 'left', minWidth: 100},
-		          	        { display: '服务名称',  name: 'service.showName', align: 'left', minWidth: 100 },
-		          	        { display: '服务注册类型', name: 'service.registerType', minWidth: 60,
+		          	        { display: '展示服务名称',  name: 'showService.showName', align: 'left', minWidth: 100 },
+		          	        { display: '展示服务注册类型', name: 'showService.registerType', minWidth: 60,
 		   	                    render: function (item) {
-		   	                    		if(item.service != null){
-		   	                    			var obj = parseInt(item.service.registerType);
+		   	                    		if(item.showService != null){
+		   	                    			var obj = parseInt(item.showService.registerType);
+		        	                    	  <c:forEach var="map" items="${serviceRegisterType }">
+		        	                    	  		if(obj == "${map.key }") {
+		        	                    	  			return "${map.value.name }";
+		        	                    	  		}
+		    	       						  </c:forEach>
+			   	                             
+		   	                    		}
+		   	                    		else {
+		   	                    			return "";
+		   	                    		}
+			    	                 }
+		          	       	 },
+		          	       { display: '查询服务名称',  name: 'queryService.showName', align: 'left', minWidth: 100 },
+		          	     { display: '查询服务注册类型', name: 'queryService.registerType', minWidth: 60,
+		   	                    render: function (item) {
+		   	                    		if(item.queryService != null){
+		   	                    			var obj = parseInt(item.queryService.registerType);
 		        	                    	  <c:forEach var="map" items="${serviceRegisterType }">
 		        	                    	  		if(obj == "${map.key }") {
 		        	                    	  			return "${map.value.name }";
@@ -264,7 +281,7 @@
 	          	        ],  
 	          	pageSize:30,
 	            url:"${ctx}/layerTheme/listData",
-	            width: '100%',height:'96%'
+	            width: '100%',height:'98%'
 	        });
 	    	//表格列表 end
 		});

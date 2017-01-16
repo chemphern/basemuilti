@@ -35,7 +35,7 @@ public class DbMonitorUtil {
             Class.forName(driver);
             conn = DriverManager.getConnection(url,username , password);
             Map<String, Object> ts = db.query(conn,thread_connect[x], new MapHandler(),null);
-            String connect = (String) ts.get("Value");
+            String connect = String.valueOf(ts.get("Value"));
             res.put("connect",connect);
             res.put("code","1");
             res.put("type",type);

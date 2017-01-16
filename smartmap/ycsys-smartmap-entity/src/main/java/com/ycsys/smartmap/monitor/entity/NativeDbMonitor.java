@@ -27,8 +27,14 @@ public class NativeDbMonitor implements java.io.Serializable {
     @Column
     private String type;//数据库类型
 
-    @Column
+    @Column(name="connect_num")
     private int connect;//连接数
+
+    @Column(name="mac_addr")
+    private String macAddr;//本机max地址
+
+    @Column(name="native_ip")
+    private String nativeIp;//本机ip
 
     @Column
     private Date time;//时间
@@ -63,5 +69,21 @@ public class NativeDbMonitor implements java.io.Serializable {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public String getMacAddr() {
+        return macAddr;
+    }
+
+    public void setMacAddr(String macAddr) {
+        this.macAddr = macAddr;
+    }
+
+    public String getNativeIp() {
+        return nativeIp;
+    }
+
+    public void setNativeIp(String nativeIp) {
+        this.nativeIp = nativeIp;
     }
 }

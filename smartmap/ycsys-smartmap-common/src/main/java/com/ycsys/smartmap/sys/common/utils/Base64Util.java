@@ -8,7 +8,7 @@ public class Base64Util {
 			'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a',
 			'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
 			'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0',
-			'1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/' };
+			'1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-' };
 
 	/**
 	 * convert the platform dependent string characters to UTF8 which can also
@@ -166,7 +166,7 @@ public class Base64Util {
 				tempBuf[index++] = (byte) (buf[i] + 4);
 			else if (buf[i] == '+')
 				tempBuf[index++] = 62;
-			else if (buf[i] == '/')
+			else if (buf[i] == '-')
 				tempBuf[index++] = 63;
 			else if (buf[i] == '=') {
 				tempBuf[index++] = 0;
@@ -195,5 +195,12 @@ public class Base64Util {
 		hold = new byte[count - count1];
 		System.arraycopy(debuf, 0, hold, 0, count - count1); // trim to size
 		return hold;
+	}
+
+	public static void main(String [] args){
+		String str = Base64Util.encode("172.16.10.52:6080/arcgi?");
+		String f = Base64Util.decode("MTcyLjE2LjEwLjUyOjYwODAvYXJjZ2k-");
+		System.out.println(str);
+		System.out.println(f);
 	}
 }
