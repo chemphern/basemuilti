@@ -3,6 +3,8 @@ package com.ycsys.smartmap.sys.task;
 import com.ycsys.smartmap.monitor.entity.*;
 import com.ycsys.smartmap.monitor.service.*;
 import com.ycsys.smartmap.service.entity.Service;
+import com.ycsys.smartmap.service.service.ServiceService;
+import com.ycsys.smartmap.service.utils.ServiceUtils;
 import com.ycsys.smartmap.sys.common.config.parseobject.tomcat.TomcatConnectorStatusObject;
 import com.ycsys.smartmap.sys.common.config.parseobject.tomcat.TomcatMemoryStatusObject;
 import com.ycsys.smartmap.sys.common.config.parseobject.tomcat.TomcatStatusObject;
@@ -13,12 +15,15 @@ import com.ycsys.smartmap.sys.common.snmp.*;
 import com.ycsys.smartmap.sys.common.utils.DbMonitorUtil;
 import com.ycsys.smartmap.sys.common.utils.HttpSocketUtil;
 import com.ycsys.smartmap.sys.common.utils.MonitorUtil;
+import com.ycsys.smartmap.sys.common.utils.StringUtils;
+import com.ycsys.smartmap.sys.entity.ConfigServerEngine;
 import com.ycsys.smartmap.sys.entity.ConfigServerMonitor;
 import com.ycsys.smartmap.sys.task.object.MonitorConstant;
 import com.ycsys.smartmap.sys.util.NetWorkUtil;
 import com.ycsys.smartmap.sys.util.SpringContextHolder;
 
 import javax.servlet.ServletContext;
+
 import java.lang.reflect.InvocationTargetException;
 import java.util.Date;
 import java.util.HashMap;
@@ -112,6 +117,36 @@ public class MonitorTask {
         m.setService(service);
         ServiceMonitorService serviceMonitorService = SpringContextHolder.getBean("serviceMonitorService");
         serviceMonitorService.save(m);
+        
+        //更新平台服务状态
+        ServiceService serviceService = SpringContextHolder.getBean("serviceService");
+        if("200".equals(resCode)) {
+        	//arcGisserver服务
+        	if(StringUtils.isNotBlank(service.getManagerServiceUrl())) {
+        		ConfigServerEngine engine = service.getServerEngine();
+        		String ip = engine.getIntranetIp();
+        		String port = engine.getIntranetPort() + "";
+        		String userName = engine.getEngineManager();
+        		String password = engine.getManagerPassword();
+        		String managerUrl = service.getManagerServiceUrl();
+        		boolean status = ServiceUtils.getStatus(managerUrl, ip, port, userName, password);
+        		if(status) {
+        			service.setServiceStatus("1"); //启动
+        		}
+        		else {
+        			service.setServiceStatus("0"); //停止
+        		}
+        	}
+        	//第三方服务
+        	else {
+        		service.setServiceStatus("1");
+        	}
+        }
+        else {
+        	service.setServiceStatus("0");
+        }
+        serviceService.updateServiceStatus(service.getId(), service.getServiceStatus());
+        
     }
 
     public void collectNativeServer(String monitorId,String url,String port,String communicate,String rate){
@@ -224,6 +259,9 @@ public class MonitorTask {
                 res.put("cpuInfo",cpuInfo);
                 res.put("netAnalyzeInfo",netAnalyzeInfo);
                 res.put("code","1");
+                res.put("memoryInfo", snmp.getMemoryInfo());
+                res.put("diskInfo", snmp.getDiskInfo());
+                
             }
         } catch (Exception e) {
             res.put("code","0");

@@ -10,5 +10,5 @@ import com.ycsys.smartmap.sys.service.BaseService;
  * @date   2016年12月1日
  */
 public interface ThemeService extends BaseService<LayerTheme, Integer> {
-
+	public Long count(String hql, List<Object> param);
 }

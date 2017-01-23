@@ -20,4 +20,11 @@ public interface NoticeReceiverService {
     List<Map<String,Object>> findNoticesByNoticeId(String noticeId, PageHelper pageHelper);
 
     long countByNoticeId(String noticeId);
+
+    long count(String hql, Object[] param);
+
+    void updateReceiveStatus(String id);
+
+    List<Map<String,Object>> findUnNoticeByUserId(Integer id);
+
 }

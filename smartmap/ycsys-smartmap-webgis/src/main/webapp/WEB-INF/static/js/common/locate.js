@@ -9,7 +9,7 @@ $(function(){
 	$("#Sqdwtoolbar").on('click','.btn_add', bookmarkAdd);
 	$("#Sqdwtoolbar").on('click','.btn_edit', bookmarkEdit);
 	$("#Sqdwtoolbar").on('click','.btn_del', bookmarkDel);
-	$("#tableSqdw").on('dbl-click-row.bs.table',locateBookmark);
+	$("#tableSqdw").on('click-row.bs.table',locateBookmark);
     $("#tablePathPoint").on('click-row.bs.table',locatePathPoint);
 });
 

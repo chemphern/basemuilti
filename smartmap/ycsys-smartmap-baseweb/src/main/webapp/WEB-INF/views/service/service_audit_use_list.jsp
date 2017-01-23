@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-使用服务审核</title>
 <!-- Tell the browser to be responsive to screen width -->
 <meta
 	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
@@ -74,7 +74,7 @@ body {
 												<option value="${map.key }">${map.value.name }</option>	
 											</c:forEach>
 									  </select>
-                  <button class="current"><i class="glyphicon glyphicon-search"></i> 查询</button>
+                  <button class="current" id="serviceFind" onclick="service_audit_list.query();"><i class="glyphicon glyphicon-search"></i> 查询</button>
                   <button id="serviceApplyDelete"><i class="iconfont icon-trash"></i> 删除</button>
                 </div>
             </div>
@@ -112,11 +112,40 @@ body {
 <script type="text/javascript" src="${res}/plugins/dialog/unit.js"></script>
 	<script type="text/javascript">
 	var gridManager = null;	
+	
 	;
 		(function($) { //避免全局依赖,避免第三方破坏
 			$(document).ready(function() {
+				//查询服务serviceFind
+			/* 	$("#serviceFind").on("click",function(){
+					var title=$("title").val();
+					var showName=$("showName").val();
+					var auditStatus=$("auditStatus").val();
+					var validDate=$("validDate").val();
+					$.ajax({
+						type:"POST",
+						url:"${ctx}/serviceApply/listData",
+						data:{
+							"title":title,
+							"showName":showName,
+							"auditStatus":auditStatus,
+							"validDate":validDate
+					},
+						dataType:"json",
+						success:function(data){
+							if(data){
+							alert(data);
+							window.gridManager.reload();
+							}
+						},
+						error:function(){
+							alert("数据加载失败");
+						}
+					})
+					
+				}); */
 				
-				//服务删除
+				//服务删除serviceApplyDelete
 				$("#serviceApplyDelete").on("click",function(e) {
 					e.preventDefault();
 					var selectedRows = gridManager.getSelecteds();
@@ -281,11 +310,12 @@ body {
 					}
 				},
 				query: function() {
+					//alert("++");
 					gridManager.setParm("showName",$("#showName").val());
 					gridManager.setParm("auditStatus",$("#auditStatus").val());
 					gridManager.setParm("title",$("#title").val());
 					gridManager.setParm("validDate",$("#validDate").val());
-					gridManager.reload();
+					window.gridManager.reload();
 					
 				}
 		}

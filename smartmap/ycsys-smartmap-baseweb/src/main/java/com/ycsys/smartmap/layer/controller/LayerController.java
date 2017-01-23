@@ -1,6 +1,7 @@
 package com.ycsys.smartmap.layer.controller;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -95,12 +96,18 @@ public class LayerController {
 	@RequiresPermissions(value = "sys-layer-list-data")
 	public Grid<Layer> listData(String pId, PageHelper page) {
 		List<Layer> list = null;
+		StringBuffer hqlCount = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		hqlCount.append("select count(*) from Layer t where 1 = 1 and t.type = 'n' ");
 		list = layerService.find("from Layer c where 1 = 1 and c.type = 'n' ",null, page);
 		if (StringUtils.isNotBlank(pId)) {
 			Integer id = Integer.parseInt(pId);
+			params.add(id);
+			hqlCount.append(" and t.pId = ? ");
 			list = layerService.find("from Layer r where 1 = 1 and r.type = ? and  r.pId = ? ",new Object[] {"n",id }, page);
-		} 
-		return new Grid<Layer>(list);
+		}
+		long count = layerService.count(hqlCount.toString(), params);
+		return new Grid<Layer>(count,list);
 	}
 	
 	/**
@@ -375,7 +382,8 @@ public class LayerController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
+		
+		dbLayer.setPId(layer.getParent().getId());
 		dbLayer.setUpdateDate(new Date());
 		dbLayer.setUpdator(user);
 		layerService.update(dbLayer);

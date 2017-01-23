@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>羽辰智慧林业综合管理平台-资源管理</title>
+    <title>羽辰智慧林业平台运维管理系统-运维监控日志</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="shortcut icon" href="${res}/images/favicon.ico"/>
@@ -104,7 +104,7 @@
         $("#maingrid4").ligerGrid({
             checkbox: false,
             columns: [
-                { display: '请求时间', name: 'requestDate',render:function(rowdata,rowindex,value){
+                { display: '请求时间',minWidth:180, name: 'requestDate',render:function(rowdata,rowindex,value){
                     var d = new Date(value).Format("yyyy-MM-dd hh:mm:ss");
                     return d;
                 }},
@@ -117,17 +117,17 @@
                 { display: '服务方法', name: 'serviceMethod'},
                 { display: '请求URI', name: 'requestUrl'},
                 { display: '访问时间', name: 'visitTime'},
-                { display: '返回状态', name: 'returnStatus'},
-                { display: '操作',
-                    render: function (rowdata, rowindex, value)
-                    {
-                        var h = "";
-                        if (!rowdata._editing)
-                        {
-                            h += "<input type='button' class='list-btn bt_edit' onclick='yc_update(" + rowdata.id + ")'/>";
-                        }
-                        return h;
-                    } }
+                { display: '返回状态', name: 'returnStatus'}
+//                { display: '操作',
+//                    render: function (rowdata, rowindex, value)
+//                    {
+//                        var h = "";
+//                        if (!rowdata._editing)
+//                        {
+//                            h += "<input type='button' class='list-btn bt_edit' onclick='yc_update(" + rowdata.id + ")'/>";
+//                        }
+//                        return h;
+//                    } }
             ], pageSize:30,
             url:"${ctx}/log/listRequestData",
             width: '100%',height:'98%'

@@ -4,11 +4,9 @@ import com.ycsys.smartmap.sys.common.config.Global;
 import com.ycsys.smartmap.sys.common.utils.DateUtils;
 import com.ycsys.smartmap.sys.common.utils.security.Encodes;
 import com.ycsys.smartmap.sys.dao.PermissionDao;
+import com.ycsys.smartmap.sys.dao.RoleDao;
 import com.ycsys.smartmap.sys.dao.UserDao;
-import com.ycsys.smartmap.sys.entity.Permission;
-import com.ycsys.smartmap.sys.entity.ShiroUser;
-import com.ycsys.smartmap.sys.entity.User;
-import com.ycsys.smartmap.sys.entity.UserRole;
+import com.ycsys.smartmap.sys.entity.*;
 import com.ycsys.smartmap.sys.util.CaptchaException;
 import com.ycsys.smartmap.sys.util.NetWorkUtil;
 import com.ycsys.smartmap.sys.util.UsernamePasswordCaptchaToken;
@@ -26,7 +24,6 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +46,9 @@ public class UserRealmImpl extends AuthorizingRealm {
 
 	@Autowired
 	private PermissionDao permissionDao;
+
+	@Autowired
+	private RoleDao roleDao;
 	/**
 	 * 认证回调函数,登录时调用.
 	 */
@@ -64,7 +64,9 @@ public class UserRealmImpl extends AuthorizingRealm {
 			//是否超级管理员
 			boolean is_super = false;
 			for(UserRole userRole:user.getUserRoles()){
-				if(userRole.getRole().getIsSuper()){
+				Role role = userRole.getRole();
+				Role targetRole = roleDao.get(Role.class,role.getId());
+				if(targetRole.isSuper()){
 					is_super = true;
 					break;
 				}
@@ -99,7 +101,7 @@ public class UserRealmImpl extends AuthorizingRealm {
 			String role_code = userRole.getRole().getCode();
 			info.addRole(role_code);
 
-			boolean isSuper = userRole.getRole().getIsSuper();
+			boolean isSuper = userRole.getRole().isSuper();
 			if(isSuper){
 				is_super = true;
 			}

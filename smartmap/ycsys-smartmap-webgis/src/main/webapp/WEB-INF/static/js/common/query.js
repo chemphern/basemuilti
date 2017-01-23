@@ -28,7 +28,7 @@ function queryAttrLogic(){
 	if(mapOpt==2){
 		queryAttrLogic2d(lyrItem);
 	}else if(mapOpt==3){
-		
+        queryAttrLogic2d(lyrItem);
 	}
 }
 function delLogic(e){

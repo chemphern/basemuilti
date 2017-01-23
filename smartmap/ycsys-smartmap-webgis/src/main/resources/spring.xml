@@ -17,6 +17,7 @@
 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
+				<value>classpath:db.properties</value>
 				<value>classpath:config.properties</value>
 			</list>
 		</property>
@@ -33,6 +34,7 @@
 		<property name="locations">
 			<list>
 				<value>classpath:config.properties</value>
+				<value>classpath:db.properties</value>
 			</list>
 		</property>
 		<property name="fileEncoding" value="UTF-8"></property>

@@ -84,4 +84,30 @@ public class ConfigServiceExtendPropertyServiceImpl implements
 		return configServiceExtendPropertyDao.find(hql, param, page);
 	}
 
+	@Override
+	public List<ConfigServiceExtendProperty> findSelect(
+			ConfigServiceExtendProperty configServiceExtendProperty) {
+		StringBuilder hql = new StringBuilder();
+		hql.append("from ConfigServiceExtendProperty c ");
+		hql.append("where 1=1 c.name like :name and ");
+		hql.append("c.showName like :showName and ");
+		hql.append("c.type like type=? and ");
+		hql.append("c.need like need=?");
+		System.out.println(hql.toString());
+		return configServiceExtendPropertyDao.find(hql.toString());
+	}
+
+	@Override
+	public List<ConfigServiceExtendProperty> find(String hql,
+			List<Object> params, PageHelper page) {
+		// TODO Auto-generated method stub
+		return configServiceExtendPropertyDao.find(hql, params, page);
+	}
+
+	@Override
+	public long count(String hql, List<Object> params) {
+		// TODO Auto-generated method stub
+		return configServiceExtendPropertyDao.count(hql, params);
+	}
+
 }

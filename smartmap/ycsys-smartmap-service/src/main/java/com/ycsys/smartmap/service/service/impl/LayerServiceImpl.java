@@ -80,4 +80,10 @@ public class LayerServiceImpl implements LayerService {
 		return layerServiceDao.find(hql);
 	}
 
+	@Override
+	public Long count(String hql, List<Object> param) {
+		// TODO Auto-generated method stub
+		return layerServiceDao.count(hql, param);
+	}
+
 }

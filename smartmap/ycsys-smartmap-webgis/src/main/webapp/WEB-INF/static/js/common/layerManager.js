@@ -1,3 +1,5 @@
+var currentOptLayer;
+
 var setting = {
     view: {
       selectedMulti: false
@@ -51,8 +53,6 @@ function onCheck(e, treeId, treeNode) {
 				  changeVisibleInMap3D(node);
 		  }
 	  }
-	  setTimeout(listFields,500);
-	  setTimeout(listFieldsLogic,500);
 }  
 
 function addLayerItem(treeNode){
@@ -72,6 +72,7 @@ function doAddLayerItem(treeNode,select){
 			  opt.nameField=treeNode.nameField;
 			  opt.summaryFields=treeNode.summaryFields;
 			  opt.displayFields=treeNode.displayFields;
+			  opt.businessType = treeNode.businessType;
 			  select.options.add(opt);
 		  }else{
 			  for ( var i=select.length-1;i>-1;i--) {
@@ -101,6 +102,10 @@ function toggleLayerInMgr(treeNode){
 	        }else{
 	        	var type=treeNode.geometryType.toLowerCase();
 	        	layer=new esri.layers.FeatureLayer(url,{id:String(treeNode.id)});
+	        	//图层业务类型(默认,全景,视频)
+	        	layer.businessType = treeNode.businessType;
+	        	layer.displayFields = treeNode.displayFields;
+	        	layer.on('click',toPopDetail);
 	            map.addLayer(layer);
 	        	if(type.indexOf("polygon")>-1){
 	        		map.reorderLayer(layer,1);
@@ -108,12 +113,71 @@ function toggleLayerInMgr(treeNode){
 	        		map.reorderLayer(layer,2);
 	        	}
 	        }
+	    	
+	  	  //图层加载完毕初始化查询字段
+	  	  setTimeout(listFields,500);
+	  	  setTimeout(listFieldsLogic,500);
 	    }else{
 	    	var lyr=map.getLayer(treeNode.id);
 	    	if(lyr){
 	    		map.removeLayer(lyr);
 	    	}
 	    }
+}
+
+function toPopDetail(e){
+	var geo = e.graphic.geometry;
+	var businessType = e.graphic._layer.businessType;
+	var task = new esri.tasks.QueryTask(e.graphic._layer.url);
+	var query = new esri.tasks.Query();
+	query.outFields = ["*"];
+	query.returnGeometry = true;
+	for ( var k in e.graphic.attributes) {
+		query.where = k + " = " + e.graphic.attributes[k];
+		break;
+	}
+	task.execute(query,function(featureSet){
+		var features = featureSet.features;
+		if(features.length < 1) return ;
+		
+		var fieldAliasesObj = featureSet.fieldAliases;
+		var feature = features[0];
+		if(businessType == "video"){
+			var resource = mapConfig.realIpPort + feature.attributes["Link"]; 
+			var data = {resourcePath:resource};
+			var url = path+'/static/popup/map_videojk_fullscreen.html';
+			popPlayer(feature.attributes.Name_CHN ,url,"video",popWindConfig.video.width,popWindConfig.video.height,data);
+		}else if(businessType == "scene"){
+			var url = mapConfig.realIpPort + feature.attributes["Link"]; 
+			popPlayer(feature.attributes.Name_CHN,url,"panorama",popWindConfig.scene.width,popWindConfig.scene.height);
+		}else{
+			var info = createTemplateContent(e.graphic._layer.displayFields,fieldAliasesObj);
+			feature.setInfoTemplate(new esri.InfoTemplate("信息",info));
+			popupNormalWindow(e.mapPoint,feature);
+		}
+	});
+}
+
+function popupNormalWindow(point,graphic){
+	map.infoWindow.setFeatures([graphic]);
+	map.infoWindow.markerSymbol.outline.color=new esri.Color([0,0,0,0]);
+	map.infoWindow.fillSymbol.outline.color=new esri.Color([0,255,255,0.4]);
+	map.infoWindow.lineSymbol.color=new esri.Color([0,255,255,0.4]);
+	map.infoWindow.show(point,esri.dijit.InfoWindow.ANCHOR_UPPERRIGHT);
+}
+
+function popPlayer(title,url,id,width,height,data){
+	var player = $.dialog.open(url,{
+        title: title,
+        id:id,
+        width: width,
+        height: height,
+        lock:false,
+        opacity:0,
+        button:[],
+        data:data,
+        resize:true
+    });
 }
 
 $(document).ready(function(){

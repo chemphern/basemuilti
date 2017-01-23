@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-选择服务</title>
 <!-- Tell the browser to be responsive to screen width -->
 <meta
 	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
@@ -50,9 +50,8 @@ body {
 		<section class="content-header">
 			<h1>选择服务</h1>
 		</section>
-
+		
 		<!-- Main content -->
-		<section class="content">
 			<div class="row">
 				<div class="col-md-3">
 					<div class="box box-solid">
@@ -68,7 +67,7 @@ body {
 					</div>
 				</div>
 				<!-- /.col -->
-				<div class="col-md-9">
+				<div class="col-md-9 col-sm-8">
 					<div class="box box-solid">
 						<div class="box-header with-border">
 							<h4 class="box-title">服务列表</h4>
@@ -95,7 +94,6 @@ body {
 					<!-- /.col -->
 				</div>
 				<!-- /.row -->
-		</section>
 		<!-- /.content -->
 	</div>
 	<!-- /.content-wrapper -->
@@ -133,9 +131,6 @@ body {
 				var parentWin = window.parent[1];
 				var dialog = parentWin.art.dialog.list["selectServiceDialog"];
 				var dialog_div = dialog.DOM.wrap;
-				console.log("window=");
-				console.log(window);
-				console.log(window.parent);
 				dialog_div.on("ok", function() {
 					var selectedRows = gridManager.getSelecteds();
 					//flag=1:图层选择服务；flag=2：专题图选择服务
@@ -321,7 +316,7 @@ body {
 						parms: [
 	                            {name:'serviceStatus', value:'1'}
 	                        ],
-						width : '280%',
+						width : '250%',
 						height : '97%'
 					});
 

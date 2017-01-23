@@ -14,6 +14,11 @@ import java.util.Map;
 public interface ServiceService extends BaseService<Service, Integer> {
 	List<Service> find(String hql, List<Object> param, PageHelper page);
 	Long count(String hql, List<Object> param);
+	
+	Long count(String hql, Object[] param);
+	
+	//服务总数量
+	Long countAll();
 
 	/**更新监控信息，例如监控状态，监控频率**/
 	void updateMonitor(Map<String, Object> saveParam);
@@ -24,4 +29,7 @@ public interface ServiceService extends BaseService<Service, Integer> {
 	void updateMonitorConfig(Service service);
 
 	long count(String s);
+	
+	//更新服务状态
+	void updateServiceStatus(Integer id,String status);
 }

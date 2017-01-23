@@ -133,6 +133,7 @@ public class ResourceController {
 				.getRealPath("upload" + File.separator + "资源");*/
 		ResourceType resourceType = resourceTypeService.get(ResourceType.class,
 				resource.getResourceType().getId());
+		//找到tomcat所在位置
 		String tomcatHome = System.getProperty("catalina.home"); //D:\software1\tomcat\apache-tomcat-8.5.6
 		tomcatHome = tomcatHome.substring(0, tomcatHome.lastIndexOf("\\"));
 		String resourcePath =  tomcatHome +File.separator + "项目文件" + File.separator + "资源";
@@ -306,10 +307,11 @@ public class ResourceController {
 				}
 				else {
 					resourceService.delete(resource);
+					//删除相应的文件
+					FileUtils.deleteFile(resource.getFilePath());
+					map.put("msg", "删除成功");
 				}
-				//删除相应的文件
-				FileUtils.deleteFile(resource.getFilePath());
-				map.put("msg", "删除成功");
+				
 			} catch (Exception e) {
 				map.put("msg", "删除失败");
 			}
@@ -341,23 +343,29 @@ public class ResourceController {
 		List<Resource> list = null;
 		ResourceType rt = null;
 		StringBuffer hql = new StringBuffer();
+		StringBuffer hqlCount = new StringBuffer();
 		hql.append("from Resource t where 1 = 1 ");
+		hqlCount.append("select count(*) from Resource t where 1 = 1 ");
 		List<Object> params = new ArrayList<Object>();
 		if(StringUtils.isNotBlank(fullName)) {
 			hql.append("and t.fullName like ? ");
+			hqlCount.append("and t.fullName like ? ");
 			params.add('%' + fullName + '%');
 		}
 		if(StringUtils.isNotBlank(name)) {
 			hql.append("and t.name like ? ");
+			hqlCount.append("and t.name like ? ");
 			params.add('%' + name + '%');
 		}
 		
 		if(StringUtils.isNotBlank(type)) {
 			hql.append("and t.type = ? ");
+			hqlCount.append("and t.type = ? ");
 			params.add(type);
 		}
 		if(StringUtils.isNotBlank(fileType)) {
 			hql.append("and t.fileType = ? ");
+			hqlCount.append("and t.fileType = ? ");
 			params.add(fileType);
 		}
 		
@@ -366,6 +374,7 @@ public class ResourceController {
 			rt = resourceTypeService.get(ResourceType.class, id);
 			if(rt.getParent() != null) {
 				hql.append("and t.resourceType.id = ? ");
+				hqlCount.append("and t.resourceType.id = ? ");
 				params.add(id);
 			}
 			
@@ -373,7 +382,7 @@ public class ResourceController {
 		
 		hql.append(" order by t.sort desc ");
 		list = resourceService.find(hql.toString(),params, page);
-		long count = resourceService.count(hql.toString(), params);
+		long count = resourceService.count(hqlCount.toString(), params);
 		Grid<Resource> g = new Grid<Resource>(count,list);
 		return g;
 	}

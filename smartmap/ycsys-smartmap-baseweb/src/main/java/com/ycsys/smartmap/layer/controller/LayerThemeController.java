@@ -1,6 +1,7 @@
 package com.ycsys.smartmap.layer.controller;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -65,14 +66,19 @@ public class LayerThemeController {
 	@RequestMapping("/listData")
 	@RequiresPermissions(value = "sys-layerTheme-list-data")
 	public Grid<LayerTheme> listData(String pId, PageHelper page) {
-		
 		List<LayerTheme> list = null;
+		StringBuffer hqlCount = new StringBuffer();
+		List<Object> params = new ArrayList<Object>();
+		hqlCount.append("select count(*) from LayerTheme t where 1 = 1 and t.type = 'n' ");
 		list = themeService.find("from LayerTheme t where 1 = 1 and t.type = 'n' ",null, page);
 		if (StringUtils.isNotBlank(pId)) {
 			Integer id = Integer.parseInt(pId);
+			params.add(id);
+			hqlCount.append(" and t.pId = ? ");
 			list = themeService.find("from LayerTheme t where 1 = 1 and t.type = ? and  t.pId = ? ",new Object[] {"n",id }, page);
-		} 
-		return new Grid<LayerTheme>(list);
+		}
+		long count = themeService.count(hqlCount.toString(), params);
+		return new Grid<LayerTheme>(count,list);
 	}
 	
 	/**
@@ -286,7 +292,10 @@ public class LayerThemeController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
+		if(layerTheme.getQueryService().getId() == null) {
+			dbLayerTheme.setQueryService(null);
+		}
+		dbLayerTheme.setPId(layerTheme.getParent().getId());
 		dbLayerTheme.setUpdateDate(new Date());
 		dbLayerTheme.setUpdator(user);
 		themeService.update(dbLayerTheme);

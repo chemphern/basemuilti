@@ -393,10 +393,7 @@ function addAreaPointByLUp(clickPosition){
      }
      //显示结果距离及设置结果Label位置
      var resultLabel=YcMap3D.ProjectTree.GetObject(YcMap3D.ProjectTree.FindItem(MeasureToolGlobe.MeasureFolder+"\\AreaResultLabel"));
-     if(MeasureTool.CurrentMeasureType==MeasureTool.MeasureType.GROUNDAREA)
-         resultLabel.Text= YcMap3D.Analysis.MeasureTerrainSurface(area.Geometry,0).toFixed(2)+"平方米";
-     else
-        resultLabel.Text=(area.Geometry.Area).toFixed(2)+"平方米";
+     resultLabel.Text=(area.Geometry.Area).toFixed(2)+"平方米";
 //   YcMap3D.Window.ShowMessageBarText("表面面积:"+(area.Geometry.Area).toFixed(2)+"平方米",0,-1);
      labelHeight = (resultLabel.Position.Altitude + clickPosition.Altitude)/2;
      resultLabel.Position=YcMap3D.Creator.CreatePosition(area.Geometry.Centroid.X,area.Geometry.Centroid.Y,labelHeight,3);
@@ -409,10 +406,7 @@ function addAreaPointByRUp(){
     area.Geometry.EndEdit();
     YcMap3D.Window.SetInputMode(0);
     var resultLabel=YcMap3D.ProjectTree.GetObject(YcMap3D.ProjectTree.FindItem(MeasureToolGlobe.MeasureFolder+"\\AreaResultLabel"));
-    if(MeasureTool.CurrentMeasureType==MeasureTool.MeasureType.GROUNDAREA)
-        resultLabel.Text= YcMap3D.Analysis.MeasureTerrainSurface(area.Geometry,0).toFixed(2)+"平方米";
-    else
-        resultLabel.Text=(area.Geometry.Area).toFixed(2)+"平方米";
+    resultLabel.Text=(area.Geometry.Area).toFixed(2)+"平方米";
 //  YcMap3D.Window.ShowMessageBarText("表面面积:"+(area.Geometry.Area).toFixed(2)+"平方米",0,-1);
     MeasureToolGlobe.MeasureOperation="EndMeasure";
 }
@@ -466,7 +460,7 @@ function addGroundAreaPointByLUp(clickPosition){
     //显示结果距离及设置结果Label位置
     var resultLabel=YcMap3D.ProjectTree.GetObject(YcMap3D.ProjectTree.FindItem(MeasureToolGlobe.MeasureFolder+"\\AreaResultLabel"));
     resultLabel.Text=(area.Geometry.Area).toFixed(2)+"平方米";
-//  YcMap3D.Window.ShowMessageBarText("地表面积:"+(area.Geometry.Area).toFixed(2)+"平方米",0,-1);         
+//  YcMap3D.Window.ShowMessageBarText("地表面积:"+(area.Geometry.Area).toFixed(2)+"平方米",0,-1);
     resultLabel.Position=YcMap3D.Creator.CreatePosition(area.Position.X,area.Position.Y,2,0);     
 }
 
@@ -478,6 +472,7 @@ function addGroundAreaPointByRUp(){
      YcMap3D.Window.SetInputMode(0);
      var resultLabel=YcMap3D.ProjectTree.GetObject(YcMap3D.ProjectTree.FindItem(MeasureToolGlobe.MeasureFolder+"\\AreaResultLabel"));
      resultLabel.Text=(area.Geometry.Area).toFixed(2)+"平方米";
+     // resultLabel.Text= YcMap3D.Analysis.MeasureTerrainSurface(area.Geometry,0).toFixed(2)+"平方米";//耗时太长
 //   YcMap3D.Window.ShowMessageBarText("地表面积:"+(area.Geometry.Area).toFixed(2)+"平方米",0,-1);
      MeasureToolGlobe.MeasureOperation="EndMeasure";
 }

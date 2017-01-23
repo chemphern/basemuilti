@@ -6,6 +6,7 @@ var arrQueryInfoItem;//属性查询结果条目
 var pageSize=10;//查询结果每页显示条数
 var queryCatalog=0;//查询类别：0,1,2分别代表属性查询、空间查询、逻辑查询
 var pageSize=10;
+var businessType; //图层业务类型:default,vedio,scene
 
 $(function(argument){
 });
@@ -17,6 +18,7 @@ function addLogicItem2d(lyrItem,fildItem,logicItem,fildValue){
 	var logic=logicItem.label;
 	var fieldType=fildItem.type;
 	var fieldValue=fildValue;
+	businessType = lyrItem.businessType;
 	
 	var id;
 	var data=$('#tableLogic').bootstrapTable('getOptions').data;
@@ -151,6 +153,7 @@ function initFields(layerItem){
 	nameField=layerItem.nameField;
 	summaryFields=layerItem.summaryFields;
 	displayFields=layerItem.displayFields;
+	businessType = layerItem.businessType;
 }
 /**
  * 属性查询
@@ -171,7 +174,6 @@ function queryAttr2d(layerItem,fieldName,fieldType,fieldValue){
 		fieldValue="date '"+fieldValue+"'";
 	}
 	var sqlWhere=fieldName + opt + fieldValue;
-	console.log(layerItem.url);
 	query(layerItem.url,sqlWhere);
 }
 
@@ -203,7 +205,9 @@ function okCall(featureSet){
 	markerLyr.on('click',onGraphicClick);
 	for(var i=0,n=1;i<features.length;i++,n++){
 		var feature=features[i];
-		feature.setInfoTemplate(new esri.InfoTemplate("信息",info));
+		feature.businessType = businessType;
+		//赋值属性内容弹窗时使用
+		feature.infoBody = info;
 		//分页条目信息
 		var li=createItem(feature,n,fieldAliases);
 		arrQueryInfoItem.push(li);
@@ -245,11 +249,12 @@ function onGraphicClick(evt){
 	var graphic=evt.graphic;
 	var url=graphic.symbol.url;
 	var index=url.substring(url.lastIndexOf("_")+1,url.length-4);
+	//自定义弹窗
+	popupWindow(graphic,evt.mapPoint);
 	//地图标注高亮
 	lightMarkerFromLyrFeature(graphic.attributes.OBJECTID);
 	//属性列表高亮
 	$('.no-'+index).parent().toggleClass('active').siblings().removeClass('active');
-//	popupWindow(graphic);
 }
 /**
  * 构建弹窗内容
@@ -260,36 +265,39 @@ function onGraphicClick(evt){
 function createTemplateContent(displayFieldsStr,fieldAliasesObj){
 	//别名和字段名数组
 	var arrDisplayFieldsAlias=[],html;
+	var arrDisplayFields=[];
 	if(displayFieldsStr){
-		arrDisplayFieldsAlias=displayFieldsStr.split(";");
-		var arrDisplayFields=[];
+		arrDisplayFieldsAlias=displayFieldsStr.split(",");
 		for(var p=0;p<arrDisplayFieldsAlias.length;p++){
 			$.each(fieldAliasesObj,function(o,v){//o为字段名,v为别名
 				if(v==arrDisplayFieldsAlias[p]){
 					arrDisplayFields.push(o);
 				}
-			})
+			});
 		}
-		//构建模板内容
-		var arr=[];
-		var len=arrDisplayFields.length;
-		if(len>6){//属性框风格
-			arr.push("<table id='attrTb'");
-			for(var i=0;i<arrDisplayFields.length;i++){
-				arr.push("<tr><td class='attrTd'>"+arrDisplayFieldsAlias[i]+"</td><td class='attrTd2'>${"+arrDisplayFields[i]+"}</td></tr>")
-			}
-			arr.push("</table>");
-		}else{//普通表单风格
-			arr.push("<table class='attrPopFm'>");
-			for(var i=0;i<arrDisplayFields.length;i++){
-				arr.push("<tr><td class='attrTdFm1'>"+arrDisplayFieldsAlias[i]+"</td><td class='attrTdFm2'>：</td><td class='attrTdFm3'>${"+arrDisplayFields[i]+"}</td></tr>")
-			}
-			arr.push("</table>");
-		}
-		html=arr.join("");
 	}else{
-		html="${*}";
+		$.each(fieldAliasesObj,function(o,v){//o为字段名,v为别名
+			arrDisplayFieldsAlias.push(v);
+			arrDisplayFields.push(o);
+		})
 	}
+	//构建模板内容
+	var arr=[];
+	var len=arrDisplayFields.length;
+	if(len>6){//属性框风格
+		arr.push("<table id='attrTb'");
+		for(var i=0;i<arrDisplayFields.length;i++){
+			arr.push("<tr><td class='attrTd'>"+arrDisplayFieldsAlias[i]+"</td><td class='attrTd2'>${"+arrDisplayFields[i]+"}</td></tr>")
+		}
+		arr.push("</table>");
+	}else{//普通表单风格
+		arr.push("<table class='attrPopFm'>");
+		for(var i=0;i<arrDisplayFields.length;i++){
+			arr.push("<tr><td class='attrTdFm1'>"+arrDisplayFieldsAlias[i]+"</td><td class='attrTdFm2'>：</td><td class='attrTdFm3'>${"+arrDisplayFields[i]+"}</td></tr>")
+		}
+		arr.push("</table>");
+	}
+	html=arr.join("");
 	return html;
 }
 
@@ -313,7 +321,7 @@ function createItem(feature,index,fieldAliasesObj){//
 	var arrSummaryFields=[];
 	var summary=[];
 	if(summaryFields){
-		arrSummaryFields=summaryFields.split(";");
+		arrSummaryFields=summaryFields.split(",");
 		for(var j=0;j<arrSummaryFields.length;j++){
 			var name=arrSummaryFields[j];//别名
 			$.each(fieldAliasesObj,function(o,v){//o为字段名,v为别名
@@ -374,11 +382,6 @@ function pageCallback(page_index, jq){
     }else{
     	$("#queryItemGeo").empty().append(new_content);
     }
-    
-    //属性栏点击事件
-    $(".result li").bind('click',function(){
-        $(this).toggleClass('active').siblings().removeClass('active');
-  	});
     return false;
 
   }
@@ -408,13 +411,15 @@ function createPageContent(pageIndex){
 			//显示一页中的要素对象.
 			var feature=arrFeaturesTemp[i];
 			var geoType=feature.geometry.type;
-			var center=getGeomoetryCenter(feature);
-			var graphic=new esri.Graphic(center,symbol);
 			var style=getSymbol(geoType,true);
 			feature.setSymbol(style);
 			resultLyr.add(feature)
+			
+			var center=getGeomoetryCenter(feature);
+			var graphic=new esri.Graphic(center,symbol);
 			graphic.setAttributes(feature.attributes);
-			graphic.setInfoTemplate(feature.infoTemplate);
+			graphic.infoBody = feature.infoBody;
+			graphic.businessType = feature.businessType;
 			markerLyr.add(graphic);
 			arrFeaturePerPage.push(feature);
 			pIndx++;
@@ -424,7 +429,7 @@ function createPageContent(pageIndex){
 	//传递要素给3纬处理
 	graphicsConvertor(arrFeaturePerPage,false);
 	fromArcgisTo3dScene(arrFeaturePerPage,true);
-	return arrTemp.join("<br>");
+	return arrTemp.join("");
 }
 
 function createPageContentSpatial(pageIndex){
@@ -435,7 +440,6 @@ function createPageContentSpatial(pageIndex){
 	//图标代号
 	var pIndx=1;
 	var http=path+"/static/dist/img/map/icon_features_";
-//	var resultLyr=map.getLayer("queryLyr");
 	var pointLyr=map.getLayer("iPointLyr");
 	var polylineLyr=map.getLayer("iPolylineLyr");
 	var polygonLyr=map.getLayer("iPolygonLyr");
@@ -450,8 +454,6 @@ function createPageContentSpatial(pageIndex){
 			//显示一页中的要素对象.
 			var feature=arrFeaturesTemp[i];
 			var geoType=feature.geometry.type;
-			var center=getGeomoetryCenter(feature);
-			var graphic=new esri.Graphic(center,symbol);
 			var style=getSymbol(geoType,true);
 			if(geoType.indexOf("point")>-1){
 				feature.setSymbol(style);
@@ -463,8 +465,11 @@ function createPageContentSpatial(pageIndex){
 				feature.setSymbol(style);
 				polygonLyr.add(feature);
 			}
+			var center=getGeomoetryCenter(feature);
+			var graphic=new esri.Graphic(center,symbol);
 			graphic.setAttributes(feature.attributes);
-			graphic.setInfoTemplate(feature.infoTemplate);
+			graphic.infoBody = feature.infoBody;
+			graphic.businessType = feature.businessType;
 			markerLyr.add(graphic);
 			arrFeaturePerPage.push(feature);
 			pIndx++;
@@ -474,7 +479,7 @@ function createPageContentSpatial(pageIndex){
 	//传递要素给3纬处理
 	graphicsConvertor(arrFeaturePerPage);
 	fromArcgisTo3dScene(arrFeaturePerPage,true);
-	return arrTemp.join("<br>");
+	return arrTemp.join("");
 }
 /**
  * 导航到地图中对应的要素
@@ -490,10 +495,15 @@ function toFeature(featureObjId,index){
 			break;
 		}
 	}
-	lightMarkerFromLyrFeature(featureObjId);
-	popupWindow(targetFeature,true);
-	//三维点击定位
-   navigateToSceneFeature(featureObjId);
+	//居中放大显示
+	centerAtGraphic(targetFeature);
+	//高亮效果
+	$('.no-'+index).parent().toggleClass('active').siblings().removeClass('active');
+	if(mapOpt == 2 || mapOpt == 0){
+		lightMarkerFromLyrFeature(featureObjId);
+	}else if(mapOpt == 3 || mapOpt == 0){
+		navigateToSceneFeature(featureObjId);
+	}
 }
 /**
  * 高亮某一个图标元素
@@ -529,7 +539,17 @@ function lightMarkerFromGraphic(graphic){
 		g.symbol.setUrl(url);
 	}
 }
-
+function centerAtGraphic(graphic){
+	var deferred=$.Deferred();
+	if(graphic.geometry.type!="point"){
+		var _extent=graphic.geometry.getExtent();
+		deferred =map.setExtent(_extent);
+	}else{
+		var point=getGeomoetryCenter(graphic);
+		deferred =map.centerAndZoom(point,12);
+	}
+	return deferred;
+}
 function getGeomoetryCenter(feature){
 	var geoType=feature.geometry.type;
 	var point;
@@ -551,26 +571,35 @@ function getGeomoetryCenter(feature){
 	}
 	return point;
 }
-function popupWindow(graphic,isAtCenter){
-	var type=graphic.geometry.type;
-	var point=getGeomoetryCenter(graphic);
-	var deferred;
-	if(isAtCenter){
-		if(type!="point"){
-			var _extent=graphic.geometry.getExtent();
-			deferred =map.setExtent(_extent);
-		}else{
-			deferred =map.centerAndZoom(point,12);
 
-		}
-	}
-	deferred.then(function(){
+/**
+ * 弹窗
+ * @param graphic 要被弹窗展示的要素
+ * @param mapPoint 弹窗位置
+ */
+function popupWindow(graphic,mapPoint){
+	var type=graphic.geometry.type;
+	
+	//根据图层业务类型设置不同的弹窗信息
+	var businessType = graphic.businessType;
+	if(businessType == "video"){
+		var link = graphic.attributes["Link"];
+		var resource = mapConfig.realIpPort + (link?link:graphic.attributes["链接"]); 
+		var data = {resourcePath:resource};
+		var url = path+'/static/popup/map_videojk_fullscreen.html';
+		popPlayer(graphic.attributes.Name_CHN ,url,"video",popWindConfig.video.width,popWindConfig.video.height,data);
+	}else if(businessType == "scene"){
+		var link = graphic.attributes["Link"];
+		var url = mapConfig.realIpPort + (link?link:graphic.attributes["链接"]); 
+		popPlayer(graphic.attributes.Name_CHN,url,"panorama",popWindConfig.scene.width,popWindConfig.scene.height);
+	}else{
+		graphic.setInfoTemplate(new esri.InfoTemplate("信息",graphic.infoBody));
 		map.infoWindow.setFeatures([graphic]);
 		map.infoWindow.markerSymbol.outline.color=new esri.Color([0,0,0,0]);
 		map.infoWindow.fillSymbol.outline.color=new esri.Color([0,255,255,0.4]);
 		map.infoWindow.lineSymbol.color=new esri.Color([0,255,255,0.4]);
-		map.infoWindow.show(point,esri.dijit.InfoWindow.ANCHOR_UPPERRIGHT);
-	});
+		map.infoWindow.show(mapPoint,esri.dijit.InfoWindow.ANCHOR_UPPERRIGHT);
+	}
 }
 
 function failCall(){
@@ -607,18 +636,23 @@ function getQueryServiceArr(){
 		var parent=rootes[n];
 		var root={
 				url:parent.address,
+				ids:[],
 				layerLevel:[]
 		}
 		var children=parent.children;
 		for(var p=0;p<children.length;p++){
 			var child=children[p];
+			if(!child.checked) continue;
 			var address=child.address;
+			var id = address.substr(address.lastIndexOf("/")+1);
 			var fieldObj={//图层级别展示字段对象
-					id:address.substr(address.length-1,1),
+					id:id,
 					nameField:child.nameField,
 					summaryFields:child.summaryFields,
-					displayFields:child.displayFields
+					displayFields:child.displayFields,
+					businessType:child.businessType
 			}
+			root.ids.push(id);
 			root.layerLevel.push(fieldObj);
 		}
 		arrService.push(root);
@@ -643,7 +677,7 @@ function getQueryDefereds(geometry){
 	if(services && services.length>0){
 		for(var i=0;i<services.length;i++){
 			var service=services[i];
-			deferreds.push(doQueryGeometry(service.url,geometry));
+			deferreds.push(doQueryGeometry(service,geometry));
 		}
 	}else{
 		showAlertDialog("当前没有可用于查询的图层");
@@ -652,11 +686,11 @@ function getQueryDefereds(geometry){
 	var all= new dojo.DeferredList(deferreds);
 	return all;
 }
-function doQueryGeometry(serviceUrl,geometry){
-	if(!serviceUrl) return;
-	var task=new esri.tasks.IdentifyTask(serviceUrl);
+function doQueryGeometry(service,geometry){
+	var task=new esri.tasks.IdentifyTask(service.url);
 	var params=new esri.tasks.IdentifyParameters();
 	params.geometry=geometry;
+	params.layerIds=service.ids;
 	params.layerOption=esri.tasks.IdentifyParameters.LAYER_OPTION_VISIBLE;
 	params.mapExtent=map.extent;
 	params.returnGeometry=true;
@@ -671,6 +705,7 @@ function toDraw(draw){
 
 function onDrawEnd(geometryObj){//geometryObj对象含geometry属性
 	queryCatalog=1;//空间查询
+	map.setMapCursor("wait");
 	var deferredList=getQueryDefereds(geometryObj.geometry);
 	if(deferredList){
 		deferredList.then(dealResults);
@@ -685,6 +720,7 @@ function onDrawEnd(geometryObj){//geometryObj对象含geometry属性
  * @returns
  */
 function dealResults(results){
+	console.log(results);
 	arrFeaturesTemp=[];
 	arrQueryInfoItem=[];
 	var pointLyr=new esri.layers.GraphicsLayer({id:"iPointLyr"});
@@ -705,7 +741,6 @@ function dealResults(results){
 			var geoType=feature.geometry.type
 			var layerName=featureObj.layerName;
 			var layerId=featureObj.layerId;
-			arrFeaturesTemp.push(feature);
 			feature.attributes.layerName=layerName;
 
 			//遍历一个服务下面所有图层，找该要素对应的层的配置字段
@@ -715,6 +750,7 @@ function dealResults(results){
 					nameField=layerObj.nameField;
 					summaryFields=layerObj.summaryFields;
 					displayFields=layerObj.displayFields;
+					feature.businessType=layerObj.businessType;
 					break;
 				}
 			}
@@ -727,9 +763,8 @@ function dealResults(results){
 			}
 
 			var plateInfo=createTemplateInfo(displayFields);
-			var template = new esri.InfoTemplate("<b>信息</b>",plateInfo);
-			feature.setInfoTemplate(template);
-			feature.setSymbol(getSymbol(geoType,true));
+			feature.infoBody = plateInfo;
+			arrFeaturesTemp.push(feature);
 		}
 	}
 	var opt={
@@ -741,7 +776,6 @@ function dealResults(results){
 	}
 	$(opt.headerId).css('display','none');
 	$(opt.resultId).css('display','block');
-//	map.addLayers([polygonLyr,polylineLyr,pointLyr]);
 	initPager(arrQueryInfoItem,opt);
 }
 
@@ -750,13 +784,13 @@ function createItemSpatial(feature,index){
 	var title=feature.attributes[nameField];
 	var layerName=feature.attributes.layerName;
 	if(layerName){
-		summaryFields="layerName;"+summaryFields;
+		summaryFields="layerName,"+summaryFields;
 	}
 	//简略显示的字段数组
 	var arrSummaryFields=[];
 	var summary=[];
 	if(summaryFields){
-		arrSummaryFields=summaryFields.split(";");
+		arrSummaryFields=summaryFields.split(",");
 		for(var j=0;j<arrSummaryFields.length;j++){
 			var name=arrSummaryFields[j];
 			summary.push(feature.attributes[name]);
@@ -770,12 +804,21 @@ function createItemSpatial(feature,index){
 }
 
 //没有别名对象的情况(空间查询的属性键采用别名)
-function createTemplateInfo(displayFieldsStr){
-	//构建模板内容
+function createTemplateInfo(displayFieldsStr,fields){
+	//构建模板内容.有配置字段显示配置字段，否则显示所有字段
 	if(!displayFieldsStr){
-		return "${*}";
+		if(fields){
+			var html=["<table id='attrTb'"];
+			$.each(fields,function(i,field){
+				html.push("<tr><td class='attrTd'>"+field.name+"</td><td>${"+field.name+"}</td></tr>");
+			});
+			html.push("</table>");
+			return html.join("");
+		}else{
+			return "${*}";
+		}
 	}
-	var arrDisplayFields=displayFieldsStr.split(";");
+	var arrDisplayFields=displayFieldsStr.split(",");
 	var arr=[];
 	if(arrDisplayFields.length>6){
 		arr.push("<table id='attrTb'>")

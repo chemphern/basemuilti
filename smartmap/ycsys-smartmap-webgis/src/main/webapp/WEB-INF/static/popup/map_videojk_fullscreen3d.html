@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>羽辰智慧林业二三维一体化应用系统</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="../dist/css/mapAdminLTE.css">
+  <!-- 换肤 -->
+  <link rel="stylesheet" href="../dist/css/mapSkins/_all-skins.css">
+  <link rel="stylesheet" href="../dist/css/mapPublic.css">
+  <link rel="stylesheet" href="../dist/css/mapIndex.css">
+  <!-- 修改浏览器默认滚动条 -->
+  <link href="../plugins/mCustomScrollbar/jquery.mCustomScrollbar.css" rel="stylesheet" type="text/css">
+  <!-- jQuery Easyui css-->
+  <link rel="stylesheet" href="../plugins/jeasyui/themes/default/easyui.css">
+  <link rel="stylesheet"  href="../plugins/jeasyui/themes/icon.css">
+  <!-- 弹出框 -->
+  <link href="../plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
+  <!-- 表格 -->
+  <link href="../plugins/table/bootstrap-table.min.css" rel="stylesheet">
+
+  <!-- jQuery  -->
+  <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
+  <!-- <script src="../plugins/jQueryUI/jquery-ui.min.js"></script> -->
+
+
+  <!-- <script src="plugins/jQueryUI/Layout.js"></script> -->
+ <!-- cookies -->
+<!-- <script src="../dist/js/jquery.cookie.js"></script> -->
+  <!-- Bootstrap 3.3.2 -->
+  <link rel="stylesheet" href="../bootstrap/css/bootstrap.css">
+  <script src="../bootstrap/js/bootstrap.min.js"></script>
+   <!-- HTML5 IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="../dist/js/html5shiv.min.js"></script>
+   <script src="../dist/js/respond.min.js"></script>
+  <![endif]-->
+ 
+
+<!--   <script src="../dist/js/map/map_index.js"></script>
+  <script src="../dist/js/map/map_index_dialog.js"></script> -->
+
+<!--   <link rel="stylesheet" href="../dist/css/mapPublic.css">
+  <link rel="stylesheet" href="../dist/css/mapIndex.css"> -->
+<!-- Bootstrup的jQuery slider插件 -->
+<link href="../plugins/slider/bootstrap-slider.min.css" rel="stylesheet">
+  <script src="../js/map3d/YcMap3D.js"></script>
+</head>
+<body>
+<div class="videojk_fullscreen3d">
+<div class="videojkPopup">
+<div class="esriPopup esriPopupVisible">
+  <div class="videojkPopupWrapper">
+    <div class="sizer_video">
+      <div class="titlePane" style="-webkit-user-select: none;">
+        <div class="title" id="winTitle">视频监控</div>
+        <div class="titleButton close" title="关闭" onclick="closeVideo()"></div>
+      </div>
+    </div>
+    <div class="sizer_videojk_full  clearfix">
+      <div class="videojk_content boxshadow">
+        <video id='video' class="videojk_mainbox" autoplay="autoplay" controls="controls" loop="loop" width="400" height="300"></video>
+        <div class="videojk_mainbtn_group">
+          <a href="javascript:void(0)" class="vbtn btn_video" title="录像"></a>
+          <a href="javascript:void(0)" class="vbtn btn_photo" title="截图"></a>
+          <a href="javascript:void(0)" class="vbtn btn_vioce" title="声音"></a>
+          <a href="javascript:void(0)" class="vbtn btn_screen" title="全屏"></a>
+        </div>
+      </div>
+
+      <!-- 侧边操作按钮 start -->      
+      <div class="videojk_sidebar boxshadow">
+      <form action="" class="form-horizontal">
+        <div class="videojk_sidebar_con clearfix">
+          <!-- 方向控制 -->
+          <div class="control_direction clearfix">
+            <a href="javascript:void(0)" class="dbtn btn_tl" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_tc" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_tr" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_ml" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_mc" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_mr" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_bl" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_bc" title=""><span></span></a>
+            <a href="javascript:void(0)" class="dbtn btn_br" title=""><span></span></a>             
+          </div>
+          <!-- 放大缩小控制 -->
+          <div class="control_zoom slider_bar mt10">
+            <a href="javascript:void(0)" class="zbtn btn_minus"></a>
+            <a href="javascript:void(0)" class="zbtn btn_add"></a>
+            <input id="videozoom" data-slider-id='videozoomSlider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="10" data-slider-tooltip="hide"/>
+          </div>
+          <!-- 变倍 焦距 光圈 控制-->
+          <div class="control_modified mt10 clearfix">
+            <ul class="modified_ul">
+              <li><a href="javascript:void(0)" class="mbtn btn_add_big"></a><span>变倍</span><a href="javascript:void(0)" class="mbtn btn_minus_big"></a></li>
+              <li><a href="javascript:void(0)" class="mbtn btn_add_big"></a><span>焦距</span><a href="javascript:void(0)" class="mbtn btn_minus_big"></a></li>
+              <li><a href="javascript:void(0)" class="mbtn btn_add_big"></a><span>光圈</span><a href="javascript:void(0)" class="mbtn btn_minus_big"></a></li>
+            </ul>
+          </div>
+          <!-- 参数设置-->
+          
+          <div class="preferences  mt10  clearfix">
+            <div class="select-item">              
+              <select class="form-control input-sm">
+                <option>预置点</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+            <div class="form-group mt10">
+              <div class="col-sm-8">
+                <input type="text" class="form-control input-sm" placeholder="" value="1">
+              </div>
+              <label for="name" class="col-sm-4">1~255</label>
+            </div>
+            <div class="btn_box">
+              <button type="button" class="btn">定位</button>
+            </div>
+          </div>
+          
+          <!-- 滑块设置-->
+          <div class="slider_box slider_bar">
+              <div class="slider_item">
+                <label for=""><i class="icon_pic icon_brightness"></i></label>
+                <input id="brightness" data-slider-id='brightnessSlider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="10" data-slider-tooltip="hide"/>
+              </div>
+              <div class="slider_item">
+                <label for=""><i class="icon_pic icon_contrast"></i></label>
+                <input id="contrast" data-slider-id='contrastSlider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="10" data-slider-tooltip="hide"/>
+              </div>
+              <div class="slider_item">
+                <label for=""><i class="icon_pic icon_saturation"></i></label>
+                <input id="saturation" data-slider-id='saturationSlider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="10" data-slider-tooltip="hide"/>
+              </div>
+              <div class="slider_item">
+                <label for=""><i class="icon_pic icon_tone"></i></label>
+                <input id="tone" data-slider-id='toneSlider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="10" data-slider-tooltip="hide"/>
+              </div>
+          </div>
+          <div class="text-center">
+            <button type="reset" class="btn btn-reset">重置</button>
+          </div>
+        </div>
+        </form>
+      </div>     
+      <!-- 侧边操作按钮 end-->
+    </div>
+  </div>
+<!--   <div class="outerPointer"></div>
+  <div class="video-popup-triangle-up"></div> -->
+</div>
+  <object ID="YcMap3D" classid="CLSID:3A4F9199-65A8-11D5-85C1-0001023952C1" style="display: none;"></object>
+</div>
+</div>
+<script type='text/javascript' src="../plugins/slider/bootstrap-slider.min.js"></script>
+<script type='text/javascript'>
+
+    var name = getQueryString("name");
+
+    function closeVideo() {
+
+        YcMap3D.Window.RemovePopupByCaption("视频监控-" + name);
+    }
+
+  $(document).ready(function() {
+      var linkurl = getQueryString("link");
+      $("#video").attr("src",linkurl);
+      window.document.getElementById("winTitle").innerText = name + "视频监控";
+
+    //滑动条
+    $('#videozoom').slider();
+    $('#brightness').slider({
+          // formatter: function(value) {
+          //   return '当前值: ' + value;
+          // }
+      });
+    $('#contrast').slider();
+    $('#saturation').slider();
+    $('#tone').slider();
+    //全屏关闭
+  //   $('.btn_screen').click(function(event) {
+  //     if ($(this).hasClass('fullScreenOpen')) {
+  //       $(this).removeClass('fullScreenOpen');
+  //       $(this).attr('title','全屏');
+  //       $('.videojkPopup').attr('class','videojkPopupCon boxshadow videojkPopuppos');
+  //       $('.videojkPopupWrapper').attr('class','esriPopupWrapper');
+  //       $('.sizer_video').show();
+  //       $('.sizer_videojk_full').attr('class','sizer_videojk_small');
+  //       $('.videojk_content').attr('class','content_video');
+  //       $('.videojk_mainbox').attr('class','videojk_box');
+  //       $('.videojk_sidebar').hide();
+  //       $('.video-popup-triangle-up').show();
+  //     }else{
+  //       $(this).addClass('fullScreenOpen');
+  //       $(this).attr('title','关闭');
+  //       $('.videojkPopupCon').attr('class','videojkPopup');
+  //       $('.esriPopupWrapper').attr('class','videojkPopupWrapper');
+  //       $('.sizer_video').hide();
+  //       $('.sizer_videojk_small').attr('class','sizer_videojk_full  clearfix');
+  //       $('.content_video').attr('class','videojk_content boxshadow');
+  //       $('.videojk_box').attr('class','videojk_mainbox');
+  //       $('.videojk_sidebar').show();
+  //       $('.video-popup-triangle-up').hide();
+  //     };
+  //   });
+  });
+</script>
+</body>
+</html>

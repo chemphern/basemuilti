@@ -1,10 +1,10 @@
 
 @font-face {font-family: "iconfont";
-  src: url('iconfont.eot?t=1484210373098'); /* IE9*/
-  src: url('iconfont.eot?t=1484210373098#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('iconfont.woff?t=1484210373098') format('woff'), /* chrome, firefox */
-  url('iconfont.ttf?t=1484210373098') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('iconfont.svg?t=1484210373098#iconfont') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1484876870916'); /* IE9*/
+  src: url('iconfont.eot?t=1484876870916#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1484876870916') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1484876870916') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1484876870916#iconfont') format('svg'); /* iOS 4.1- */
 }
 
 .iconfont {
@@ -332,4 +332,8 @@
 .icon-linhuomanyanfenxi:before { content: "\e694"; }
 
 .icon-linhuomanyanfenxi1:before { content: "\e695"; }
+
+.icon-yuanxingxuankuang:before { content: "\e696"; }
+
+.icon-juxingxuankuang:before { content: "\e697"; }
 

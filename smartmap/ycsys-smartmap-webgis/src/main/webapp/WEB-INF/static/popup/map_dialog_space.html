@@ -22,129 +22,105 @@
   <!-- bootstrap-table -->
   <script src="../plugins/table/bootstrap-table.min.js"></script>
   <script src="../plugins/table/bootstrap-table-zh-CN.min.js"></script>
-
-  
 </head>
 <body>
-<div class="tab-mapCon" style="display: block; position: absolute; margin-left:-165px; margin-top:-160px; left: 50%; top: 50%; z-index: 1994;" >
-
-<div class="esriPopup esriPopupVisible">
-  <div class="esriPopupWrapper">
-    <div class="sizer_space">
-      <div class="titlePane" style="-webkit-user-select: none;">
-        <div class="title">查询结果</div>
-        <div class="titleButton close" title="关闭"></div>
-      </div>
-    </div>
+<div>
     <div class="sizer_space content">
-      <div class="space_describe">文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述文字描述</div>
+      <div class="space_describe" id='description' align="center" style="font-size: 16px;font-weight: bold;"></div>
       <!-- space-tabs-bd start -->
       <div class="space-tabs-bd">
         <ul id="spaceTab" class="nav nav-tabs space-nav-tabs">
-           <li class="active">
-              <a href="#spaceTab1" data-toggle="tab">
-                 城际道路
-              </a>
-           </li>
-           <li><a href="#spaceTab2" data-toggle="tab">桥</a></li>
-           <li><a href="#spaceTab3" data-toggle="tab">铁路铁路</a></li>
-           <li><a href="#spaceTab4" data-toggle="tab">公路公路</a></li>
-           <li><a href="#spaceTab5" data-toggle="tab">水路水路</a></li>
-           <li><a href="#spaceTab6" data-toggle="tab">桥</a></li>
-           <li><a href="#spaceTab7" data-toggle="tab">铁路铁路</a></li>
-           <li><a href="#spaceTab8" data-toggle="tab">公路公路</a></li>
-           <li><a href="#spaceTab9" data-toggle="tab">水路水路</a></li>
-<!--            <li class="dropdown">
-              <a href="#" id="myTabDrop1" class="dropdown-toggle" 
-                 data-toggle="dropdown">更多 
-                 <b class="caret"></b>
-              </a>
-              <ul class="dropdown-menu" role="menu" aria-labelledby="myTabDrop1">
-                 <li><a href="#jmeter" tabindex="-1" data-toggle="tab">jmeter</a></li>
-                 <li><a href="#ejb" tabindex="-1" data-toggle="tab">ejb</a></li>
-              </ul>
-           </li> -->
         </ul>
-        <div id="spaceTabContent" class="space-tab-content">
-           <div class="tab-pane active" id="spaceTab1">
-            <table class="table  table-hover table-responsive search-form-table" id="spaceTable1"  
-              data-toggle="table"
-              data-url="../dist/js/map/data/mapSpaceData.json"
-              data-query-params="queryParams"
-              data-pagination="true"
-              data-only-info-pagination="true"
-              data-page-size="5">
-                  <thead>
-                    <tr>
-                      <th data-field="id">序号1</th>
-                      <th data-field="pathName">名称</th>
-                      <th data-field="pathDataSource">描述</th>
-                    </tr>
-                  </thead>
-              </table> 
-           </div>
-           <div class="tab-pan" id="spaceTab2">
-            <table class="table  table-hover table-responsive search-form-table" id="spaceTable2"  
-              data-toggle="table"
-              data-url="../dist/js/map/data/mapSpaceData.json"
-              data-query-params="queryParams"
-              data-pagination="true"
-              data-only-info-pagination="true"
-              data-page-size="5">
-                  <thead>
-                    <tr>
-                      <th data-field="id">序号2</th>
-                      <th data-field="pathName">名称</th>
-                      <th data-field="pathDataSource">描述</th>
-                    </tr>
-                  </thead>
-              </table> 
-           </div>
-           <div class="tab-pane" id="spaceTab3">
-            <table class="table  table-hover table-responsive search-form-table" id="spaceTable3"  
-              data-toggle="table"
-              data-url="../dist/js/map/data/mapSpaceData.json"
-              data-query-params="queryParams"
-              data-pagination="true"
-              data-only-info-pagination="true"
-              data-page-size="5">
-                  <thead>
-                    <tr>
-                      <th data-field="id">序号3</th>
-                      <th data-field="pathName">名称</th>
-                      <th data-field="pathDataSource">描述</th>
-                    </tr>
-                  </thead>
-              </table> 
-           </div>
-           <div class="tab-pane" id="spaceTab4">
-            <table class="table  table-hover table-responsive search-form-table" id="spaceTable4"  
-              data-toggle="table"
-              data-url="../dist/js/map/data/mapSpaceData.json"
-              data-query-params="queryParams"
-              data-pagination="true"
-              data-only-info-pagination="true"
-              data-page-size="5">
-                  <thead>
-                    <tr>
-                      <th data-field="id">序号4</th>
-                      <th data-field="pathName">名称</th>
-                      <th data-field="pathDataSource">描述</th>
-                    </tr>
-                  </thead>
-              </table> 
-           </div>
-        </div>
-      </div>
+		<div id="spaceTabContent"  class="space-tab-content">
+		</div>				
+	  </div>			
       <!-- space-tabs-bd end -->
-
     </div>
-
-    <div class="pointer bottomLeft"></div>
-  </div>
-  <div class="outerPointer"></div>
 </div>
+<script type="text/javascript">
+	var analysisLyrCfgObj = parent.analysisLyrCfgObj;
+	var featureSetColl = parent.analysisResults;
+	
+	var BootstrapTable = function () {
+		 var oTable = new Object();
+		 oTable.Init = function (id,layerName,fields,datas) {
+			 var data = datas;
+			 var lyrName = layerName;
+			 var cols = [];
+			 $.each(fields,function(i,field){
+				 cols.push({field:field.name,title:field.alias});
+			 });
+			 $('#'+id).bootstrapTable({
+				 cache: false,  //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+				 pagination: true,  //是否显示分页（*）
+				 sortable: false,  //是否启用排序
+				 sortOrder: "asc",  //排序方式
+				 sidePagination: "client", //分页方式：client客户端分页，server服务端分页（*）
+				 pageNumber:1,  //初始化加载第一页，默认第一页
+				 pageSize: 10,  //每页的记录行数（*）
+				 pageList: [10, 25, 50, 100], //可供选择的每页的行数（*）
+// 				 showColumns: true,  //是否显示所有的列
+				 minimumCountColumns: 2, //最少允许的列数
+				 clickToSelect: true, //是否启用点击选中行
+				 uniqueId: "OBJECTID",  //每一行的唯一标识，一般为主键列
+				 cardView: false,  //是否显示详细视图
+				 detailView: false,  //是否显示父子表
+				 columns: cols,
+				 onClickRow:showSpatialFeature,
+				 data:data
+				 });
+		 };
+		 return oTable;
+	};
+	
+	//表头描述
+	$("#description").html(analysisLyrCfgObj[0].name+"图层分析结果")
+	$.each(featureSetColl,function(i,featureSet){
+		var fields = featureSet.fields;
+		var features = featureSet.features;
+		
+		//Tab标题
+		var tab = createTabHeader(analysisLyrCfgObj[i].name,i);
+		$("#spaceTab").append($(tab));
+		
+		//Table数据
+		var data = [],tabId = 'spaceTab' + i,tableId = 'spaceTable' + i;
+		$.each(features,function(i,feature){
+			data.push(feature.attributes);
+		});
+		$("#spaceTabContent").append($("<div class='tab-pane"+((i==0)?" active'":"'")+" id='" + tabId + "'><table class='table  table-hover table-responsive search-form-table' id='"+tableId+"'></table></div>"));
+		var oTable = new BootstrapTable();
+		oTable.Init(tableId,analysisLyrCfgObj[i].name,fields,data);
+	});
 
-</div>
+	function createTabHeader(lyrName,index){
+		var html = [];
+		html.push("<li><a href='#spaceTab"+index+"' data-toggle='tab'>"+lyrName+"</a></li>");
+		return html.join("");
+	}
+	
+	function showSpatialFeature(row, $element, field){
+		var id = row.OBJECTID;
+		var targetf;
+		var index = $("#spaceTabContent div").index();
+		var featureSet = featureSetColl[index];
+		$.each(featureSet.features,function(j,feature){
+			if(feature.attributes.OBJECTID == id){
+				targetf = feature;
+				return false;
+			}
+		});
+		//居中放大
+		parent.centerAtGraphic(targetf);
+		//气泡颜色
+		parent.onBubbleChange(targetf.attributes.OBJECTID);
+	}
+	
+	//事件绑定
+	$("#spaceTab li").click(function(e){
+		var desc = $(this).html() + "图层分析结果";
+		$("#description").html(desc);
+	});
+</script>
 </body>
 </html>

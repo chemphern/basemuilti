@@ -79,7 +79,7 @@ function setQuickLocationMap2d() {
     }
     //执行空间查询
     if(layerId!=null)
-        spatialSearchForQuickLocation(url,layerId,mapCenter);
+        spatialSearchForQuickLocation(url,layerId,mapCenter,null);
 }
 
 //根据二维地图设置当前地图区域
@@ -102,22 +102,29 @@ function setQuickLocationMap3d() {
     }else if(mapHeight>=quickLocationGlobal.CountyMapHeight && mapHeight<=quickLocationGlobal.CityMapHeight){//县区级空间查询
         layerId = quickLocationGlobal.CountyLayerIndex;
     }
+    //获取地图范围
+    var extent3d = get3DMapExtent();
+    var sr = new esri.SpatialReference(4326);
+    var extent2d = new esri.geometry.Extent(extent3d.xmin,extent3d.ymin,extent3d.xmax,extent3d.ymax,sr);
     //执行空间查询
     if(layerId!=null)
-        spatialSearchForQuickLocation(url,layerId,centerGeometry.geometry);
+        spatialSearchForQuickLocation(url,layerId,centerGeometry.geometry,extent2d);
 }
 
 //根据图层id执行空间查询
-function spatialSearchForQuickLocation(url,layerId,geometry) {
+function spatialSearchForQuickLocation(url,layerId,geometry,mapExtent) {
     //进行空间查询
     var task=new esri.tasks.IdentifyTask(url);
     var params=new esri.tasks.IdentifyParameters();
     params.geometry = geometry;
     params.layerOption = esri.tasks.IdentifyParameters.LAYER_OPTION_ALL;
-    params.mapExtent = map.extent;
+    if(mapExtent!=null)
+        params.mapExtent = mapExtent;
+    else
+        params.mapExtent = map.extent;
     params.layerIds = [layerId];
     params.returnGeometry = true;
-    params.tolerance = 5;
+    params.tolerance = 3;
     var result = task.execute(params,setQuickLocationMapResults,setQuickLocationMapError);
 }
 

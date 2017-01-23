@@ -33,11 +33,11 @@
 	
 	function validate(){
 		if(!$("#bookPos").val()){
-			alert("书签不能为空");
+			showAlertDialog("书签不能为空");
 			return false
 		}
 		if(!$("#name").val()){
-			alert("书签名不能为空");
+			showAlertDialog("书签名不能为空");
 			return false
 		}
 		return true
@@ -57,16 +57,9 @@
 					data:$("#form_id").serialize(),
 					success:function(data){
 						if(data.retCode==1){
-	                		$.Layer.confirm({
-	        	                msg:"保存成功",
-	        	                fn:function(){
-	        	                	parent.$('#tableSqdw').bootstrapTable('refresh');
-	        						dialog.close();
-	        	                }
-	        	            });
-	                	}else{
-	                		showAlertDialog(data.retMsg);
+							parent.$('#tableSqdw').bootstrapTable('refresh');
 	                	}
+	                	showAlertDialog(data.retMsg);
 					}
 				};
 			$("#form_id").ajaxSubmit(option);

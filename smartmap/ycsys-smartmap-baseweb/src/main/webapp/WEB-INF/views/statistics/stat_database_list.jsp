@@ -1,13 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
 <%@include file="/WEB-INF/views/common/taglib.jsp"%>
+<!DOCTYPE HTML>
 <html>
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-平台数据库统计</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="shortcut icon" href="favicon.ico" />
@@ -88,13 +86,11 @@ $(document).ready(function(){
 	$("#queryBtn").click();
 	
 	function query() {
-		if(gridManager) {
-			gridManager.setParm("startTime",$("#startTime").val());
-	    	gridManager.setParm("endTime",$("#endTime").val());
-	    	gridManager.reload();
-		}
-		
 	 	var myChart = echarts.init(document.getElementById('chart'),'macarons');
+	 	myChart.showLoading({
+	        text: "图表数据正在努力加载..."
+	    });
+		
 	    //获取session信息 start
 	    $.ajax({
 			url:"${ctx}/statistics/getSessionInfo",
@@ -102,6 +98,7 @@ $(document).ready(function(){
 			data:{'startTime':$("#startTime").val(),'endTime':$("#endTime").val()},
 			dataType:"json",
 			success:function(ret) {
+				myChart.hideLoading();
 				var xData = "";
 				var seriesData = "";
 				if(ret.xAxisData) {
@@ -183,7 +180,7 @@ $(document).ready(function(){
 	         { display: '登陆会话数最小值', name: 'sessionMinCount', minwidth: 90 },
 	         { display: '登陆会话数平均值', name: 'sessionAverage', minwidth: 90 }
 	         ], pageSize:5,
-	         url:"${ctx}/statistics/listDatabaseData",
+	         url:"${ctx}/statistics/listDatabaseData?startTime=" + $("#startTime").val() + "&endTime=" + $("#endTime").val(),
 	         usePager: false,
 	         width: '100%',
 	         height:'300px'

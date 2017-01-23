@@ -36,14 +36,28 @@ function onLeftButtonUpHandler(Flag,X,Y) {
     //监听鼠标左键事件并记录改变后视图
     viewMovedHandler();
 
-	//判断是否点击到Feature图标，如果有则替换成高亮图标
+	//场景点击选择对象
     var objid = YcMap3D.Window.PixelToWorld(X, Y, -1).ObjectID;
     if (objid) {
     	var objType = YcMap3D.ProjectTree.GetObject(objid).ObjectType;
-    	var parentName = YcMap3D.ProjectTree.GetItemName(YcMap3D.ProjectTree.GetNextItem(objid,15));
-        if (objType == 24&&parentName==configration.QueryIcoFolder) {
-            navigateToSceneFeature("",objid);
-        }
+    	var ifDefaultFeature = false;
+        //判断是否点击到Feature图标，如果有则替换成高亮图标
+    	if(objType==24&&YcMap3D.ProjectTree.GetNextItem(objid,15)!=""){
+            var parentName = YcMap3D.ProjectTree.GetItemName(YcMap3D.ProjectTree.GetNextItem(objid,15));
+            if (objType == 24&&parentName==configration.QueryIcoFolder) {
+                navigateToSceneFeature("",objid);
+                ifDefaultFeature = true;
+            }
+		}
+        //判断是否点到视频、全景Feature
+		if(objType==33&&!ifDefaultFeature){
+			var feature = YcMap3D.ProjectTree.GetObject(objid);
+			if(YcMap3D.ProjectTree.GetItemName(feature.LayerID)=="广州市视频点信息"){
+                videoView3D(feature);
+			}else if(YcMap3D.ProjectTree.GetItemName(feature.LayerID)=="广东省全景视频点"){
+                panoramaView3D(feature);
+			}
+		}
     }
 
     //标识当前活跃地图为三维

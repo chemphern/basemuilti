@@ -2,7 +2,7 @@
  * Skin: Blue
  * ----------
  */
-.skin-blue .header{background:#1e8bf2;border-bottom:1px solid #077ae4 !important;}
+.skin-blue .wrapper .header{background:#1e8bf2;}
 .skin-blue .header .bigmenu>li a:hover,.skin-blue .header .bigmenu > li > a:focus{background-image: url(../../../dist/img/map/icon_blue_bg_hover.png) ;background-repeat: no-repeat;border:0;background-color:#1e8bf2;}
 .skin-blue .header .bigmenu li.active{background-image: url(../../../dist/img/map/icon_blue_bg_hover.png) ;background-repeat: no-repeat;}
 .skin-blue .navbar-user li .user_box{border-left:1px solid #077ae4;}
@@ -68,12 +68,16 @@
 .skin-blue .BMap_stdMpPan,.skin-blue .BMap_button,.skin-blue .BMap_stdMpZoom .BMap_button,.skin-blue .BMap_stdMpSliderBgTop,.skin-blue .BMap_stdMpSliderBar,.skin-blue .BMap_stdMpSliderBgBot{background-image:url(../../../dist/img/map/earth-control-bg-blue.png);}
 .skin-blue .tag_hr{border-bottom: 3px solid #1e8bf2;}
 .skin-blue .conents-form .btn-group button.active,.skin-blue .conents-form .btn-group button:hover {background-color:#1e8bf2;}
-.skin-blue .search-form .btn_import {background-color: #1e8bf2; border-color: #1e8bf2;} 
+.skin-blue .search-form .btn_import {background-color: #1e8bf2; border-color: #1e8bf2;}
+.skin-blue .tab-mapCon .esriPopup .titlePane {background-color: #1e8bf2;}
+.skin-blue .videojkPopupCon .esriPopup .titlePane,.skin-blue .videojkPopup .esriPopup .titlePane ,.tab-mapCon .esriPopup .titlePane  {background-color: #1e8bf2;}
+.skin-blue  .Sxcxlist ul>li:hover a{color:#1e8bf2;}
+.skin-blue  .Sxcxlist ul>li.active a{color:#1e8bf2;}
 /*
  * Skin: Green
  * ----------
  */
-.skin-green .header{background:#19b957;border-bottom:1px solid #17b153 !important;}
+.skin-green .wrapper .header{background:#19b957;}
 .skin-green .header .bigmenu>li a:hover,.skin-green .header .bigmenu > li > a:focus{background-image: url(../../../dist/img/map/icon_green_bg_hover.png) ;background-repeat: no-repeat;border:0;background-color:#19b957;}
 .skin-green .header .bigmenu li.active{background-image: url(../../../dist/img/map/icon_green_bg_hover.png) ;background-repeat: no-repeat;}
 .skin-green .navbar-user li .user_box{border-left:1px solid #47c77a;}
@@ -139,11 +143,15 @@
 .skin-green .tag_hr{border-bottom: 3px solid #19b957;}
 .skin-green .conents-form .btn-group button.active,.skin-green .conents-form .btn-group button:hover {background-color:#19b957;}
 .skin-green .search-form .btn_import {background-color: #19b957; border-color: #19b957;} 
+.skin-green .tab-mapCon .esriPopup .titlePane {background-color: #19b957;}
+.skin-green .videojkPopupCon .esriPopup .titlePane ,.skin-blue .videojkPopup .esriPopup .titlePane ,.tab-mapCon .esriPopup .titlePane {background-color: #19b957;} 
+.skin-green .Sxcxlist ul>li:hover a{color:#19b957;}
+.skin-green .Sxcxlist ul>li.active a{color:#19b957;}
 /*
  * Skin: Cyan
  * ----------
  */
-.skin-cyan .header{background:#26bf8c;border-bottom:1px solid #1d9069 !important;}
+.skin-cyan .wrapper .header{background:#26bf8c;}
 .skin-cyan .header .bigmenu>li a:hover,.skin-cyan .header .bigmenu>li a:focus{background-image: url(../../../dist/img/map/icon_bg_hover.png) ;background-repeat: no-repeat;border:0;background-color:#26bf8c;}
 .skin-cyan .header .bigmenu li.active{background-image: url(../../../dist/img/map/icon_bg_hover.png) ;background-repeat: no-repeat;}
 .skin-cyan .navbar-user li .user_box{border-left:1px solid #68d2af;}

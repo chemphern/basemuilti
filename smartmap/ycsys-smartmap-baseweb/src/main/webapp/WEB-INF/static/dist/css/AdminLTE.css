@@ -27,6 +27,9 @@ body {
   overflow-y: hidden;
   font-size: 14px;
 }
+/*error*/
+
+/*error*/
 /*表格页*/
 .box_l{ padding:0 10px;  box-sizing:border-box; width:100%;}
 .btn_box{float: right;}
@@ -80,7 +83,8 @@ body {
 .bt_del{ background:url(../img/icon_action.png) 0 -23px no-repeat;}
 .bt_view{background:url(../img/icon_action.png) 0 -43px no-repeat;}
 .bt_add{background:url(../img/icon_action.png) 0 -434px no-repeat;}
-
+.bt_send{background:url(../img/icon_action.png) 0 -523px no-repeat;}
+.bt_sender{background:url(../img/icon_action.png) 0 -570px no-repeat;}
 /**2016.11.14 庾平峰  服务发布**/
 .gis{margin: 20px 0 0 20px;}
 .gis a{width: 65px;height: 65px;border-radius: 5px;color:#26bf8c;border:1px solid #ddd;display:block;text-align: center;line-height: 65px;font-size: 40px;margin-left: 13px; cursor: pointer; }
@@ -719,6 +723,7 @@ a:focus {
     margin-left: -15px;
     margin-right: -15px;
     font-size: 18px;
+    font-weight: bold;
   }
   .sidebar-mini.sidebar-collapse .main-header .logo > .logo-lg {
     display: none;

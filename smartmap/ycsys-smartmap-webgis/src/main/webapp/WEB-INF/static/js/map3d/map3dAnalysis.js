@@ -71,7 +71,7 @@ function lineOfSightAnalyse(){
                targetPositions.push(tempPosition); 
         }
         // YcMap3D.AttachEvent("OnRButtonUp", lineOfSightEndHandler);
-        YcMap3D.Analysis.CreateLineOfSight(viewerPosition,1,targetPositions,AnalysisToolGloble.FolderID,"LineOfSight");
+        YcMap3D.Analysis.CreateLineOfSight(viewerPosition,0.5,targetPositions,AnalysisToolGloble.FolderID,"LineOfSight");
         YcMap3D.Window.ShowMessageBarText("通视分析完成,绿色线表示观察点和目标点可视,红色线表示观察点和目标点不可视",1,-1);
         YcMap3D.Window.SetInputMode(1);
         YcMap3D.ProjectTree.DeleteItem(polyline.ID);       
@@ -141,8 +141,8 @@ function shadowAnalyse(){
     AnalysisToolGloble.AnalysisType = "SHADOW";
     // YcMap3D.AttachEvent("OnRButtonUp", shadowEndHandler);
     YcMap3D.Window.ShowMessageBarText("请通过左上角时间控件，修改日照时间",1,-1);
-    SwitchTimeSlider(); //打开时间条
-    SwitchShadow();  //打开阴影
+    SwitchTimeSlider(true); //打开时间条
+    SwitchShadow(true);  //打开阴影
 }
 
 function shadowEndHandler(){
@@ -150,11 +150,11 @@ function shadowEndHandler(){
     YcMap3D.Window.HideMessageBarText();
     AnalysisToolGloble.Activate=false;
     AnalysisToolGloble.AnalysisType = "";
-    SwitchTimeSlider(); //关闭时间条
+    SwitchTimeSlider(false); //关闭时间条
     var date=new Date();
     date.setHours(11,0,0,0);
     YcMap3D.DateTime.FixedLocalTime =date; //还原时间
-    SwitchShadow();  //关闭阴影
+    SwitchShadow(false);  //关闭阴影
 }
 
  //----------------------------------------------水淹分析----------------------------------------------//
@@ -180,12 +180,12 @@ function floodAnalysis3d() {
     DrawTool.activate(DrawTool.DrawType.TERRACIRCLE);
     DrawTool.drawEndHandler = function (CircleGeometry) {
         if(CircleGeometry.Radius>=30){
-            // var startTime = YcMap3D.DateTime.Current;
-            var startTime = new Date("January 12,2017 09:00:00");
+            var startTime = YcMap3D.DateTime.Current;
+            // var startTime = new Date("January 12,2017 09:00:00");
             // YcMap3D.DateTime.TimeRangeStart = startTime;
-            // var myDate=new Date();
-            // var endTime = myDate.setDate(myDate.getDate()+10);
-            var endTime =  new Date("January 12,2017 19:00:00");
+            var myDate=new Date();
+            var endTime = myDate.setDate(myDate.getDate()+10);
+            // var endTime =  new Date("January 12,2017 19:00:00");
             // YcMap3D.DateTime.TimeRangeEnd = endTime;
             // YcMap3D.DateTime.SetMode(16);
             // SwitchTimeSlider(); //打开时间条

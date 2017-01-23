@@ -174,9 +174,9 @@ public class ConfigServiceExtendPropertyController {
 	@RequestMapping("/listData")
 	@RequiresPermissions(value = "sys-serviceExtendProperty-list-data")
 	public Grid<ConfigServiceExtendProperty> listData(PageHelper page) {
-		List l=null;
+		List ls=new ArrayList();
 		Grid g = new Grid(configServiceExtendPropertyService.find(
-				"from ConfigServiceExtendProperty c where 1 = 1", l, page));
+				"from ConfigServiceExtendProperty c where 1 = 1", ls, page));
 		return g;
 	}
 

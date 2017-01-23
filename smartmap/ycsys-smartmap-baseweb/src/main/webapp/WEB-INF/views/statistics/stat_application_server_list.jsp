@@ -1,13 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
 <%@include file="/WEB-INF/views/common/taglib.jsp"%>
+<!DOCTYPE HTML>
 <html>
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-应用服务器统计</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="shortcut icon" href="favicon.ico" />
@@ -31,30 +29,24 @@
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
 </head>
-<body>
+<body style="overflow-y: auto;">
 	<div>
     <!-- Content Header (Page header) -->
     <section class="content-header">
-      <h1>平台应用服务器统计</h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="iconfont iconfont-bars"></i> 首页</a></li>
-        <li class="active">平台应用服务器统计</li>
-      </ol>
+      <h1 style="background-color: #f1f1f1;">平台应用服务器统计</h1>
     </section>
 
     <!-- Main content -->
-    <section class="content">
+    <!-- <section class="content"> -->
     <div class="row">
         <div class="col-md-12">
-          <div class="btn_box" style="float: left;margin-top:10px;"> 
+          <div class="btn_box" style="float: left;margin:10px 0 0 10px;"> 
             	时间：<input name="startTime" id="startTime" type="text" class="text date_plug" value="${curDate }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"> 
             	至 <input name="endTime" id="endTime" type="text" class="text date_plug" value="${curDateTo }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})">&nbsp;&nbsp;
             	统计类型：<select id="statType" name="statType">
 		            		<option value="1">线程池信息</option>
 		            		<option value="2">JVM内存信息</option>
 		              </select>
-		            参数类型：<input type="checkbox" name="paramType" checked="checked" value="1" class="text" style="width: 5px;"><span id="spanId1">&nbsp;&nbsp;当前线程数</span> &nbsp;&nbsp;
-		             <input type="checkbox" name="paramType" checked="checked" value="2" class="text" style="width: 5px;" > <span id="spanId2">&nbsp;&nbsp;繁忙线程数</span> 
             <button class="current" id="queryBtn"><i class="glyphicon glyphicon-search"></i>查询</button><hr />
           </div>
           <div class="charts" id="chart"></div>
@@ -62,7 +54,7 @@
         </div>
         </div>
       <!-- /.row -->
-    </section>
+    <!-- </section> -->
     <!-- /.content -->
   </div>
 </body>
@@ -85,19 +77,19 @@
 <script src="${res }/plugins/My97DatePicker/WdatePicker.js"></script>
 <%-- <script src="${res }/dist/js/pages/ptsj.js"></script> --%>
 <script>
-var gridManager = null;
 $(document).ready(function(){
 	//统计类型改变事件
 	$("#statType").on("change",function(e) {
 		e.preventDefault();
-		if($(this).val() == "1") {
+		/* if($(this).val() == "1") {
 			$("#spanId1").html("&nbsp;&nbsp;当前线程数");
 			$("#spanId2").html("&nbsp;&nbsp;繁忙线程数");
 		}
 		else {
 			$("#spanId1").html("&nbsp;&nbsp;已占用内存");
 			$("#spanId2").html("&nbsp;&nbsp;空闲内存");
-		}
+		} */
+		$("#queryBtn").click();
 	});
 	
 	//查询按钮绑定单击事件
@@ -111,35 +103,34 @@ $(document).ready(function(){
 	
 	//查询 start
 	function query() {
-		if(gridManager) {
-			gridManager.setParm("startTime",$("#startTime").val());
-	    	gridManager.setParm("endTime",$("#endTime").val());
-	    	gridManager.reload();
-		}
 	 	var myChart = echarts.init(document.getElementById('chart'),'macarons');
+		myChart.showLoading({
+	        text: "图表数据正在努力加载..."
+	    });
 	 	//统计类型
 	 	var statType = $("#statType").val();
-	 	//参数类型
-	 	var paramType = [];
-	 	$("input[name='paramType']:checked").each(function() {
-	 		paramType.push($(this).val());
-	 	});
-	 	if(paramType.length==0) {
-	 		alert("请至少选择1个参数类型！");
-	 		return false;
+	 	
+	 	var legendName = "";
+	 	if(statType=="1") {
+	 		legendName = ['当前线程数','繁忙线程数'];
+	 	}
+	 	else {
+	 		legendName = ['已占用内存','空闲内存'];
 	 	}
 	    //获取应用服务器信息 start
 	    $.ajax({
 			url:"${ctx}/statistics/getAppServerInfo",
 			method:"post",
-			data:{"startTime":$("#startTime").val(),"endTime":$("#endTime").val(),"statType":$("#statType").val(),"paramType":paramType.join(",")},
+			data:{"startTime":$("#startTime").val(),"endTime":$("#endTime").val(),"statType":$("#statType").val()},
 			dataType:"json",
 			success:function(ret) {
-				var xData = JSON.parse(ret.xAxisData);
-				//console.log("ret.seriesData1=" + ret.seriesData1);
-				//console.log("ret.seriesData2=" + ret.seriesData2);
+				myChart.hideLoading();
+				var xData = "";
 				var seriesData1 = "";
 				var seriesData2 = "";
+				if(ret.xAxisData) {
+					 xData = JSON.parse(ret.xAxisData);
+				}
 				if(ret.seriesData1) {
 					seriesData1 = JSON.parse(ret.seriesData1);
 				}
@@ -168,7 +159,8 @@ $(document).ready(function(){
 			    		      start : 80
 			    		  }, */
 			    		  legend : {
-			    		      data : statType=="1"?['线程池参数统计']:['JVM内存参数统计']
+			    		      //data : statType=="1"?['线程池参数统计']:['JVM内存参数统计']
+			    		      data : legendName
 			    		  },
 			    		  grid: {
 			    		      y2: 80
@@ -226,7 +218,7 @@ $(document).ready(function(){
 	   //应用服务器列表start
 	   $(function () {
 		 if(statType == "1") {
-			 gridManager = $("#maingrid4").ligerGrid({
+			 $("#maingrid4").ligerGrid({
 		         checkbox: false,
 		         columns: [
 		         { display: '应用服务器名称', name: 'serverName', minwidth: 100 },
@@ -237,24 +229,24 @@ $(document).ready(function(){
 		         { display: '繁忙线程数最小值', name: 'busyThreadMin', minwidth: 100 },
 		         { display: '繁忙线程数平均值', name: 'busyThreadAverage', minwidth: 100 }
 		         ], pageSize:10,
-		         url:"${ctx}/statistics/listAppServerData?statType="+statType,
+		         url:"${ctx}/statistics/listAppServerData?statType=" + statType + "&startTime=" + $("#startTime").val() + "&endTime=" + $("#endTime").val(),
 		         usePager: false,
 		         width: '100%',height:'300px'
 		     });
 		 }
 		 else {
-			 gridManager = $("#maingrid4").ligerGrid({
+			 $("#maingrid4").ligerGrid({
 		         checkbox: false,
 		         columns: [
 		         { display: '应用服务器名称', name: 'serverName', minwidth: 100 },
-		         { display: '已占用内存最大值', name: 'haveMaxMemory', minwidth: 100 },
-		         { display: '已占用内存最小值', name: 'haveMinMemory', minwidth: 100 },
-		         { display: '已占用内存平均值', name: 'haveAverageMemory', minwidth: 100 },
-		         { display: '空闲内存最大值', name: 'freeMaxMemory', minwidth: 100 },
-		         { display: '空闲内存最小值', name: 'freeMinMemory', minwidth: 100 },
-		         { display: '空闲内存平均值', name: 'freeAverageMemory', minwidth: 100 }
+		         { display: '已占用内存最大值 (MB)', name: 'haveMaxMemory', minwidth: 100 },
+		         { display: '已占用内存最小值 (MB)', name: 'haveMinMemory', minwidth: 100 },
+		         { display: '已占用内存平均值 (MB)', name: 'haveAverageMemory', minwidth: 100 },
+		         { display: '空闲内存最大值 (MB)', name: 'freeMaxMemory', minwidth: 100 },
+		         { display: '空闲内存最小值 (MB)', name: 'freeMinMemory', minwidth: 100 },
+		         { display: '空闲内存平均值 (MB)', name: 'freeAverageMemory', minwidth: 100 }
 		         ], pageSize:10,
-		         url:"${ctx}/statistics/listAppServerData?statType="+statType,
+		         url:"${ctx}/statistics/listAppServerData?statType=" + statType + "&startTime=" + $("#startTime").val() + "&endTime=" + $("#endTime").val(),
 		         usePager: false,
 		         width: '100%',height:'300px'
 		     });

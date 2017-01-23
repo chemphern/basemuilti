@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-服务发布</title>
 <!-- Tell the browser to be responsive to screen width -->
 <meta
 	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
@@ -130,7 +130,7 @@ body {
 							<tr>
 								<td class="t_r">服务类型：</td>
 								<td><select type="text" name="serviceType" id="serviceType"
-									class="text">
+									class="text" style="width: 350px">
 										<!-- GeometryServer | ImageServer | MapServer | GeocodeServer | GeoDataServer | GPServer | GlobeServer | SearchServer -->
 										<c:forEach var="map" items="${serviceFunctionType }">
 											<option value="${map.value.name }">${map.value.name }</option>
@@ -140,8 +140,8 @@ body {
 							<tr>
 								<td class="t_r">资源文件：</td>
 								<td>
-									<input type="text" disabled="disabled" id="resourceFile" name="resourceFile" 
-										validate="{required:true,messages:{required:'必填'}}">
+									<input type="text" disabled="disabled" id="resourceFileName" name="resourceFile" 
+										validate="{required:true,messages:{required:'必填'}}" class="text" style="width: 350px">
 									<input type="hidden" id="resourceFileId" name="resourceFileId">
 									<input type="button" value="浏览" id="viewResourceFile">
 									<span style="color: red">*</span>
@@ -149,7 +149,7 @@ body {
 							</tr>
 							<tr>
 								<td class="t_r">服务名称：</td>
-								<td><input type="text" name="serviceName" id="serviceName" class="text validate[required]" 
+								<td><input type="text" name="serviceName" id="serviceName" class="text validate[required]" style="width: 350px"
 									validate="{required:true,maxlength : 15,messages:{required:'必填',maxlength:'字符长度不能超过15个!'}}"/>
 									<span style="color: red">*</span>
 									</td>
@@ -157,7 +157,7 @@ body {
 							<tr>
 								<td class="t_r">GIS Services集群：</td>
 								<td><select type="text" name="clusterName" id="clusterName"
-									class="text">
+									class="text" style="width: 350px">
 										<%-- <c:forEach var="list" items="${clusterNames }">
 											<option value="${list }">${list }</option>
 										</c:forEach> --%>
@@ -166,7 +166,7 @@ body {
 							<tr>
 								<td class="t_r">发布目录：</td>
 								<td><select type="text" name="folderName" id="folderName"
-									class="text">
+									class="text" style="width: 350px">
 										<option value="/">根目录</option>
 										<%-- <c:forEach var="list" items="${listFolder }">
 											<option value="${list }">${list }</option>
@@ -197,33 +197,27 @@ body {
 							class="date_add_table">
 							<tr>
 								<td class="t_r">服务名称：</td>
-								<td><input type="text" name="g_serviceName" disabled="disabled" id="g_serviceName"
-									class="text validate[required]" /></td>
+								<td id="g_serviceName"></td>
 							</tr>
 							<tr>
 								<td class="t_r">服务使用资源：</td>
-								<td><input type="text" name="g_resourceFile" disabled="disabled" id="g_resourceFile"
-									class="text validate[required]" /></td>
+								<td id="g_resourceFile"></td>
 							</tr>
 							<tr>
 								<td class="t_r">GIS Services集群；</td>
-								<td><input type="text" name="g_clusterName" disabled="disabled" id="g_clusterName"
-									class="text validate[required]" /></td>
+								<td id="g_clusterName"></td>
 							</tr>
 							<tr>
 								<td class="t_r">服务类型：</td>
-								<td><input type="text" name="g_serviceType" disabled="disabled" id="g_serviceType"
-									class="text validate[required]" /></td>
+								<td id="g_serviceType"></td>
 							</tr>
 							<tr>
 								<td class="t_r">发布目录：</td>
-								<td><input type="text" name="g_folderName" disabled="disabled" id="g_folderName"
-									class="text validate[required]" /></td>
+								<td id="g_folderName"></td>
 							</tr>
 							<tr>
 								<td class="t_r">拓展：</td>
-								<td><input type="text" name="g_extensionName" disabled="disabled" id="g_extensionName"
-									class="text validate[required]" /></td>
+								<td id="g_extensionName"></td>
 							</tr>
 						</table>
 					</div>
@@ -371,18 +365,24 @@ body {
 						alert("请选择至少一个服务扩展类型！");
 						return false;
 					} */
-					$("#g_serviceName").val($("#serviceName").val());
-					$("#g_resourceFile").val($("#resourceFile").val());
-					$("#g_clusterName").val($("#clusterName").val());
-					$("#g_serviceType").val($("#serviceType").val());
+					$("#g_serviceName").html($("#serviceName").val());
+					$("#g_resourceFile").html($("#resourceFileName").val());
+					$("#g_clusterName").html($("#clusterName").val());
+					$("#g_serviceType").html($("#serviceType").val());
 					//$("#g_folderName").val($("#folderName").find("option:selected").text());
-					$("#g_folderName").val($("#folderName option:selected").text());
+					$("#g_folderName").html($("#folderName option:selected").text());
 					
-					var temp = [];
+					var temp = "";
 					extensionNames.each(function() {
-						temp.push($(this).val());
+						//temp.push($(this).val());
+						temp = temp + $(this).val() + ",";
 					});
-					$("#g_extensionName").val(temp);
+					if(temp.length>0) {
+						$("#g_extensionName").html(temp.substring(0, temp.length - 1));
+					}
+					else {
+						$("#g_extensionName").html("");
+					}
 					
 					return true;
 					break;
@@ -421,10 +421,10 @@ body {
 			e.preventDefault();
 			var dialog = $.Layer.iframe(
 	                { 
-	                  id:'viewResourceFileDialog',
+	                  id:'selectResourceFileDialog',
 	                  title: '选择资源',
 	                  url:'${ctx}/service/viewResource',
-	                  width: 400,
+	                  width: 1100,
 	                  height: 500
 	               });
 			

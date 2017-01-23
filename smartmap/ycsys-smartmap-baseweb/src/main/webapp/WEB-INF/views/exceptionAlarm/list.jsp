@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>羽辰智慧林业综合管理平台-资源管理</title>
+    <title>羽辰智慧林业平台运维管理系统-异常报警</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="shortcut icon" href="${res}/images/favicon.ico" />
     <link rel="stylesheet" href="${res}/bootstrap/css/bootstrap.css">
@@ -37,7 +37,7 @@
                 <div class="box-header with-border">
                     <h4 class="box-title">异常报警</h4>
                     <div class="btn_box">
-                        <button class="current"><i class="iconfont icon-plus"></i>新增</button>
+                        <button class="current"><i class="iconfont icon-plus"></i>刷新</button>
                     </div>
                 </div>
                 <div class="box_l">
@@ -97,19 +97,19 @@
                         var d = new Date(value).Format("yyyy-MM-dd hh:mm:ss");
                         return d;
                     }},
-                    { display: '备注', name: 'remark', minWidth: 100 },
-                    { display: '操作',
-                        render: function (rowdata, rowindex, value)
-                        {
-                            var h = "";
-                            if (!rowdata._editing)
-                            {
-                                h += "<input type='button' class='list-btn bt_edit' onclick='yc_update(" + rowdata.id + ")'/>";
-                                h += "<input type='button' class='list-btn bt_del' onclick='yc_delete(" + rowdata.id + ")'/>";
-                                h += "<input type='button' class='list-btn bt_view' onclick='yc_editPermission(" + rowdata.id + ")'/>";
-                            }
-                            return h;
-                        } }
+                    { display: '备注', name: 'remark', minWidth: 100 }
+//                    { display: '操作',
+//                        render: function (rowdata, rowindex, value)
+//                        {
+//                            var h = "";
+//                            if (!rowdata._editing)
+//                            {
+//                                h += "<input type='button' class='list-btn bt_edit' onclick='yc_update(" + rowdata.id + ")'/>";
+//                                h += "<input type='button' class='list-btn bt_del' onclick='yc_delete(" + rowdata.id + ")'/>";
+//                                h += "<input type='button' class='list-btn bt_view' onclick='yc_editPermission(" + rowdata.id + ")'/>";
+//                            }
+//                            return h;
+//                        } }
                 ], pageSize:30,
                 url:"${ctx}/exceptionAlarm/listData",
                 width: '100%',height:'98%'
@@ -117,14 +117,7 @@
             //新增弹窗
             $(".current").on('click', function (e) {   //添加/编辑解析规则
                 e.preventDefault();
-                var dialog = $.Layer.iframe(
-                    {
-                        id:"addRoleDialog",
-                        title: '新增角色',
-                        url:'${ctx}/role/addRolev',
-                        width: 400,
-                        height: 350
-                    });
+                window.location.reload();
             });
         });
     function getLigerManager(){

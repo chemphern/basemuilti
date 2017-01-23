@@ -33,7 +33,6 @@ function locateAddress2d(address){
 	search.search(address);
 }
 function searchBack(result){
-	console.log(result);
 	clear2dMap();
 	if(result.numResults<1){
 		showAlertDialog("没有搜索到结果");
@@ -42,13 +41,15 @@ function searchBack(result){
 		var polylineLyr=new esri.layers.GraphicsLayer({id:"iPolylineLyr"});
 		var polygonLyr=new esri.layers.GraphicsLayer({id:"iPolygonLyr"});
 		var markerLyr=new esri.layers.GraphicsLayer({id:"markerLyr"});
+		markerLyr.on('click',onGraphicClick);
 		map.addLayers([polygonLyr,polylineLyr,pointLyr,markerLyr]);
 		arrFeaturesTemp=[];
 		$.each(result.results,function(k,arr){
 			$.each(arr,function(indx,val){
 				var feature=val.feature;
-				var infoTemplate=new esri.InfoTemplate("属性","${name}");
-				feature.setInfoTemplate(infoTemplate);
+//				var infoTemplate=new esri.InfoTemplate("属性","${name}");
+//				feature.setInfoTemplate(infoTemplate);
+				feature.infoBody = "${name}";
 				feature.attributes.name=val.name;
 				arrFeaturesTemp.push(feature);
 			})

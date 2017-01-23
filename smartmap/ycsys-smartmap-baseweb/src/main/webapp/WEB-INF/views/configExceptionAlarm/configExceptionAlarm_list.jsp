@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>羽辰智慧林业综合管理平台-系统配置</title>
+  <title>羽辰智慧林业平台运维管理系统-异常报警</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -69,8 +69,10 @@
                     <button class="current" onclick="addConfigExceptionAlarm('1');"><i class="iconfont icon-plus"></i>增加</button>
                 	<button onclick="addConfigExceptionAlarm('2');"><i class="iconfont icon-edit"></i>编辑</button>
                 	<button onclick="deleteConfigExceptionAlarm();"><i class="iconfont icon-trash"></i>删除</button>
+                    <!--
                 	<button class="cog" onclick="addEmailServerConfig();"><i class="glyphicon glyphicon-cog"></i>邮件参数设置</button>
                     <button class="cog" onclick="addSMSConfig();"><i class="glyphicon glyphicon-cog"></i>SMS发送设置</button>
+                    -->
                 </div>
             </div>
             <div class="box_l">

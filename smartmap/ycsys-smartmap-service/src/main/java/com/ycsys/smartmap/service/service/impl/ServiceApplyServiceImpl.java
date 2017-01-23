@@ -91,4 +91,10 @@ public class ServiceApplyServiceImpl implements ServiceApplyService {
 		return serviceApplyDao.count(hql, param);
 	}
 
+	@Override
+	public Long count(String hql, Object[] param) {
+		// TODO Auto-generated method stub
+		return serviceApplyDao.count(hql, param);
+	}
+
 }

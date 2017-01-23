@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-使用服务审核查看</title>
 <!-- Tell the browser to be responsive to screen width -->
 <meta
 	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
@@ -58,7 +58,7 @@
 				<td width="120" class="t_r">审核结果</td>
 				<td>
 					<c:forEach var="map" items="${auditStatus }" begin="1">
-						${map.value.name }<input type="radio" disabled="disabled" name="auditStastus" value="${map.key }">
+						${map.value.name }<input type="radio" disabled="disabled" name="auditStatus" value="${map.key }">
 					</c:forEach>
 					
 					</td>
@@ -79,8 +79,8 @@
 			$("#validDate option[value=${serviceApply.validDate}]").attr("selected",true);
 		}
 		//设置单选的值
-		if("${serviceApply.auditStastus}") {
-			$("input[name='auditStastus']:radio[value='${serviceApply.auditStastus}']").attr('checked','true');
+		if("${serviceApply.auditStatus}") {
+			$("input[name='auditStatus']:radio[value='${serviceApply.auditStatus}']").attr('checked','true');
 		}
 	});
 </script>

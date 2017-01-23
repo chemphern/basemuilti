@@ -569,49 +569,12 @@ public class ProxyServletSupport extends HttpServlet {
         HttpEntity entity = proxyResponse.getEntity();
         //默认编码
         if(entity != null) {
+            Charset defaultCharset = Consts.UTF_8;
             //当响应结果为gzip压缩，并且响应格式为xml时，进行特殊处理，替换里面的地址
             if (entity.getContentEncoding() != null && entity.getContentEncoding().getValue().toLowerCase().indexOf("gzip") > -1 && entity.getContentType().getValue().toLowerCase().indexOf("text/xml") > -1) {
-                String content = null;
                 //ByteArrayInputStream temp = new ByteArrayInputStream(data);
-                Charset defaultCharset = Consts.UTF_8;
-                GZIPInputStream zin = new GZIPInputStream(entity.getContent());
-                try {
-                    Args.check(entity.getContentLength() <= Integer.MAX_VALUE,
-                            "HTTP entity too large to be buffered in memory");
-                    int i = (int) entity.getContentLength();
-                    if (i < 0) {
-                        i = 4096;
-                    }
-                    Charset charset = null;
-                    try {
-                        final ContentType contentType = ContentType.get(entity);
-                        if (contentType != null) {
-                            charset = contentType.getCharset();
-                        }
-                    } catch (final UnsupportedCharsetException ex) {
-                        if (defaultCharset == null) {
-                            throw new UnsupportedEncodingException(ex.getMessage());
-                        }
-                    }
-                    if (charset == null) {
-                        charset = defaultCharset;
-                    }
-                    if (charset == null) {
-                        charset = HTTP.DEF_CONTENT_CHARSET;
-                    }
-                    //读取为字符串
-                    defaultCharset = charset;
-                    final Reader reader = new InputStreamReader(zin, charset);
-                    final CharArrayBuffer buffer = new CharArrayBuffer(i);
-                    final char[] tmp = new char[1024];
-                    int l;
-                    while ((l = reader.read(tmp)) != -1) {
-                        buffer.append(tmp, 0, l);
-                    }
-                    content = buffer.toString();
-                } finally {
-                    zin.close();
-                }
+                 GZIPInputStream zin = new GZIPInputStream(entity.getContent());
+                String content =  readInputStream(entity,zin,defaultCharset);
                 //替换里面的内容
                 if (content != null) {
                     if (content.indexOf(targetUri) > -1) {
@@ -624,7 +587,7 @@ public class ProxyServletSupport extends HttpServlet {
                         gzip.close();
                         String gziplast = out.toString("ISO-8859-1");
                         InputStream in = new ByteArrayInputStream(gziplast.getBytes("ISO-8859-1"));
-                        bentity.setContentLength(entity.getContentLength());
+                        bentity.setContentLength(entity.getContentLength() == -1?-1:entity.getContentLength());
                         bentity.setContent(in);
                         bentity.setContentType(entity.getContentType());
                         bentity.setContentEncoding(entity.getContentEncoding());
@@ -632,14 +595,75 @@ public class ProxyServletSupport extends HttpServlet {
                         bentity.writeTo(servletOutputStream);
                     }
                 }else {
-                    OutputStream servletOutputStream = servletResponse.getOutputStream();
-                    entity.writeTo(servletOutputStream);
+                    writeEntity(entity,servletResponse.getOutputStream());
                 }
-                //其他格式
+                //xml格式，去除gzip情况
+            }else if(entity.getContentType().getValue().toLowerCase().indexOf("text/xml") > -1){
+                InputStream in = entity.getContent();
+                String content = readInputStream(entity,in,defaultCharset);
+                if(content != null){
+                    if(content.indexOf(targetUri) > -1){
+                        BasicHttpEntity bentity = new BasicHttpEntity();
+                        String baseUri = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + "/arcgis";
+                        content = content.replaceAll(targetUri, baseUri);
+                        InputStream intemp = new ByteArrayInputStream(content.getBytes(defaultCharset));
+                        bentity.setContentLength(entity.getContentLength() == -1?-1:entity.getContentLength());
+                        bentity.setContent(intemp);
+                        bentity.setContentType(entity.getContentType());
+                        bentity.setContentEncoding(entity.getContentEncoding());
+                        OutputStream servletOutputStream = servletResponse.getOutputStream();
+                        bentity.writeTo(servletOutputStream);
+                    }else{
+                        writeEntity(entity,servletResponse.getOutputStream());
+                    }
+                }
             }else{
-                OutputStream servletOutputStream = servletResponse.getOutputStream();
-                entity.writeTo(servletOutputStream);
+                writeEntity(entity,servletResponse.getOutputStream());
             }
+        }
+    }
+
+    public void writeEntity(HttpEntity entity,OutputStream out) throws IOException {
+        entity.writeTo(out);
+    }
+
+    public String readInputStream(HttpEntity entity,InputStream zin,Charset defaultCharset) throws IOException{
+        try {
+            Args.check(entity.getContentLength() <= Integer.MAX_VALUE,
+                    "HTTP entity too large to be buffered in memory");
+            int i = (int) entity.getContentLength();
+            if (i < 0) {
+                i = 4096;
+            }
+            Charset charset = null;
+            try {
+                final ContentType contentType = ContentType.get(entity);
+                if (contentType != null) {
+                    charset = contentType.getCharset();
+                }
+            } catch (final UnsupportedCharsetException ex) {
+                if (defaultCharset == null) {
+                    throw new UnsupportedEncodingException(ex.getMessage());
+                }
+            }
+            if (charset == null) {
+                charset = defaultCharset;
+            }
+            if (charset == null) {
+                charset = HTTP.DEF_CONTENT_CHARSET;
+            }
+            //读取为字符串
+            defaultCharset = charset;
+            final Reader reader = new InputStreamReader(zin, charset);
+            final CharArrayBuffer buffer = new CharArrayBuffer(i);
+            final char[] tmp = new char[1024];
+            int l;
+            while ((l = reader.read(tmp)) != -1) {
+                buffer.append(tmp, 0, l);
+            }
+            return buffer.toString();
+        } finally {
+            zin.close();
         }
     }
 

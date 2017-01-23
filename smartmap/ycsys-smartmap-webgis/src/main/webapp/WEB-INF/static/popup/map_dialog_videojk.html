@@ -8,26 +8,51 @@
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="stylesheet" href="../dist/css/mapPublic.css">
   <link rel="stylesheet" href="../dist/css/mapIndex.css">
+  <style>
+  .videojkPopuppos{display: block; position: absolute; margin-left:-165px; margin-top:-160px; left: 50%; top: 50%; z-index: 1994;}
+  </style>
 </head>
-<body>
-<div class="videojkPopupCon boxshadow" style="display: block; position: absolute; margin-left:-165px; margin-top:-160px; left: 50%; top: 50%; z-index: 1994;" >
+<script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
+<script src="../js/map3d/YcMap3D.js"></script>
+<body onload="init()">
+
+<script type="text/javascript">
+
+    var name = getQueryString("name");
+
+    var link = getQueryString("link");
+
+    var desp = getQueryString("desp");
+
+    function init() {
+        
+    }
+
+    function closeVideo() {
+        YcMap3D.Window.RemovePopupByCaption("视频监控-" + name);
+    }
+
+</script>
+
+<div class="videojkPopupCon boxshadow videojkPopuppos" >
 
 <div class="esriPopup esriPopupVisible">
   <div class="esriPopupWrapper">
     <div class="sizer_video">
       <div class="titlePane" style="-webkit-user-select: none;">
-        <div class="title">全景</div>
-        <div class="titleButton close" title="关闭"></div>
+        <div class="title">视频监控</div>
+        <div class="titleButton close" title="关闭" onclick="closeVideo()"></div>
       </div>
     </div>
-    <div class="sizer_video">
+    <div class="sizer_videojk_small">
       <div class="content_video">
-        <div class="videojk_box"><img src="../dist/img/map/photo_videojk.jpg" alt=""  width="400" height="300"/></div>    
+        <!--<div class="videojk_box"><img src="../dist/img/map/photo_videojk.jpg" alt=""  width="400" height="300"/></div>-->
+        <iframe id="videoWin"></iframe>
         <div class="videojk_mainbtn_group">
-          <a href="javascript:void(0)" class="vbtn btn_video" title="录像"></a>
-          <a href="javascript:void(0)" class="vbtn btn_photo" title="截图"></a>
-          <a href="javascript:void(0)" class="vbtn btn_vioce" title="声音"></a>
-          <a href="javascript:void(0)" class="vbtn btn_screen fullScreenOpen" title="关闭"></a>
+          <!--<a href="javascript:void(0)" class="vbtn btn_video" title="录像"></a>-->
+          <!--<a href="javascript:void(0)" class="vbtn btn_photo" title="截图"></a>-->
+          <!--<a href="javascript:void(0)" class="vbtn btn_vioce" title="声音"></a>-->
+          <!--<a href="javascript:void(0)" class="vbtn btn_screen fullScreenOpen" title="关闭"></a>-->
         </div>
       </div>
     </div>
@@ -35,7 +60,7 @@
   <div class="outerPointer"></div>
   <div class="video-popup-triangle-up"></div>
 </div>
-
-</div> 
+</div>
+<!--<object ID="YcMap3D" classid="CLSID:3A4F9199-65A8-11D5-85C1-0001023952C1" style="display: none;"></object>-->
 </body>
 </html>

@@ -28,10 +28,10 @@ public class ServiceRequestServiceImpl implements ServiceRequestService{
     }
 
     @Override
-    public List<ServiceRequest> findCurrentRequestDuringTime(long min) {
+    public List<ServiceRequest> findCurrentRequestDuringTime(long min,PageHelper pageHelper) {
         Date now = new Date();
         Date currentDate = new Date(now.getTime() - 30*60*1000);
-        return serviceRequestDao.find("from ServiceRequest where requestDate >= ?",new Object[]{currentDate});
+        return serviceRequestDao.find("from ServiceRequest where requestDate >= ? order by requestDate desc",new Object[]{currentDate},pageHelper);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class ServiceRequestServiceImpl implements ServiceRequestService{
 
     @Override
     public List<ServiceRequest> findByPage(PageHelper page) {
-        return serviceRequestDao.find("from ServiceRequest",page);
+        return serviceRequestDao.find("from ServiceRequest order by requestDate desc",page);
     }
 
     @Override
@@ -77,7 +77,7 @@ public class ServiceRequestServiceImpl implements ServiceRequestService{
             pl.add(date1);
             sb.append(" and createDate >= ? and createDate <= ?");
         }
-        sb.append(" order by createDate");
+        sb.append(" order by createDate desc");
         return serviceRequestDao.find( sb.toString(),pl.toArray(),pageHelper);
     }
 }

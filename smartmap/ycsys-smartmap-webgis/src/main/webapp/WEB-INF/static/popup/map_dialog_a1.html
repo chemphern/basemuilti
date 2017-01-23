@@ -10,6 +10,10 @@
   <link rel="stylesheet" href="../dist/css/mapIndex.css">
   <script src="../plugins/jQuery/jquery-2.2.3.min.js"></script>
   <script src="../js/map3d/YcMap3D.js"></script>
+      <style type="text/css">
+
+        .tab-mapCon{background:#fff;padding:0;margin:0;}        
+    </style>
 </head>
 <body onload="initProperty()">
 <script type="text/javascript">
@@ -57,7 +61,8 @@
     }
 
 </script>
-<div class="tab-mapCon" style="display: block; position: absolute; margin-left:-165px; margin-top:-160px; left: 50%; top: 50%; z-index: 1994;" >
+<div class="map_dialog_a1">
+<div class="tab-mapCon ">
 
 <div class="esriPopup esriPopupVisible">
   <div class="esriPopupWrapper">
@@ -67,9 +72,9 @@
         <div class="titleButton close" title="关闭" onclick="closePropertyDialog()"></div>
       </div>
     </div>
-    <div class="sizer content">
+    <div class="sizer">
       <div class="contentPane">
-        <table id="attrTb">
+        <table id="attrTb" cellpadding="0" cellspacing="0">
           <tbody>
           </tbody>
         </table>
@@ -87,6 +92,7 @@
 </div>
   <!--控件布局-->
   <object ID="YcMap3D" classid="CLSID:3A4F9199-65A8-11D5-85C1-0001023952C1" style="display: none;"></object>
+</div>
 </div>
 </body>
 </html>

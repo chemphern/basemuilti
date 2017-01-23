@@ -14,4 +14,5 @@ import com.ycsys.smartmap.sys.service.BaseService;
 public interface ServiceApplyService extends BaseService<ServiceApply, Integer> {
 	List<ServiceApply> find(String hql, List<Object> param, PageHelper page);
 	Long count(String hql, List<Object> param);
+	Long count(String hql, Object[] param);
 }

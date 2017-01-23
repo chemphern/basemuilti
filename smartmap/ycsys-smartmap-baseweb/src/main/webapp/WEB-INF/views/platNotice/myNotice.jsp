@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>羽辰智慧林业综合管理平台-资源管理</title>
+    <title>羽辰智慧林业平台运维管理系统-我的平台消息</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="shortcut icon" href="${res}/images/favicon.ico" />
@@ -32,11 +32,14 @@
     </style>
 </head>
 <body>
+    <section class="content-header">
+      <h1>我的消息</h1>
+    </section>
 <div class="row">
     <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header with-border">
-                <h4 class="box-title">我的消息</h4>
+                <h4 class="box-title">消息列表</h4>
                 <div class="btn_box">
                 </div>
             </div>
@@ -114,7 +117,7 @@
                         var h = "";
                         if (!rowdata._editing)
                         {
-                            h += "<input type='button' class='list-btn bt_view' onclick='yc_show(" + rowdata.noticeId + ")'/>";
+                            h += "<input type='button' class='list-btn bt_view' onclick='yc_show(" + rowdata.noticeId + "," + rowdata.id + "," + rowdata.status + ")'/>";
                                 h += "<input type='button' class='list-btn bt_del' onclick='yc_delete(" + rowdata.id + ")'/>";
                         }
                         return h;
@@ -148,14 +151,22 @@
             }
         });
     };
-    function yc_show(id){
-        art.dialog.open('${ctx}/platNotice/viewNotice?id=' + id,{
+    function yc_show(noticeId,id,status){
+        art.dialog.open('${ctx}/platNotice/viewNotice?id=' + noticeId,{
             id:"viewNotice",
             title: '消息详情',
             width: 400,
             height: 500,
             lock: true
         });
+        if(status == 1){
+            $.ajax({
+                url:"${ctx}/platNotice/updateReceiveStatus",
+                data:{id:id},
+                type:"post",
+                success:function(){}
+            });
+        }
     }
 </script>
 </html>

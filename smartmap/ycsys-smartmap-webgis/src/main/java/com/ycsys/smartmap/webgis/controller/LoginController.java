@@ -1,5 +1,6 @@
 package com.ycsys.smartmap.webgis.controller;
 
+import com.ycsys.smartmap.sys.common.config.Global;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
@@ -8,6 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * Created by Administrator on 2016/10/25.
@@ -39,8 +42,9 @@ public class LoginController {
      * @return
      */
     @RequestMapping(value="logout")
-    public String logout(Model model) {
+    public String logout(Model model, HttpSession session) {
         Subject subject = SecurityUtils.getSubject();
+        session.removeAttribute(Global.SESSION_USER);
         subject.logout();
         return "/login";
     }

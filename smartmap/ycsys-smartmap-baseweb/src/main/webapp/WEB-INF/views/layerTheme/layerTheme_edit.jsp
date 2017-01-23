@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-专题图管理编辑</title>
 <!-- Tell the browser to be responsive to screen width -->
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -59,7 +59,7 @@
 			<tr>
 				<td class="t_r">上级图层目录：</td>
 				<td>
-					<select type="text" name="parent.id" id="parentId" class="text" disabled="disabled">
+					<select type="text" name="parent.id" id="parentId" class="text">
 						<c:forEach var="list" items="${layerThemeTypes }">
 							<c:if test="${ not empty list }">
 								<option value="${list.id }">${list.name }</option>

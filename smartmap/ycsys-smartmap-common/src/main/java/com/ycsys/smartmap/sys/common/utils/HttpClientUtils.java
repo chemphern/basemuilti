@@ -177,5 +177,35 @@ public class HttpClientUtils {
 
 		return result;
 	}
+	
+	/**
+	 * 得到响应状态码
+	 * @param url
+	 * @return
+	 */
+	public static int getStatusCode(String url) {
+		int statusCode = 0;
+		if(StringUtils.isBlank(url)) {
+			log.warn("url 不能为空");
+			return statusCode;
+		}
+		// 创建客户端 httpClient
+		CloseableHttpClient httpClient = HttpClients.createDefault();
+
+		log.debug("create httpGet:" + url);
+		// 创建httpGet
+		HttpGet get = new HttpGet(url);
+		// 调用接口 并返回 响应结果
+		try {
+			HttpResponse response = httpClient.execute(get);
+			statusCode = response.getStatusLine().getStatusCode();
+			log.debug("statusCode = " + statusCode);
+		} catch (ClientProtocolException e) {
+			log.warn("ClientProtocolException =" + e.getMessage());
+		} catch (IOException e) {
+			log.warn("IOException = " + e.getMessage());
+		}
+		return statusCode;
+	}
 
 }

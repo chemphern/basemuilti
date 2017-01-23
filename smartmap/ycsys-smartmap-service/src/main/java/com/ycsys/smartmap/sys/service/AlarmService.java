@@ -16,4 +16,5 @@ public interface AlarmService {
     List<Alarm> findByPage(PageHelper pageHelper);
 
     long countAll();
+    long count(String hql, Object[] param);
 }

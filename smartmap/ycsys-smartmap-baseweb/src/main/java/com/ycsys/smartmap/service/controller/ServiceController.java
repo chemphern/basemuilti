@@ -352,7 +352,7 @@ public class ServiceController extends BaseController {
 
 		JSONArray jsonExtensions = new JSONArray();
 		jsonService.put("extensions", jsonExtensions);
-		if (extensionNameList != null) {
+		if (extensionNameList != null && extensionNameList.contains("KmlServer")) {
 			JSONObject joExService = new JSONObject();
 			JSONObject jpExproties = new JSONObject();
 
@@ -384,7 +384,7 @@ public class ServiceController extends BaseController {
 
 			jsonExtensions.add(joExService);
 		}
-		if (extensionNameList != null) {
+		if (extensionNameList != null && extensionNameList.contains("WFSServer")) {
 			JSONObject joExService = new JSONObject();
 			JSONObject jpExproties = new JSONObject();
 			joExService.put("typeName", "WFSServer");
@@ -426,7 +426,7 @@ public class ServiceController extends BaseController {
 			jsonExtensions.add(joExService);
 		}
 
-		if (extensionNameList != null) {
+		if (extensionNameList != null && extensionNameList.contains("WCSServer")) {
 			JSONObject joExService = new JSONObject();
 			JSONObject jpExproties = new JSONObject();
 			joExService.put("typeName", "WCSServer");
@@ -468,12 +468,12 @@ public class ServiceController extends BaseController {
 			joExService.put("properties", jpExproties);
 			jsonExtensions.add(joExService);
 		}
-		if (extensionNameList != null) {
+		if (extensionNameList != null && extensionNameList.contains("FeatureServer")) {
 			JSONObject joExService = new JSONObject();
 			JSONObject jpExproties = new JSONObject();
 			joExService.put("typeName", "FeatureServer");
 			joExService.put("capabilities", "null");
-			if( extensionNameList.contains("FeatureServer")) {
+			if(extensionNameList.contains("FeatureServer")) {
 				joExService.put("enabled", "true");
 			}
 			else {
@@ -496,7 +496,7 @@ public class ServiceController extends BaseController {
 			joExService.put("properties", jpExproties);
 			jsonExtensions.add(joExService);
 		}
-		if (extensionNameList != null) {
+		if (extensionNameList != null && extensionNameList.contains("WMSServer")) {
 			JSONObject joExService = new JSONObject();
 			JSONObject jpExproties = new JSONObject();
 			joExService.put("typeName", "WMSServer");
@@ -806,30 +806,38 @@ public class ServiceController extends BaseController {
 		List<Service> list = null;
 		List<Object> params = new ArrayList<Object>();
 		StringBuffer hql = new StringBuffer();
+		StringBuffer hqlCount = new StringBuffer();
 		hql.append("from Service t where 1 = 1 ");
+		hqlCount.append("select count(*) from Service t where 1 = 1 ");
 		if (StringUtils.isNotBlank(registerServerType)) {
 			hql.append("and t.registerType = ? ");
+			hqlCount.append("and t.registerType = ? ");
 			params.add(registerServerType);
 		} 
 		if (StringUtils.isNotBlank(registerName)) {
 			hql.append("and t.registerName like ? ");
+			hqlCount.append("and t.registerName like ? ");
 			params.add('%' + registerName + '%');
 		}
 		if (StringUtils.isNotBlank(showName)) {
 			hql.append("and t.showName = ? ");
+			hqlCount.append("and t.showName = ? ");
 			params.add('%' + showName + '%');
 		} 
 		if (StringUtils.isNotBlank(serviceStatus)) {
 			hql.append("and t.serviceStatus = ? ");
+			hqlCount.append("and t.serviceStatus = ? ");
 			params.add(serviceStatus);
 		} 
 		if (StringUtils.isNotBlank(permissionStatus)) {
 			hql.append("and t.permissionStatus = ? ");
+			hqlCount.append("and t.permissionStatus = ? ");
 			params.add(permissionStatus);
-		} 
+		}
+		hql.append(" order by t.createDate desc");
 		list = serviceService.find(hql.toString(),params, page);
-		long count = serviceService.count(hql.toString(), params);
-		hql.append(" order by r.createDate desc");
+		long count = serviceService.count(hqlCount.toString(), params);
+		
 		Grid<Service> g = new Grid<Service>(count,list);
 		return g;
 	}
@@ -929,16 +937,23 @@ public class ServiceController extends BaseController {
 		try {
 			User user = (User) request.getSession().getAttribute(
 					Global.SESSION_USER);
-			String path = request.getSession().getServletContext()
-					.getRealPath("upload");
+			//String path = request.getSession().getServletContext().getRealPath("upload");
 
 			if (StringUtils.isNotBlank(s.getShowName())) {
+				//设置服务状态
+				int statusCode = HttpClientUtils.getStatusCode(s.getServiceVisitAddress());
+				s.setServiceStatus("0");
+				if(200 == statusCode) {
+					s.setServiceStatus("1");
+				}
+				else {
+					map.put("msg", "该服务地址无法访问，请重新选择一个服务地址！");
+					return map;
+				}
 				//上传文件处理
 				if (file != null && file.getSize() > 0) {
-					String fileName = file.getOriginalFilename();
+					/*String fileName = file.getOriginalFilename();
 					// 得到数字字典的图片类型, 再判断上传的文件是否是图片
-					// Map<String, Object> mFileType =
-					// DataDictionary.getObject("image_type");
 					path = path + File.separator + "service" + File.separator
 							+ "image";
 					File targetFile = new File(path, fileName);
@@ -951,29 +966,37 @@ public class ServiceController extends BaseController {
 					} catch (IllegalStateException | IOException e) {
 						map.put("msg", "上传文件失败！");
 						return map;
+					}*/
+					String fileName = file.getOriginalFilename();
+					// 得到数字字典的图片类型, 再判断上传的文件是否是图片
+					// Map<String, Object> mFileType =
+					// DataDictionary.getObject("image_type");
+					//path = path + File.separator + "service" + File.separator + "image";
+					String tomcatHome = System.getProperty("catalina.home"); //D:\software1\tomcat\apache-tomcat-8.5.6
+					tomcatHome = tomcatHome.substring(0, tomcatHome.lastIndexOf("\\"));
+					String imagePath =  tomcatHome +File.separator + "项目文件" + File.separator + "服务";
+					File targetFile = new File(imagePath, fileName);
+					//判断是否存在相同的图片文件,存在则在名字后面加上数字，如xxx(2).png
+					List<Service> serviceList = serviceService.find("from Service t where t.imagePath = ? ", new Object[]{targetFile.getAbsolutePath()});
+					if(serviceList != null && serviceList.size() > 0) {
+						String temp[] = fileName.split("\\.");
+						if(temp != null && temp.length == 2) {
+							fileName = temp[0]+"(" + serviceList.size() + ")." + temp[1];
+							targetFile = new File(imagePath, fileName);
+						}
+					}
+					if (!targetFile.exists()) {
+						targetFile.mkdirs();
+					}
+					try {
+						file.transferTo(targetFile);
+						s.setImagePath(targetFile.getAbsolutePath());
+					} catch (IllegalStateException | IOException e) {
+						map.put("msg", "上传文件失败！");
+						return map;
 					}
 				}
-				//设置服务状态
-				/*String result = HttpClientUtils.get(s.getServiceVisitAddress() + "?f=json");
-				if(StringUtils.isNotBlank(result)) {
-					Map retMap = JsonMapper.getInstance().readValue(result, Map.class);
-					if (retMap != null && retMap.size() > 0) {
-						System.out.println("error==="+retMap.get("error"));
-						if(retMap.get("error") != null && StringUtils.isNotBlank(retMap.get("error").toString())) {
-							s.setServiceStatus("0");
-						}
-						else {
-							s.setServiceStatus("1");
-						}
-					}
-					else {
-						s.setServiceStatus("0");
-					}
-				}
-				else {
-					s.setServiceStatus("0");
-				}*/
-				s.setServiceStatus("1");
+				
 				/*String hostAddress = InetAddress.getLocalHost().getHostAddress();
 				String contextPath = request.getContextPath();
 				String serverPort = request.getServerPort() + "";
@@ -1082,8 +1105,9 @@ public class ServiceController extends BaseController {
 		if (result) {
 			map.put("flag", "0");
 			map.put("msg", "启动成功！");
-			service.setServiceStatus("1");
-			serviceService.update(service);
+			//service.setServiceStatus("1");
+			//serviceService.update(service);
+			serviceService.updateServiceStatus(id, "1");
 			return map;
 		}
 		map.put("flag", "1");
@@ -1118,8 +1142,9 @@ public class ServiceController extends BaseController {
 		if (result) {
 			map.put("flag", "0");
 			map.put("msg", "停止成功！");
-			service.setServiceStatus("0");
-			serviceService.update(service);
+			//service.setServiceStatus("0");
+			//serviceService.update(service);
+			serviceService.updateServiceStatus(id, "0");
 			return map;
 		}
 		map.put("flag", "1");
@@ -1181,12 +1206,17 @@ public class ServiceController extends BaseController {
 					if (service != null) {
 						Object[] obj = new Object[] {service.getId()};
 						List<Layer> layerList = layerService.find("from Layer t where t.service.id = ?", obj);
-						List<LayerTheme> layerThemeList = themeService.find("from LayerTheme t where t.service.id = ?", obj);
+						List<LayerTheme> layerThemeList = themeService.find("from LayerTheme t where t.showService.id = ?", obj);
+						List<LayerTheme> layerThemeList2 = themeService.find("from LayerTheme t where t.queryService.id = ?", obj);
 						if(layerList != null && layerList.size() > 0) {
 							map.put("msg", "服务被图层引用，不能删除！");
 							return map;
 						}
 						if(layerThemeList != null && layerThemeList.size() > 0) {
+							map.put("msg", "服务被专题图引用，不能删除！");
+							return map;
+						}
+						if(layerThemeList2 != null && layerThemeList2.size() > 0) {
 							map.put("msg", "服务被专题图引用，不能删除！");
 							return map;
 						}
@@ -1243,15 +1273,12 @@ public class ServiceController extends BaseController {
 		try {
 			User user = (User) request.getSession().getAttribute(
 					Global.SESSION_USER);
-			String path = request.getSession().getServletContext()
-					.getRealPath("upload");
+			//String path = request.getSession().getServletContext().getRealPath("upload");
 
 			if (StringUtils.isNotBlank(s.getShowName())) {
 				if (file != null && file.getSize() > 0) {
-					String fileName = file.getOriginalFilename();
+					/*String fileName = file.getOriginalFilename();
 					// 得到数字字典的图片类型, 再判断上传的文件是否是图片
-					// Map<String, Object> mFileType =
-					// DataDictionary.getObject("image_type");
 					path = path + File.separator + "service" + File.separator
 							+ "image";
 					File targetFile = new File(path, fileName);
@@ -1263,6 +1290,34 @@ public class ServiceController extends BaseController {
 						s.setImagePath(path + File.separator + fileName);
 					} catch (IllegalStateException | IOException e) {
 						map.put("flag", "2");
+						map.put("msg", "上传文件失败！");
+						return map;
+					}*/
+					String fileName = file.getOriginalFilename();
+					// 得到数字字典的图片类型, 再判断上传的文件是否是图片
+					// Map<String, Object> mFileType =
+					// DataDictionary.getObject("image_type");
+					//path = path + File.separator + "service" + File.separator + "image";
+					String tomcatHome = System.getProperty("catalina.home"); //D:\software1\tomcat\apache-tomcat-8.5.6
+					tomcatHome = tomcatHome.substring(0, tomcatHome.lastIndexOf("\\"));
+					String imagePath =  tomcatHome +File.separator + "项目文件" + File.separator + "服务";
+					File targetFile = new File(imagePath, fileName);
+					//判断是否存在相同的图片文件,存在则在名字后面加上数字，如xxx(2).png
+					List<Service> serviceList = serviceService.find("from Service t where t.imagePath = ? ", new Object[]{targetFile.getAbsolutePath()});
+					if(serviceList != null && serviceList.size() > 0) {
+						String temp[] = fileName.split("\\.");
+						if(temp != null && temp.length == 2) {
+							fileName = temp[0]+"(" + serviceList.size() + ")." + temp[1];
+							targetFile = new File(imagePath, fileName);
+						}
+					}
+					if (!targetFile.exists()) {
+						targetFile.mkdirs();
+					}
+					try {
+						file.transferTo(targetFile);
+						s.setImagePath(targetFile.getAbsolutePath());
+					} catch (IllegalStateException | IOException e) {
 						map.put("msg", "上传文件失败！");
 						return map;
 					}
@@ -1321,15 +1376,12 @@ public class ServiceController extends BaseController {
 		try {
 			User user = (User) request.getSession().getAttribute(
 					Global.SESSION_USER);
-			String path = request.getSession().getServletContext()
-					.getRealPath("upload");
+			//String path = request.getSession().getServletContext().getRealPath("upload");
 
 			if (StringUtils.isNotBlank(s.getShowName())) {
 				if (file != null && file.getSize() > 0) {
-					String fileName = file.getOriginalFilename();
+					/*String fileName = file.getOriginalFilename();
 					// 得到数字字典的图片类型, 再判断上传的文件是否是图片
-					// Map<String, Object> mFileType =
-					// DataDictionary.getObject("image_type");
 					path = path + File.separator + "service" + File.separator
 							+ "image";
 					File targetFile = new File(path, fileName);
@@ -1341,6 +1393,34 @@ public class ServiceController extends BaseController {
 						s.setImagePath(path + File.separator + fileName);
 					} catch (IllegalStateException | IOException e) {
 						// TODO Auto-generated catch block
+						map.put("msg", "上传文件失败！");
+						return map;
+					}*/
+					String fileName = file.getOriginalFilename();
+					// 得到数字字典的图片类型, 再判断上传的文件是否是图片
+					// Map<String, Object> mFileType =
+					// DataDictionary.getObject("image_type");
+					//path = path + File.separator + "service" + File.separator + "image";
+					String tomcatHome = System.getProperty("catalina.home"); //D:\software1\tomcat\apache-tomcat-8.5.6
+					tomcatHome = tomcatHome.substring(0, tomcatHome.lastIndexOf("\\"));
+					String imagePath =  tomcatHome +File.separator + "项目文件" + File.separator + "服务";
+					File targetFile = new File(imagePath, fileName);
+					//判断是否存在相同的图片文件,存在则在名字后面加上数字，如xxx(2).png
+					List<Service> serviceList = serviceService.find("from Service t where t.imagePath = ? ", new Object[]{targetFile.getAbsolutePath()});
+					if(serviceList != null && serviceList.size() > 0) {
+						String temp[] = fileName.split("\\.");
+						if(temp != null && temp.length == 2) {
+							fileName = temp[0]+"(" + serviceList.size() + ")." + temp[1];
+							targetFile = new File(imagePath, fileName);
+						}
+					}
+					if (!targetFile.exists()) {
+						targetFile.mkdirs();
+					}
+					try {
+						file.transferTo(targetFile);
+						s.setImagePath(targetFile.getAbsolutePath());
+					} catch (IllegalStateException | IOException e) {
 						map.put("msg", "上传文件失败！");
 						return map;
 					}
@@ -1616,7 +1696,7 @@ public class ServiceController extends BaseController {
 		// 有上传文件，则进行导入操作
 		if (file != null && file.getSize() > 0) {
 			String tempPath = request.getSession().getServletContext()
-					.getRealPath("temp");
+					.getRealPath("temp1");
 			File targetFile = new File(tempPath, file.getOriginalFilename());
 			if (!targetFile.exists()) {
 				targetFile.mkdirs();
@@ -1643,9 +1723,9 @@ public class ServiceController extends BaseController {
 							for (int j = 0; j < datas.size(); j++) {
 								Service s = new Service();
 								ArrayList<String> serviceInfo = datas.get(j);								
-								String registerName = serviceInfo.get(0);
-								String showName = serviceInfo.get(1);
-								String engineName = serviceInfo.get(2);
+								String registerName = serviceInfo.get(1);
+								String showName = serviceInfo.get(2);
+								String engineName = serviceInfo.get(3);
 								List<ConfigServerEngine> list = configServerEngineService
 										.find("from ConfigServerEngine t where t.configName = ?",
 												new Object[] { engineName });
@@ -1655,17 +1735,17 @@ public class ServiceController extends BaseController {
 									//String cName = list.get(0).getConfigName();
 									s.setServerEngine(list.get(0));
 								}
-								String folderName = serviceInfo.get(3);
-								String remarks = serviceInfo.get(4);
-								String functionType = serviceInfo.get(5);
-								String serviceExtend = serviceInfo.get(6);
-								String cacheType = serviceInfo.get(7);
-								String permissionStatus = serviceInfo.get(8);
-								String serviceVisitAddress = serviceInfo.get(9);
-								String imageName = serviceInfo.get(10);
-								String metadataVisitAddress = serviceInfo.get(11);
-								String registerType = serviceInfo.get(12);
-								String remoteType = serviceInfo.get(13);
+								String folderName = serviceInfo.get(4);
+								String remarks = serviceInfo.get(5);
+								String functionType = serviceInfo.get(6);
+								String serviceExtend = serviceInfo.get(7);
+								String cacheType = serviceInfo.get(8);
+								String permissionStatus = serviceInfo.get(9);
+								String serviceVisitAddress = serviceInfo.get(10);
+								String imageName = serviceInfo.get(11);
+								String metadataVisitAddress = serviceInfo.get(12);
+								String registerType = serviceInfo.get(13);
+								String remoteType = serviceInfo.get(14);
 								
 								if(StringUtils.isNotBlank(registerName) && registerName.replaceAll("[\u4e00-\u9fa5]", "xx").length()>30) {
 									continue;
@@ -1743,18 +1823,26 @@ public class ServiceController extends BaseController {
 									File imageFile = new File(imagePath,
 											imageName);
 									if (imageFile.exists()) {
-										String descImagePath = request
-												.getSession()
-												.getServletContext()
-												.getRealPath("upload");
-										String descPath = descImagePath
-												+ File.separator + "service"
-												+ File.separator + "image";
-										File targetFile1 = new File(descPath,
-												imageName);
+										String tomcatHome = System.getProperty("catalina.home"); //D:\software1\tomcat\apache-tomcat-8.5.6
+										tomcatHome = tomcatHome.substring(0, tomcatHome.lastIndexOf("\\"));
+										String descPath = tomcatHome + File.separator + "项目文件" + File.separator + "服务";
+										//String descImagePath = request.getSession().getServletContext().getRealPath("upload");
+										//String descPath = descImagePath + File.separator + "service"+ File.separator + "image";
+										File targetFile1 = new File(descPath,imageName);
 										if (!targetFile1.exists()) {
 											targetFile1.mkdirs();
 										}
+										
+										//判断是否存在相同的图片文件,存在则在名字后面加上数字，如xxx(2).png
+										List<Service> serviceList = serviceService.find("from Service t where t.imagePath = ? ", new Object[]{targetFile1.getAbsolutePath()});
+										if(serviceList != null && serviceList.size() > 0) {
+											String temp[] = fileName.split("\\.");
+											if(temp != null && temp.length == 2) {
+												imageName = temp[0]+"(" + serviceList.size() + ")." + temp[1];
+												targetFile1 = new File(imagePath, imageName);
+											}
+										}
+										
 										boolean uploadimage = FileUtils
 												.copyFileCover(
 														imageFile
@@ -1798,9 +1886,44 @@ public class ServiceController extends BaseController {
 
 								}
 								
+								if(engine != null) {
+									String arr[] = s.getServiceVisitAddress().split("/");
+									Map<String,String> tempMap = getServiceInfo(request, engine.getId(), arr[arr.length-3], arr[arr.length-2], arr[arr.length-1]);
+									s.setIpAddress(tempMap.get("ipAddress"));
+									s.setManagerServiceUrl(tempMap.get("managerServiceUrl"));
+									s.setServiceVisitAddressOpen(tempMap.get("serviceVisitAddressOpen"));
+									// 设置服务状态
+									boolean seviceStatus = ServiceUtils.getStatus(
+											s.getManagerServiceUrl(), engine.getIntranetIp(),
+											engine.getIntranetPort() + "", engine.getEngineManager(),
+											engine.getManagerPassword());
+									if (seviceStatus) {
+										s.setServiceStatus("1");
+									}
+									else {
+										s.setServiceStatus("0");
+									}
+								}
+								else {
+									String serviceVisitAddressOpen = getUrlSuffix(s.getServiceVisitAddress());
+									String str2 = serviceVisitAddressOpen.substring(0, serviceVisitAddressOpen.indexOf("/"));
+									String str3 = serviceVisitAddressOpen.substring(serviceVisitAddressOpen.indexOf("/"));
+									
+									String ipAddress = getUrlPrefix(s.getServiceVisitAddress());
+									String encodeStr = Base64Util.encode(ipAddress + "/" + str2);
+									serviceVisitAddressOpen = "/arcgis/" + encodeStr + str3;
+									s.setIpAddress(ipAddress);
+									s.setServiceVisitAddressOpen(serviceVisitAddressOpen);
+									//设置服务状态
+									int statusCode = HttpClientUtils.getStatusCode(s.getServiceVisitAddress());
+									s.setServiceStatus("0");
+									if(200 == statusCode) {
+										s.setServiceStatus("1");
+									}
+								}
+								
 								s.setMaxVersionNum(1);
 								s.setAuditStatus("0");
-								s.setServiceStatus("0");
 								s.setCreateDate(new Date());
 								s.setCreator((User) request.getSession()
 										.getAttribute(Global.SESSION_USER));
@@ -1980,7 +2103,11 @@ public class ServiceController extends BaseController {
 			rowValues[2] = s.getShowName();
 			rowValues[3] = s.getServerEngine() != null ? s.getServerEngine()
 					.getConfigName() : "";
-			rowValues[4] = s.getFolderName();
+			String folderName = s.getFolderName();
+			if("/".equals(folderName)) {
+				folderName = "";
+			}
+			rowValues[4] = folderName;
 			rowValues[5] = s.getRemarks();
 			rowValues[6] = s.getFunctionType();
 			rowValues[7] = s.getServiceExtend();
@@ -2021,11 +2148,12 @@ public class ServiceController extends BaseController {
 				rowValues[11] = s.getImagePath().substring(s.getImagePath().lastIndexOf("\\") + 1);
 				String realPath = request.getSession().getServletContext()
 						.getRealPath("/");
-				File outFile = new File(realPath + "temp" + File.separator + "serviceInfo");
+				//把图片保存到一个临时文件目录
+				File outFile = new File(realPath + "temp" + File.separator + "serviceInfo" + File.separator + "服务信息");
 				if (!outFile.exists()) {
 					outFile.mkdirs();
 				}
-				FileUtils.copyFile(s.getImagePath(), realPath + "temp" + File.separator + "serviceInfo" + File.separator + rowValues[11]);
+				FileUtils.copyFile(s.getImagePath(), realPath + "temp" + File.separator + "serviceInfo"  + File.separator + "服务信息" + File.separator + rowValues[11]);
 			}
 			rowValues[12] = s.getMetadataVisitAddress();
 			
@@ -2073,12 +2201,12 @@ public class ServiceController extends BaseController {
 		try {
 			String realPath = request.getSession().getServletContext()
 					.getRealPath("/");
-			File outFile = new File(realPath + "temp" + File.separator + "serviceInfo");
+			File outFile = new File(realPath + "temp" + File.separator + "serviceInfo" + File.separator + "服务信息");
 			if (!outFile.exists()) {
 				outFile.mkdirs();
 			}
 			//下载设置
-			File file = new File(realPath + "temp" + File.separator + "serviceInfo" + File.separator + "服务信息.xls");
+			File file = new File(realPath + "temp" + File.separator + "serviceInfo" + File.separator + "服务信息"+ File.separator + "服务信息.xls");
 			FileOutputStream fout = new FileOutputStream(file);
 			wb.write(fout); //写数据到serviceInfo.xls
 			fout.close();
@@ -2089,6 +2217,7 @@ public class ServiceController extends BaseController {
 			FileUtils.createFile(tempZipPath);
 			//压缩文件操作
 			FileUtils.zipFiles(realPath + "temp" + File.separator + "serviceInfo", "*",tempZipPath);
+			//FileUtils.zipFiles(realPath + "temp", "*",tempZipPath);
 			
 			String filename = "服务信息";
 			if (request.getHeader("USER-AGENT").toLowerCase().indexOf("msie") > 0) {

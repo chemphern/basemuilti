@@ -13,7 +13,7 @@ public interface ServiceRequestService {
     void save(ServiceRequest sq);
 
     //根据during时间获取当前请求
-    List<ServiceRequest> findCurrentRequestDuringTime(long min);
+    List<ServiceRequest> findCurrentRequestDuringTime(long min,PageHelper pageHelper);
 
     //总数
     long getCurrentRequestDuringTimeCount(long min);

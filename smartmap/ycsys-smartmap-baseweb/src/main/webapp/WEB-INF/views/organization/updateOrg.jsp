@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>羽辰智慧林业综合管理平台-添加用户</title>
+    <title>羽辰智慧林业平台运维管理系统-更新机构</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- iconfont -->
@@ -156,8 +156,8 @@
             <td class="t_r">归属区域:</td>
             <td>
                 <div id="place">
-                    <input style="display:none" name="areaId" value="${org.areaId}">
-                    <input style="display:none" name="areaName" value="${org.areaName}">
+                    <input style="display:none;" name="areaId" value="${org.areaId}">
+                    <input style="display:none;" name="areaName" value="${org.areaName}">
                     <div id="area_id_reset">${org.areaName} <a href="javascript:void(0);" id="area_id_select_reset" style="font-size:12px" onclick="reselect(this)">重新选择</a></div>
                 </div>
             </td>

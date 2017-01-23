@@ -122,6 +122,9 @@ public class PlatformMonitorController {
                 res.put("requestInfo",request);
                 res.put("threadInfo",thread);
                 res.put("jvmMemoryInfo",jvmMemory);
+            }else{
+                ex.setFail("获取tomcat信息失败！网络不连通或者账号密码配置错误！");
+                return ex;
             }
         } else if (type.equals("3")) {
 

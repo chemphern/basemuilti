@@ -67,35 +67,41 @@ public class ServiceApplyController {
 		List<ServiceApply> list = null;
 		List<Object> params = new ArrayList<Object>();
 		StringBuffer hql = new StringBuffer();
+		StringBuffer hqlCount = new StringBuffer();
 		hql.append("from ServiceApply t where 1 = 1 ");
-		
+		hqlCount.append("select count(*) from ServiceApply t where 1 = 1 ");
 		if (StringUtils.isNotBlank(showName)) {
 			hql.append("and t.showName like ? ");
+			hqlCount.append("and t.showName like ? ");
 			params.add('%' + showName + '%');
 		}
 		
 		if (StringUtils.isNotBlank(registerName)) {
 			hql.append("and t.registerName like ? ");
+			hqlCount.append("and t.registerName like ? ");
 			params.add('%' + registerName + '%');
 		}
 		if (StringUtils.isNotBlank(auditStatus)) {
 			hql.append("and t.auditStatus = ? ");
+			hqlCount.append("and t.registerName like ? ");
 			params.add(auditStatus);
 		} 
 		
 		if (StringUtils.isNotBlank(title)) {
 			hql.append("and t.title like ? ");
+			hqlCount.append("and t.registerName like ? ");
 			params.add('%' + title + '%');
 		}
 		
 		if (StringUtils.isNotBlank(validDate)) {
-			hql.append("and t.validDate = ? ");
+			hql.append("and t.registerName like ? ");
+			hqlCount.append("and t.validDate = ? ");
 			params.add(validDate);
 		} 
 		
 		hql.append("order by t.createDate desc ");
 		list = serviceApplyService.find(hql.toString(), params, page);
-		long count= serviceApplyService.count(hql.toString(), params);
+		long count= serviceApplyService.count(hqlCount.toString(), params);
 		Grid<ServiceApply> g = new Grid<ServiceApply>(count,list);
 		return g;
 	}

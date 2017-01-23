@@ -1,3 +1,42 @@
+/*******标绘默认设置*/
+$(function(){
+	    plotSet.init();
+});
+
+var plotSet = {
+	point:null,
+	polyline:null,
+	polygon:null,
+	text:null,
+	arrow:null,
+	pointSet:false,
+	polylineSet:false,
+	polygonSet:false,
+	textSet:false,
+	arrowSet:false,
+	init:function(){
+		if(!this.pointSet){
+			this.point = getPointSet();
+			this.pointSet = true;
+		}
+		if(!this.polylineSet){
+			this.polyline = getPolylineSet();
+			this.polylineSet = true;
+		}
+		if(!this.polygonSet){
+			this.polygon = getPolygonSet();
+			this.polygonSet = true;
+		}
+		if(!this.textSet){
+			this.text = getTextSet();
+			this.textSet = true;
+		}
+		if(!this.arrowSet){
+			this.arrow = getArrowSet();
+			this.arrowSet = true;
+		}
+	}
+}
 
 function initPlot2d(){
 	if (!DCI.Plot.isload)
@@ -6,63 +45,143 @@ function initPlot2d(){
         DCI.Plot.dialog.close();
 }
 
-function getPlotPtStyle(){
-	var selStyle=$('#selPtStyle')[0];
-	var selSize=$('#selPtSize')[0];
-	var style=selStyle.options[selStyle.selectedIndex].value;
-	var size=selSize.options[selSize.selectedIndex].value;
-	var color=$('#txtPtColor').val();
-	var ptalpha =$('#txtPtAlpha').val();
-	var selLStyle=$('#selPLStyle')[0];
-	var lStyle=selLStyle.options[selLStyle.selectedIndex].value;
-	var lColor=$('#txtPlColor').val();
-	var plalpha =$('#txtPlAlpha').val();
-	var plWidth=$('#selPlWidth').val();
-	
-	if(!color || !lColor){
-		showAlertDialog('颜色没有设置');
-		return false;
+function getPointSet(){
+	return {
+		style:$('#selPtStyle option:selected').val(),
+		size:$('#selPtSize option:selected').val(),
+		color:$('#txtPtColor').val(),
+		ptAlpha:$('#txtPtAlpha').val(),
+		plStyle:$('#selPLStyle option:selected').val(),
+		plColor:$('#txtPlColor').val(),
+		plAlpha:$('#txtPlAlpha').val(),
+		plWidth:$('#selPlWidth').val()
 	}
-	var ptColorArr=translateColor(color,ptalpha);
-	var plColorArr=translateColor(lColor,plalpha);
-	var smb=new esri.symbol.SimpleMarkerSymbol(style, size,new esri.symbol.SimpleLineSymbol(lStyle,new esri.Color(plColorArr), plWidth),new esri.Color(ptColorArr));
+}
+
+function getPolylineSet(){
+	return{
+		lStyle:$('#selLStyle option:selected').val(),
+		lColor:$('#txtLColor').val(),
+		plalpha:$('#txtLAlpha').val(),
+		plWidth:$('#selLWidth').val()
+	}
+}
+
+function getPolygonSet(){
+	return{
+		style:$('#selPgStyle option:selected').val(),
+		color:$('#txtPgColor').val(),
+		pgalpha :$('#txtPgAlpha').val(),
+		lStyle:$('#selOutlineStyle option:selected').val(),
+		lColor:$('#txtOutlineColor').val(),
+		plalpha :$('#txtOutlineAlpha').val(),
+		plWidth:$('#selOutlineWidth').val()
+	}
+}
+
+function getTextSet(){
+	return{
+		fontFamily:$('#selFontFamily option:selected').val(),
+		fontSize:$('#selFontSize option:selected').val(),
+		fontStyle:$('#selFontStyle option:selected').val(),
+		fontVar:$('#selFontVariant option:selected').val(),
+		fontBold:$('#selFontBold option:selected').val(),
+		fontColor:$('#txtFontColor').val()
+	}
+}
+
+function getArrowSet(){
+	return{
+		style:$('#selArrStyle option:selected').val(),
+		color:$('#txtArrColor').val(),
+		pgalpha :$('#txtArrAlpha').val(),
+		lStyle:$('#selArrOutlineStyle').val(),
+		lColor:$('#txtArrOutlineColor').val(),
+		plalpha :$('#txtArrOutlineAlpha').val(),
+		plWidth:$('#selArrOutlineWidth').val()
+	}
+}
+
+function resetPlotSet(type){
+	switch (type) {
+	case "point":
+		var p = plotSet.point;
+		$('#selPtStyle').val(p.style);
+		$('#selPtSize').val(p.size);
+		$('#txtPtColor').val(p.color);
+		$('#txtPtColor').css('backgroundColor',p.color);
+		$('#txtPtAlpha').val(p.ptAlpha);
+		$('#selPLStyle').val(p.plStyle);
+		$('#txtPlColor').val(p.plColor);
+		$('#txtPlColor').css('backgroundColor',p.color);
+		$('#txtPlAlpha').val(p.plAlpha);
+		$('#selPlWidth').val(p.plWidth);
+		break;
+	case "polyline":
+		var l = plotSet.polyline;
+		$('#selLStyle').val(l.lStyle);
+		$('#txtLColor').val(l.lColor);
+		$('#txtLColor').css('backgroundColor',l.lColor);
+		$('#txtLAlpha').val(l.plalpha);
+		$('#selLWidth').val(l.plWidth);
+		break;
+	case "polygon":
+		var g = plotSet.polygon;
+		$('#selPgStyle').val(g.style);
+		$('#txtPgColor').val(g.color);
+		$('#txtPgColor').css('backgroundColor',g.color);
+		$('#txtPgAlpha').val(g.pgalpha);
+		$('#selOutlineStyle').val(g.lStyle);
+		$('#txtOutlineColor').val(g.lColor);
+		$('#txtOutlineColor').css('backgroundColor',g.color);
+		$('#txtOutlineAlpha').val(g.plalpha);
+		$('#selOutlineWidth').val(g.plWidth);
+		break;
+	case "text":
+		var t = plotSet.text;
+		$('#selFontFamily').val(t.fontFamily);
+		$('#selFontSize').val(t.fontSize);
+		$('#selFontStyle').val(t.fontStyle);
+		$('#selFontVariant').val(t.fontVar);
+		$('#selFontBold').val(t.fontBold);
+		$('#txtFontColor').val(t.fontColor);
+		$('#txtFontColor').css('backgroundColor',t.fontColor);
+		break;
+	case "arrow":
+		var a = plotSet.arrow;
+		$('#selArrStyle').val(a.style);
+		$('#txtArrColor').val(a.color);
+		$('#txtArrColor').css('backgroundColor',a.color);
+		$('#txtArrAlpha').val(a.pgalpha);
+		$('#selArrOutlineStyle').val(a.lStyle);
+		$('#txtArrOutlineColor').val(a.lColor);
+		$('#txtArrOutlineColor').css('backgroundColor',a.color);
+		$('#txtArrOutlineAlpha').val(a.plalpha);
+		$('#selArrOutlineWidth').val(a.plWidth);
+		break;
+	}
+}
+
+function getPlotPtStyle(){
+	var p = getPointSet();
+	var ptColorArr=translateColor(p.color,p.ptAlpha);
+	var plColorArr=translateColor(p.plColor,p.plAlpha);
+	var smb=new esri.symbol.SimpleMarkerSymbol(p.style, p.size,new esri.symbol.SimpleLineSymbol(p.plStyle,new esri.Color(plColorArr), p.plWidth),new esri.Color(ptColorArr));
 	return smb;
 }
 
 function getPlotPlStyle(){
-	var selLStyle=$('#selLStyle')[0];
-	var lStyle=selLStyle.options[selLStyle.selectedIndex].value;
-	var lColor=$('#txtLColor').val();
-	var plalpha =$('#txtLAlpha').val();
-	var plWidth=$('#selLWidth').val();
-	
-	if(!lColor){
-		showAlertDialog('颜色没有设置');
-		return false;
-	}
-	var plColorArr=translateColor(lColor,plalpha);
-	var smb=new esri.symbol.SimpleLineSymbol(lStyle,new esri.Color(plColorArr), plWidth);
+	var l = getPolylineSet();
+	var plColorArr=translateColor(l.lColor,l.plalpha);
+	var smb=new esri.symbol.SimpleLineSymbol(l.lStyle,new esri.Color(plColorArr), l.plWidth);
 	return smb;
 }
 
 function getPlotPgStyle(){
-	var selStyle=$('#selPgStyle')[0];
-	var style=selStyle.options[selStyle.selectedIndex].value;
-	var color=$('#txtPgColor').val();
-	var pgalpha =$('#txtPgAlpha').val();
-	var selLStyle=$('#selOutlineStyle')[0];
-	var lStyle=selLStyle.options[selLStyle.selectedIndex].value;
-	var lColor=$('#txtOutlineColor').val();
-	var plalpha =$('#txtOutlineAlpha').val();
-	var plWidth=$('#selOutlineWidth').val();
-	
-	if(!color || !lColor){
-		showAlertDialog('颜色没有设置');
-		return false;
-	}
-	var pgColorArr=translateColor(color,pgalpha);
-	var plColorArr=translateColor(lColor,plalpha);
-	var smb=new esri.symbol.SimpleFillSymbol(style,new esri.symbol.SimpleLineSymbol(lStyle,new esri.Color(plColorArr), plWidth),new esri.Color(pgColorArr));
+	var g = getPolygonSet();
+	var pgColorArr=translateColor(g.color,g.pgalpha);
+	var plColorArr=translateColor(g.lColor,g.plalpha);
+	var smb=new esri.symbol.SimpleFillSymbol(g.style,new esri.symbol.SimpleLineSymbol(g.lStyle,new esri.Color(plColorArr), g.plWidth),new esri.Color(pgColorArr));
 	return smb;
 }
 
@@ -75,19 +194,10 @@ function getPlotFlagStyle(){
 }
 
 function getPlotArrStyle(){
-	var selStyle=$('#selArrStyle')[0];
-	var style=selStyle.options[selStyle.selectedIndex].value;
-	var color=$('#txtArrColor').val();
-	var pgalpha =$('#txtArrAlpha').val();
-	var selLStyle=$('#selArrOutlineStyle')[0];
-	var lStyle=selLStyle.options[selLStyle.selectedIndex].value;
-	var lColor=$('#txtArrOutlineColor').val();
-	var plalpha =$('#txtArrOutlineAlpha').val();
-	var plWidth=$('#selArrOutlineWidth').val();
-	
-	var pgColorArr=translateColor(color,pgalpha);
-	var plColorArr=translateColor(lColor,plalpha);
-	var smb=new esri.symbol.SimpleFillSymbol(style,new esri.symbol.SimpleLineSymbol(lStyle,new esri.Color(plColorArr), plWidth),new esri.Color(pgColorArr));
+	var a = getArrowSet();
+	var pgColorArr=translateColor(a.color,a.pgalpha);
+	var plColorArr=translateColor(a.lColor,a.plalpha);
+	var smb=new esri.symbol.SimpleFillSymbol(a.style,new esri.symbol.SimpleLineSymbol(a.lStyle,new esri.Color(plColorArr), a.plWidth),new esri.Color(pgColorArr));
 	return smb;
 }
 
@@ -177,28 +287,22 @@ function plotPolygon2d(i){
     		DCI.Plot.drawEndPlot(geometry,symbol);
     	});
     	break;
-    case 2://扇形.
-    	
-    	break;
-    case 3://弓形
-    	
-    	break;
-    case 4://矩形
+    case 2://矩形
     	DCI.Plot.drawExtent(symbol, function (geometry) {
             DCI.Plot.drawEndPlot(geometry, symbol);
         });
     	break;
-    case 5://多边形
+    case 3://多边形
     	DCI.Plot.drawPolygon(symbol, function (geometry) {
             DCI.Plot.drawEndPlot(geometry, symbol);
         });
     	break;
-    case 6://手绘面
+    case 4://手绘面
     	DCI.Plot.drawFreeHandPolygon(symbol, function (geometry) {
             DCI.Plot.drawEndPlot(geometry, symbol);
         });
     	break;
-    case 7://聚集区
+    case 5://聚集区
     	DCI.Plot.drawBezierPolygon(symbol);
     	break;
     }
@@ -234,18 +338,8 @@ function plotArrows2d(i){
 	}
 }
 function getPlotFontStyle(){
-	var selFmy=$('#selFontFamily')[0];
-	var selFSize=$('#selFontSize')[0];
-	var selFStyle=$('#selFontStyle')[0];
-	var selFVar=$('#selFontVariant')[0];
-	var selFBold=$('#selFontBold')[0];
-	var fontFamily=selFmy.options[selFmy.selectedIndex].value;
-	var fontSize=selFSize.options[selFSize.selectedIndex].value;
-	var fontStyle=selFStyle.options[selFStyle.selectedIndex].value;
-	var fontVar=selFVar.options[selFVar.selectedIndex].value;
-	var fontBold=selFBold.options[selFBold.selectedIndex].value;
-	
-	var font=new esri.symbol.Font(fontSize,fontStyle,fontVar,fontBold,fontFamily);
+	var t = getTextSet();
+	var font=new esri.symbol.Font(t.fontSize,t.fontStyle,t.fontVar,t.fontBold,t.fontFamily);
 	return font;
 }
 

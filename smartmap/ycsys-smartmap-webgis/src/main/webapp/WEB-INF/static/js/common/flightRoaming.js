@@ -92,7 +92,7 @@ function beginAddPath() {
     //清空路径选择
     $('#selectRoamPathName').val("");
     selectRoamPath="";
-	//清空新增书签表格
+	//清空新增路径表格
     $('#tablePathPoint').bootstrapTable('removeAll');
     //聚焦书签名称输入框
     $('#selectRoamPathName').focus();

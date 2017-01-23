@@ -18,8 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.jfree.chart.ChartColor;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
@@ -99,22 +97,30 @@ public class ChartUtils {
         series.add(new Serie("Berlin", new Double[] { 42.4, 33.2, 34.5, 39.7, 52.6, 75.5, 57.4, 60.4, 47.6, 39.1, 46.8, 51.1 }));
         //createLineChart("test", "x", "y", categories, series, null);
        
-        createColumnChart("test", "x", "y", map, null);
+        createColumnChart("test", "x", "y", map, "d:/c",1000,500,1);
         
         
 	}
 	
-	public static String createLineChart(String title,String xTitle,String yTtitel,Map<String , Number> map,HttpServletRequest request) {  
+	/**
+	 * 创建拆线图
+	 * @param title
+	 * @param xTitle
+	 * @param yTtitel
+	 * @param map
+	 * @param filePath(图表保存的路径)
+	 * @param width
+	 * @param height
+	 * @param imageType(1:png;2:JPEG)
+	 */
+	public static void createLineChart(String title,String xTitle,String yTtitel,Map<String , Number> map,String filePath,int width,int height,int imageType) {  
         DefaultCategoryDataset dataset=new DefaultCategoryDataset();  
         //取出横坐标要统计的数据,遍历传递过来的map数据  
          for (Map.Entry<String , Number> entry : map.entrySet()) {             
              dataset.addValue(entry.getValue(), "", entry.getKey());  
          }  
          JFreeChart chart = ChartFactory.createLineChart(title, xTitle, yTtitel, dataset, PlotOrientation.VERTICAL, false, false, false);  
-         String tempPath = request.getSession().getServletContext().getRealPath("chart");
- 		 tempPath =  tempPath + File.separator +"c.png";
- 		 saveAsFile(chart, tempPath, 1500, 1000, 1);
-         return tempPath;  
+ 		 saveAsFile(chart, filePath, width, height, imageType);
     }  
 	
 	/**
@@ -126,7 +132,7 @@ public class ChartUtils {
 	 * @param series
 	 * @return
 	 */
-	public static String createLineChart(String title, String xTitle, String yTtitel,String[] categories,Vector<Serie> series,HttpServletRequest request) {
+	public static void createLineChart(String title, String xTitle, String yTtitel,String[] categories,Vector<Serie> series,String filePath,int width,int height,int imageType) {
 		//1：创建数据集合
         DefaultCategoryDataset dataset = ChartUtils.createDefaultCategoryDataset(series, categories);
 		// 2：创建Chart[创建不同图形]
@@ -140,21 +146,20 @@ public class ChartUtils {
 		ChartUtils.setYAixs(chart.getCategoryPlot());// Y坐标轴渲染
 		// 设置标注无边框
 		chart.getLegend().setFrame(new BlockBorder(Color.WHITE));
-		String tempPath = request.getSession().getServletContext().getRealPath("chart");
-		tempPath =  tempPath + File.separator +"c.png";
-		saveAsFile(chart, tempPath, 1500, 1000, 1);
-		return tempPath;
+		saveAsFile(chart, filePath, width, height, imageType);
 	}
 	
 	/**
 	 * 创建饼图
 	 * @param title
 	 * @param map
-	 * @param request
-	 * @return
+	 * @param filePath
+	 * @param width
+	 * @param height
+	 * @param imageType
 	 */
-	public static String createPieChart(String title, Map<String, Number> map,
-			HttpServletRequest request) {
+	public static void createPieChart(String title, Map<String, Number> map,
+			String filePath,int width,int height,int imageType) {
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		for (Map.Entry<String, Number> entry : map.entrySet()) {
 			dataset.setValue(entry.getKey(), entry.getValue());
@@ -171,11 +176,7 @@ public class ChartUtils {
 
 		// 为饼形图设置对应的显示百分比格式
 		piePlot.setLabelGenerator(standarPieIG);
-		String tempPath = request.getSession().getServletContext().getRealPath("chart");
-		tempPath =  tempPath + File.separator +"c.png";
-		saveAsFile(chart, tempPath, 2500, 1500, 1);
-
-		return tempPath;
+		saveAsFile(chart, filePath, width, height, imageType);
 	}
 	
 	/**
@@ -184,10 +185,12 @@ public class ChartUtils {
 	 * @param xTitle
 	 * @param yTitle
 	 * @param map
-	 * @param request
-	 * @return
+	 * @param filePath
+	 * @param width
+	 * @param height
+	 * @param imageType
 	 */
-	public static String createColumnChart(String title,String xTitle,String yTitle,Map<String , Number> map,HttpServletRequest request){  
+	public static void createColumnChart(String title,String xTitle,String yTitle,Map<String , Number> map,String filePath,int width,int height,int imageType){  
         DefaultCategoryDataset dataset=new DefaultCategoryDataset();  
         //取出横坐标要统计的数据,遍历传递过来的map数据  
          for (Map.Entry<String , Number> entry : map.entrySet()) {  
@@ -203,11 +206,7 @@ public class ChartUtils {
         categoryPlot.setRangeGridlinePaint(ChartColor.DARK_BLUE);  
         barRenderer.setMaximumBarWidth(0.06);  //定义柱形的宽度      
         //保存生成的图表为图片  
-        String tempPath = request.getSession().getServletContext().getRealPath("chart");
-		tempPath =  tempPath + File.separator +"c.png";
-		saveAsFile(chart, tempPath, 700, 600, 1);
-        //获取图片的路径  
-        return tempPath;  
+		saveAsFile(chart, filePath, width, height, imageType);
     }  
 	
 	/**
@@ -239,7 +238,7 @@ public class ChartUtils {
 				out.close();
 			}
 		} catch (IOException e) {
-
+			
 		}
 	}
 	

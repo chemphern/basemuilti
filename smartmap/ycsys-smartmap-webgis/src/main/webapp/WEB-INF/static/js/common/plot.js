@@ -45,18 +45,22 @@ $(function(){
 	//点高级重置
 	$('#btnResetPt').click(function(){
 		plotPtStyle=null;
+		resetPlotSet("point");
 	});
 	//线高级重置
 	$('#btnResetPl').click(function(){
 		plotPlStyle=null;
+		resetPlotSet("polyline");
 	});
 	//面高级重置
 	$('#btnResetPg').click(function(){
 		plotPgStyle=null;
+		resetPlotSet("polygon");
 	});
 	//文字高级重置
 	$('#btnResetTxt').click(function(){
 		plotFontStyle=null;
+		resetPlotSet("text");
 	});
 	$('#btnResetFlag').click(function(){
 		plotFlagStyle=null;
@@ -64,6 +68,7 @@ $(function(){
 	//箭头高级重置
 	$('#btnResetArr').click(function(){
 		plotArrStyle=null;
+		resetPlotSet("arrow");
 	});
 	//事件响应
 	$('.bs-icon-list li').click(function() {

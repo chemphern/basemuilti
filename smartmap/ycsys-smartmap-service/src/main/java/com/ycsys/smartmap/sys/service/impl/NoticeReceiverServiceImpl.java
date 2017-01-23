@@ -4,9 +4,12 @@ import com.ycsys.smartmap.sys.dao.NoticeReceiverDao;
 import com.ycsys.smartmap.sys.entity.NoticeReceiver;
 import com.ycsys.smartmap.sys.entity.PageHelper;
 import com.ycsys.smartmap.sys.service.NoticeReceiverService;
+
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -48,5 +51,24 @@ public class NoticeReceiverServiceImpl implements NoticeReceiverService {
     @Override
     public long countByNoticeId(String noticeId) {
         return noticeReceiverDao.count("select count(*) from NoticeReceiver where notice.id = ?",new Object[]{Integer.parseInt(noticeId)});
+    }
+
+
+	@Override
+	public long count(String hql, Object[] param) {
+		// TODO Auto-generated method stub
+		return noticeReceiverDao.count(hql, param);
+	}
+
+    @Override
+    public void updateReceiveStatus(String id) {
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        noticeReceiverDao.executeHql("update NoticeReceiver set receiveTime = ? ,status = ? where id = ?",new Object[]{now,(short)2,Integer.parseInt(id)});
+    }
+
+
+    @Override
+    public List<Map<String,Object>> findUnNoticeByUserId(Integer id) {
+        return noticeReceiverDao.findList("select new map(id as id,notice.title as title,notice.content as content,notice.type as type,notice.createTime as createTime,status as status) from NoticeReceiver where user.id = ? and status <> ? order by notice.createTime desc",new Object[]{id,(short)2});
     }
 }

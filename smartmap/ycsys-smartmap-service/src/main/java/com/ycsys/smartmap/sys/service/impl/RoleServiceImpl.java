@@ -71,7 +71,7 @@ public class  RoleServiceImpl implements RoleService{
                             e.printStackTrace();
                         }
                     }
-                    r.setIsSuper(isSuper);
+                    r.setSuper(isSuper);
                     if (rxo.getSort() != null) {
                         r.setSort(Integer.parseInt(rxo.getSort()));
                     }
@@ -114,6 +114,7 @@ public class  RoleServiceImpl implements RoleService{
             count = roleDao.count("select count(*) from Role where id <> ? and code = ?",param);
             role.setUpdateTime(DateUtils.getSysTimestamp());
             Role r = roleDao.get(Role.class,role.getId());
+            role.setSuper(r.isSuper());
             try {
                 BeanExtUtils.copyProperties(r, role, true, true, null);
                 role = r;

@@ -154,35 +154,42 @@ public class Initialization implements ServletContextAware {
 			Map<String, Object> saveParam = new HashMap<>();
 			saveParam.put("id", service.getId());
 			if(url != null && !url.equals("")) {
-				Map<String, Object> res = HttpSocketUtil.sendRequest(url);
-				if (String.valueOf(res.get("code")).equals("1")) {
-					ScheduleJob job = new ScheduleJob();
-					job.setJobName("serviceMonitor_" + service.getId());
-					job.setJobGroup("service");
-					job.setJobStatus(ScheduleJob.STATUS_RUNNING);
-					String rate = service.getMonitorRate();
-					//默认30秒
-					if(rate == null || rate.equals("")){
-						rate = "30";
-					}
-					job.setCronExpression(CronUtil.getCronByMillions(Long.parseLong(rate)));
-					job.setDescription("服务监控的定时器");
-					job.setBeanClass("com.ycsys.smartmap.sys.task.MonitorTask");
-					job.setMethodName("collectServiceInfo");
-					job.setMethodParameter(new Object[]{Service.class});
-					job.setArgs(new Object[]{service});
-					job.setIsConcurrent(ScheduleJob.CONCURRENT_NOT);
-					job.setCreateTime(new Date());
-					saveParam.put("monitorStatus", 1);
-					try {
-						jobTaskManager.addJob(job);
-					} catch (SchedulerException e) {
+				try {
+					Map<String, Object> res = HttpSocketUtil.sendRequest(url);
+					if (String.valueOf(res.get("code")).equals("1")) {
+						ScheduleJob job = new ScheduleJob();
+						job.setJobName("serviceMonitor_" + service.getId());
+						job.setJobGroup("service");
+						job.setJobStatus(ScheduleJob.STATUS_RUNNING);
+						String rate = service.getMonitorRate();
+						//默认30秒
+						if (rate == null || rate.equals("")) {
+							rate = "30";
+						}
+						job.setCronExpression(CronUtil.getCronByMillions(Long.parseLong(rate)));
+						job.setDescription("服务监控的定时器");
+						job.setBeanClass("com.ycsys.smartmap.sys.task.MonitorTask");
+						job.setMethodName("collectServiceInfo");
+						job.setMethodParameter(new Object[]{Service.class});
+						job.setArgs(new Object[]{service});
+						job.setIsConcurrent(ScheduleJob.CONCURRENT_NOT);
+						job.setCreateTime(new Date());
+						saveParam.put("monitorStatus", 1);
+						try {
+							jobTaskManager.addJob(job);
+						} catch (SchedulerException e) {
+							saveParam.put("monitorStatus", 0);
+							serviceService.updateMonitor(saveParam);
+							e.printStackTrace();
+						}
+						serviceService.updateMonitor(saveParam);
+					} else {
 						saveParam.put("monitorStatus", 0);
 						serviceService.updateMonitor(saveParam);
-						e.printStackTrace();
 					}
-					serviceService.updateMonitor(saveParam);
-				} else {
+					//当发生异常时，即地址出问题
+				}catch (Exception e){
+					e.printStackTrace();
 					saveParam.put("monitorStatus", 0);
 					serviceService.updateMonitor(saveParam);
 				}

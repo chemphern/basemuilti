@@ -55,6 +55,22 @@ public interface BaseDao<T,PK> {
     public Long count(String hql, Object[] param);
 
     public Long count(String hql, List<Object> param);
+    
+    /**
+     * 分组函数计算数量
+     * @param hql
+     * @param param
+     * @return
+     */
+    public Long countGroupBy(String hql, Object[] param);
+    
+    /**
+     * 分组函数计算数量
+     * @param hql
+     * @param param
+     * @return
+     */
+    public Long countGroupBy(String hql, List<Object> param);
 
     /**
      * @return number of results

@@ -131,7 +131,7 @@ function fromArcgisTo3dScene(featureSet,ifIndex) {
             }
             //结束场景绘制，定位到结果集区域
             if(featureExtent3D!=null){
-                navigateSceneToFeatures(currentFeatureSetPos);
+                navigateSceneToFeatures(featureExtent3D);
                 currentFeatureSetPos = featureExtent3D;
             }else if(featurePointArr!=null&&featurePointArr.length>0){
                 var extent = getPointFeatureSetExtent(featurePointArr)
@@ -239,10 +239,23 @@ function addFeatureImage(position,feature,num) {
         var groupID = YcMap3D.ProjectTree.FindItem(configration.QueryIcoFolder);
         var featureImage = YcMap3D.Creator.CreateImageLabel(position,imgPath,LabelStyle,groupID,feature.attributes.OBJECTID);
         //创建图标点击信息弹窗
-        var pagePath = path + "/static/popup/map_dialog_a1.html?id=" + featureImage.ID + "&&attributes=" + JSON.stringify(feature.attributes);
-        var manager = YcMap3D.Creator.CreatePopupMessage("要素属性",pagePath,10,10,360,350,-1);
-        manager.ShowCaption = false;
-        featureImage.Message.MessageID = manager.ID;
+        var popup = null;
+        if(businessType=="video"){
+            var link = mapConfig.realIpPort + feature.attributes["Link"];
+            var popupUrl = path + "/static/popup/map_videojk_fullscreen3d.html?name=" + feature.attributes["Name_CHN"] + "&&link=" + link;
+            popup =  createPopupWindow("视频监控-" + feature.attributes["Name_CHN"],popupUrl,673,543,-1);
+        }else if(businessType=="scene"){
+            var linkurl = mapConfig.realIpPort + feature.attributes["Link"];
+            var popupUrl = path + "/static/popup/map_dialog_panorama.html?name=" +  feature.attributes["Name_CHN"] + "&&linkurl=" + linkurl;
+            popup =  createPopupWindow("全景-" + feature.attributes["Name_CHN"],popupUrl,643,527,-1);
+        }else{
+            var pagePath = path + "/static/popup/map_dialog_a1.html?id=" + featureImage.ID + "&&attributes=" + JSON.stringify(feature.attributes);
+            popup = YcMap3D.Creator.CreatePopupMessage("要素属性",pagePath,10,10,352,350,-1);
+        }
+        popup.ShowCaption = false;
+        popup.AllowResize = false;
+        popup.AllowDrag = true;
+        featureImage.Message.MessageID = popup.ID;
     }
 }
 
@@ -448,8 +461,12 @@ function identifySpatialQuery3d() {
     DrawTool.activate(DrawTool.DrawType.TERRARECTANGLE);
     //空间查询面查询结果处理
     DrawTool.drawEndHandler = function (rectangel) {
+        //矩形构建Ring
         var geoArr = new Array(rectangel.Left,rectangel.Top,0,rectangel.Left,rectangel.Bottom,0,rectangel.Right,rectangel.Bottom,0,rectangel.Right,rectangel.Top,0);
         var rectangelPolygon = YcMap3D.Creator.GeometryCreator.CreateLinearRingGeometry(geoArr);
+        //删除绘制区域
+        DrawTool.clear();
+        //3d图形转2d图形，并做空间查询
         identifySpatialQuery3dArea(rectangelPolygon);
     };
 }
@@ -462,7 +479,7 @@ function identifySpatialQuery3dArea(geometry) {
         var polygon = new esri.geometry.Polygon();
         var coords = convert3DTo2DCoord(geometry.Points);
         polygon.addRing(coords);
-        var geometryObj={geometry:null}
+        var geometryObj={geometry:null};
         geometryObj.geometry = polygon;
         IdentifyTool._onDrawEnd(geometryObj);
     }

@@ -2,7 +2,7 @@
 <%@include file="/WEB-INF/views/common/taglib.jsp" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>羽辰智慧林业平台运维管理系统-平台消息发送</title>
     <link rel="stylesheet" href="${res}/dist/css/AdminLTE.css">
     <link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
     <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
@@ -93,11 +93,11 @@
                 <textarea id="content" style="width:780px;height:300px;" name="content"><c:if test="${message != null}">${message.content}</c:if></textarea>
                 </td>
         </tr>
-        <tr>
-            <th colspan="2">
-                <input type="button" value="发送" style="width:150px;border:0;background:#2DC3E8;height:34px;color:#fff;border-radius:3px;" onclick="message_send()" id="btn_submit">
-            </th>
-        </tr>
+        <%--<tr>--%>
+            <%--<th colspan="2">--%>
+                <%--<input type="button" value="发送" style="width:150px;border:0;background:#2DC3E8;height:34px;color:#fff;border-radius:3px;" onclick="message_send()" id="btn_submit">--%>
+            <%--</th>--%>
+        <%--</tr>--%>
         <div style="display:none">
             <textarea name="send_companys" id="send_companys"></textarea>
             <textarea name="send_roles" id="send_roles"></textarea>
@@ -184,6 +184,9 @@
 
 
     function message_send(){
+        var p = window.parent[0];
+        var dialog = p.art.dialog.list["sendNoticeDialog"];
+        var dialog_div = dialog.DOM.wrap;
         var obj = liger.get("list1").data;
         if(obj){
             var companys = [];
@@ -208,7 +211,8 @@
         if(validate_val){
             $.ligerDialog.error(validate_val);
         }else{
-            $("#message_send").attr("onclick","");
+            dialog_div.on("ok",function(){
+            });
             $.ajax({
                 url:"${ctx}/platNotice/sendNoticeDo",
                 data:$("#ljform").serialize(),
@@ -217,16 +221,22 @@
                 success:function(data){
                     if(data.retCode){
                         $.ligerDialog.success(data.retMsg,"提示",function (type) {
-                            window.location.href="${ctx}/platNotice/sendNotice";
+                            //window.location.href="${ctx}/platNotice/sendNotice";
+                            p.getLigerManager().loadData();
+                            dialog.close();
                         });
                     }else{
                         $.ligerDialog.error(data.retMsg);
-                        $("#btn_submit").attr("onclick","message_send()");
+                        dialog_div.on("ok",function(){
+                            message_send();
+                        });
                     }
                 },
                 error:function(){
                     $.ligerDialog.error("发送失败");
-                    $("#btn_submit").attr("onclick","message_send()");
+                    dialog_div.on("ok",function(){
+                        message_send();
+                    });
                 }
             });
         }
@@ -364,11 +374,20 @@
     }
     objectSelect.initTree();
     selectbutton.init(0);
-
+    var $dialog_div;
     $(function(){
         <c:if test="${message != null}">
             $("#type").val(${message.type});
+            $("#type").change(function(){
+               $(this).val(${message.type});
+            });
         </c:if>
+        var p = window.parent[0];
+        var dialog = p.art.dialog.list["sendNoticeDialog"];
+        var dialog_div = dialog.DOM.wrap;
+        dialog_div.on("ok",function(){
+            message_send();
+        });
     });
 
     KindEditor.ready(function(K) {
@@ -425,6 +444,7 @@
                 'bold','italic','underline','fontname','fontsize','forecolor','hilitecolor','plug-align','plug-order','plug-indent','link'
             ]
         });
+        <c:if test="${message != null}">window.send_contents.readonly(true);</c:if>
     });
 </script>
 </body>

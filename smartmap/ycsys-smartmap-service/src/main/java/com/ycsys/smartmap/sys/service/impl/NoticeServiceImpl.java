@@ -46,25 +46,34 @@ public class NoticeServiceImpl implements NoticeService{
     @Override
     public void createNotices(Map<String, Object> params) {
         Notice notice = new Notice();
-        if(params.containsKey("message_id")) {
+        List<String> userList = (List<String>) params.get("useridList");
+        Timestamp now = new Timestamp(System.currentTimeMillis());
+        //更新
+        if(params.containsKey("message_id") && String.valueOf(params.get("message_id")) != null && !String.valueOf(params.get("message_id")).equals("")) {
             String i = String.valueOf(params.get("message_id"));
             if( i != null && !i.equals("")){
                 notice.setId(Integer.parseInt(i));
             }
-
+            List<Integer> ids = noticeReceiverDao.findList("select user.id as id from NoticeReceiver where notice.id = ?",new Object[]{Integer.parseInt(i)});
+            for(Integer id : ids){
+                String rev = "" + id;
+                if(userList.contains(rev)) {
+                    userList.remove("" + id);
+                }
+            }
+            //新建
+        }else {
+            notice.setCreateTime(now);
+            notice.setContent(String.valueOf(params.get("content")));
+            short status = 1;
+            if (userList.size() > 0) {
+                status = 2;
+            }
+            notice.setStatus(status);
+            notice.setType(Short.parseShort(String.valueOf(params.get("type"))));
+            notice.setTitle(String.valueOf(params.get("title")));
+            noticeDao.saveOrUpdate(notice);
         }
-        Timestamp now = new Timestamp(System.currentTimeMillis());
-        notice.setCreateTime(now);
-        notice.setContent(String.valueOf(params.get("content")));
-        List<String> userList = (List<String>) params.get("useridList");
-        short status = 1;
-        if(userList.size() > 0){
-            status = 2;
-        }
-        notice.setStatus(status);
-        notice.setType(Short.parseShort(String.valueOf(params.get("type"))));
-        notice.setTitle(String.valueOf(params.get("title")));
-        noticeDao.saveOrUpdate(notice);
         for(String user_id :userList){
             if(user_id != null && !("".equals(user_id))){
                 int id = Integer.parseInt(user_id);

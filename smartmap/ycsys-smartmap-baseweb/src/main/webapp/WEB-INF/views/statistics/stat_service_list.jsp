@@ -4,10 +4,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-服务统计</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="shortcut icon" href="favicon.ico" />
@@ -101,11 +98,11 @@ $(document).ready(function(){
 	$("#queryBtn").click();
 	
 	function query() {
-		if(gridManager) {
+		/* if(gridManager) {
 			gridManager.setParm("startTime",$("#startTime").val());
 	    	gridManager.setParm("endTime",$("#endTime").val());
 	    	gridManager.reload();
-		}
+		} */
 		
 		var myChart = echarts.init(document.getElementById('chart'),'macarons');
 		var myChart1 = echarts.init(document.getElementById('chart1'),'macarons');
@@ -326,7 +323,7 @@ $(document).ready(function(){
             { display: '服务名称', name: 'service.showName', minwidth: 100 },
             { display: '响应时间(ms)', name: 'averageResponseTime', minWidth: 100 }
             ], pageSize:5,
-            url:"${ctx}/statistics/getServiceSlowTop5",
+            url:"${ctx}/statistics/getServiceSlowTop5?startTime=" + $("#startTime").val() + "&endTime=" + $("#endTime").val(),
             usePager: false,
             width: '100%',height:'230px'
         });

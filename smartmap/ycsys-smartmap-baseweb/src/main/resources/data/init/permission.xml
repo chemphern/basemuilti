@@ -490,11 +490,7 @@
                 </url>
                 <url name="消息管理" sort="1" href="/platNotice/list" funcs="sys-platNotice-list">
                     <code>
-                        sys-platNotice-list
-                    </code>
-                </url>
-                <url name="发送消息" sort="1" href="/platNotice/sendNotice" funcs="sys-platNotice-sendNotice">
-                    <code>
+                        sys-platNotice-list，
                         sys-platNotice-sendNotice
                     </code>
                 </url>

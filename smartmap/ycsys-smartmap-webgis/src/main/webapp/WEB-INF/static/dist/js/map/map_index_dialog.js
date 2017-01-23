@@ -23,18 +23,6 @@
                     height: 100
                 });
         });
-        //查看消息详情
-         $(".msg-box-bd").on('click','a', function (e) { 
-            e.preventDefault();  
-            var dialog = $.Layer.iframe(
-                {
-                    title: '查看消息详情',
-                    url:'map_msg_info.html',
-                    width: 700,
-                    height: 300
-                });
-        });         
-        
         /******三维漫游 路径管理******/
         //添加
          $(".pathbox").on('click','.btn_add', function () { 

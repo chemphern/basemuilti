@@ -1,17 +1,32 @@
 (function($){
 $(document).ready(function(){
 
-    //给左边菜单追加自定义滚动条方法
-    // $(".leftBox").mCustomScrollbar({
-    //     scrollButtons:{enable:true},//是否使用上下滚动按钮  
-    //     advanced:{autoScrollOnFocus:false }//是否自动滚动到聚焦中的对象
-    // });
-
-    //给图例追加自定义滚动条方法,需放在隐藏元素前,否则无法显示
-    $(".legendBox").mCustomScrollbar({   
+    //给图例追加自定义滚动条方法
+    $("#legendBox").mCustomScrollbar({   
         scrollButtons:{  
             enable:true //是否使用上下滚动按钮  
         },          
+    });
+    //隐藏显示右下角图例以及调整鹰眼的显示位置
+    $("#legendBox").hide();
+    $("#js_legend").on('click','.legendIcon',function(e){
+        e.preventDefault();
+        $("#legendBox").fadeToggle(function(){
+            var customScrollbar=$("#legendBox").find(".mCSB_scrollTools");
+            customScrollbar.css({"opacity":0});
+            $("#legendBox").mCustomScrollbar("update");
+            customScrollbar.animate({opacity:1},"slow");
+        });
+        if($(this).hasClass("unfold")){
+            $(this).removeClass("unfold");
+            //$(".legendBox").slideUp();
+            $(".esriOverviewMap").css('right','40px');
+            
+        }else{
+            $(this).addClass("unfold");
+            //$(".legendBox").slideDown();
+            $(".esriOverviewMap").css('right','210px');
+        } 
     });
     //当屏幕在768下隐藏左侧菜单
     var _width = $(window).width(); 
@@ -116,15 +131,15 @@ $(document).ready(function(){
     });
     //显示林火蔓延分析面板
     $('#forestFirebox').hide();
-     $("#sideMenu").on('click','#forestFire',function (e) { 
-        e.preventDefault();
-        if ($('#forestFirebox').is(":visible")) {
-            $('#forestFirebox').hide();
-            $('#sideMenu').show();
-        }else{
-            $('#forestFirebox').show();
-            $('#sideMenu').hide();
-        }
+     $("#sideMenu").on('click','#forestFire',function (e) {
+         e.preventDefault();
+         if ($('#forestFirebox').is(":visible")) {
+             $('#forestFirebox').hide();
+             $('#sideMenu').show();
+         }else{
+             $('#forestFirebox').show();
+             $('#sideMenu').hide();
+         }
     });
      //返回选项
      $("#forestFirebox").on('click','.arrow-back', function (e) { 
@@ -140,81 +155,82 @@ $(document).ready(function(){
         $(this).addClass('active').siblings().removeClass('active');
     });
 
-
-    //隐藏显示右下角图例以及调整鹰眼的显示位置
-    $(".legendBox").hide();
-    $("#js_legend").on('click','.legendIcon',function(){
-        if($(this).hasClass("unfold")){
-            $(this).removeClass("unfold");
-            $(".legendBox").slideUp();
-            $(".esriOverviewMap").css('right','40px');
-            
-        }else{
-            $(this).addClass("unfold");
-            $(".legendBox").slideDown();
-            $(".esriOverviewMap").css('right','210px');
-        } 
-    });
  
-  
     //启用页面中的所有的提示工具（tooltip）
     //$("[data-toggle='tooltip']").tooltip('toggle');
 
 
 
     /*全屏显示*/
-    $('#fullScreenBtn').click(function(){
-    	var elem = $("#mapContent"); 
-    	requestFullScreen(elem);
+    $('#fullScreenBtn').click(function() {
+        fullScreen();
+        $(this).hide();
+        $('#noFullScreenBtn').show();
         $("#mapContent").css('left','0px');
         $(".main").addClass('hide-left-menu');
         $('.leftBox').css('left','-298px');
-        
+    });
+    $('#noFullScreenBtn').click(function() {
+        exitFullScreen();
+        $(this).hide();
+        $('#fullScreenBtn').show();
+        $("#mapContent").css('left','298px');
+        $(".main").removeClass('hide-left-menu');
+        $('.leftBox').css('left','0px');
     });
 
-    $(document).keyup(function(event) {
-        if(event.keyCode == 27){
-           exitFullScreen(); 
-           $("#mapContent").css('left','298px');
-           $(".main").removeClass('hide-left-menu');
-           $('.leftBox').css('left','0px');
-        }
+    var isFullScreen=false;
+
+    $(document).keydown(function(event){
+    　　if(event.keyCode==122){
+    　　　　event.preventDefault();
+    　　　　event.stopPropagation();
+    　　　　if(isFullScreen){
+    　　　　　　exitFullscreen();
+    　　　　　　isFullScreen=false;
+    　　　　}else{
+    　　　　　　requestFullScreen();
+    　　　　　　isFullScreen=true;
+    　　　　}
+    　　}else if(event.keyCode==27){
+    　　　　event.preventDefault();
+    　　　　event.stopPropagation();
+    　　　　exitFullscreen();
+    　　　　isFullScreen=false;
+    　　}
     });
-    function requestFullScreen() {
-        var el = document.documentElement,
-            rfs = el.requestFullScreen || el.webkitRequestFullScreen || el.mozRequestFullScreen || el.msRequestFullscreen,
-            wscript;
-     
-        if(typeof rfs != "undefined" && rfs) {
-            rfs.call(el);
-            return;
+    function fullScreen() {
+      var el = document.documentElement;
+      var rfs = el.requestFullScreen || el.webkitRequestFullScreen || 
+          el.mozRequestFullScreen || el.msRequestFullscreen;
+      if(typeof rfs != "undefined" && rfs) {
+        rfs.call(el);
+        //return;
+      } else if(typeof window.ActiveXObject != "undefined") {
+        //for IE，这里其实就是模拟了按下键盘的F11，使浏览器全屏
+        var wscript = new ActiveXObject("WScript.Shell");
+        if(wscript != null) {
+            wscript.SendKeys("{F11}");
         }
-     
-        if(typeof window.ActiveXObject != "undefined") {
-            wscript = new ActiveXObject("WScript.Shell");
-            if(wscript) {
-                wscript.SendKeys("{F11}");
-            }
-        }
-    }
-     
+      }
+
+    };
     function exitFullScreen() {
-        var el = document,
-            cfs = el.cancelFullScreen || el.webkitCancelFullScreen || el.mozCancelFullScreen || el.exitFullScreen,
-            wscript;
-     
-        if (typeof cfs != "undefined" && cfs) {
-          cfs.call(el);
-          return;
+      var el = document;
+      var cfs = el.cancelFullScreen || el.webkitCancelFullScreen || 
+          el.mozCancelFullScreen || el.msExitFullscreen || el.exitFullScreen;
+      if(typeof cfs != "undefined" && cfs) {
+        cfs.call(el);
+        //return;
+      } else if(typeof window.ActiveXObject != "undefined") {
+        //for IE，这里和fullScreen相同，模拟按下F11键退出全屏
+        var wscript = new ActiveXObject("WScript.Shell");
+        if(wscript != null) {
+            wscript.SendKeys("{F11}");
         }
-     
-        if (typeof window.ActiveXObject != "undefined") {
-            wscript = new ActiveXObject("WScript.Shell");
-            if (wscript != null) {
-                wscript.SendKeys("{F11}");
-            }
-        }
+      }
     }
+
     //三维漫游切换三维地图
     $("#3dmy").click(function() {       
         var index = $(this).index();

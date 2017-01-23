@@ -9,6 +9,8 @@ import com.ycsys.smartmap.sys.common.enums.LogType;
 import com.ycsys.smartmap.sys.common.exception.ServiceException;
 import com.ycsys.smartmap.sys.common.utils.BeanExtUtils;
 import com.ycsys.smartmap.sys.entity.PageHelper;
+import com.ycsys.smartmap.sys.service.LogService;
+import com.ycsys.smartmap.sys.util.ActionContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,8 @@ import java.util.Map;
 @org.springframework.stereotype.Service("serviceService")
 public class ServiceServiceImpl implements ServiceService {
 	
+	@Autowired
+	private LogService logService;
 	@Autowired
 	private ServiceDao serviceDao;
 	@Autowired
@@ -154,6 +158,36 @@ public class ServiceServiceImpl implements ServiceService {
 	@Override
 	public long count(String s) {
 		return serviceDao.count(s);
+	}
+
+	@Override
+	public void updateServiceStatus(Integer id, String status) {
+		// TODO Auto-generated method stub
+		long startTime = System.currentTimeMillis();
+		serviceDao.executeHql("update Service set serviceStatus = ? where id = ?",new Object[]{status,id});
+		String msg = "启动服务";
+		if("0".equals(status)) {
+			msg = "停止服务";
+		}
+		long endTime = System.currentTimeMillis();
+		
+		//记录日志（如果context为空说明是系统监控改变服务状态，不需要记录日志）
+		ActionContext context = ActionContext.getContext();
+		if(context != null) {
+			logService.saveLogInfo(msg, LogType.Server,msg, 1, "success", endTime-startTime);
+		}
+	}
+
+	@Override
+	public Long count(String hql, Object[] param) {
+		// TODO Auto-generated method stub
+		return serviceDao.count(hql, param);
+	}
+
+	@Override
+	public Long countAll() {
+		// TODO Auto-generated method stub
+		return serviceDao.count("select count(*) from Service ");
 	}
 
 }

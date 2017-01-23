@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-图层管理编辑</title>
 <!-- Tell the browser to be responsive to screen width -->
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -83,9 +83,17 @@
 					<input type="text" id="name" name="name" class="text" value="${layer.name }">
 				</td>
 			</tr>
+			<tr>
+				<td class="t_r">业务类型：</td>
+				<td><select type="text" name="businessType" id="businessType" class="text">
+						<c:forEach var="map" items="${businessType }">
+							<option value="${map.key }">${map.value.name }</option>	
+						</c:forEach>
+				</select></td>
+			</tr>
 			
 			<tr>
-				<td class="t_r">nameField：</td>
+				<td class="t_r">标题显示字段：</td>
 				<td>
 					<%-- <textarea name="tempNameField" id="tempNameField" clos="20" rows="15" disabled="disabled"
 						style="width:170px; height:80px; resize:both; overflow:auto;">${layer.nameField }</textarea> --%>
@@ -96,7 +104,7 @@
 			</tr>
 			
 			<tr>
-				<td class="t_r">summaryFields：</td>
+				<td class="t_r">摘要显示字段：</td>
 				<td>
 					<textarea name="tempSummaryFields" id="tempSummaryFields" clos="20" rows="15" disabled="disabled"
 						style="width:170px; height:80px; resize:both; overflow:auto;">${layer.summaryFields }</textarea>
@@ -106,7 +114,7 @@
 			</tr>
 			
 			<tr>
-				<td class="t_r">displayFields：</td>
+				<td class="t_r">属性显示字段：</td>
 				<td>
 					<textarea name="tempDisplayFields" id="tempDisplayFields" clos="20" rows="15" disabled="disabled"
 						style="width:170px; height:80px; resize:both; overflow:auto;">${layer.displayFields }</textarea>
@@ -133,6 +141,10 @@
 		//设置下拉的值
 		if("${layer.parent.id}") {
 			$("#parentId option[value=${layer.parent.id}]").attr("selected",true);
+		}
+		
+		if("${layer.businessType}") {
+			$("#businessType option[value=${layer.businessType}]").attr("selected",true);
 		}
 		
 		//选择服务

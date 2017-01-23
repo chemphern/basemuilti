@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>羽辰智慧林业综合管理平台-资源管理</title>
+    <title>羽辰智慧林业平台运维管理系统-平台消息</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="shortcut icon" href="${res}/images/favicon.ico" />
@@ -32,13 +32,17 @@
     </style>
 </head>
 <body>
+    <section class="content-header">
+      <h1>消息管理</h1>
+    </section>
 <div class="row">
     <div class="col-md-12">
         <div class="box box-solid">
             <div class="box-header with-border">
                 <h4 class="box-title">消息列表</h4>
                 <div class="btn_box">
-                    <button onclick="add_notice()"><i class="iconfont icon-plus"></i>新增</button>
+                    <button onclick="add_notice()"><i class="iconfont icon-plus"></i>新增消息</button>
+                    <button onclick="add_new_notice()"><i class="iconfont icon-plus"></i>发送新消息</button>
                 </div>
             </div>
             <div class="box_l">
@@ -72,7 +76,7 @@
 
 <script type="text/javascript">
     Date.prototype.Format = function(fmt)
-    { //author: meizz
+    { //author: meizz 
         var o = {
             "M+" : this.getMonth()+1,                 //月份
             "d+" : this.getDate(),                    //日
@@ -106,7 +110,7 @@
                     }},
                     { display: '发送数量', name: 'sendNum', minWidth: 100 },
                     { display: '创建时间', name: 'createTime', minWidth: 100,render: function (rowdata, rowindex, value)
-                    {
+                     {
                         var d;
                         if(value > 0 ){
                             d = new Date(value).Format("yyyy-MM-dd hh:mm:ss");
@@ -114,7 +118,7 @@
                             d = "";
                         }
                         return d;
-                    }
+                     }
                     },
                     { display: '操作', width: 150,
                         render: function (rowdata, rowindex, value)
@@ -123,11 +127,11 @@
                             if (!rowdata._editing)
                             {
                                 h += "<input type='button' class='list-btn bt_view' onclick='yc_show(" + rowdata.id + ")'/>";
-                                if(rowdata.sendNum < 1){
+                                if(rowdata.sendNum > 1){
                                     h += "<input type='button' class='list-btn bt_edit' onclick='yc_update(" + rowdata.id + ")'/>";
                                     h += "<input type='button' class='list-btn bt_del' onclick='yc_delete(" + rowdata.id + ")'/>";
                                 }else{
-                                    h += "<input type='button' class='list-btn bt_view' onclick='yc_showSender(" + rowdata.id + ")'/>";
+                                    h += "<input type='button' class='list-btn bt_sender' onclick='yc_showSender(" + rowdata.id + ")'/>";
                                 }
                                 h += "<input type='button' class='list-btn bt_edit' onclick='yc_toSend(" + rowdata.id + ")'/>";
                             }
@@ -138,9 +142,11 @@
                 width: '100%',height:'98%'
             });
         });
+    
     function getLigerManager(){
         return $("#maingrid4").ligerGetGridManager();
-    };
+    }; 
+    
     function yc_delete(id){
         $.Layer.confirm({
             msg:"确定删除该项？",
@@ -192,11 +198,30 @@
         });
     };
     function yc_toSend(id){
-        var a = window.parent.$(".treeview .active");
-        var active = $(a[a.length-1]);
-        active.removeClass("active");
-        active.next().addClass("active");
-        window.location.href = "${ctx}/platNotice/sendNotice?id=" + id;
+        $.Layer.iframe(
+            {
+                id:"sendNoticeDialog",
+                title: "发送消息",
+                url:"${ctx}/platNotice/sendNotice?id=" + id,
+                width: 1020,
+                height: 700
+            });
+        <%--var a = window.parent.$(".treeview .active");--%>
+        <%--var active = $(a[a.length-1]);--%>
+        <%--active.removeClass("active");--%>
+        <%--active.next().addClass("active");--%>
+        <%--window.location.href = "${ctx}/platNotice/sendNotice?id=" + id;--%>
+    };
+
+    function add_new_notice(id){
+        $.Layer.iframe(
+            {
+                id:"sendNoticeDialog",
+                title: "发送新消息",
+                url:"${ctx}/platNotice/sendNotice",
+                width: 1020,
+                height: 700
+            });
     };
     function yc_show(id){
         art.dialog.open('${ctx}/platNotice/viewNotice?id=' + id,{

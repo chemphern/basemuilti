@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-专题图管理增加</title>
 <!-- Tell the browser to be responsive to screen width -->
 <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -104,14 +104,16 @@
 		
 		dialog_div.on("ok", function() {
 			form.submit();
-		});
+		}); 
 		var val_obj = exec_validate(form);//方法在 ${res}/js/common/form.js
 		val_obj.submitHandler = function(){
-			if($("#serviceIds").val() == "") {
-				return ;
+			if($("#serviceIds").val() == ""||$("#serviceIds").val()==null) {
+				alert("服务id不能为空");
+				return false;
 			}
-			if($("#serviceName").val() == "") {
-				return ;
+			if($("#serviceName").val() == ""||$("#serviceName").val() == null) {
+				alert("服务名字不能为空");
+				return false;
 			}
 			$.ajax({
 				type : "POST",

@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>羽辰智慧林业综合管理平台系统</title>
+    <title>羽辰智慧林业平台运维管理系统-主页面</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="shortcut icon" href="${res}/images/favicon.ico" />
@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="${res}/dist/css/skins/_all-skins.css">
     <link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
     <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
+    <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -39,8 +40,6 @@
 
    <jsp:include page="right.jsp"></jsp:include>
 <!-- ./wrapper -->
-
-<script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
 <script src="${res}/plugins/jQueryUI/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->

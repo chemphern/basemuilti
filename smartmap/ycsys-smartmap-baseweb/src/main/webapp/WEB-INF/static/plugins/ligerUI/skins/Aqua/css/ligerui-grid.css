@@ -246,6 +246,7 @@ padding-right: 10px;
     text-align:center; 
 	cursor:pointer; 
 	overflow:hidden;
+	font-weight: bold;
 }  
 .l-grid-hd-cell
 {   

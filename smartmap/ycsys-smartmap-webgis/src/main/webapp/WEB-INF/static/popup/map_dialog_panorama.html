@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>羽辰智慧林业二三维一体化应用系统</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <link rel="stylesheet" href="../dist/css/mapPublic.css">
+  <link rel="stylesheet" href="../dist/css/mapIndex.css">
+  <script src="../js/map3d/YcMap3D.js"></script>
+        <style type="text/css">
+          html,body{overflow:hidden;}
+        .tab-mapCon{background:#fff;padding:0;margin:0;}        
+    </style>
+</head>
+<body onload="init()">
+
+<script type="text/javascript">
+
+    var name = getQueryString("name");
+
+    var linkurl = getQueryString("linkurl");
+
+    var desp = getQueryString("desp");
+
+    function init() {
+        window.document.getElementById("winTitle").innerText = name + "全景";
+        window.document.getElementById("panorama").src = linkurl;
+    }
+
+    function closePanorama() {
+        YcMap3D.Window.RemovePopupByCaption("全景-" + name);
+    }
+
+</script>
+<div class="map_dialog_panorama">
+<div class="tab-mapCon">
+
+<div class="esriPopup esriPopupVisible">
+  <div class="esriPopupWrapper">
+    <div class="sizer_video">
+      <div class="titlePane" style="-webkit-user-select: none;">
+        <div id="winTitle" class="title">全景</div>
+        <div class="titleButton close" title="关闭" onclick="closePanorama()"></div>
+      </div>
+    </div>
+    <div class="sizer_video">
+      <!--<div >-->
+        <iframe class="content_video" id="panorama"></iframe>
+      <!--</div>-->
+    </div>
+
+    <div class="pointer bottomLeft"></div>
+  </div>
+  <div class="outerPointer"></div>
+  <div class="video-popup-triangle-up"></div>
+</div>
+  <object ID="YcMap3D" classid="CLSID:3A4F9199-65A8-11D5-85C1-0001023952C1" style="display: none;"></object>
+ </div>
+ </div>
+</body>
+</html>

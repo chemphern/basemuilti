@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Title</title>
+    <title>羽辰智慧林业平台运维管理系统-机构管理</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="shortcut icon" href="${res}/images/favicon.ico" />
     <link rel="stylesheet" href="${res}/bootstrap/css/bootstrap.css">
@@ -158,9 +158,10 @@
             pageSize:10,
             url:"${ctx}/org/listData",
             width: '100%',height:'98%',
-            tree:{columnName:"name"},
+             tree:{columnName:"name"}, 
             enabledSort:false,
-            rownumbers:true
+            rownumbers:true 
+          
         });
         $("#addOrg").click(function(e){
             e.preventDefault();
@@ -173,9 +174,8 @@
                         height: 400
                     });
         });
-        
-        
     });
+    
     function getLigerManager(){
         return $("#maingrid4").ligerGetGridManager();
     }
@@ -216,8 +216,8 @@
                     id:"updateOrgDialog",
                     title: '修改机构',
                     url:'${ctx}/org/updateOrgv?id=' + id,
-                    width: 400,
-                    height: 400
+                    width: 600,
+                    height: 350
                 });
     };
     function yc_editPermission(id){

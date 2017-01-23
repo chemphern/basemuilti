@@ -1,10 +1,10 @@
 package com.ycsys.smartmap.sys.controller;
 
+import com.ycsys.smartmap.sys.common.exception.ServiceException;
 import com.ycsys.smartmap.sys.common.result.Grid;
 import com.ycsys.smartmap.sys.common.result.ResponseEx;
 import com.ycsys.smartmap.sys.entity.ConfigServerMonitor;
 import com.ycsys.smartmap.sys.entity.PageHelper;
-import com.ycsys.smartmap.sys.service.ConfigServerEngineService;
 import com.ycsys.smartmap.sys.service.ConfigServerMonitorService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -110,8 +110,8 @@ public class PlatformMonitorConfigController {
         try{
             configServerMonitorService.startMonitor(id);
             ex.setSuccess("启动监控成功！");
-        }catch (Exception e){
-            ex.setFail(e.getMessage());
+        }catch (ServiceException e){
+            ex.setFail(e.getContents());
             return ex;
         }
         return ex;

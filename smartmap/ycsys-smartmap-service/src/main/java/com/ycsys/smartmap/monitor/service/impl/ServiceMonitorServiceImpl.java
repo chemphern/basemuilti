@@ -55,11 +55,13 @@ public class ServiceMonitorServiceImpl implements ServiceMonitorService{
 			res = "正常";
 		}
 		infos.put("status",res);
-		long count = serviceMonitorDao.count("select count(*) from ServiceMonitor where service.id = ?",new Object[]{id});
+		Map<String,Object> cm = serviceMonitorDao.findOneToMap("select new map(count(*) as count) from ServiceMonitor where service.id = ?",new Object[]{id});
+		long count = (long) cm.get("count");//serviceMonitorDao.count("select count(*) from ServiceMonitor where service.id = ?",new Object[]{id});
 		double normal_rate = 0;
 		double average_time = 0;
 		if(count > 0) {
-			long normal = serviceMonitorDao.count("select count(*) from ServiceMonitor where service.id = ? and status = ?", new Object[]{id, "200"});
+			Map<String,Object> countMap = serviceMonitorDao.findOneToMap("select new map(count(*) as count) from ServiceMonitor where service.id = ? and status = ?",new Object[]{id,"200"});
+			long normal = (long) countMap.get("count");//serviceMonitorDao.count("select count(*) from ServiceMonitor where service.id = ? and status = ?", new Object[]{id, "200"});
 			Map<String, Object> resMap = serviceMonitorDao.findOneToMap("select new Map(sum(respTime) as respTime) from ServiceMonitor where service.id = ?", new Object[]{id});
 			String respTimes = String.valueOf(resMap.get("respTime"));
 			average_time = Double.parseDouble(respTimes) / count;
@@ -85,6 +87,18 @@ public class ServiceMonitorServiceImpl implements ServiceMonitorService{
 			Integer page, Integer rows) {
 		// TODO Auto-generated method stub
 		return serviceMonitorDao.find(hql, param, page, rows);
+	}
+
+	@Override
+	public Long countGroupBy(String hql, Object[] param) {
+		// TODO Auto-generated method stub
+		return serviceMonitorDao.countGroupBy(hql, param);
+	}
+
+	@Override
+	public Long countGroupBy(String hql, List<Object> param) {
+		// TODO Auto-generated method stub
+		return serviceMonitorDao.countGroupBy(hql, param);
 	}
 
 }

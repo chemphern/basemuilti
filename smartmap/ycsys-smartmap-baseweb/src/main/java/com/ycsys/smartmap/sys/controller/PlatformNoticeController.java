@@ -275,6 +275,29 @@ public class PlatformNoticeController {
         return g;
     }
 
+    @RequestMapping("/updateReceiveStatus")
+    @ResponseBody
+    public ResponseEx updateReceiveStatus(String id){
+        ResponseEx ex = new ResponseEx();
+        noticeReceiverService.updateReceiveStatus(id);
+        ex.setSuccess("修改状态成功！");
+        return ex;
+    }
+
+    @RequestMapping("/personalNotice")
+    @ResponseBody
+    public ResponseEx personalNotice(HttpSession session){
+        ResponseEx ex = new ResponseEx();
+        User user = (User) session.getAttribute(Global.SESSION_USER);
+        List<Map<String,Object>> nr = noticeReceiverService.findUnNoticeByUserId(user.getId());
+        Map<String,Object> platMsg_type = DataDictionary.get("platMsg_type");
+        for(Map<String,Object> map: nr){
+            map.put("types",String.valueOf(platMsg_type.get(map.get("type") + "")));
+        }
+        ex.setRetData(nr);
+        return ex;
+    }
+
     @SuppressWarnings("unchecked")
     public List<String> getOnlyStringList(List<String> companyList,List<String> roleList,List<String> userList){
         List<String> list = SetUniqueList.decorate(new ArrayList<String>());

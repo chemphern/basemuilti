@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-服务编辑</title>
 <!-- Tell the browser to be responsive to screen width -->
 <meta
 	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
@@ -181,7 +181,7 @@ body {
               
               <tr>
                 <td class="t_r">服务浓缩图：</td>
-                <td><input type="file" id="imagePath" name="imageFile"></td>
+                <td><input type="file" id="imagePath" name="imageFile" validate="{checkImage:true}"></td>
               </tr> 
               <tr>
                 <td class="t_r">元数据访问地址：</td>
@@ -275,6 +275,28 @@ body {
 	<script type="text/javascript"
 		src="${res }/plugins/wizard-master/jquery.smartWizard.js"></script>
 	<script type="text/javascript">
+	
+	//验证图片
+    jQuery.validator.addMethod("checkImage", function(value, element) {
+        return this.optional(element) || checkImage(value);
+    }, "请上传图片文件!");
+	
+	//根据文件名判断是否是图片
+    function checkImage(filepath) {
+        //获得上传文件名
+        var fileTypeArr= filepath.toLowerCase().split(".");
+        //切割出后缀文件名
+        var filetype=fileTypeArr[fileTypeArr.length-1];
+        var imagesTypes = new Array("jpg","jpeg","png","bmp","gif");
+        //jquery 判断值是否在数组中
+        if($.inArray(filetype, imagesTypes)>-1) {
+        	return true;
+        }
+        else {
+        	return false;
+        }
+    }
+	
 		$(document).ready(function() {
 			//设置下拉的值
 			if("${service.remoteServicesType}") {

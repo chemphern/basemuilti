@@ -49,7 +49,7 @@ public class LogServiceImpl implements LogService {
      * */
     @Override
     public List<Log> findAll(PageHelper page) {
-        return logDao.find("from Log", page);
+        return logDao.find("from Log order by createTime desc", page);
     }
 
     @Transactional
@@ -129,7 +129,7 @@ public class LogServiceImpl implements LogService {
             pl.add(status);
             sb.append(" and status = ?");
         }
-        sb.append(" order by createTime");
+        sb.append(" order by createTime desc");
         return logDao.find( sb.toString(),pl.toArray(),pageHelper);
     }
 

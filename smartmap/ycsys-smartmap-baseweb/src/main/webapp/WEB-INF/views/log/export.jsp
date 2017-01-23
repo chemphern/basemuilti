@@ -2,7 +2,7 @@
 <%@include file="/WEB-INF/views/common/taglib.jsp" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>羽辰智慧林业平台运维管理系统-运维监控日志</title>
     <link rel="stylesheet" href="${res}/dist/css/AdminLTE.css">
     <link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
     <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
@@ -71,7 +71,7 @@
             var startTimes = $("#startTimes").val();
             var endTimes = $("#endTimes").val();
             $("#startTime").val(new Date(startTimes).getTime());
-            $("#endTime").val(new Date(endTimes).getTime());
+            $("#endTime").val(new Date(endTimes).getTime() + 24*60*60*1000 -1);
             var ser = $fm.serialize();
             dialog.close();
             p.location.href="${ctx}/log/export?" + ser;

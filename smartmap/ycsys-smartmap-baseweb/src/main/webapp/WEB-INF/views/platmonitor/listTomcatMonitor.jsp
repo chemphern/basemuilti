@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>羽辰智慧林业平台运维管理系统-权限管理</title>
 </head>
 <body>
 

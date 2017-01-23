@@ -22,9 +22,24 @@ function changeVisibleInMap3D(treeNode,layerNum){
 		}
 	}
 	if(!ifAdd){
-		addWMSServiceToMap(treeNode.address,treeNode.name,layerNum);
+		var parentNode = treeNode.getParentNode();
+		var layerIndex = parentNode.children.length-1;
+		addWMSServiceToMap(treeNode.address,treeNode.name,layerNum,layerIndex);
 		//addWFSServiceToMap(decodeURI(treeNode.address),treeNode.name);
 	}
+	//视屏、全景暂时实现方案
+    // if(treeNode.name=="广州市视频点信息"){
+	//
+    // }else if(treeNode.name=="广东省全景视频点"){
+    //
+	// }
+}
+
+function setVisisbleFromName(name) {
+	// if(YcMap3D.ProjectTree.FindItem(name)!=""){
+	// 	var objID = YcMap3D.ProjectTree.FindItem(name);
+	// 	YcMap3D
+	// }
 }
 
 //初始化三维加载已存在服务
@@ -34,7 +49,9 @@ function initMapLayer(){
     for(var i=0;i<nodes.length;i++){
     	var node = nodes[i];
     	if(node.isParent==false){
-    		addWMSServiceToMap(node.address,node.name);
+            var parentNode = node.getParentNode();
+            var layerIndex = parentNode.children.length-1;
+    		addWMSServiceToMap(node.address,node.name,null,layerIndex);
     		//addWFSServiceToMap(decodeURI(node.address),node.name);
     	}
     }
@@ -52,15 +69,16 @@ function initPOILayer() {
     wfsLayer.Visibility.Show = false;
 }
 
-function addWMSServiceToMap(address,name,layerNum){
+function addWMSServiceToMap(address,name,layerNum,layerIndex){
 	 setTimeout(function(){
 	 	if(layerNum!=null||layerNum!=undefined){
             var server = getThemeWMSLayerServer(address);
-            var url= server + "?request=GetMap&Version=1.1.1&Service=WMS&SRS=EPSG:4326&Styles=default&Transparent=true&Format=image/png&BBOX=-180.000000,-90.000000,180.000000,90.000000&WIDTH=256&HEIGHT=256 HTTP/1.1&Layers=0";
+            var layer = layerIndex - parseInt(address.substring(address.lastIndexOf("/")+1,address.length));
+            var url= server + "?request=GetMap&Version=1.1.1&Service=WMS&SRS=EPSG:4326&Styles=default&Transparent=true&Format=image/png&BBOX=-180.000000,-90.000000,180.000000,90.000000&WIDTH=256&HEIGHT=256 HTTP/1.1&Layers=" + layer;
             CreatWMSlayer(url,name);
 		}else{
             var server = getWMSLayerServer(address);
-            var layer = address.substring(address.lastIndexOf("/")+1,address.length);
+            var layer = layerIndex - parseInt(address.substring(address.lastIndexOf("/")+1,address.length));
             var url= server + "?request=GetMap&Version=1.1.1&Service=WMS&SRS=EPSG:4326&Styles=default&Transparent=true&Format=image/png&BBOX=-180.000000,-90.000000,180.000000,90.000000&WIDTH=256&HEIGHT=256 HTTP/1.1&Layers=" + layer;
             CreatWMSlayer(url,name);
         }

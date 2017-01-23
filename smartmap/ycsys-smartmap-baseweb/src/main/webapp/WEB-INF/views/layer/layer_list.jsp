@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>羽辰智慧林业综合管理平台-资源管理</title>
+  <title>羽辰智慧林业平台运维管理系统-图层管理</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -124,10 +124,11 @@
 	    	$("#tree1").ligerTree(
 		            {
 		                url: "${ctx}/layer/listLayerType",
-	                    nodeWidth : 105,
+	                    nodeWidth : 205,
 	                    idFieldName :'id',
 	                    parentIDFieldName :'pid',
-	                    onSelect : onSelectLayer
+	                    onSelect : onSelectLayer,
+	                    isExpand : false
 		             }); 
 	    	treeManager = $("#tree1").ligerGetTreeManager();
 	        var menu;

@@ -23,9 +23,16 @@
   <!-- 表格 -->
   <link href="${res}/plugins/table/bootstrap-table.min.css" rel="stylesheet">
   <!-- 弹出框 -->
-  <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css"> 
+  <link href="${res}/plugins/dialog/dialog.css" rel="stylesheet" type="text/css">
+
+  <link href="${res}/dist/css/mapNotice.css">
   <%--   <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script> --%>
    <%--  <script src="${res}/plugins/jQueryUI/jquery-ui.min.js"></script>  --%>
+  <script>
+    window.ctx = '${ctx}';
+    window.res = '${res}';
+    window.userId = '${YCSYS_SESSION_USER.id}';
+  </script>
 <script src="${res}/plugins/mCustomScrollbar/jquery.mousewheel.js"></script>
 <!-- jQuery 修改浏览器默认滚动条 -->
 <script src="${res}/plugins/mCustomScrollbar/jquery.mCustomScrollbar.concat.min.js"></script>
@@ -72,7 +79,8 @@
 <script src="${res}/plugins/dialog/jquery.artDialog.source.js"></script>
 <script src="${res}/plugins/dialog/iframeTools.source.js"></script>
 <script src="${res}/plugins/dialog/unit.js"></script>
-
+  <!--右上角个人信息及消息模块-->
+  <script src="${res}/js/module/rightTop.js"></script>
 <%-- <script src="${res}/bootstrap/js/bootstrap-switch.min.js"></script> --%>
 <link href="${res}/bootstrap/css/bootstrap-switch.min.css">
 </head>
@@ -89,80 +97,26 @@
           <div id="navbar" class="float_r">
             <ul class="navbar-user">
               <li class="user dropdown">             
-                <a href="#" class="user_box dropdown-toggle" data-toggle="dropdown" id="dLabel"><img src="${res}/dist/img/map/photo1.png" alt="头像" /><span class="user_name">admin</span> <span class="caret"></span></a>
+                <a href="#" class="user_box dropdown-toggle" data-toggle="dropdown" id="dLabel"><img src="${res}/dist/img/map/photo1.png" alt="头像" /><span class="user_name">${YCSYS_SESSION_USER.name}</span> <span class="caret"></span></a>
                 <ul class="dropdown-menu memu-list"  role="menu" aria-labelledby="dLabel">
                   <!-- 下面一行为添加的标签 -->
                   <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>               
-                  <li><a href="#"><i class="icon iconfont">&#xe60e;</i><span>个人信息</span></a></li>
+                  <li><a href="javascript:;" id="per_msg"><i class="icon iconfont">&#xe60e;</i><span>个人信息</span></a></li>
 <!--                   <li><a href="#"><i class="icon iconfont">&#xe614;</i><span>修改资料</span></a></li> -->
-                  <li><a href="#"><i class="icon iconfont">&#xe615;</i><span>修改密码</span></a></li>
-                  <li><a href="#"><i class="icon iconfont">&#xe650;</i><span>退出系统</span></a></li>               
+                  <li><a href="javascript:;" id="per_pwd"><i class="icon iconfont">&#xe615;</i><span>修改密码</span></a></li>
+                  <li><a href="javascript:;" id="per_exit"><i class="icon iconfont">&#xe650;</i><span>退出系统</span></a></li>
                 </ul>                         
               </li>
-              <li class="user_info dropdown" ><a href="javascript:;" title="消息" class="icon-msg dropdown-toggle"  data-toggle="dropdown"><i class="icon iconfont">&#xe651;</i><span class="icon-msg-count">2</span></a>
+              <li class="user_info dropdown" >
+                <a href="javascript:;" title="消息" class="icon-msg dropdown-toggle"  data-toggle="dropdown">
+                <i class="icon iconfont">&#xe651;</i><span class="icon-msg-count" id="notice_count">0</span></a>
                 <!-- messages start-->
                 <ul class="dropdown-menu msg-box">
                   <!-- 下面一行为添加的标签 -->
                   <iframe frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>               
-                  <li class="msg-box-hd">你有<span class="orange">4个</span>消息待查看<a href="#">全部+</a></li>
+                  <li class="msg-box-hd" id="notice_header"></li>
                   <li>
-                    <ul class="msg-box-bd">
-                      <li>
-                        <a href="javascript:;">
-                          <div class="pull-left">
-                            <i class="iconfont icon">&#xe6a4;</i>
-                          </div>
-                          <h4>
-                            支持团队
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <i class="iconfont icon">&#xe6a4;</i>
-                          </div>
-                          <h4>
-                            AdminLTE 设计团队
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <i class="iconfont icon">&#xe6a4;</i>
-                          </div>
-                          <h4>
-                            开发商
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <i class="iconfont icon">&#xe6a4;</i>
-                          </div>
-                          <h4>
-                           市场部
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <div class="pull-left">
-                            <i class="iconfont icon">&#xe6a4;</i>
-                          </div>
-                          <h4>
-                          审稿人
-                          </h4>
-                          <p>Why not buy a new awesome theme?</p>
-                        </a>
-                      </li>
+                    <ul class="msg-box-bd" id="notice_menu">
                     </ul>
                   </li>                
                 </ul>
@@ -261,7 +215,7 @@
                 <div id="Sxcxbox-result" style="display:none">                  
                   <form action="" method="get" class="form-inline search-form" role="form">                   
                     <div class="Sxcxlist">
-                      <p>共有<span class="red" id='queryNum'></span>条结果<a href="#" class="btn_back" id='btnBack'>返回<i class="arrow-back"></i></a></p>
+                      <p>共有<span class="red" id='queryNum'></span>条结果<a href="#" class="btn_back" id='btnBack'><i class="arrow-back"></i>返回</a></p>
                       <div id="Searchresult">
                         <ul class="result" id="queryItem">
                         </ul>
@@ -335,7 +289,7 @@
                       </select>
                     </div>
                   </div>
-                  <div class="form-group">
+                  <div class="form-group form-group-sm">
                     <label for="name" class="col-sm-4">操作符：</label>
                     <div class="col-sm-8 select-item">
 <!--                       <input type="text" class="form-control input-sm" > -->
@@ -557,7 +511,7 @@
                      data-striped="true">
                         <thead>
                           <tr>
-                            <th data-checkbox="true"></th>
+                            <th data-radio="true"></th>
                             <th data-field="id">序号</th>
                             <th data-field="name">书签名称</th>
                             <th data-field="description">描述</th>
@@ -814,14 +768,6 @@
                       <li>
                         <span class="icon iconfont">&#xe671;</span>
                         <span class="icon-class">椭圆</span>
-                      </li>
-                      <li>
-                        <span class="icon iconfont">&#xe675;</span>
-                        <span class="icon-class">扇形</span>
-                      </li>
-                      <li>
-                        <span class="icon iconfont">&#xe680;</span>
-                        <span class="icon-class">弓形</span>
                       </li>
                       <li>
                         <span class="icon iconfont">&#xe684;</span>
@@ -1779,14 +1725,14 @@
           </div>
         </div>
         <div id="fore-2d3d-menu-bj" >
-          <!-- 当前位置 -->
+          当前位置
           <ol class="breadcrumb">
             <li><i class="icon iconfont home">&#xe640;</i></li>
             <li><a href="#">首页</a></li>
             <li><a href="#">-地图编辑</a></li>
           </ol>
 
-          <!-- 当前操作 -->
+          当前操作
           <div class="subTabs">
             <div class="panelBox active" id="fore-2d3d-menu-bj-dtbj">
               <div class="panelBox-heading"><i class="icon iconfont icon_map">&#xe622;</i>
@@ -2003,8 +1949,8 @@
                 </ul>
                 <div id="myTabContentPlot" class="tab-content">                
                   <div class="tab-pane side-plot active" id="PaintOption">
-                     <a href="javascript:;" class="active"><span class="icon iconfont">&#xe64d;</span></a>
-                     <a href="javascript:;"><span class="icon iconfont">&#xe64f;</span></a>
+                     <a href="javascript:;" class="active"><span class="icon iconfont">&#xe697;</span></a>
+                     <a href="javascript:;"><span class="icon iconfont">&#xe696;</span></a>
                      <a href="javascript:;"><span class="icon iconfont">&#xe632;</span></a>      
                   </div>               
                 </div>
@@ -2012,10 +1958,10 @@
 <!--                     <select class="easyui-combobox" id="overlay" multiple="multiple"></select> -->
 <!--                 </div> -->
                 <form class="form-inline search-form" role="form">
-                <div class="form-group form-group-sm">
-                    <label for="name">导入GPS</label>
-                    <div class="filebox"><input type="file" name="file_0_ture" size="20" onchange="document.getElementById('file_0').value=this.value" class="filetext opacity "><input name="file_0" id="file_0" value="" class="form-control"> <button type="button"  class="btn btn_import">导 入</button></div>
-                </div>
+<!--                 <div class="form-group form-group-sm"> -->
+<!--                     <label for="name">导入GPS</label> -->
+<!--                     <div class="filebox"><input type="file" name="file_0_ture" size="20" onchange="document.getElementById('file_0').value=this.value" class="filetext opacity "><input name="file_0" id="file_0" value="" class="form-control"> <button type="button"  class="btn btn_import">导 入</button></div> -->
+<!--                 </div> -->
                 </form> 
                 <div style="display: none;" id='overlayPnl'></div>             
               </div>
@@ -2029,46 +1975,46 @@
                   <li class="active"><a href="#PaintOption" data-toggle="tab" aria-expanded="true">请选择绘制方式</a><i class="triangle-up"></i></li>
                 </ul>
                 <div id="myTabContentPlot" class="tab-content">                
-                  <div class="tab-pane side-plot active" id="PaintOption">
+                  <div class="tab-pane side-plot active" id="PaintOptionBuf">
                      <a href="javascript:;" class="active"><span class="icon iconfont">&#xe64d;</span></a>
                      <a href="javascript:;"><span class="icon iconfont">&#xe64f;</span></a>
                      <a href="javascript:;"><span class="icon iconfont">&#xe632;</span></a>      
                   </div>               
                 </div>
                 <form class="form-horizontal search-form" role="form">
+<!--                 <div class="form-group form-group-sm"> -->
+<!--                     <label for="name" class="col-sm-5">导入GPS</label> -->
+<!--                     <div class="filebox col-sm-7"><input type="file" name="file_1_ture" size="20" onchange="document.getElementById('file_1').value=this.value" class="filetext opacity "><input name="file_1" id="file_1" value="" class="form-control"> <button type="button"  class="btn file_btn">导 入</button></div> -->
+<!--                 </div> -->
                 <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-5">导入GPS</label>
-                    <div class="filebox col-sm-7"><input type="file" name="file_1_ture" size="20" onchange="document.getElementById('file_1').value=this.value" class="filetext opacity "><input name="file_1" id="file_1" value="" class="form-control"> <button type="button"  class="btn file_btn">导 入</button></div>
-                </div>
-                <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-5">分析图层：</label>
-                    <div class="col-sm-7 select-item">
-                      <select class="form-control input-sm">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
+<!--                     <label for="name" class="col-sm-5">分析图层：</label> -->
+<!--                     <div class="col-sm-7 select-item"> -->
+<!--                       <select class="form-control input-sm"> -->
+<!--                         <option>1</option> -->
+<!--                         <option>2</option> -->
+<!--                         <option>3</option> -->
+<!--                       </select> -->
+<!--                     </div> -->
                   </div>
                   <div class="form-group">
                     <label for="name" class="col-sm-5">缓冲距离(米)：</label>
                     <div class="col-sm-7">
-                      <input type="text" class="form-control input-sm" >
+                      <input type="text" class="form-control input-sm" id='bufDistance'>
                     </div>
                   </div>
-                  <div class="form-group form-group-sm">
-                    <label for="name" class="col-sm-5">统计类似：</label>
-                    <div class="col-sm-7 select-item">
-                      <select class="form-control input-sm">
-                        <option>村</option>
-                        <option>2</option>
-                        <option>3</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="searchBtn">
-                    <button type="submit" class="btn btn-success">分析</button>
-                  </div>
+<!--                   <div class="form-group form-group-sm"> -->
+<!--                     <label for="name" class="col-sm-5">统计类似：</label> -->
+<!--                     <div class="col-sm-7 select-item"> -->
+<!--                       <select class="form-control input-sm"> -->
+<!--                         <option>村</option> -->
+<!--                         <option>2</option> -->
+<!--                         <option>3</option> -->
+<!--                       </select> -->
+<!--                     </div> -->
+<!--                   </div> -->
+<!--                   <div class="searchBtn"> -->
+<!--                     <button type="button" class="btn btn-success" id='bufAnalysis'>分析</button> -->
+<!--                   </div> -->
                 </form>              
               </div>
             </div>
@@ -2132,7 +2078,17 @@
                         </div>
                         <div class="form-group col-sm-6">
                           <label for="name" class="label col-sm-5">风向</label>
-                          <input type="text" class="input-sm col-sm-7" value="西南" id="fireFengXiang">
+                          <!-- <input type="text" class="input-sm col-sm-7" value="西南" id="fireFengXiang"> -->
+                          <select name="" id="fireFengXiang" class="input-sm col-sm-7">
+                            <option value="东">东</option>
+                            <option value="南">南</option>
+                            <option value="西">西</option>
+                            <option value="北">北</option>
+                            <option value="东北">东北</option>
+                            <option value="东南">东南</option>
+                            <option value="西北">西北</option>
+                            <option value="西南" selected>西南</option>
+                          </select>
                         </div>
                         <div class="form-group col-sm-6">
                           <label for="name" class="label col-sm-7">干旱码</label>
@@ -2203,9 +2159,10 @@
                           <button for="name" class="col-sm-6" onclick="getFireClick()">拾取起火点位置</button>
                         </div>
                         <div class="btn-group col-sm-12" id="forestFireBtn">
-                          <button type="button" class="btn btn-default col-sm-4" onclick="startSimulation()">开始模拟</button>
-                          <button type="button" class="btn btn-default col-sm-4" onclick="pauseSimulation()">暂停模拟</button>
-                          <button type="button" class="btn btn-default col-sm-4" onclick="stopSimulation()">停止模拟</button>
+                          <button type="button" class="btn btn-default col-sm-3" onclick="startSimulation()">开始模拟</button>
+                          <button type="button" class="btn btn-default col-sm-3" onclick="pauseSimulation()">暂停模拟</button>
+                          <button type="button" class="btn btn-default col-sm-3" onclick="stopSimulation()">停止模拟</button>
+                          <button type="button" class="btn btn-default col-sm-3" onclick="getSimulationPic()">渲染结果</button>
                         </div>
                       <%--</form>--%>
                     </div>      
@@ -2395,9 +2352,10 @@
     <div class="mapcontent" id="mapContent">
       <!-- 地图工具条 start-->
       <div class="toolbar" id="measureDiv">
-      	  <a href="javascript:;" id="btnIdentify"><i class="icon iconfont">&#xe692;</i><h3>I查询</h3></a>
+      	  <a href="javascript:;" id="btnIdentify"><i class="icon iconfont">&#xe692;</i><h3>查询</h3></a>
       	  <a href="javascript:;" id="printDiv" onclick="print()"><i class="icon iconfont">&#xe63f;</i><h3>打印</h3></a>
-          <a href="javascript:;" id="fullScreenBtn"><i class="icon iconfont">&#xe643;</i><h3>全屏</h3></a>
+          <a href="javascript:;" title="全屏" id="fullScreenBtn"><i class="icon iconfont">&#xe643;</i><h3>全屏</h3></a>
+          <a href="javascript:;" title="退出" id="noFullScreenBtn" style="display:none;" ><i class="icon iconfont">&#xe643;</i><h3>退出</h3></a>
           <a href="javascript:;" onclick="clearMap()"><i class="icon iconfont">&#xe646;</i><h3>清除</h3></a>
           <a href="javascript:;" onclick="pan();"><i class="icon iconfont">&#xe76d;</i><h3>平移</h3></a>
           <a href="javascript:;" onclick="zoomIn();"><i class="icon iconfont">&#xe624;</i><h3>放大</h3></a>
@@ -2413,7 +2371,7 @@
         
       <div class="legend-inner">
 
-        <div class="legendBox">
+        <div class="legendBox" id="legendBox">
           <div class="legend_hd"><h2>图例</h2></div>
           	<div id="legendDiv" class="legendBody"></div>
 <!--           <ul class="legend_list"> -->
@@ -2474,7 +2432,7 @@
             <!-- 下面一行为添加的标签 -->
               <iframe id="map3dSceneViewIframe" frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
               <a href="#"  class="btn city-change-inner"> <span>广东省</span><em></em></a>
-              <div class="city-popup-main city-dropdown-menu">
+              <div class="city-popup-main city-dropdown-menu" id="city-popup-main">
               <iframe id="map3dSceneViewIframe" frameborder= "0" scrolling="no" style="background-color:transparent; position: absolute; z-index: -1; width: 100%; height: 100%; top: 0; left:0;"></iframe>
                 <i class="city-popup-triangle-up"></i>
                 <div class="city-title">全图范围：<span>广东省</span></div>

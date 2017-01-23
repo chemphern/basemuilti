@@ -1,13 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
 <%@include file="/WEB-INF/views/common/taglib.jsp"%>
+<!DOCTYPE HTML>
 <html>
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-统计分析报告</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="shortcut icon" href="favicon.ico" />
@@ -35,7 +33,7 @@
             background-color: #f1f1f1
         }
         body{
-        	overflow-y: auto;
+        	overflow-y: hidden;
         }
         </style>
 </head>
@@ -49,8 +47,8 @@
 	<div class="row">
         <div class="col-md-12" style="margin:0 0 20px 10px;">
           <div class="btn_box" style="float: left;margin-top:5px;"> 
-           	 报告生成时间：<input type="text" id="startTime" class="text date_plug" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"/> 
-           	 至 <input type="text" id="endTime" class="text date_plug" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"/>
+           	 报告生成时间：<input type="text" id="startTime" class="text date_plug" value="${curDate }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"/> 
+           	 至 <input type="text" id="endTime" class="text date_plug" value="${curDateTo }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"/>
             <button class="current" id="downLoadBtn"><i class="glyphicon glyphicon-export"></i>下载</button>
           </div>
         </div>

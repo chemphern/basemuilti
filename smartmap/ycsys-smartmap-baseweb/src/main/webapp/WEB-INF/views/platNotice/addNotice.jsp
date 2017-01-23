@@ -2,7 +2,7 @@
 <%@include file="/WEB-INF/views/common/taglib.jsp" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>羽辰智慧林业平台运维管理系统-平台消息添加</title>
     <link rel="stylesheet" href="${res}/dist/css/AdminLTE.css">
     <link href="${res}/plugins/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
     <script src="${res}/plugins/jQuery/jquery-2.2.3.min.js"></script>
@@ -76,6 +76,7 @@
     };
     $(function(){
         var p = window.parent;
+        //? dialog获取父页面
         var dialog = p.art.dialog.list["addNotice"];
         var $fm = $("#form_id");
         var dialog_div = dialog.DOM.wrap;

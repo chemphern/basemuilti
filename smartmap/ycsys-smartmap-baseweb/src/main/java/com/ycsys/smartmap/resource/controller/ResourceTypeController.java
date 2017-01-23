@@ -211,14 +211,20 @@ public class ResourceTypeController {
 		Map<String, String> map = new HashMap<String, String>();
 		if(id != null) {
 			List<Resource> rList = resourceService.find("from Resource t where t.resourceType.id = ?", new Object[] {id});
-			String destPath = request.getSession().getServletContext()
-					.getRealPath("backup" + File.separator +"资源");
-			if(rList == null || rList.size() < 1) {
-				map.put("msg", "该节点下没有资源");
-				return map;
-			}
+			//找到tomcat所在位置
+			String tomcatHome = System.getProperty("catalina.home"); //D:\software1\tomcat\apache-tomcat-8.5.6
+			tomcatHome = tomcatHome.substring(0, tomcatHome.lastIndexOf("\\"));
+			String destPath =  tomcatHome +File.separator + "项目文件" + File.separator + "备份" + File.separator + "资源";
+			//String destPath = request.getSession().getServletContext().getRealPath("backup" + File.separator +"资源");
 			//得到资源分类的所有父亲结点名称（包含自己的），上传的文件要根据所在资源分类来存储
 			ResourceType resourceType = resourceTypeService.get(ResourceType.class,id);
+			if(rList == null || rList.size() < 1 ) {
+				if(resourceType.getParent() != null) {
+					map.put("msg", "该节点下没有资源");
+					return map;
+				}
+			}
+			
 			String rtParent = getResourceTypeParent(resourceType);
 			String parentName[] = rtParent.split("##");
 			List<String> parentNameList = Arrays.asList(parentName);
@@ -229,8 +235,22 @@ public class ResourceTypeController {
 				sb.append(File.separator).append(s);
 			}
 			destPath = destPath + sb.toString() + File.separator;
-			String srcPath = rList.get(0).getFilePath().substring(0,rList.get(0).getFilePath().lastIndexOf("\\"));
-			//复制
+			String srcPath = "";
+			//String srcPath = rList.get(0).getFilePath().substring(0,rList.get(0).getFilePath().lastIndexOf("\\"));
+			//备份所有资源
+			if(resourceType.getParent() == null) {
+				//找到tomcat所在位置
+				/*srcPath = System.getProperty("catalina.home"); //D:\software1\tomcat\apache-tomcat-8.5.6
+				srcPath = tomcatHome.substring(0, tomcatHome.lastIndexOf("\\"));
+				srcPath = tomcatHome +File.separator + "项目文件" + File.separator + "资源";*/
+				map.put("msg", "该节点下没有资源");
+				return map;
+			}
+			else {
+				srcPath = rList.get(0).getFilePath().substring(0,rList.get(0).getFilePath().lastIndexOf("\\"));
+			}
+			
+			//复制（存在则覆盖）
 			boolean flag = FileUtils.copyDirectoryCover(srcPath, destPath,true);
 			if(flag) {
 				map.put("msg", "成功备份了【"+name+"】分类下的资源到路径（" + destPath + "）中");

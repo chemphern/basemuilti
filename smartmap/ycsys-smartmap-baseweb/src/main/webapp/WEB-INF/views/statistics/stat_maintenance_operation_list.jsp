@@ -1,13 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
 <%@include file="/WEB-INF/views/common/taglib.jsp"%>
+<!DOCTYPE HTML>
 <html>
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-运维操作统计</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="shortcut icon" href="favicon.ico" />
@@ -39,14 +37,14 @@ body {
 	overflow-y: auto;
 }
 
-body,ul,li {
+#tabbox ul li {
 	margin: 0;
 	padding: 0;
 	font: 12px normal "宋体", Arial, Helvetica, sans-serif;
 	list-style: none;
 }
 
-a {
+#tabbox a {
 	text-decoration: none;
 	color: #000;
 	font-size: 14px;
@@ -55,54 +53,53 @@ a {
 #tabbox {
 	width: 100%;
 	overflow: hidden;
-	margin: 0 10px;
+	margin: 0 auto;
 }
 
-.tab_conbox {
+#tabbox .tab_conbox {
 	border: 1px solid #999;
 	border-top: none;
 }
 
-.tab_con {
+#tabbox .tab_con {
 	display: none;
 }
 
-.tabs {
-	height: 32px;
+#tabbox .tabs {
+	height: 39px;
 	border-bottom: 1px solid #999;
-	border-left: 1px solid #999;
 	width: 100%;
 }
 
-.tabs li {
-	height: 31px;
-	line-height: 31px;
+#tabbox .tabs li {
+	height: 38px;
+	line-height: 38px;
 	float: left;
-	border: 1px solid #999;
 	border-left: none;
+	border: 1px solid #dcdcdc;
 	margin-bottom: -1px;
-	background: #e0e0e0;
+	background: #f1f1f1;
 	overflow: hidden;
 	position: relative;
 }
 
-.tabs li a {
+#tabbox .tabs li a {
 	display: block;
 	padding: 0 20px;
-	border: 1px solid #fff;
 	outline: none;
 }
 
-.tabs li a:hover {
-	background: #ccc;
+#tabbox .tabs li a:hover {
+	background: #27bf8c;
+	border: none;
+	color:#000;
 }
 
-.tabs .thistab,.tabs .thistab a:hover {
-	background: #fff;
-	border-bottom: 1px solid #fff;
+#tabbox .tabs .thistab,.tabs .thistab a:hover {
+	background: #27bf8c;
 }
 
-.tab_con {
+#tabbox .tab_con {
 	padding: 12px;
 	font-size: 14px;
 	line-height: 175%;
@@ -132,9 +129,11 @@ a {
 					<ul class="tab_conbox" id="tab_conbox">
 						<li class="tab_con">
 							<div class="charts" id="chart2"></div>
+							<div id="maingrid4"></div>
 						</li>
 						<li class="tab_con">
 							<div class="charts" id="chart3"></div>
+							<div id="maingrid2"></div>
 						</li>
 					</ul>
 				</div>
@@ -164,6 +163,8 @@ a {
 <script src="${res }/plugins/My97DatePicker/WdatePicker.js"></script>
 <%-- <script src="${res }/dist/js/pages/yext02.js"></script> --%>
 <script>
+var gridManager;
+var gridManager2;
 $(document).ready(function() {
 	//选项卡
 	jQuery.jqtab = function(tabtit, tab_conbox, event) {
@@ -204,13 +205,16 @@ $(document).ready(function(){
 		$("#chart3").css("width", $("#tab_conbox").width()-20);
 	    var myChart2 = echarts.init(document.getElementById('chart2'),'macarons');
 	    var myChart3 = echarts.init(document.getElementById('chart3'),'macarons');
-		
+	    myChart2.showLoading({
+	        text: "图表数据正在努力加载..."
+	    });
 	     $.ajax({
 			url:"${ctx}/statistics/getMaintenanceOperationInfo",
 			method:"post",
 			data:{'startTime':$("#startTime").val(),'endTime':$("#endTime").val()},
 			dataType:"json",
 			success:function(ret) {
+				myChart2.hideLoading();
 				var successRate = "";
 				var xOpetAxisData = "";
 				var opeSeriesData = "";
@@ -402,6 +406,40 @@ $(document).ready(function(){
 				alert("connection error!");		
 			}
 	     });
+	     
+	   //用户操作列表start
+	     $(function () {
+	 	   gridManager = $("#maingrid4").ligerGrid({
+	 	         checkbox: false,
+	 	         columns: [
+	 	         { display: '操作用户', name: 'operateType', minwidth: 90 },
+	 	         { display: '统计次数', name: 'operateCount', minwidth: 90 }
+	 	         ], pageSize:5,
+	 	         url:"${ctx}/statistics/listMaintenanceOperationData?type=1&startTime=" + $("#startTime").val() + "&endTime=" + $("#endTime").val(),
+	 	         usePager: false,
+	 	         width: '100%',
+	 	         height:'300px'
+	 	     });
+	       $("#pageloading").hide(); 
+	 	 });
+	 	//用户操作列表end
+	     
+	 	//操作类型列表start
+	     $(function () {
+	 	   gridManager2 = $("#maingrid2").ligerGrid({
+	 	         checkbox: false,
+	 	         columns: [
+	 	         { display: '操作类别', name: 'operateType', minwidth: 90 },
+	 	         { display: '统计次数', name: 'operateCount', minwidth: 90 }
+	 	         ], pageSize:5,
+	 	         url:"${ctx}/statistics/listMaintenanceOperationData?type=2&startTime=" + $("#startTime").val() + "&endTime=" + $("#endTime").val(),
+	 	         usePager: false,
+	 	         width: $("#tab_conbox").width()-25,
+	 	         height:'300px'
+	 	     });
+	       $("#pageloading").hide(); 
+	 	 });
+	 	//操作类型列表end
 	}
 	
 });

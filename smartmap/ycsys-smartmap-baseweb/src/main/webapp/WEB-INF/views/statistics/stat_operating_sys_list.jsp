@@ -1,13 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" isELIgnored="false"%>
 <%@include file="/WEB-INF/views/common/taglib.jsp"%>
+<!DOCTYPE HTML>
 <html>
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-平台操作系统统计</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <link rel="shortcut icon" href="favicon.ico" />
@@ -30,23 +28,24 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+    <style>
+body {
+	overflow-y: auto;
+}
+  </style>
 </head>
 <body>
 	<div>
     <!-- Content Header (Page header) -->
-    <section class="content-header">
+    <section class="content-header" style="background-color: #f1f1f1;">
       <h1>平台操作系统统计</h1>
-      <ol class="breadcrumb">
-        <li><a href="#"><i class="iconfont iconfont-bars"></i> 首页</a></li>
-        <li class="active">平台操作系统统计</li>
-      </ol>
     </section>
 
     <!-- Main content -->
-    <section class="content">
+   <!--  <section class="content"> -->
     <div class="row">
         <div class="col-md-12">
-          <div class="btn_box" style="float: left;margin-top:30px;"> 
+          <div class="btn_box" style="float: left;margin:10px 0 10px 10px;"> 
             	时间：<input name="startTime" id="startTime" type="text" class="text date_plug" value="${curDate }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"> 
             	至 <input name="endTime" id="endTime" type="text" class="text date_plug" value="${curDateTo }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})">
             	统计类型：<select id="statType" name="statType" class="text">
@@ -55,16 +54,14 @@
 		            		<option value="3">网络字节流量参数</option>
 		            		<option value="4">内存参数</option>
 		              </select>&nbsp;&nbsp;
-		        <span id="paramTypeSpan">参数类型：</span><input type="checkbox" name="paramType" id="paramType1" checked="checked" value="1" class="text" style="width: 5px;"> <span id="spanId1">&nbsp;&nbsp;CPU使用率</span> &nbsp;&nbsp;
-		          <input type="checkbox" name="paramType" id="paramType2" checked="checked" value="2" class="text" style="width: 5px;" > <span id="spanId2">&nbsp;&nbsp;CPU空闲率</span>&nbsp;&nbsp;
-            <button class="current" id="queryBtn"><i class="glyphicon glyphicon-search"></i>查询</button><hr />
+            <button class="current" id="queryBtn"><i class="glyphicon glyphicon-search"></i>查询</button>
           </div>
           <div class="charts" id="chart"></div>
           <div id="maingrid4"></div>
         </div>
         </div>
       <!-- /.row -->
-    </section>
+    <!-- </section> -->
     <!-- /.content -->
   </div>
 </body>
@@ -88,37 +85,10 @@
 <script src="${res }/plugins/My97DatePicker/WdatePicker.js"></script>
 <%-- <script src="${res }/dist/js/pages/ptsj.js"></script> --%>
 <script>
-var gridManager = null;
 $(document).ready(function() {
-	
 	//统计类型改变事件
 	$("#statType").on("change",function() {
-		var startTypeVal= $(this).val();
-		$("#spanId1").show();
-		$("#spanId2").show();
-		$("#paramTypeSpan").show();
-		$("#paramType1").show();
-		$("#paramType2").show();
-		
-		if(startTypeVal == "1") {
-			$("#spanId1").html("&nbsp;&nbsp;CPU使用率");
-			$("#spanId2").html("&nbsp;&nbsp;CPU空闲率");
-		}
-		else if(startTypeVal == "2"){
-			$("#spanId1").html("&nbsp;&nbsp;网络发送包裹");
-			$("#spanId2").html("&nbsp;&nbsp;网络接收包裹");
-		}
-		else if(startTypeVal == "3"){
-			$("#spanId1").html("&nbsp;&nbsp;发送流量");
-			$("#spanId2").html("&nbsp;&nbsp;接收流量");
-		}
-		else if(startTypeVal == "4"){
-			$("#spanId1").hide();
-			$("#spanId2").hide();
-			$("#paramType1").hide();
-			$("#paramType2").hide();
-			$("#paramTypeSpan").hide();
-		}
+		$("#queryBtn").click();
 	});
 	
 	//查询按钮绑定单击事件
@@ -129,25 +99,13 @@ $(document).ready(function() {
 	//点击查询
 	$("#queryBtn").click();
 	
-	
-	
 	//查询 start
 	function query() {
-		if(gridManager) {
-			gridManager.setParm("startTime",$("#startTime").val());
-	    	gridManager.setParm("endTime",$("#endTime").val());
-	    	gridManager.reload();
-		}
 	 	var myChart = echarts.init(document.getElementById('chart'),'macarons');
-	 	//参数类型
-	 	var paramType = [];
-	 	$("input[name='paramType']:checked").each(function() {
-	 		paramType.push($(this).val());
-	 	});
-	 	if(paramType.length==0) {
-	 		alert("请至少选择1个参数类型！");
-	 		return false;
-	 	}
+	 	myChart.showLoading({
+	        text: "图表数据正在努力加载..."
+	    });
+	 	
 	 	//统计类型
 	 	var statType = $("#statType").val();
 	 	var unit = "";//单位
@@ -155,25 +113,26 @@ $(document).ready(function() {
 	 	var seriesName1 = "";
 	 	var seriesName2 = "";
 	 	if(statType == 1) {
-	 		legendName = "CPU参数统计";
+	 		unit = " %";
+	 		legendName = ["CPU使用率","CPU空闲率"];
 	 		seriesName1 = "CPU使用率";
 	 		seriesName2 = "CPU空闲率";
 	 	}
 	 	else if(statType == 2) {
 	 		unit = " MB";
-	 		legendName = "网络包裹统计";
+	 		legendName = ["网络发送包裹","网络接收包裹"];
 	 		seriesName1 = "网络发送包裹";
 	 		seriesName2 = "网络接收包裹";
 	 	}
 	 	else if(statType == 3) {
 	 		unit = " MB";
-	 		legendName = "网络字节流量统计";
+	 		legendName = ["发送流量","接收流量"];
 	 		seriesName1 = "发送流量";
 	 		seriesName2 = "接收流量";
 	 	}
 	 	else if(statType == 4) {
 	 		unit = " MB";
-	 		legendName = "内存统计";
+	 		legendName = ["内存使用"];
 	 		seriesName1 = "内存使用";
 	 	}
 	 	
@@ -181,12 +140,16 @@ $(document).ready(function() {
 	    $.ajax({
 			url:"${ctx}/statistics/getOperratingSysInfo",
 			method:"post",
-			data:{'startTime':$("#startTime").val(),'endTime':$("#endTime").val(),"statType":$("#statType").val(),"paramType":paramType.join(",")},
+			data:{'startTime':$("#startTime").val(),'endTime':$("#endTime").val(),"statType":$("#statType").val()},
 			dataType:"json",
 			success:function(ret) {
-				var xData = JSON.parse(ret.xAxisData);
+				myChart.hideLoading();
+				var xData = "";
 				var seriesData1 = "";
 				var seriesData2 = "";
+				if(ret.xAxisData) {
+					xData = JSON.parse(ret.xAxisData);
+				}
 				if(ret.seriesData1) {
 					seriesData1 = JSON.parse(ret.seriesData1);
 				}
@@ -212,7 +175,7 @@ $(document).ready(function() {
 			    		      }
 			    		  },
 			    		  legend : {
-			    		      data : [legendName]
+			    		      data : legendName
 			    		  },
 			    		  grid: {
 			    		      y2: 80
@@ -259,6 +222,9 @@ $(document).ready(function() {
 			    		      }
 			    		  ]
 			    		};
+			    if(xData == "") {
+			    	option.series=[''];
+			    }
 			    myChart.setOption(option);
 			},
 			error: function(result) {
@@ -270,7 +236,7 @@ $(document).ready(function() {
 	  //数据库列表start
 	   $(function () {
 		   if(statType == "1") {
-			   gridManager = $("#maingrid4").ligerGrid({
+			   $("#maingrid4").ligerGrid({
 			         checkbox: false,
 			         columns: [
 			         { display: '服务器名称', name: 'serverName', minwidth: 80 },
@@ -281,13 +247,13 @@ $(document).ready(function() {
 			         { display: 'CPU当前空闲率最小值', name: 'freeMin', minwidth: 150 },
 			         { display: 'CPU当前空闲率平均值', name: 'freeAverage', minwidth: 150 }
 			         ], pageSize:10,
-			         url:"${ctx}/statistics/listOperatingSysData?statType="+statType,
+			         url:"${ctx}/statistics/listOperatingSysData?statType="+statType + "&startTime=" + $("#startTime").val() + "&endTime=" + $("#endTime").val(),
 			         usePager: false,
 			         width: '100%',height:'300px'
 		     	});
 		   }
 		   else if(statType == "2"){
-			   gridManager = $("#maingrid4").ligerGrid({
+			   $("#maingrid4").ligerGrid({
 			         checkbox: false,
 			         columns: [
 			         { display: '服务器名称', name: 'serverName', minwidth: 80 },
@@ -298,13 +264,13 @@ $(document).ready(function() {
 			         { display: '网络接收包裹最小值', name: 'recPackageMin', minwidth: 150 },
 			         { display: '网络接收包裹平均值', name: 'recPackageAverage', minwidth: 150 }
 			         ], pageSize:10,
-			         url:"${ctx}/statistics/listOperatingSysData?statType="+statType,
+			         url:"${ctx}/statistics/listOperatingSysData?statType="+statType + "&startTime=" + $("#startTime").val() + "&endTime=" + $("#endTime").val(),
 			         usePager: false,
 			         width: '100%',height:'300px'
 		     	});
 		   }
 		   else if(statType == "3"){
-			   gridManager = $("#maingrid4").ligerGrid({
+			   $("#maingrid4").ligerGrid({
 			         checkbox: false,
 			         columns: [
 			         { display: '服务器名称', name: 'serverName', minwidth: 80 },
@@ -315,13 +281,13 @@ $(document).ready(function() {
 			         { display: '接收流量最小值', name: 'recPackageMin', minwidth: 150 },
 			         { display: '接收流量平均值', name: 'recPackageAverage', minwidth: 150 }
 			         ], pageSize:10,
-			         url:"${ctx}/statistics/listOperatingSysData?statType="+statType,
+			         url:"${ctx}/statistics/listOperatingSysData?statType="+statType + "&startTime=" + $("#startTime").val() + "&endTime=" + $("#endTime").val(),
 			         usePager: false,
 			         width: '100%',height:'300px'
 		     	});
 		   }
 		   else if(statType == "4"){
-			   gridManager = $("#maingrid4").ligerGrid({
+			   $("#maingrid4").ligerGrid({
 			         checkbox: false,
 			         columns: [
 			         { display: '服务器名称', name: 'serverName', minwidth: 80 },
@@ -329,7 +295,7 @@ $(document).ready(function() {
 			         { display: '使用内存最小值', name: 'usedMemoryMin', minwidth: 100 },
 			         { display: '使用内存平均值', name: 'usedMemoryAverage', minwidth: 100 }
 			         ], pageSize:10,
-			         url:"${ctx}/statistics/listOperatingSysData?statType="+statType,
+			         url:"${ctx}/statistics/listOperatingSysData?statType="+statType + "&startTime=" + $("#startTime").val() + "&endTime=" + $("#endTime").val(),
 			         usePager: false,
 			         width: '100%',height:'300px'
 		     	});

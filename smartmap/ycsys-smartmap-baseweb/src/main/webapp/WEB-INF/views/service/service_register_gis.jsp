@@ -6,7 +6,7 @@
 <meta charset="utf-8">
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>羽辰智慧林业综合管理平台-资源管理</title>
+<title>羽辰智慧林业平台运维管理系统-服务注册</title>
 <!-- Tell the browser to be responsive to screen width -->
 <meta
 	content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
@@ -83,15 +83,20 @@ body {
 				<tr>
 					<td class="t_r">请选择服务引擎：</td>
 					<td><select name="serverEngine.id" id="serverEngine" onchange="serverEngineChange(this);"
-						class="text" validate="{required:true,messages:{required:'必填'}}">
+						class="text" style="width: 350px" validate="{required:true,messages:{required:'必填'}}">
 							<option value="">-请选择-</option>
 							<c:forEach var="list" items="${serverEngineList }">
 								<option value="${list.id }">${list.configName }</option>
 							</c:forEach>
 					</select>
 				</tr>
+				<tr>
+					<td colspan="2">
+						<div class="list" id="maingrid4" style="margin-left:45px;"></div>
+					</td>
+				</tr>
 			</table>
-			<div class="list" id="maingrid4" style="margin-left:150px;"></div>
+			<!-- <div class="list" id="maingrid4" style="margin-left:150px;"></div> -->
 		</div>
 
 		<div id="step-2">
@@ -101,20 +106,20 @@ body {
 				<tr>
 					<td class="t_r">服务注册名称：</td>
 					<td><input type="text" name="registerName" id="registerName" placeholder="请输入英文"
-						class="text validate[required]" validate="{required:true,maxlength : 15,english:true,messages:{required:'必填',maxlength:'字符长度不能超过15个!'}}"/>
+						class="text validate[required]" style="width: 350px" validate="{required:true,maxlength : 50,english:true,messages:{required:'必填',maxlength:'字符长度不能超过50个!'}}"/>
 						<span style="color: red">*</span>
 						</td>
 				</tr>
 				<tr>
 					<td class="t_r">服务显示名称：</td>
 					<td><input type="text" name="showName" id="showName"
-						class="text validate[required]" validate="{required:true,maxlength : 15,messages:{required:'必填',maxlength:'字符长度不能超过15个!'}}"/>
+						class="text validate[required]" style="width: 350px" validate="{required:true,maxlength : 50,messages:{required:'必填',maxlength:'字符长度不能超过50个!'}}"/>
 						<span style="color: red">*</span>
 						</td>
 				</tr>
 				<tr>
 					<td class="t_r">服务描述：</td>
-					<td><textarea name="remarks" id="remarks" clos="20" rows="5" class="text_area" 
+					<td><textarea name="remarks" id="remarks" clos="20" rows="5" class="text_area" style="width: 350px;height: 100px" 
 						validate="{maxlength : 100,messages:{maxlength:'服务描述 的字符长度大于100个字符！'}}"></textarea></td>
 				</tr>
 			</table>
@@ -127,7 +132,7 @@ body {
 				<tr>
 					<td class="t_r">服务功能类型：</td>
 					<td><input type="text" name="functionType" id="functionType" readonly="readonly"
-						class="text validate[required]" /></td>
+						class="text validate[required]" style="width: 350px"/></td>
 				</tr>
 				<tr>
 					<td class="t_r">拓展功能类型：</td>
@@ -140,7 +145,7 @@ body {
 				<tr>
 					<td class="t_r">服务缓存：</td>
 					<td><select type="text" name="cacheType" id="cacheType"
-						class="text" >
+						class="text" style="width: 350px">
 							<c:forEach var="map" items="${serviceCacheType }">
 								<option value="${map.key }">${map.value.name }</option>	
 							</c:forEach>
@@ -150,7 +155,7 @@ body {
 				<tr>
 					<td class="t_r">服务权限类型：</td>
 					<td><select type="text" name="permissionStatus" id="permissionStatus"
-						class="text">
+						class="text" style="width: 350px">
 							<c:forEach var="map" items="${permissionStatus }">
 								<option value="${map.key }">${map.value.name }</option>	
 							</c:forEach>
@@ -159,23 +164,23 @@ body {
 				<tr>
 					<td class="t_r">服务访问地址：</td>
 					<td><input type="text" name="serviceVisitAddress" id="serviceVisitAddress" readonly="readonly"
-						class="text validate[required]" width="250px"/></td>
+						class="text validate[required]" style="width: 350px" width="250px"/></td>
 				</tr>
 				<tr>
 					<td class="t_r">服务缩略图：</td>
-					<td><input type="file" id="imagePath" name="imageFile"></td>
+					<td><input type="file" id="imagePath" name="imageFile" validate="{checkImage:true}"></td>
 				</tr>
 				<tr>
 					<td class="t_r">元数据访问地址：</td>
 					<td><input type="text" name="metadataVisitAddress" id="metadataVisitAddress"
-						class="text validate[required]" 
-						validate="{maxlength : 100,messages:{maxlength:'字符长度不能超过100个!'}}"
+						class="text validate[required]" style="width: 350px"
+						validate="{maxlength : 200,messages:{maxlength:'字符长度不能超过200个!'}}"
 						/></td>
 				</tr>
 				<tr>
 					<td class="t_r">服务分类：</td>
 					<td><input type="text" name="registerType" id="registerType" value="GIS服务" disabled="disabled"
-						class="text validate[required]" /></td>
+						class="text validate[required]" style="width: 350px"/></td>
 				</tr>
 				<tr>
 					<td class="t_r">更多属性信息：</td>
@@ -275,6 +280,27 @@ body {
 	        var reg = /^([a-zA-Z]+)$/;
 	        return this.optional(element) || (reg.test(value));
 	    	}, "只能输入英文字母");
+		
+	  //验证图片
+	    jQuery.validator.addMethod("checkImage", function(value, element) {
+	        return this.optional(element) || checkImage(value);
+	    }, "请上传图片文件!");
+		
+		//根据文件名判断是否是图片
+	    function checkImage(filepath) {
+	        //获得上传文件名
+	        var fileTypeArr= filepath.toLowerCase().split(".");
+	        //切割出后缀文件名
+	        var filetype=fileTypeArr[fileTypeArr.length-1];
+	        var imagesTypes = new Array("jpg","jpeg","png","bmp","gif");
+	        //jquery 判断值是否在数组中
+	        if($.inArray(filetype, imagesTypes)>-1) {
+	        	return true;
+	        }
+	        else {
+	        	return false;
+	        }
+	    }
 		
 		function morePropertySelect() {
 			$.Layer.iframe(
@@ -430,7 +456,12 @@ body {
     							tempArr += $(this).next().text() + ","
     					});
 						//console.log("tempArr="+tempArr);
-						$("#g_serviceExtend").html(tempArr.substring(0, tempArr.length - 1));
+						if(tempArr.length > 0 ) {
+							$("#g_serviceExtend").html(tempArr.substring(0, tempArr.length - 1));
+						}
+						else {
+							$("#g_serviceExtend").html("");
+						}
 						return true;
 						break;
 					default:
@@ -457,17 +488,16 @@ body {
 						columns : [ {
 							display : '服务名',
 							name : 'showName',
-							align : 'left',
-							width : 100
+							align : 'left'
 						}, {
 							display : '服务类型',
-							name : 'functionType',
-							minWidth : 60
+							name : 'functionType'
 						} ],
 						pageSize : 30,
 						url:"${ctx}/service/listData",
-						width : '100%',
-						height : '80%'
+						width : '150%',
+						height : '90%',
+						usePager: false
 					});
 					$("#pageloading").hide();
 				});

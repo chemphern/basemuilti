@@ -176,11 +176,19 @@ public class Role implements java.io.Serializable {
 		this.rolePermissions = rolePermissions;
 	}
 
-	public boolean getIsSuper() {
+//	public boolean getIsSuper() {
+//		return isSuper;
+//	}
+//
+//	public void setIsSuper(boolean aSuper) {
+//		isSuper = aSuper;
+//	}
+
+	public boolean isSuper() {
 		return isSuper;
 	}
 
-	public void setIsSuper(boolean aSuper) {
+	public void setSuper(boolean aSuper) {
 		isSuper = aSuper;
 	}
 }

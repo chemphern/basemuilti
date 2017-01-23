@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>羽辰智慧林业综合管理平台-资源管理</title>
+  <title>羽辰智慧林业平台运维管理系统-服务拓展属性配置</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -52,6 +52,26 @@
             <div class="box-header with-border">
                 <h4 class="box-title">服务扩展列表</h4>
                 <div class="btn_box">
+                 属性名字段：<input name="name" id="name" class="text">
+                                                 扩展显示属性名：<input name="showName" id="showName" class="text">
+                                              <%--    类型：<select type="text" name="type" id="type" class="text">
+									<option value="">请选择</option>
+									<c:forEach var="map" items="${resourceType }">
+										<option value="${map.key }">${map.value.name }</option>	
+									</c:forEach>
+							  </select>
+					是否必填：<select type="text" name="need" id="need" class="text">
+									<option value="">请选择</option>
+									<c:forEach var="map" items="${resourceType }">
+										<option value="${map.key }">${map.value.name }</option>	
+									</c:forEach>
+							  </select>  --%> 		  
+							                               
+                    <shiro:hasPermission name="resource-list">
+							<button class="current" onclick="searchVoyageNo()">
+								<i class="glyphicon glyphicon-search"></i>查询
+							</button>
+						</shiro:hasPermission>
                 	<shiro:hasPermission name="sys-serviceExtendProperty-create">
                     	<button class="current" onclick="addConfigServiceExtendProperty('1');"><i class="iconfont icon-plus"></i>创建</button>
                    	</shiro:hasPermission>
@@ -246,5 +266,32 @@
         	}
     	}
     } 
+	
+  //查询操作
+	function searchVoyageNo(){
+		var name=$("#name").val();
+		var showName=$("#showName").val();
+	    $.ajax({
+			type:"POST",
+			url:"${ctx}/configServiceExtendProperty/findSelect",
+			data:{
+				"name":name,
+				"showName":showName
+		},
+			dataType:"json",
+			success:function(data){
+				if(data){
+				//alert(data);
+				window.gridManager.reload();
+				}
+			},
+			error:function(){
+				alert("数据加载失败");
+			}
+		})
+			
+		
+	}
+	
 </script>
 </html>

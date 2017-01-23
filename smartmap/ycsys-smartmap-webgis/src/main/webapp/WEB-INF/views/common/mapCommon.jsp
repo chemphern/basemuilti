@@ -26,7 +26,7 @@
             paths:{
             	layerjs:"${res}/js/map2d",
             	Extension:"${res}/dist/js/map/plot/drawExtension/Extension",
-            	ExtensionDraw:"${res}/dist/js/map/plot/drawExtension/plotDraw"
+            	ExtensionDraw:"${res}/dist/js/map/plot/drawExtension/plotDraw",
             }
         };			
 </script>
@@ -119,10 +119,8 @@
 
 			// snapping is enabled for this sample - change the tooltip to reflect this
 			jsapiBundle.toolbars.draw.start = jsapiBundle.toolbars.draw.start +  "<br>按住 <b>ALT</b>键启用捕捉";
-			// refer to "Using the Proxy Page" for more information:  https://developers.arcgis.com/javascript/3/jshelp/ags_proxy.html
 			esriConfig.defaults.io.proxyUrl = mapConfig.proxyUrl;
-           esriConfig.defaults.io.alwaysUseProxy= false;
-			//This service is for development and testing purposes only. We recommend that you create your own geometry service for use within your applications.
+            esriConfig.defaults.io.alwaysUseProxy= false;
 			esriConfig.defaults.geometryService = new GeometryService(mapConfig.geoServiceUrl);
 			geoService = new GeometryService(mapConfig.geoServiceUrl);
 			NAVI=Navigation;
@@ -462,16 +460,16 @@
 		var polygonColor;//面颜色
 		var outline=new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,new esri.Color([91,127,239,0.5]), 2);//轮廓线
 		if(highlightShow){
-			pointColor=new esri.Color([0, 255, 255, 0.5 ]);
+			pointColor=new esri.Color([0, 255, 255, 0.8 ]);
 			polylineColor=new esri.Color([255, 0, 0, 1 ]);
 			polygonColor=new esri.Color([176,192,240,0.4]);
 		}else{//默认样式
-			pointColor=new esri.Color([222, 22, 22, 0.5 ]);
+			pointColor=new esri.Color([222, 22, 22, 0.8 ]);
 			polylineColor=new esri.Color([222, 22, 22, 1 ]);
 			polygonColor=new esri.Color([103,152,7,0.2]);
 		}
 		if(type.indexOf("point")>-1){
-			symbol = new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_DIAMOND, 10,
+			symbol = new esri.symbol.SimpleMarkerSymbol(esri.symbol.SimpleMarkerSymbol.STYLE_CIRCLE, 6,
 					new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,pointColor, 1),pointColor);
 		}else if(type.indexOf("polyline")>-1){
 			symbol =new esri.symbol.SimpleLineSymbol(esri.symbol.SimpleLineSymbol.STYLE_SOLID,polylineColor, 2);

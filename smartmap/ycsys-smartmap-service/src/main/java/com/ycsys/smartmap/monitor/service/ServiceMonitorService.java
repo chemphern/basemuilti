@@ -25,4 +25,10 @@ public interface ServiceMonitorService {
     List<ServiceMonitor> findByPage(PageHelper page);
 
     long countAll();
+    
+    public Long countGroupBy(String hql, Object[] param);
+    
+    public Long countGroupBy(String hql, List<Object> param);
+    
+    
 }

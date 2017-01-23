@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>羽辰智慧林业综合管理平台-资源管理</title>
+    <title>羽辰智慧林业平台运维管理系统-平台消息列表</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="shortcut icon" href="${res}/images/favicon.ico" />
@@ -68,9 +68,9 @@
         $("#maingrid4").ligerGrid({
             checkbox: false,
             columns: [
-                { display: '登录名', name: 'name'},
-                { display: '姓名', name: 'loginName' },
-                { display: '消息状态', name: 'status' ,render:function(rowdata, rowindex, value){
+                { display: '登录名', name: 'name',width:"200"},
+                { display: '姓名', name: 'loginName',width:"200" },
+                { display: '消息状态', name: 'status' ,width:"180",render:function(rowdata, rowindex, value){
                     var d = "未读";
                     if(rowdata.status == "2" || rowdata.status==2){
                         d = "已读";
@@ -80,7 +80,7 @@
             ], pageSize:30,
             url:"${ctx}/platNotice/listSenderData",
             parms:{noticeId:"${noticeId}"},
-            width: '100%',height:'98%'
+            height:'98%'
         });
     });
     function getLigerManager(){

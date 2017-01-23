@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>羽辰智慧林业综合管理平台-资源管理</title>
+    <title>羽辰智慧林业平台运维管理系统-平台监控配置</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
@@ -92,8 +92,8 @@
         data.push({id: 1, pid: -1, text: '服务器性能监控'});
         data.push({id: 0, pid: -1, text: '服务性能监控'});
         data.push({id: 2, pid: 0, text: 'tomcat'});
-        data.push({id: 3, pid: 0, text: 'oracle'});
-        data.push({id: 4, pid: 0, text: 'arcgis'});
+       //data.push({id: 3, pid: 0, text: 'oracle'});
+        //data.push({id: 4, pid: 0, text: 'arcgis'});
         $("#tree").ligerTree({
             nodeWidth: 160,
             data: data,

@@ -15,7 +15,7 @@
                 </a>
             </li>
             <c:forEach var="i" items="${index_permissions}" varStatus="status">
-                <li class="treeview">
+                <li class="treeview" ycname="${i.name}">
                     <a href="javascript:void(0);" onclick="left_href(this,'${ctx}','${i.url}')">
                         <%--<i id="menu_icon_${status.index}"></i>--%>
                         <span>${i.name}</span>
@@ -28,20 +28,20 @@
                     <c:if test="${i.childPermission != null && fn:length(i.childPermission) > 0}">
                         <ul class="treeview-menu">
                             <c:forEach var="child" items="${i.childPermission}">
-                                <li>
+                                <li ycname="${child.name}">
                                     <a href="javascript:void(0);" onclick="left_href(this,'${ctx}','${child.url}')">
                                         <i class="iconfont icon-circle-o"></i>
                                         ${child.name}
                                         <c:if test="${child.childPermission != null && fn:length(child.childPermission) > 0}">
                                             <span class="pull-right-container">
-                                              <i class="iconfont icon-folder-open pull-right"></i>
+                                              <i class="iconfont icon-arrowdown pull-right"></i>
                                             </span>
                                         </c:if>
                                     </a>
                                     <c:if test="${child.childPermission != null && fn:length(child.childPermission) > 0}">
                                         <ul class="treeview-menu">
                                             <c:forEach var="childs" items="${child.childPermission}">
-                                                <li>
+                                                <li ycname="${childs.name}">
                                                     <a href="javascript:void(0);" onclick="left_href(this,'${ctx}','${childs.url}')">
                                                      <i class="iconfont icon-circle-o"></i> ${childs.name}
                                                     </a>
@@ -87,7 +87,7 @@
         "安全管理":'iconfont icon-user',
         "子系统管理":'iconfont icon-tachometer',
         "系统配置":'iconfont icon-cog',
-        "日志管理":'iconfont icon-circle-o',
+        "日志管理":'iconfont icon-icon',
         "统计分析":'iconfont icon-area-chart'
     };
     var treeviews = document.getElementsByClassName("treeview");

@@ -19,7 +19,8 @@ var mapConfig={
 		proxyUrl:null,	//	ESRI代理地址
 		geoServiceUrl:null,
 		printService:null,
-		intersectService:null,
+		intersectService:null, //叠加分析服务(相交)
+		bufferService:null, //缓冲分析服务
 		
 		//网络环境设置
 		_innerJsIpPort:"http://172.16.10.50:8080", //JsAPI内网IP端口
@@ -66,6 +67,7 @@ var mapConfig={
 			this.geoServiceUrl = this[target[targetIndex]] + "/arcgis/rest/services/Utilities/Geometry/GeometryServer";
 			this.printService = this[target[targetIndex]] + "/arcgis/rest/services/Utilities/PrintingTools/GPServer/Export%20Web%20Map%20Task";
 			this.intersectService = this[target[targetIndex]] + "/arcgis/rest/services/CostomGPService/IntersectTool/GPServer/Intersect";
+			this.bufferService = this[target[targetIndex]] + "/arcgis/rest/services/CostomGPService/BufferTool/GPServer/Buffer";
 			this.proxyUrl = this.realIpPort + "/Java/proxy.jsp";
 			//this.proxyUrl = path + "/GisProxy/proxy.jsp";//本地ARCGIS代理测试使用,用此代理亦可
 
@@ -88,4 +90,16 @@ var mapConfig={
 				return this._gisServer + relativeUrl;
 			}
 		}
+}
+
+/**********二维视频全景弹窗设置*/
+var popWindConfig = {
+	scene:{
+		width:640,
+		height:480
+	},
+	video:{
+		width:667,
+		height:500
+	}
 }

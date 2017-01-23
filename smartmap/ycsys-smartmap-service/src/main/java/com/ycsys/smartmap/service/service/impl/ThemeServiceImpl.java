@@ -82,4 +82,10 @@ public class ThemeServiceImpl implements ThemeService {
 		return themeServiceDao.get(hql, param);
 	}
 
+	@Override
+	public Long count(String hql, List<Object> param) {
+		// TODO Auto-generated method stub
+		return themeServiceDao.count(hql, param);
+	}
+
 }

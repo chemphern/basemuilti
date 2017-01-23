@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>羽辰智慧林业综合管理平台-资源管理</title>
+    <title>羽辰智慧林业平台运维管理系统-平台监控</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.6 -->
@@ -255,13 +255,21 @@
     function toPercentage(x) {
         return toDecimal(x) + " %";
     }
+    function byteToGB(x){
+        var f = parseFloat(x) / (1024*1024*1024);
+        if (isNaN(f)) {
+            return;
+        }
+        f = Math.round(f * 100) / 100;
+        return f + " GB";
+    }
     $(function () {
         var data = [];
         var suffix = "type_";
         data.push({id: suffix + "1", pid: -1, text: '服务器监控'});
         data.push({id: suffix + "2", pid: -1, text: 'Tomcat监控'});
-        data.push({id: suffix + "3", pid: -1, text: 'Oracle监控'});
-        data.push({id: suffix + "4", pid: -1, text: 'Arcgis监控'});
+        //data.push({id: suffix + "3", pid: -1, text: 'Oracle监控'});
+        //data.push({id: suffix + "4", pid: -1, text: 'Arcgis监控'});
         $.ajax({
             url: "${ctx}/platmonitor/getMonitorServices",
             type: "get",
@@ -292,18 +300,22 @@
                         type: "get",
                         dataType: "json",
                         success: function (res) {
-                            console.log(res);
-                            var dt = res.retData;
-                            if (dt) {
-                                //服务器监控
-                                if (dt.type == "1") {
-                                    serverMonitor(dt);
-                                    //tomcat监控
-                                } else if (dt.type == "2") {
-                                    tomcatMonitor(dt);
+                            if(res.retCode > 0){
+                                var dt = res.retData;
+                                if (dt) {
+                                    //服务器监控
+                                    if (dt.type == "1") {
+                                        serverMonitor(dt);
+                                        //tomcat监控
+                                    } else if (dt.type == "2") {
+                                        tomcatMonitor(dt);
+                                    }
+                                } else {
                                 }
-                            } else {
+                            }else{
+                                alert(res.retMsg);
                             }
+
                         }
                     });
                 }
@@ -376,7 +388,7 @@
             var xlist = [],cpu_ylist = [],net_yGetpacklist = [],net_ySendpacklist = [],net_yInlist = [],net_yOutlist = [];
             for (var x in dt.chartData.reverse()) {
                 xlist.push(new Date(dt.chartData[x].monitorTime).Format("hh:mm:ss"));
-                cpu_ylist.push(toPercentage(dt.chartData[x].cpuUsedRate));
+                cpu_ylist.push(toDecimal(dt.chartData[x].cpuUsedRate));
                 net_ySendpacklist.push(dt.chartData[x].sendPackage);
                 net_yGetpacklist.push(dt.chartData[x].receivePackage);
                 net_yInlist.push(dt.chartData[x].recByte);
@@ -441,7 +453,7 @@
                     {
                         type: 'value',
                         axisLabel: {
-                            formatter: '{value}M'
+                            formatter: '{value} Byte'
                         }
                     }
                 ], series: [
@@ -484,7 +496,7 @@
                     {
                         type: 'value',
                         axisLabel: {
-                            formatter: '{value}M'
+                            formatter: '{value} Byte'
                         }
                     }
                 ],
@@ -520,7 +532,7 @@
             var $jvm = $("#jvm_info");
             var jvm = dt.jvmMemoryInfo;
             $jvm.empty();
-            $jvm.append($("<td/>").html(jvm.free)).append($("<td/>").html(jvm.total)).append($("<td/>").html(jvm.max));
+            $jvm.append($("<td/>").html(byteToGB(jvm.free))).append($("<td/>").html(byteToGB(jvm.total))).append($("<td/>").html(byteToGB(jvm.max)));
             var $thread = $("#thread_info");
             var thread = dt.threadInfo;
             $thread.empty();

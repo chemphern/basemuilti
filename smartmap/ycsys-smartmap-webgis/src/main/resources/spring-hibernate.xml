@@ -120,23 +120,4 @@
 		<aop:pointcut id="transactionPointcut" expression="execution(* com.ycsys.smartmap..service.impl.*Impl.*(..))" />
 		<aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice" order="1"/>
 	</aop:config>
-	<bean id="logAdvise" class="com.ycsys.smartmap.sys.advise.LogAdvise"></bean>
-	<aop:config>
-		<aop:aspect ref="logAdvise" >
-			<aop:pointcut id="logPoint" expression="@annotation(com.ycsys.smartmap.sys.common.annotation.ToLog) and execution(* com.ycsys.smartmap..service.impl.*.*(..))" />
-			<!-- 定义前置 -->
-			<aop:before method="invokeBefore" pointcut-ref="logPoint"/>
-			<!-- 定义Target处理后普通结果增强 -->
-			<aop:after-returning method="invokeAfter" pointcut-ref="logPoint" returning="returnObj"/>
-			<!-- 定义Target处理后异常增强 -->
-			<aop:after-throwing method="error" pointcut-ref="logPoint" throwing="ex"/>
-		</aop:aspect>
-	</aop:config>
-	<!--
-	<bean id="testLog" class="com.ycsys.smartmap.sys.advise.TestLog"></bean>
-	<aop:config>
-		<aop:advisor id="methodTimeLog" advice-ref="testLog" pointcut="@annotation(com.ycsys.smartmap.sys.common.annotation.ToLog) and execution(* com.ycsys.smartmap..service.impl.*.*(..))"/>
-	</aop:config>
-	-->
-	<!--<aop:aspectj-autoproxy/>-->
 </beans>

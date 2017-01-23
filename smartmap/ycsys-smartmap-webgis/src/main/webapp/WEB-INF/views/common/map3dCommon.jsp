@@ -61,8 +61,12 @@ function to3dMap(mapExtent) {
 *
 */
 function OnProjectLoadFinished() {
-    //隐藏自有导航控件
-//    SwitchNavigateBar();
+    //打开导航控件
+    SwitchNavigateBar(true);
+	//打开状态栏和比例尺
+    SwitchStatusBar(true);
+    //打开比例尺
+    SwitchScaleBar(true);
     //与二维地图关联地图显示范围
     window.setTimeout("setExtentTo2dMap()",500);
   	//初始化试图记录
@@ -179,5 +183,7 @@ function OnInputModeChangedListening(NewMode) {
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dService.js"></script>
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dPlot.js"></script>
 	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/fireSimulation.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3dVideo.js"></script>
+	<script type="text/javascript" charset="utf-8" src="${res}/js/map3d/map3Panorama.js"></script>
 </body>
 </html>

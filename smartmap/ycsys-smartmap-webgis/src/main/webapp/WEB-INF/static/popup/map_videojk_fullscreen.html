@@ -47,30 +47,35 @@
   <link rel="stylesheet" href="../dist/css/mapIndex.css"> -->
 <!-- Bootstrup的jQuery slider插件 -->
 <link href="../plugins/slider/bootstrap-slider.min.css" rel="stylesheet">
+  <script src="../js/map3d/YcMap3D.js"></script>
+  <style type="text/css">
+  .videojk_fullscreen3d{width:667px;height:500px;}
+  </style>
 </head>
 <body>
-<div class="videojkPopup clearfix">
-
+<div class="videojk_fullscreen3d">
+<div class="videojkPopup">
+<div class="esriPopup esriPopupVisible">
   <div class="videojkPopupWrapper">
-    <div class="sizer_video" style="display:none;">
-      <div class="titlePane" style="-webkit-user-select: none;">
-        <div class="title">全景</div>
-        <div class="titleButton close" title="关闭"></div>
-      </div>
-    </div>
-    <div class="sizer_videojk_full clearfix">
+<!--     <div class="sizer_video"> -->
+<!--       <div class="titlePane" style="-webkit-user-select: none;"> -->
+<!--         <div class="title" id="winTitle">视频监控</div> -->
+<!--         <div class="titleButton close" title="关闭" onclick="closeVideo()"></div> -->
+<!--       </div> -->
+<!--     </div> -->
+    <div class="sizer_videojk_full  clearfix">
       <div class="videojk_content boxshadow">
-        <div class="videojk_mainbox"><img src="../dist/img/map/photo_videojk.jpg" alt=""/></div>
+        <video id='video' class="videojk_mainbox" autoplay="autoplay" controls="controls" loop="loop" width="400" height="300"></video>
         <div class="videojk_mainbtn_group">
           <a href="javascript:void(0)" class="vbtn btn_video" title="录像"></a>
           <a href="javascript:void(0)" class="vbtn btn_photo" title="截图"></a>
           <a href="javascript:void(0)" class="vbtn btn_vioce" title="声音"></a>
-          <a href="javascript:void(0)" class="vbtn btn_screen fullScreenOpen" title="关闭"></a>
+          <a href="javascript:void(0)" class="vbtn btn_screen" title="全屏"></a>
         </div>
       </div>
-      <!-- 侧边操作按钮 start -->
-      
-      <div class="videojk_sidebar boxshadow" >
+
+      <!-- 侧边操作按钮 start -->      
+      <div class="videojk_sidebar boxshadow">
       <form action="" class="form-horizontal">
         <div class="videojk_sidebar_con clearfix">
           <!-- 方向控制 -->
@@ -86,13 +91,13 @@
             <a href="javascript:void(0)" class="dbtn btn_br" title=""><span></span></a>             
           </div>
           <!-- 放大缩小控制 -->
-          <div class="control_zoom slider_bar mt15">
+          <div class="control_zoom slider_bar mt10">
             <a href="javascript:void(0)" class="zbtn btn_minus"></a>
             <a href="javascript:void(0)" class="zbtn btn_add"></a>
             <input id="videozoom" data-slider-id='videozoomSlider' type="text" data-slider-min="-5" data-slider-max="20" data-slider-step="1" data-slider-value="10" data-slider-tooltip="hide"/>
           </div>
           <!-- 变倍 焦距 光圈 控制-->
-          <div class="control_modified mt15 clearfix">
+          <div class="control_modified mt10 clearfix">
             <ul class="modified_ul">
               <li><a href="javascript:void(0)" class="mbtn btn_add_big"></a><span>变倍</span><a href="javascript:void(0)" class="mbtn btn_minus_big"></a></li>
               <li><a href="javascript:void(0)" class="mbtn btn_add_big"></a><span>焦距</span><a href="javascript:void(0)" class="mbtn btn_minus_big"></a></li>
@@ -101,9 +106,8 @@
           </div>
           <!-- 参数设置-->
           
-          <div class="preferences  mt20  clearfix">
-            <div class="select-item">
-              <div class="select-btn"></div>
+          <div class="preferences  mt10  clearfix">
+            <div class="select-item">              
               <select class="form-control input-sm">
                 <option>预置点</option>
                 <option>2</option>
@@ -112,13 +116,13 @@
                 <option>5</option>
               </select>
             </div>
-            <div class="form-group mt15">
+            <div class="form-group mt10">
               <div class="col-sm-8">
                 <input type="text" class="form-control input-sm" placeholder="" value="1">
               </div>
               <label for="name" class="col-sm-4">1~255</label>
             </div>
-            <div class="btn_list">
+            <div class="btn_box">
               <button type="button" class="btn">定位</button>
             </div>
           </div>
@@ -147,21 +151,23 @@
           </div>
         </div>
         </form>
-      </div>
-      
+      </div>     
       <!-- 侧边操作按钮 end-->
     </div>
-
-
   </div>
-<!--  
-<div class="video-popup-triangle-up"></div> -->
-
-
-</div> 
+<!--   <div class="outerPointer"></div>
+  <div class="video-popup-triangle-up"></div> -->
+</div>
+</div>
+</div>
 <script type='text/javascript' src="../plugins/slider/bootstrap-slider.min.js"></script>
 <script type='text/javascript'>
   $(document).ready(function() {
+	  var dialog = parent.art.dialog.list["video"];
+	  var url = dialog.config.data.resourcePath;
+	  $("#video").attr("src",url);
+
+    //滑动条
     $('#videozoom').slider();
     $('#brightness').slider({
           // formatter: function(value) {
@@ -171,6 +177,32 @@
     $('#contrast').slider();
     $('#saturation').slider();
     $('#tone').slider();
+    //全屏关闭
+  //   $('.btn_screen').click(function(event) {
+  //     if ($(this).hasClass('fullScreenOpen')) {
+  //       $(this).removeClass('fullScreenOpen');
+  //       $(this).attr('title','全屏');
+  //       $('.videojkPopup').attr('class','videojkPopupCon boxshadow videojkPopuppos');
+  //       $('.videojkPopupWrapper').attr('class','esriPopupWrapper');
+  //       $('.sizer_video').show();
+  //       $('.sizer_videojk_full').attr('class','sizer_videojk_small');
+  //       $('.videojk_content').attr('class','content_video');
+  //       $('.videojk_mainbox').attr('class','videojk_box');
+  //       $('.videojk_sidebar').hide();
+  //       $('.video-popup-triangle-up').show();
+  //     }else{
+  //       $(this).addClass('fullScreenOpen');
+  //       $(this).attr('title','关闭');
+  //       $('.videojkPopupCon').attr('class','videojkPopup');
+  //       $('.esriPopupWrapper').attr('class','videojkPopupWrapper');
+  //       $('.sizer_video').hide();
+  //       $('.sizer_videojk_small').attr('class','sizer_videojk_full  clearfix');
+  //       $('.content_video').attr('class','videojk_content boxshadow');
+  //       $('.videojk_box').attr('class','videojk_mainbox');
+  //       $('.videojk_sidebar').show();
+  //       $('.video-popup-triangle-up').hide();
+  //     };
+  //   });
   });
 </script>
 </body>

@@ -64,52 +64,63 @@ function checkYcMap3DInstall() {
     }        
 }
 
-//----------------------------------------------共有常用功能----------------------------------------------//
+//----------------------------------------------显示相关控制----------------------------------------------//
 
 //切换阴影
-function SwitchShadow() {
-    YcMap3D.Command.Execute(2118, 0);
+function SwitchShadow(ifOpen) {
+    if((!YcMap3D.Command.IsChecked(2118,0)&&ifOpen)||(YcMap3D.Command.IsChecked(2118,0)&&!ifOpen))
+        YcMap3D.Command.Execute(2118, 0);
 }
 
 //切换导航条
-function SwitchNavigateBar() {
-    YcMap3D.Command.Execute(1065, 0);
+function SwitchNavigateBar(ifOpen) {
+    if((!YcMap3D.Command.IsChecked(1065,0)&&ifOpen)||(YcMap3D.Command.IsChecked(1065,0)&&!ifOpen))
+        YcMap3D.Command.Execute(1065, 0);
 }
 
 //切换状态栏
-function SwitchStatusBar() {
-    YcMap3D.Command.Execute(1065, 2);
+function SwitchStatusBar(ifOpen) {
+    if((!YcMap3D.Command.IsChecked(1065,2)&&ifOpen)||(YcMap3D.Command.IsChecked(1065,2)&&!ifOpen))
+        YcMap3D.Command.Execute(1065, 2);
 }
 
 //切换比例尺
-function SwitchScaleBar() {
-    YcMap3D.Command.Execute(1065, 3);
+function SwitchScaleBar(ifOpen) {
+    if((!YcMap3D.Command.IsChecked(1065,3)&&ifOpen)||(YcMap3D.Command.IsChecked(1065,3)&&!ifOpen))
+        YcMap3D.Command.Execute(1065, 3);
 }
 
 //切换时间滑条
-function SwitchTimeSlider() {
-    YcMap3D.Command.Execute(1065, 4);
+function SwitchTimeSlider(ifOpen) {
+    if((!YcMap3D.Command.IsChecked(1065,4)&&ifOpen)||(YcMap3D.Command.IsChecked(1065,4)&&!ifOpen))
+        YcMap3D.Command.Execute(1065, 4);
 }
 
 //切换地下模式
-function SwitchGroundMode() {
-    YcMap3D.Command.Execute(1027, 0);
+function SwitchGroundMode(ifOpen) {
+    if((!YcMap3D.Command.IsChecked(1027,0)&&ifOpen)||(YcMap3D.Command.IsChecked(1027,0)&&!ifOpen))
+        YcMap3D.Command.Execute(1027, 0);
 }
 
 //切换碰撞检测
-function SwitchCollision() {
-    YcMap3D.Command.Execute(1140, 0);
+function SwitchCollision(ifOpen) {
+    if((!YcMap3D.Command.IsChecked(1140,0)&&ifOpen)||(YcMap3D.Command.IsChecked(1140,0)&&!ifOpen))
+        YcMap3D.Command.Execute(1140, 0);
 }
 
 //显示隐藏目录树
-function SwitchProjectTree() {
-    YcMap3D.Command.Execute(1162, 0);
+function SwitchProjectTree(ifOpen) {
+    if((!YcMap3D.Command.IsChecked(1162,0)&&ifOpen)||(YcMap3D.Command.IsChecked(1162,0)&&!ifOpen))
+        YcMap3D.Command.Execute(1162, 0);
 }
 
 //打印地图
 function print3DMap(){
 	YcMap3D.Window.GetSnapShot(false,0,0,"JPeg75",1);
 }
+
+
+//----------------------------------------------常用共有功能----------------------------------------------//
 
 //删除所有包含该名称的对象
 function deleteItemsByName(itemname) {
@@ -349,6 +360,7 @@ function clearMap3D(){
         AnalyseTool.deactivate();
     }
     YcMap3D.Window.HideMessageBarText();//清除隐藏消息栏
+    stopSimulation();//清除林火蔓延相关
     deleteFolderObjects(configration.QueryIcoFolder);
     deleteFolderObjects(configration.QueryDrawFolder);
 }
@@ -383,4 +395,12 @@ function getRefernceType() {
      if(!YcMap3D.CoordServices.SourceCoordinateSystem.IsPlanar())
          referenceType = "globe";
      return referenceType;
+}
+
+//创建屏幕中央弹窗
+function createPopupWindow(name,url,width,height,time) {
+    var left = YcMap3D.Window.Rect.Width/2 - width/2;
+    var top =  YcMap3D.Window.Rect.Height/2 - height/2;
+    var pop = YcMap3D.Creator.CreatePopupMessage(name, url, left, top, width,height,time);
+    return pop;
 }

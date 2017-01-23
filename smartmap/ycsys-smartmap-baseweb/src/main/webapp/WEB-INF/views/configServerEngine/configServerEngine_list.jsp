@@ -5,7 +5,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>羽辰智慧林业综合管理平台-资源管理</title>
+  <title>羽辰智慧林业平台运维管理系统-服务管理</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.6 -->
@@ -163,8 +163,8 @@
 	       gridManager = $("#maingrid4").ligerGrid({
 	            checkbox: true,
 	            columns: [
-		          	        { display: '配置名称',  name: 'configName', align: 'left', width: 100 },
-		          	        { display: '引擎类型', name: 'engineType', align: 'left', width: 100,
+		          	        { display: '配置名称',  name: 'configName', align: 'left', width: 200 },
+		          	        { display: '引擎类型', name: 'engineType', align: 'left', width: 120,
 		          	        	render: function (item) {
 	  	                    	     var obj = parseInt(item.engineType);
 	      	                    	  <c:forEach var="map" items="${engineType }">
@@ -174,7 +174,7 @@
 	  	       						  </c:forEach>
 	   	                     }      
 		          	        },
-		          	        { display: '集成模式', name: 'integrationModel', minWidth: 60,
+		          	        { display: '集成模式', name: 'integrationModel', minWidth: 120,
 		          	        	integrationModel:'int',
 		          	        	render: function (item) {
 	  	                    	     var obj = parseInt(item.integrationModel);
@@ -186,10 +186,10 @@
 	  	                             }
 	   	                    	}    
 		          	        },
-		          	      	{ display: '机器名', name: 'machineName', minWidth: 60 },
-		          	      	{ display: '内网IP', name: 'intranetIp', minWidth: 60 },
-		          	      	{ display: '内网端口', name: 'intranetPort', minWidth: 60 },
-		          	    	{ display: '运行状态', name: 'runningStatus', minWidth: 60,
+		          	      	{ display: '机器名', name: 'machineName', minWidth: 120 },
+		          	      	{ display: '内网IP', name: 'intranetIp', minWidth: 120 },
+		          	      	{ display: '内网端口', name: 'intranetPort', minWidth: 120 },
+		          	    	{ display: '运行状态', name: 'runningStatus', minWidth: 120,
 		          	      		 runningStatus:'int',
 	        	        		 render: function (item) {
 	                    	     var obj = parseInt(item.runningStatus);
@@ -201,9 +201,9 @@
 	                             }
 		                    	}    
 		          	    	},
-		          	  		{ display: '数据上传服务地址', name: 'dataUploadPath', width: 100 },
-		          			{ display: '数据上传绝对路径', name: 'dataUploadRealPath', width: 100 },
-		          			{ display: '更新者', name: 'updator.name', minWidth: 60 },
+		          	  		{ display: '数据上传服务地址', name: 'dataUploadPath', width: 200 },
+		          			{ display: '数据上传绝对路径', name: 'dataUploadRealPath', width: 200 },
+		          			{ display: '更新者', name: 'updator.name', minWidth: 120 },
 		          			{ display: '操作', 
 		          	        	isSort: false, render: function (rowdata, rowindex, value)
 		                        {

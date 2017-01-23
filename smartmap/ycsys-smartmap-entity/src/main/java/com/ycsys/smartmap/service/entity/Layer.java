@@ -119,7 +119,7 @@ public class Layer implements Serializable{
 	
 	public Layer(){}
 	
-	public Layer(Integer id,String name,String address,String geometryType,Integer pId,String type,String nameField,String summaryFields,String displayFields){
+	public Layer(Integer id,String name,String address,String geometryType,Integer pId,String type,String nameField,String summaryFields,String displayFields,String businessType){
 		this.id=id;
 		this.name=name;
 		this.address=address;
@@ -130,6 +130,7 @@ public class Layer implements Serializable{
 		this.nameField=nameField;
 		this.summaryFields=summaryFields;
 		this.displayFields=displayFields;
+		this.businessType=businessType;
 	}
 	
 	public Integer getId() {
