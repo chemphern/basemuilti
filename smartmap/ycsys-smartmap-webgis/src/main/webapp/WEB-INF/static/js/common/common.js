@@ -9,6 +9,9 @@ function onModelChangeHandler(i){
 	if(i==3){
 		modelIndex = 3;
 		loadThemeLayers();
+	}else if(i==4){
+		modelIndex = 4;
+		initEditor();
 	}else{
 		unloadThemeLayers();
 		modelIndex = null;

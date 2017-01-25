@@ -42,8 +42,9 @@
     <section class="content-header">
       <h1>服务统计</h1>
     </section>
-<div class="box box-solid">
+
 	<div class="row">
+	  <div class="box box-solid">
         <div class="col-md-12" style="margin:0 0 20px 10px;">
           <div class="btn_box" style="float: left;margin-top:5px;"> 
            	 时间：<input type="text" id="startTime" class="text date_plug" value="${curDate }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"/> 

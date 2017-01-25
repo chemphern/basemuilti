@@ -53,7 +53,7 @@
 <script type="text/javascript">
 	var centerPt=[113.244931,23.115074];
 	var map,naviBar,measure,draw,printer,locator,baseLyr,imgLyr,search;
-	var NAVI,bookmarks,ArcGISTiledMapServiceLayerLocal,geoService;
+	var NAVI,bookmarks,ArcGISTiledMapServiceLayerLocal,geoService,arrayUtils;
 	var minx,miny,maxx,maxy;
 	var lyrList=[];
 	var DrawEx,DrawExt;
@@ -100,20 +100,18 @@
 		  "esri/graphic","esri/dijit/Search",
 	      "esri/symbols/PictureMarkerSymbol",
 		  "esri/geometry/webMercatorUtils",
-		  "esri/dijit/Bookmarks",
-		  "esri/dijit/BookmarkItem",
 	      "esri/tasks/IdentifyTask",
 		  "esri/tasks/IdentifyParameters",
 		  "dojo/promise/all",
-		  "esri/symbols/PictureMarkerSymbol",
 		  "esri/dijit/InfoWindow",
 		  "esri/symbols/TextSymbol",
 		  "esri/symbols/PictureFillSymbol",
 		  "esri/tasks/Geoprocessor",
 		  "esri/tasks/LinearUnit",
+		  "esri/undoManager",
 		  "dojo/domReady!"
 		], function(parser,Map,ArcGISTiledMapServiceLayer,GeometryService,Navigation,dom,Draw,OverviewMap,MeasureTools,Print,PrintTask,PrintParameters,PrintTemplate,Scalebar,LocateButton,Legend,
-					FeatureLayer,Extent,SpatialReference,Color,SimpleMarkerSymbol,SimpleLineSymbol,SimpleFillSymbol,Editor,TemplatePicker,esriConfig,jsapiBundle,arrayUtils,keys,SimpleRenderer,
+					FeatureLayer,Extent,SpatialReference,Color,SimpleMarkerSymbol,SimpleLineSymbol,SimpleFillSymbol,Editor,TemplatePicker,esriConfig,jsapiBundle,arrayUtil,keys,SimpleRenderer,
 					ArcGISImageServiceLayer,QueryTask,Query,InfoTemplate,Point,drawExt,drawEx) {
 			parser.parse();
 
@@ -122,10 +120,10 @@
 			esriConfig.defaults.io.proxyUrl = mapConfig.proxyUrl;
             esriConfig.defaults.io.alwaysUseProxy= false;
 			esriConfig.defaults.geometryService = new GeometryService(mapConfig.geoServiceUrl);
-			geoService = new GeometryService(mapConfig.geoServiceUrl);
 			NAVI=Navigation;
 			DrawExt=drawExt;
 			DrawEx=drawEx;
+			arrayUtils=arrayUtil;
             ArcGISTiledMapServiceLayerLocal =ArcGISTiledMapServiceLayer;
             map = new Map("map2d",{
 			    logo:false,
@@ -145,19 +143,9 @@
             imgLyr = new  ArcGISTiledMapServiceLayerLocal(mapConfig.imgMapUrl,{id:'base1'});
 
             map.on("load",init);
-// 			map.on("layers-add-result", initEditor);
-            //add boundaries and place names
-//             var responsePoints = new FeatureLayer("https://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/0", {
-//                 mode: FeatureLayer.MODE_ONDEMAND,
-//                 outFields: ['*']
-//             });
-//             var responsePolys = new FeatureLayer("https://sampleserver6.arcgisonline.com/arcgis/rest/services/Wildfire/FeatureServer/2", {
-//                 mode: FeatureLayer.MODE_ONDEMAND,
-//                 outFields: ['*']
-//             });
-//             map.addLayers([responsePolys, responsePoints]);
-			
 			function init(){
+				map.on('layer-add-result',addEditableLyr);
+				map.on('layer-remove',removeEditableLyr);
 				map.on("pan",function(){
 					if(mapOpt==0 && map3DInit){
                         //判断设置三维坐标范围
@@ -250,60 +238,6 @@
   				 });
   				search.set("sources", sources);
   				search.startup();
-  				
-			}
-			function initEditor(evt) {
-				var templateLayers = arrayUtils.map(evt.layers, function (result) {
-					return result.layer;
-				});
-				var templatePicker = new TemplatePicker({
-					featureLayers: templateLayers,
-					grouping: true,
-					rows: "auto",
-					columns: 3
-				}, "templateDiv");
-				templatePicker.startup();
-
-				var layers = arrayUtils.map(evt.layers, function (result) {
-					return {featureLayer: result.layer};
-				});
-				var settingsEditor = {
-					map: map,
-					templatePicker: templatePicker,
-					layerInfos: layers,
-					toolbarVisible: true,
-					createOptions: {
-						polylineDrawTools: [Editor.CREATE_TOOL_FREEHAND_POLYLINE],
-						polygonDrawTools: [Editor.CREATE_TOOL_FREEHAND_POLYGON,
-							Editor.CREATE_TOOL_CIRCLE,
-							Editor.CREATE_TOOL_TRIANGLE,
-							Editor.CREATE_TOOL_RECTANGLE
-						]
-					},
-					toolbarOptions: {
-						reshapeVisible: true
-					}
-				};
-
-				var params = {settings: settingsEditor};
-				var myEditor = new Editor(params, 'editorDiv');
-				//define snapping options
-				var symbol = new SimpleMarkerSymbol(
-						SimpleMarkerSymbol.STYLE_CROSS,
-						15,
-						new SimpleLineSymbol(
-								SimpleLineSymbol.STYLE_SOLID,
-								new Color([255, 0, 0, 0.5]),
-								5
-						),
-						null
-				);
-				map.enableSnapping({
-					snapPointSymbol: symbol,
-					tolerance: 20,
-					snapKey: keys.ALT
-				});
-				myEditor.startup();
 			}
 		});
 
@@ -514,13 +448,14 @@
 		}
 	}
 </script>
-<script type="text/javascript" src="${res }/js/map2d/mapLocate.js"></script>
-<script type="text/javascript" src="${res }/js/map2d/mapQuery.js"></script>
+<script type="text/javascript" src="${res}/js/map2d/mapLocate.js"></script>
+<script type="text/javascript" src="${res}/js/map2d/mapQuery.js"></script>
 <script type="text/javascript" src="${res}/dist/js/map/plot/drawExtension/tween.js"></script>
 <script type="text/javascript" src="${res}/dist/js/map/plot/_plot.js"></script>
-<script type="text/javascript" src="${res }/js/map2d/mapPlot.js"></script>
-<script type="text/javascript" src="${res }/js/map2d/identifyTool.js"></script>
-<script type="text/javascript" src="${res }/js/map2d/spatialAnalysis.js"></script>
+<script type="text/javascript" src="${res}/js/map2d/mapPlot.js"></script>
+<script type="text/javascript" src="${res}/js/map2d/identifyTool.js"></script>
+<script type="text/javascript" src="${res}/js/map2d/spatialAnalysis.js"></script>
+<script type="text/javascript" src="${res}/js/map2d/mapEditor.js"></script>
 </head>
 <body>
 </body>

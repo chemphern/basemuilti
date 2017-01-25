@@ -1725,14 +1725,11 @@
           </div>
         </div>
         <div id="fore-2d3d-menu-bj" >
-          当前位置
           <ol class="breadcrumb">
             <li><i class="icon iconfont home">&#xe640;</i></li>
             <li><a href="#">首页</a></li>
             <li><a href="#">-地图编辑</a></li>
           </ol>
-
-          当前操作
           <div class="subTabs">
             <div class="panelBox active" id="fore-2d3d-menu-bj-dtbj">
               <div class="panelBox-heading"><i class="icon iconfont icon_map">&#xe622;</i>
@@ -1743,136 +1740,15 @@
                 <div class="form-group form-group-sm">
                   <label for="name" class="col-sm-4">选择图层：</label>
                   <div class="col-sm-8 select-item">
-                    <select class="form-control input-sm">
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
+                    <select class="form-control input-sm" id='editableLyrs'>
                     </select>
                   </div>
                 </div>                                   
-                <div class="searchBtn btn_list">
-                  <button type="submit" class="btn btn-sm active">开始编辑</button>
-                  <button type="submit" class="btn btn-sm">保存编辑</button>
-                  <button type="submit" class="btn btn-sm">取消编辑</button>
-                </div>
-                <%--<ul id="myTab" class="nav nav-tabs">--%>
-                  <%--<li class="active"><a href="#pointSymbol"  data-toggle="tab">点符号</a></li>--%>
-                  <%--<li><a href="#lineSymbol"  data-toggle="tab">线符号</a></li>--%>
-                  <%--<li><a href="#planeSymbol"  data-toggle="tab">面符号</a></li>--%>
-                <%--</ul>--%>
-                <%--<div id="myTabContent" class="tab-content">                --%>
-                  <%--<div class="tab-pane  active" id="pointSymbol">--%>
-                    <%--<ul class="bs-glyphicons-list clearfix">--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点1</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                    <%--</ul>--%>
-                  <%--</div>--%>
-                  <%--<div class="tab-pane " id="lineSymbol">--%>
-                    <%--<ul class="bs-glyphicons-list clearfix">--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点2</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                    <%--</ul> --%>
-                  <%--</div>--%>
-                  <%--<div class="tab-pane " id="planeSymbol">--%>
-                    <%--<ul class="bs-glyphicons-list clearfix">--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点3</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                      <%--<li>--%>
-                        <%--<span class="glyphicon glyphicon-asterisk"></span>--%>
-                        <%--<span class="glyphicon-class">锚点</span>--%>
-                      <%--</li>--%>
-                    <%--</ul> --%>
-                  <%--</div>--%>
-
-                  <%--<div class="form-group form-group-sm">--%>
-                    <%--<label for="name" class="col-sm-4">颜色：</label>--%>
-                    <%--<div class="col-sm-8 select-item">--%>
-                      <%--<select class="form-control input-sm">--%>
-                        <%--<option>1</option>--%>
-                        <%--<option>2</option>--%>
-                        <%--<option>3</option>--%>
-                      <%--</select>--%>
-                    <%--</div>--%>
-                  <%--</div>--%>
-                  <%--<div class="form-group">--%>
-                    <%--<label for="name" class="col-sm-4">大小：</label>--%>
-                    <%--<div class="col-sm-8">--%>
-                      <%--<input type="text" class="form-control input-sm" >--%>
-                    <%--</div>--%>
-                  <%--</div>--%>
-                  <%--<div class="form-group">--%>
-                    <%--<label for="name" class="col-sm-4">角度：</label>--%>
-                    <%--<div class="col-sm-8">--%>
-                      <%--<input type="text" class="form-control input-sm">--%>
-                    <%--</div>--%>
-                  <%--</div>--%>
-                  <%--<div class="searchBtn">--%>
-                    <%--<button type="submit" class="btn btn-success">新增</button>--%>
-                    <%--<button type="reset" class="btn btn-warning">删除</button>--%>
-                  <%--</div>--%>
-                <%--</div>--%>
+<!--                 <div class="searchBtn btn_list"> -->
+<!--                   <button type="submit" class="btn btn-sm active">开始编辑</button> -->
+<!--                   <button type="submit" class="btn btn-sm">保存编辑</button> -->
+<!--                   <button type="submit" class="btn btn-sm">取消编辑</button> -->
+<!--                 </div> -->
                 <!-- 编辑工作区 -->
                 <div class="editorRegion">
                   <div id="templateDiv"></div>

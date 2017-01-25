@@ -275,11 +275,13 @@ function createTemplateContent(displayFieldsStr,fieldAliasesObj){
 				}
 			});
 		}
-	}else{
+	}else if(fieldAliasesObj){
 		$.each(fieldAliasesObj,function(o,v){//o为字段名,v为别名
 			arrDisplayFieldsAlias.push(v);
 			arrDisplayFields.push(o);
 		})
+	}else{
+		return "${*}";
 	}
 	//构建模板内容
 	var arr=[];

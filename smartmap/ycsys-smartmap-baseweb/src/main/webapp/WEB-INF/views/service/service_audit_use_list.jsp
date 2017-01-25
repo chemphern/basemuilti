@@ -275,7 +275,7 @@ body {
 		                ], 
 		                pageSize:30,
 		                url:"${ctx}/serviceApply/listData",
-		                width: '100%',height:'95%'
+		                width: '100%',height:'98%'
 					});
 
 					$("#pageloading").hide();

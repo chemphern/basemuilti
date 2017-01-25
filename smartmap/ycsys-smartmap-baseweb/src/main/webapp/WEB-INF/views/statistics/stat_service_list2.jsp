@@ -113,11 +113,12 @@ body {
     </section>
 
    		<div class="row">
+   		  <div class="box box-solid">
         	<div class="col-md-12">
-        		<div class="btn_box" style="float: left;margin-top:2px;"> 
+        		<div class="btn_box" style="float: left;margin:5px 0 20px 10px;"> 
 		            	时间：<input name="startTime" id="startTime" type="text" value="${curDate }" class="text date_plug" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})"> 
 		            	至 <input name="endTime" id="endTime" type="text" class="text date_plug" value="${curDateTo }" onfocus="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm'})">
-		            <button class="current" id="queryBtn"><i class="glyphicon glyphicon-search"></i>查询</button><hr />
+		            <button class="current" id="queryBtn"><i class="glyphicon glyphicon-search"></i>查询</button>
 		         </div>
         		<div id="tabbox" class="tabbox">
 					<ul class="tabs" id="tabs">
@@ -152,7 +153,7 @@ body {
 				</div>
 			</div>
 		</div>
-
+	</div>
     <!-- /.content -->
   </div>
 </body>

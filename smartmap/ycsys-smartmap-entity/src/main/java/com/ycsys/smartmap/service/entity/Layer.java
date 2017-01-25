@@ -75,9 +75,6 @@ public class Layer implements Serializable{
 	@Column(name = "business_type")
 	private String businessType; //业务类型(default,video,scene)
 
-	@Transient
-	private Boolean open=true;
-	
 	/**
 	 * 树的节点类型
 	 */
@@ -126,7 +123,6 @@ public class Layer implements Serializable{
 		this.geometryType=geometryType;
 		this.pId=pId;
 		this.type=type;
-		this.open=true;
 		this.nameField=nameField;
 		this.summaryFields=summaryFields;
 		this.displayFields=displayFields;
@@ -189,14 +185,6 @@ public class Layer implements Serializable{
 
 	public void setGeometryType(String geometryType) {
 		this.geometryType = geometryType;
-	}
-
-	public Boolean getOpen() {
-		return open;
-	}
-
-	public void setOpen(Boolean open) {
-		this.open = open;
 	}
 
 	public String getType() {

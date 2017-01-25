@@ -126,6 +126,8 @@ function toggleLayerInMgr(treeNode){
 }
 
 function toPopDetail(e){
+	//编辑模式不弹窗
+	if(modelIndex == 4) return;
 	var geo = e.graphic.geometry;
 	var businessType = e.graphic._layer.businessType;
 	var task = new esri.tasks.QueryTask(e.graphic._layer.url);

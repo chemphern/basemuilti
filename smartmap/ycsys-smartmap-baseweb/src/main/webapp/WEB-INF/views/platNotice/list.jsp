@@ -50,7 +50,6 @@
             </div>
         </div>
     </div>
-    <!-- /.col -->
 </div>
 </body>
 <!-- jQuery 2.2.3 -->
